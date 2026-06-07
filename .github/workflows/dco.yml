@@ -1,0 +1,37 @@
+name: DCO
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  dco:
+    name: Developer Certificate of Origin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check Signed-off-by
+        run: |
+          # Every commit in the PR must contain a Signed-off-by trailer.
+          base=${{ github.event.pull_request.base.sha }}
+          head=${{ github.event.pull_request.head.sha }}
+          missing=0
+          while IFS= read -r sha; do
+            msg=$(git log -1 --format="%B" "$sha")
+            if ! echo "$msg" | grep -qiE "^Signed-off-by: .+ <.+>"; then
+              echo "::error::Commit $sha is missing a Signed-off-by trailer"
+              missing=$((missing + 1))
+            fi
+          done < <(git log --format="%H" "$base".."$head")
+          if [ "$missing" -gt 0 ]; then
+            echo ""
+            echo "All commits must carry a DCO sign-off:"
+            echo "  git commit -s   (or add 'Signed-off-by: Name <email>' manually)"
+            echo ""
+            echo "See CONTRIBUTING.md for details."
+            exit 1
+          fi
+          echo "All commits signed off."

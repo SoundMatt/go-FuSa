@@ -1,0 +1,4 @@
+*.out
+CLAUDE.md
+/dist/
+/.fusa-cache/

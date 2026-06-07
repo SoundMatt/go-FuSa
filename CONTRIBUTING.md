@@ -1,0 +1,92 @@
+# Contributing to go-FuSa
+
+Thank you for your interest in contributing.
+
+## Developer Certificate of Origin (DCO)
+
+All contributions must be signed off under the
+[Developer Certificate of Origin v1.1](https://developercertificate.org).
+The DCO is a lightweight way to certify that you wrote or have the right to
+submit the code you are contributing.
+
+Add a `Signed-off-by` trailer to every commit:
+
+```
+git commit -s -m "feat: add awesome thing"
+```
+
+This produces:
+
+```
+feat: add awesome thing
+
+Signed-off-by: Your Name <your@email.com>
+```
+
+If you forget to sign off, amend the commit:
+
+```
+git commit --amend -s
+```
+
+A GitHub Actions check (`DCO`) verifies every commit in a PR. PRs without
+sign-offs will not be merged.
+
+## Copyright
+
+By contributing you agree that your contributions are licensed under the
+[Mozilla Public License v2.0](LICENSE) and that copyright in go-FuSa remains
+with Matt Jones. The DCO sign-off transfers no copyright — it only affirms you
+have the right to contribute under the existing license.
+
+## Coding style
+
+- `gofmt` — run `gofmt -w ./...` before pushing.
+- `go vet` — must pass with zero warnings.
+- `golangci-lint run` — must pass (config in `.golangci.yml`).
+- Tests — new code should be accompanied by tests covering the public API.
+  Run `go test -race -count=1 ./...` locally.
+
+## Pull requests
+
+1. Fork the repo, create a branch from `main`.
+2. Make your changes with signed-off commits.
+3. `go test -race -count=1 ./...` must pass.
+4. Open a PR targeting `main`.
+
+## Project structure
+
+| Directory | What it contains |
+|---|---|
+| `.` | `fusa` package — core types, configuration, rule engine |
+| `cmd/gofusa` | CLI entry point (`gofusa init`, `gofusa check`, `gofusa report`) |
+| `lint/` | Safety-oriented linting rules (error handling, panic, unsafe, globals) |
+| `analyze/` | Static analysis passes (goroutine leaks, races, blocking calls) |
+| `trace/` | Requirements traceability engine |
+| `verify/` | Test evidence collection and bundle generation |
+| `release/` | SBOM, build provenance, artifact signing |
+| `runtime/` | Runtime safety patterns (watchdog, heartbeat, safe-state) |
+| `testutil/` | Test harness helpers |
+
+## Running tests
+
+```bash
+# Standard suite
+go test -race -count=1 ./...
+
+# Short (skips long-running integration tests)
+go test -race -count=1 -short ./...
+```
+
+## Commit message style
+
+```
+type(scope): short summary
+
+Body explaining *why*, not what. Reference relevant ROADMAP.md items.
+
+Signed-off-by: Your Name <your@email.com>
+```
+
+Types: `feat`, `fix`, `docs`, `test`, `chore`, `refactor`.
+Scope examples: `lint`, `analyze`, `trace`, `verify`, `release`, `cli`, `runtime`.
