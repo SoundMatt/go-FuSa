@@ -9,6 +9,9 @@
 //	init     Initialise a go-FuSa project configuration
 //	check    Run safety checks (exits 1 on ERROR findings)
 //	report   Generate a safety compliance report
+//	trace    Show requirements traceability matrix
+//	verify   Run tests and save a test evidence bundle
+//	release  Generate SBOM and build provenance records
 //	version  Print the go-FuSa version
 //
 // Run 'gofusa <command> --help' for per-command flags.
@@ -22,6 +25,9 @@ import (
 	// Blank imports activate built-in rule sets registered via init().
 	_ "github.com/SoundMatt/go-FuSa/analyze" // v0.3 static-analysis rules
 	_ "github.com/SoundMatt/go-FuSa/lint"    // v0.2 coding-standard rules
+	_ "github.com/SoundMatt/go-FuSa/release" // v0.6 release-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/trace"   // v0.4 traceability rules
+	_ "github.com/SoundMatt/go-FuSa/verify"  // v0.5 test-evidence rules
 )
 
 func main() {
@@ -40,6 +46,12 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runCheck(args[1:], stdout, stderr)
 	case "report":
 		return runReport(args[1:], stdout, stderr)
+	case "trace":
+		return runTrace(args[1:], stdout, stderr)
+	case "verify":
+		return runVerify(args[1:], stdout, stderr)
+	case "release":
+		return runRelease(args[1:], stdout, stderr)
 	case "version":
 		return runVersion(stdout)
 	case "help", "--help", "-h":
@@ -60,6 +72,9 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  init     Initialise a go-FuSa project configuration\n")
 	fmt.Fprintf(w, "  check    Run safety checks (exits 1 on ERROR findings)\n")
 	fmt.Fprintf(w, "  report   Generate a safety compliance report\n")
+	fmt.Fprintf(w, "  trace    Show requirements traceability matrix\n")
+	fmt.Fprintf(w, "  verify   Run tests and save a test evidence bundle\n")
+	fmt.Fprintf(w, "  release  Generate SBOM and build provenance records\n")
 	fmt.Fprintf(w, "  version  Print the go-FuSa version\n")
 	fmt.Fprintf(w, "\nRun 'gofusa <command> --help' for command-specific flags.\n")
 }

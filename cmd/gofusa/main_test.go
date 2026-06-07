@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -138,5 +139,77 @@ func TestRun_Init_WithDocs(t *testing.T) {
 	code := run([]string{"init", "--dir", dir, "--docs"}, &out, &errOut)
 	if code != 0 {
 		t.Errorf("init --docs: exit code = %d\n%s", code, errOut.String())
+	}
+}
+
+// ─── trace ────────────────────────────────────────────────────────────────────
+
+func TestRun_Trace_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	// --help exits non-zero with flag.ContinueOnError; we only check output.
+	_ = run([]string{"trace", "--help"}, &out, &errOut)
+	combined := out.String() + errOut.String()
+	if !strings.Contains(combined, "gofusa trace") {
+		t.Error("trace --help: output missing 'gofusa trace'")
+	}
+}
+
+func TestRun_Trace_NoReqs(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"trace", "--dir", dir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("trace (no reqs): exit code = %d\n%s", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), "Traceability") {
+		t.Error("trace output missing 'Traceability'")
+	}
+}
+
+func TestRun_Trace_JSONFormat(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"trace", "--dir", dir, "--format", "json"}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("trace --format json: exit code = %d\n%s", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), `"requirements"`) {
+		t.Error("trace json: output missing 'requirements' field")
+	}
+}
+
+func TestRun_Trace_OutputFile(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	outFile := filepath.Join(t.TempDir(), "matrix.txt")
+	var out, errOut bytes.Buffer
+	code := run([]string{"trace", "--dir", dir, "--output", outFile}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("trace --output: exit code = %d\n%s", code, errOut.String())
+	}
+}
+
+// ─── release ──────────────────────────────────────────────────────────────────
+
+func TestRun_Release_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	run([]string{"release", "--help"}, &out, &errOut)
+	combined := out.String() + errOut.String()
+	if !strings.Contains(combined, "gofusa release") {
+		t.Error("release --help: output missing 'gofusa release'")
+	}
+}
+
+func TestRun_Release_GeneratesFiles(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"release", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("release: exit code = %d\n%s", code, errOut.String())
+	}
+	for _, name := range []string{"sbom.json", "provenance.json"} {
+		if _, err := os.Stat(filepath.Join(outDir, name)); err != nil {
+			t.Errorf("release: expected %s to exist: %v", name, err)
+		}
 	}
 }
