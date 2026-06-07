@@ -42,11 +42,11 @@ func MinimalProject() map[string]string {
 }
 `
 	return map[string]string{
-		config.ConfigFile:             cfg,
-		"go.mod":                      "module github.com/example/test\n\ngo 1.22\n",
-		"LICENSE":                     "Mozilla Public License 2.0\n",
-		"README.md":                   "# Test Project\n",
-		".github/workflows/ci.yml":    "name: CI\non:\n  push:\n    branches: [main]\n",
+		config.ConfigFile:          cfg,
+		"go.mod":                   "module github.com/example/test\n\ngo 1.22\n",
+		"LICENSE":                  "Mozilla Public License 2.0\n",
+		"README.md":                "# Test Project\n",
+		".github/workflows/ci.yml": "name: CI\non:\n  push:\n    branches: [main]\n",
 	}
 }
 

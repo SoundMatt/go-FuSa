@@ -60,9 +60,9 @@ func TestRun_Check_CleanProject(t *testing.T) {
 func TestRun_Check_MissingConfig_FallsBack(t *testing.T) {
 	// A project without .fusa.json should still run (engine provides defaults).
 	dir := testutil.ProjectDir(t, map[string]string{
-		"go.mod":   "module github.com/x/y\n\ngo 1.22\n",
-		"LICENSE":  "MPL 2.0\n",
-		"README.md": "# y\n",
+		"go.mod":                   "module github.com/x/y\n\ngo 1.22\n",
+		"LICENSE":                  "MPL 2.0\n",
+		"README.md":                "# y\n",
 		".github/workflows/ci.yml": "name: CI\n",
 	})
 	var out, errOut bytes.Buffer

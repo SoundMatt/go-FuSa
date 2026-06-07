@@ -72,7 +72,7 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 
 	rep := report.New(projectRoot, result.Findings)
 	outPath := cfg.Report.Output
-	var w io.Writer = stdout
+	w := stdout
 	if outPath != "" {
 		f, err := os.Create(outPath)
 		if err != nil {

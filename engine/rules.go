@@ -48,8 +48,10 @@ func (r *ruleConfigPresent) Run(_ context.Context, projectRoot string, _ *config
 // FUSA002 — go.mod must be present.
 type ruleGoModPresent struct{}
 
-func (r *ruleGoModPresent) ID() string          { return "FUSA002" }
-func (r *ruleGoModPresent) Description() string { return "Project must be a Go module (go.mod present)." }
+func (r *ruleGoModPresent) ID() string { return "FUSA002" }
+func (r *ruleGoModPresent) Description() string {
+	return "Project must be a Go module (go.mod present)."
+}
 
 func (r *ruleGoModPresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	path := filepath.Join(projectRoot, "go.mod")

@@ -133,7 +133,6 @@ func TestRegistry_Run_RuleError(t *testing.T) {
 func TestRegistry_Run_ContextCancelled(t *testing.T) {
 	reg := engine.NewRegistry()
 	for _, id := range []string{"A", "B", "C"} {
-		id := id
 		reg.MustRegister(&stubRule{
 			id:       id,
 			findings: []fusa.Finding{{RuleID: id, Severity: fusa.SeverityInfo}},

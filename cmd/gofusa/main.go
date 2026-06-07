@@ -20,8 +20,8 @@ import (
 	"os"
 
 	// Blank imports activate built-in rule sets registered via init().
-	_ "github.com/SoundMatt/go-FuSa/lint"    // v0.2 coding-standard rules
 	_ "github.com/SoundMatt/go-FuSa/analyze" // v0.3 static-analysis rules
+	_ "github.com/SoundMatt/go-FuSa/lint"    // v0.2 coding-standard rules
 )
 
 func main() {
