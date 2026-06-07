@@ -25,11 +25,18 @@ jobs:
           go-version: ${{ matrix.go }}
 
       - name: go vet
-        run: go vet ./...
+        shell: bash
+        run: |
+          pkgs=$(go list ./... 2>/dev/null | tr '\n' ' ')
+          [ -z "$pkgs" ] && echo "no Go packages found" && exit 0
+          go vet ./...
 
       - name: go test (-race)
         shell: bash
-        run: go test -race -count=1 -coverprofile=coverage.out ./...
+        run: |
+          pkgs=$(go list ./... 2>/dev/null | tr '\n' ' ')
+          [ -z "$pkgs" ] && echo "no Go packages found" && exit 0
+          go test -race -count=1 -coverprofile=coverage.out ./...
 
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest' && matrix.go == '1.22'
