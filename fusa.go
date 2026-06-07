@@ -9,7 +9,7 @@ package fusa
 import "errors"
 
 // Version is the current release of go-FuSa.
-const Version = "0.1.0"
+const Version = "0.7.0"
 
 // Sentinel errors. Callers should use errors.Is for comparison.
 var (
