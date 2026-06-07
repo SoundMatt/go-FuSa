@@ -20,6 +20,9 @@ linters:
         - (io.Closer).Close
         - (*os.File).Close
         - os.Remove
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Fprint
     govet:
       enable-all: true
       disable:

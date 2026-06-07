@@ -1,0 +1,141 @@
+package config_test
+
+import (
+	"errors"
+	"os"
+	"path/filepath"
+	"testing"
+
+	fusa "github.com/SoundMatt/go-FuSa"
+	"github.com/SoundMatt/go-FuSa/config"
+)
+
+func TestDefault(t *testing.T) {
+	cfg := config.Default("github.com/example/proj", "proj")
+	if cfg.Version == "" {
+		t.Error("Default: version is empty")
+	}
+	if cfg.Project.Module != "github.com/example/proj" {
+		t.Errorf("Default: module = %q, want %q", cfg.Project.Module, "github.com/example/proj")
+	}
+	if cfg.Project.Name != "proj" {
+		t.Errorf("Default: name = %q, want %q", cfg.Project.Name, "proj")
+	}
+	if cfg.Project.Standard != config.StandardGeneric {
+		t.Errorf("Default: standard = %q, want %q", cfg.Project.Standard, config.StandardGeneric)
+	}
+	if cfg.Report.Format != "text" {
+		t.Errorf("Default: report format = %q, want %q", cfg.Report.Format, "text")
+	}
+}
+
+func TestSaveLoad_Roundtrip(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, config.ConfigFile)
+
+	original := config.Default("github.com/example/proj", "proj")
+	original.Project.Standard = config.StandardISO26262
+	original.Project.ASIL = "B"
+	original.Rules.Exclude = []string{"FUSA003"}
+
+	if err := config.Save(path, original); err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+
+	loaded, err := config.Load(path)
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if loaded.Project.Module != original.Project.Module {
+		t.Errorf("module mismatch: got %q, want %q", loaded.Project.Module, original.Project.Module)
+	}
+	if loaded.Project.Standard != original.Project.Standard {
+		t.Errorf("standard mismatch: got %q, want %q", loaded.Project.Standard, original.Project.Standard)
+	}
+	if loaded.Project.ASIL != "B" {
+		t.Errorf("asil mismatch: got %q, want %q", loaded.Project.ASIL, "B")
+	}
+	if len(loaded.Rules.Exclude) != 1 || loaded.Rules.Exclude[0] != "FUSA003" {
+		t.Errorf("exclude mismatch: got %v", loaded.Rules.Exclude)
+	}
+}
+
+func TestLoad_Missing(t *testing.T) {
+	_, err := config.Load("/nonexistent/.fusa.json")
+	if !errors.Is(err, fusa.ErrNoConfig) {
+		t.Errorf("Load missing: want ErrNoConfig, got %v", err)
+	}
+}
+
+func TestLoad_InvalidJSON(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, config.ConfigFile)
+	if err := os.WriteFile(path, []byte("{not valid json"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	_, err := config.Load(path)
+	if err == nil {
+		t.Error("Load invalid JSON: expected error, got nil")
+	}
+}
+
+func TestValidate(t *testing.T) {
+	tests := []struct {
+		name    string
+		cfg     *config.Config
+		wantErr bool
+	}{
+		{
+			name:    "nil config",
+			cfg:     nil,
+			wantErr: true,
+		},
+		{
+			name:    "missing version",
+			cfg:     &config.Config{},
+			wantErr: true,
+		},
+		{
+			name:    "invalid format",
+			cfg:     &config.Config{Version: "1", Report: config.ReportConfig{Format: "pdf"}},
+			wantErr: true,
+		},
+		{
+			name:    "valid minimal",
+			cfg:     config.Default("github.com/x/y", "y"),
+			wantErr: false,
+		},
+		{
+			name: "valid json format",
+			cfg: &config.Config{
+				Version: "1",
+				Report:  config.ReportConfig{Format: "json"},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := config.Validate(tt.cfg)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Validate(%v): err = %v, wantErr = %v", tt.name, err, tt.wantErr)
+			}
+			if tt.wantErr && err != nil && !errors.Is(err, fusa.ErrInvalidConfig) {
+				t.Errorf("Validate: expected ErrInvalidConfig chain, got %v", err)
+			}
+		})
+	}
+}
+
+func TestSave_FileCreated(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, config.ConfigFile)
+	cfg := config.Default("github.com/x/y", "y")
+
+	if err := config.Save(path, cfg); err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+	if _, err := os.Stat(path); err != nil {
+		t.Errorf("file not created: %v", err)
+	}
+}

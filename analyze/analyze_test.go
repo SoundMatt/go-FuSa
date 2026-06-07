@@ -1,0 +1,236 @@
+package analyze_test
+
+import (
+	"context"
+	"testing"
+
+	fusa "github.com/SoundMatt/go-FuSa"
+	"github.com/SoundMatt/go-FuSa/config"
+	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/testutil"
+
+	_ "github.com/SoundMatt/go-FuSa/analyze" // activate rules
+)
+
+func runAnalyze(t *testing.T, files map[string]string) []fusa.Finding {
+	t.Helper()
+	dir := testutil.ProjectDir(t, files)
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	return result.Findings
+}
+
+func hasRule(findings []fusa.Finding, ruleID string) bool {
+	for _, f := range findings {
+		if f.RuleID == ruleID {
+			return true
+		}
+	}
+	return false
+}
+
+// ─── ANA001 ───────────────────────────────────────────────────────────────────
+
+func TestANA001_GoroutineNoSignal(t *testing.T) {
+	src := `package main
+
+func start() {
+	go func() {
+		for {
+			// does work
+		}
+	}()
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if !hasRule(findings, "ANA001") {
+		t.Error("ANA001: expected finding for goroutine without signal")
+	}
+}
+
+func TestANA001_GoroutineWithSelect_NoFinding(t *testing.T) {
+	src := `package main
+
+func start(done <-chan struct{}) {
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			default:
+			}
+		}
+	}()
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if hasRule(findings, "ANA001") {
+		t.Error("ANA001: unexpected finding for goroutine with select")
+	}
+}
+
+func TestANA001_GoroutineWithCtxReference_NoFinding(t *testing.T) {
+	src := `package main
+
+import "context"
+
+func start(ctx context.Context) {
+	go func() {
+		<-ctx.Done()
+	}()
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if hasRule(findings, "ANA001") {
+		t.Error("ANA001: unexpected finding for goroutine referencing ctx")
+	}
+}
+
+// ─── ANA002 ───────────────────────────────────────────────────────────────────
+
+func TestANA002_GoroutineInForLoop(t *testing.T) {
+	src := `package main
+
+func process(items []int) {
+	for _, item := range items {
+		item := item
+		go func() { _ = item }()
+	}
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if !hasRule(findings, "ANA002") {
+		t.Error("ANA002: expected finding for goroutine in range loop")
+	}
+}
+
+func TestANA002_GoroutineOutsideLoop_NoFinding(t *testing.T) {
+	src := `package main
+
+func start() {
+	go func() {}()
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if hasRule(findings, "ANA002") {
+		t.Error("ANA002: unexpected finding for goroutine outside loop")
+	}
+}
+
+func TestANA002_GoroutineInInfiniteLoop(t *testing.T) {
+	src := `package main
+
+func spawnForever() {
+	for {
+		go func() {}()
+	}
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if !hasRule(findings, "ANA002") {
+		t.Error("ANA002: expected finding for goroutine in infinite loop")
+	}
+}
+
+// ─── ANA003 ───────────────────────────────────────────────────────────────────
+
+func TestANA003_SleepInGoroutine(t *testing.T) {
+	src := `package main
+
+import "time"
+
+func poll() {
+	go func() {
+		for {
+			time.Sleep(time.Second)
+		}
+	}()
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if !hasRule(findings, "ANA003") {
+		t.Error("ANA003: expected finding for time.Sleep in goroutine")
+	}
+}
+
+func TestANA003_SleepOutsideGoroutine_NoFinding(t *testing.T) {
+	src := `package main
+
+import "time"
+
+func wait() {
+	time.Sleep(time.Second)
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if hasRule(findings, "ANA003") {
+		t.Error("ANA003: unexpected finding for time.Sleep outside goroutine")
+	}
+}
+
+// ─── ANA004 ───────────────────────────────────────────────────────────────────
+
+func TestANA004_DeferInLoop(t *testing.T) {
+	src := `package main
+
+import "os"
+
+func processFiles(paths []string) {
+	for _, p := range paths {
+		f, err := os.Open(p)
+		if err != nil {
+			continue
+		}
+		defer f.Close()
+	}
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if !hasRule(findings, "ANA004") {
+		t.Error("ANA004: expected finding for defer in loop")
+	}
+}
+
+func TestANA004_DeferOutsideLoop_NoFinding(t *testing.T) {
+	src := `package main
+
+import "os"
+
+func readFile(path string) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	return nil
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if hasRule(findings, "ANA004") {
+		t.Error("ANA004: unexpected finding for defer outside loop")
+	}
+}
+
+func TestANA004_DeferInForLoop(t *testing.T) {
+	src := `package main
+
+import "os"
+
+func walk(n int) {
+	for i := 0; i < n; i++ {
+		f, err := os.Open("x")
+		if err != nil {
+			continue
+		}
+		defer f.Close()
+	}
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	if !hasRule(findings, "ANA004") {
+		t.Error("ANA004: expected finding for defer in for loop")
+	}
+}
