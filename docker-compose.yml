@@ -1,0 +1,40 @@
+# docker-compose.yml — go-FuSa full safety pipeline
+#
+# Run individual commands against the current directory:
+#
+#   docker compose run --rm gofusa check
+#   docker compose run --rm gofusa trace
+#   docker compose run --rm gofusa verify
+#   docker compose run --rm gofusa release
+#   docker compose run --rm gofusa qualify
+#
+# Run the complete evidence-generation pipeline:
+#
+#   docker compose run --rm pipeline
+
+services:
+  gofusa:
+    image: ghcr.io/soundmatt/go-fusa:latest
+    volumes:
+      - .:/project
+    working_dir: /project
+
+  pipeline:
+    image: ghcr.io/soundmatt/go-fusa:latest
+    volumes:
+      - .:/project
+    working_dir: /project
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        set -e
+        echo "==> gofusa check"
+        gofusa check
+        echo "==> gofusa trace"
+        gofusa trace
+        echo "==> gofusa qualify"
+        gofusa qualify
+        echo "==> gofusa release"
+        gofusa release
+        echo "Pipeline complete."

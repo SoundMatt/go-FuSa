@@ -59,6 +59,17 @@ jobs:
       - name: Diff check (generated files must be committed)
         run: git diff --exit-code
 
+  # ── Docker build verification ────────────────────────────────────────────
+  docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build Docker image
+        run: docker build --tag go-fusa:ci .
+      - name: Smoke-test binary in image
+        run: docker run --rm go-fusa:ci version
+
   # ── Lint ──────────────────────────────────────────────────────────────────
   lint:
     name: golangci-lint

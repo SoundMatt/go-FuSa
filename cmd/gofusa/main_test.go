@@ -188,6 +188,33 @@ func TestRun_Trace_OutputFile(t *testing.T) {
 	}
 }
 
+// ─── qualify ──────────────────────────────────────────────────────────────────
+
+func TestRun_Qualify_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"qualify", "--help"}, &out, &errOut)
+	combined := out.String() + errOut.String()
+	if !strings.Contains(combined, "gofusa qualify") {
+		t.Error("qualify --help: output missing 'gofusa qualify'")
+	}
+}
+
+func TestRun_Qualify_AllPass(t *testing.T) {
+	outFile := filepath.Join(t.TempDir(), "qualify-report.json")
+	var out, errOut bytes.Buffer
+	code := run([]string{"qualify", "--output", outFile}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("qualify: exit code = %d\nstdout: %s\nstderr: %s",
+			code, out.String(), errOut.String())
+	}
+	if _, err := os.Stat(outFile); err != nil {
+		t.Errorf("qualify: expected %s to exist: %v", outFile, err)
+	}
+	if !strings.Contains(out.String(), "passed") {
+		t.Error("qualify: output missing 'passed'")
+	}
+}
+
 // ─── release ──────────────────────────────────────────────────────────────────
 
 func TestRun_Release_Help(t *testing.T) {
