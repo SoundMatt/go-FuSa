@@ -12,8 +12,6 @@ import (
 	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/testutil"
 	"github.com/SoundMatt/go-FuSa/verify"
-
-	_ "github.com/SoundMatt/go-FuSa/verify" // activate rules
 )
 
 // ─── Parse ────────────────────────────────────────────────────────────────────

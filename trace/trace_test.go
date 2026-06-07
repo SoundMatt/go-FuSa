@@ -13,8 +13,6 @@ import (
 	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/testutil"
 	"github.com/SoundMatt/go-FuSa/trace"
-
-	_ "github.com/SoundMatt/go-FuSa/trace" // activate rules
 )
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
