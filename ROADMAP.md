@@ -218,6 +218,26 @@ Deliverables: `gofusa vuln`, `gofusa audit-pack`, `gofusa report --format html`,
 
 ---
 
+## v0.14 — Cybersecurity Analysis Rules ✅
+
+**Goal:** CWE-mapped, ISO 21434-aligned static analysis for Go security weaknesses, inspired by Contrast Security scan rules, SEI CERT C, and MISRA-C:2023.
+
+Features:
+- **CYBER001** Weak hash (MD5/SHA-1) — CWE-327, ISO 21434 §8.5
+- **CYBER002** Weak cipher (DES/3DES/RC4) — CWE-327, MISRA Dir 4.8
+- **CYBER003** Insecure random (math/rand) — CWE-330, CERT MSC50
+- **CYBER004** Unsafe pointer usage — CWE-242, MISRA Rule 11.3
+- **CYBER005** Command injection (exec with variable cmd) — CWE-78
+- **CYBER006** Hardcoded credential — CWE-798, ERROR severity
+- **CYBER007** TLS certificate bypass (InsecureSkipVerify) — CWE-295, ISO 21434 §10.4, ERROR severity
+- **CYBER008** HTTP server without timeouts — CWE-400
+- **CYBER009** Integer narrowing conversion — CWE-190, MISRA Rule 10.3
+- **CYBER010** String concatenation in OS path / DB query — CWE-22 / CWE-89
+
+Deliverables: `cyber` package with 10 rules; 82.3% overall coverage; 20/20 packages pass
+
+---
+
 ## v1.0 — Enterprise Ready
 
 **Goal:** Production adoption.

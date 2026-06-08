@@ -1,10 +1,10 @@
 {
   "format": "go-FuSa Provenance v1",
-  "generatedAt": "2026-06-08T17:12:08.822787Z",
+  "generatedAt": "2026-06-08T19:51:20.223451Z",
   "module": "github.com/SoundMatt/go-FuSa",
   "goVersion": "go1.26.3",
   "goos": "darwin",
   "goarch": "arm64",
-  "vcsRevision": "6f5de5077aec73fcd2796d13522fd8413d099ccf",
+  "vcsRevision": "21d50561a3d629898947ff4692477ea1edb234c7",
   "vcsModified": true
 }

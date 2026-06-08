@@ -797,6 +797,76 @@
       "text": "The trace command shall support a --gaps flag that lists requirements with no //fusa:test tag and exits 1 when gaps exist.",
       "standard": "ISO 26262",
       "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-CYBER001",
+      "title": "Weak cryptographic hash detection",
+      "text": "The tool shall emit a WARNING (CYBER001) when crypto/md5 or crypto/sha1 is imported, as these are cryptographically broken hash algorithms.",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER002",
+      "title": "Weak symmetric cipher detection",
+      "text": "The tool shall emit a WARNING (CYBER002) when crypto/des or crypto/rc4 is imported, as DES, 3DES, and RC4 are broken ciphers.",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER003",
+      "title": "Insecure random source detection",
+      "text": "The tool shall emit an INFO (CYBER003) when math/rand is imported, as pseudo-random sources must not be used for security-sensitive values.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CYBER004",
+      "title": "Unsafe pointer usage detection",
+      "text": "The tool shall emit a WARNING (CYBER004) when the unsafe package is imported, as it bypasses Go type safety and memory safety guarantees.",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER005",
+      "title": "Command injection risk detection",
+      "text": "The tool shall emit a WARNING (CYBER005) when exec.Command or exec.CommandContext is called with a non-literal command name, indicating potential OS command injection.",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER006",
+      "title": "Hardcoded credential detection",
+      "text": "The tool shall emit an ERROR (CYBER006) when a variable or constant with a credential-suggestive name (password, secret, apikey, token, etc.) is assigned a non-empty string literal.",
+      "standard": "ISO 21434",
+      "level": "CAL-4"
+    },
+    {
+      "id": "REQ-CYBER007",
+      "title": "TLS verification disabled detection",
+      "text": "The tool shall emit an ERROR (CYBER007) when InsecureSkipVerify: true appears in a TLS configuration composite literal.",
+      "standard": "ISO 21434",
+      "level": "CAL-4"
+    },
+    {
+      "id": "REQ-CYBER008",
+      "title": "HTTP server without timeout detection",
+      "text": "The tool shall emit a WARNING (CYBER008) when http.ListenAndServe or http.ListenAndServeTLS is called directly, as these use a default server with no timeouts.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CYBER009",
+      "title": "Integer narrowing conversion detection",
+      "text": "The tool shall emit an INFO (CYBER009) when an explicit narrowing integer conversion (int8/int16/int32/uint8/uint16/uint32/byte) is applied to a non-literal expression.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CYBER010",
+      "title": "String concatenation in OS/DB API detection",
+      "text": "The tool shall emit a WARNING (CYBER010) when a string-concatenated expression is passed as the path argument to os.Open/Create/ReadFile/WriteFile or as the query argument to database Query/Exec/Prepare methods.",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
     }
   ]
 }
