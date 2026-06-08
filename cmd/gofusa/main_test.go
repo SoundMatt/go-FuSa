@@ -672,3 +672,57 @@ func TestRun_Report_HTMLFormat(t *testing.T) {
 		t.Error("report html: output missing DOCTYPE")
 	}
 }
+
+// ─── gofusa cyber ──────────────────────────────────────────────────────────────
+
+//fusa:test REQ-CLI018
+func TestRun_Cyber_CleanProject(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"cyber", "--dir", dir, "--output", filepath.Join(t.TempDir(), "cyber-report.json")}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("cyber clean project: exit code = %d\nstdout: %s\nstderr: %s",
+			code, out.String(), errOut.String())
+	}
+	if !strings.Contains(out.String(), "Cyber report written") {
+		t.Error("cyber: output should contain 'Cyber report written'")
+	}
+}
+
+func TestRun_Cyber_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	code := run([]string{"cyber", "--help"}, &out, &errOut)
+	_ = code // help may return non-zero via flag
+	if !strings.Contains(errOut.String()+out.String(), "cyber") {
+		t.Error("cyber --help: output should mention 'cyber'")
+	}
+}
+
+// ─── gofusa tara ───────────────────────────────────────────────────────────────
+
+//fusa:test REQ-CLI019
+func TestRun_Tara_GeneratesFiles(t *testing.T) {
+	outDir := t.TempDir()
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"tara", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("tara: exit code = %d\nstdout: %s\nstderr: %s",
+			code, out.String(), errOut.String())
+	}
+	if _, err := os.Stat(filepath.Join(outDir, "tara.json")); err != nil {
+		t.Error("tara: tara.json not created")
+	}
+	if _, err := os.Stat(filepath.Join(outDir, "tara.md")); err != nil {
+		t.Error("tara: tara.md not created")
+	}
+}
+
+func TestRun_Tara_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	code := run([]string{"tara", "--help"}, &out, &errOut)
+	_ = code
+	if !strings.Contains(errOut.String()+out.String(), "tara") {
+		t.Error("tara --help: output should mention 'tara'")
+	}
+}

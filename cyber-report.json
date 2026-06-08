@@ -1,0 +1,589 @@
+{
+  "format": "go-FuSa Cyber Report v1",
+  "module": "github.com/SoundMatt/go-FuSa",
+  "findings": [
+    {
+      "ruleId": "CYBER005",
+      "severity": "WARNING",
+      "message": "exec.CommandContext called with a non-literal command name — verify the value cannot be influenced by untrusted input",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
+        "line": 366,
+        "column": 9
+      },
+      "remediation": "use a fixed command name string literal; pass variable data only as arguments, never as the command name"
+    },
+    {
+      "ruleId": "CYBER009",
+      "severity": "INFO",
+      "message": "int32(x) — explicit narrowing conversion may silently truncate bits if x exceeds the target type's range",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/runtime_test.go",
+        "line": 89,
+        "column": 16
+      },
+      "remediation": "add an explicit range check before the conversion, or use math/bits or saturating arithmetic"
+    },
+    {
+      "ruleId": "CYBER009",
+      "severity": "INFO",
+      "message": "int32(x) — explicit narrowing conversion may silently truncate bits if x exceeds the target type's range",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/runtime_test.go",
+        "line": 109,
+        "column": 16
+      },
+      "remediation": "add an explicit range check before the conversion, or use math/bits or saturating arithmetic"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_auditpack.go",
+        "line": 55,
+        "column": 12
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_boundary.go",
+        "line": 57,
+        "column": 12
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_fmea.go",
+        "line": 80,
+        "column": 12
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_release.go",
+        "line": 58,
+        "column": 12
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_safetycase.go",
+        "line": 59,
+        "column": 12
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_vuln.go",
+        "line": 52,
+        "column": 14
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go",
+        "line": 30,
+        "column": 13
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
+        "line": 148,
+        "column": 15
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go",
+        "line": 57,
+        "column": 12
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go",
+        "line": 19,
+        "column": 13
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER016",
+      "severity": "WARNING",
+      "message": "directory created with mode more permissive than 0750",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 138,
+        "column": 13
+      },
+      "remediation": "use mode 0750 (owner+group rwx) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go",
+        "line": 33,
+        "column": 13
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go",
+        "line": 436,
+        "column": 13
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go",
+        "line": 622,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config.go",
+        "line": 112,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go",
+        "line": 78,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go",
+        "line": 212,
+        "column": 7
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea_test.go",
+        "line": 476,
+        "column": 7
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443_test.go",
+        "line": 172,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
+        "line": 112,
+        "column": 9
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
+        "line": 151,
+        "column": 14
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify_test.go",
+        "line": 145,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
+        "line": 184,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+        "line": 23,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+        "line": 27,
+        "column": 13
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+        "line": 128,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+        "line": 239,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+        "line": 242,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+        "line": 278,
+        "column": 7
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase_test.go",
+        "line": 50,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go",
+        "line": 60,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template_test.go",
+        "line": 54,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go",
+        "line": 22,
+        "column": 13
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
+        "line": 108,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 63,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 101,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 104,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 142,
+        "column": 13
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 162,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 179,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 208,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 211,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+        "line": 368,
+        "column": 7
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
+        "line": 158,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go",
+        "line": 151,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go",
+        "line": 161,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go",
+        "line": 90,
+        "column": 12
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go",
+        "line": 124,
+        "column": 6
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER017",
+      "severity": "WARNING",
+      "message": "os.WriteFile called with mode more permissive than 0640",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go",
+        "line": 409,
+        "column": 7
+      },
+      "remediation": "use mode 0640 (owner rw, group r) or stricter"
+    },
+    {
+      "ruleId": "CYBER019",
+      "severity": "WARNING",
+      "message": "Pack: os.Stat followed by file operation — TOCTOU race; another process may modify the file between check and use",
+      "location": {
+        "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go",
+        "line": 93,
+        "column": 16
+      },
+      "remediation": "open the file directly and handle ENOENT/EEXIST; avoid stat-then-open patterns"
+    }
+  ]
+}

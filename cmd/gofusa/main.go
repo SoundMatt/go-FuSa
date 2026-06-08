@@ -10,6 +10,7 @@
 //	check        Run all safety checks (exits 1 on ERROR findings)
 //	lint         Run coding-standard checks only (LINT rules)
 //	analyze      Run static analysis checks only (ANA rules)
+//	cyber        Run cybersecurity analysis (CYBER rules)
 //	report       Generate a safety compliance report
 //	template     Generate safety documentation templates
 //	trace        Show requirements traceability matrix
@@ -19,6 +20,7 @@
 //	safety-case  Assemble a structured safety case from evidence
 //	fmea         Generate a dFMEA table from exported functions
 //	boundary     Generate a component boundary diagram
+//	tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)
 //	vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)
 //	audit-pack   Bundle all evidence artifacts into a single ZIP for auditors
 //	version      Print the go-FuSa version
@@ -35,14 +37,17 @@ import (
 	_ "github.com/SoundMatt/go-FuSa/analyze"   // v0.3 static-analysis rules
 	_ "github.com/SoundMatt/go-FuSa/auditpack" // v0.13 audit-pack rules
 	_ "github.com/SoundMatt/go-FuSa/boundary"  // v0.12 boundary-diagram rules
-	_ "github.com/SoundMatt/go-FuSa/cyber"     // v0.14 cybersecurity analysis rules
+	_ "github.com/SoundMatt/go-FuSa/cyber"     // v0.14–v0.15 cybersecurity analysis rules
 	_ "github.com/SoundMatt/go-FuSa/fmea"      // v0.12 dFMEA rules
+	_ "github.com/SoundMatt/go-FuSa/iec62443"  // v0.15 IEC 62443 evidence rules
 	_ "github.com/SoundMatt/go-FuSa/lint"      // v0.2 coding-standard rules
 	_ "github.com/SoundMatt/go-FuSa/qualify"   // v0.9 tool qualification rules
 	_ "github.com/SoundMatt/go-FuSa/release"   // v0.6 release-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/slsa"      // v0.15 SLSA supply-chain rules
+	_ "github.com/SoundMatt/go-FuSa/tara"      // v0.15 TARA engine rule
 	_ "github.com/SoundMatt/go-FuSa/trace"     // v0.4 traceability rules
 	_ "github.com/SoundMatt/go-FuSa/verify"    // v0.5 test-evidence rules
-	_ "github.com/SoundMatt/go-FuSa/vuln"      // v0.13 vulnerability rules
+	_ "github.com/SoundMatt/go-FuSa/vuln"      // v0.13–v0.15 vulnerability rules
 )
 
 func main() {
@@ -65,6 +70,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runLint(args[1:], stdout, stderr)
 	case "analyze":
 		return runAnalyze(args[1:], stdout, stderr)
+	case "cyber":
+		return runCyber(args[1:], stdout, stderr)
 	case "report":
 		return runReport(args[1:], stdout, stderr)
 	case "template":
@@ -83,6 +90,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runFmea(args[1:], stdout, stderr)
 	case "boundary":
 		return runBoundary(args[1:], stdout, stderr)
+	case "tara":
+		return runTara(args[1:], stdout, stderr)
 	case "vuln":
 		return runVuln(args[1:], stdout, stderr)
 	case "audit-pack":
@@ -111,6 +120,7 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  check        Run all safety checks (exits 1 on ERROR findings)\n")
 	fmt.Fprintf(w, "  lint         Run coding-standard checks only (LINT rules)\n")
 	fmt.Fprintf(w, "  analyze      Run static analysis checks only (ANA rules)\n")
+	fmt.Fprintf(w, "  cyber        Run cybersecurity analysis (CYBER001–CYBER020)\n")
 	fmt.Fprintf(w, "  report       Generate a safety compliance report\n")
 	fmt.Fprintf(w, "  template     Generate safety documentation templates\n")
 	fmt.Fprintf(w, "  trace        Show requirements traceability matrix\n")
@@ -120,6 +130,7 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  safety-case  Assemble a structured safety case from evidence\n")
 	fmt.Fprintf(w, "  fmea         Generate a dFMEA table from exported functions\n")
 	fmt.Fprintf(w, "  boundary     Generate a component boundary diagram\n")
+	fmt.Fprintf(w, "  tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)\n")
 	fmt.Fprintf(w, "  vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)\n")
 	fmt.Fprintf(w, "  audit-pack   Bundle all evidence artifacts into a single ZIP for auditors\n")
 	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")

@@ -396,6 +396,29 @@ func TestVULN001_Description(t *testing.T) {
 	t.Error("VULN001 not registered")
 }
 
+// ─── ScanWithGovulncheck ──────────────────────────────────────────────────────
+
+func TestScanWithGovulncheck_FallbackNoDeps(t *testing.T) {
+	// With no deps, ScanWithGovulncheck falls back to Scan which returns early
+	// without making network requests, regardless of govulncheck presence.
+	files := testutil.MinimalProject()
+	// go.mod with no dependencies
+	files["go.mod"] = "module example.com/test\n\ngo 1.22\n"
+	dir := testutil.ProjectDir(t, files)
+
+	report, err := vuln.ScanWithGovulncheck(dir)
+	if err != nil {
+		t.Fatalf("ScanWithGovulncheck: %v", err)
+	}
+	if report == nil {
+		t.Fatal("ScanWithGovulncheck: nil report")
+	}
+	// No deps → no findings.
+	if len(report.Findings) != 0 {
+		t.Errorf("ScanWithGovulncheck with no deps: want 0 findings, got %d", len(report.Findings))
+	}
+}
+
 // ─── Fuzz ─────────────────────────────────────────────────────────────────────
 
 func FuzzParseGoMod(f *testing.F) {

@@ -1,5 +1,7 @@
 // Package vuln scans a Go project's dependencies for known vulnerabilities
 // using the OSV (Open Source Vulnerabilities) database (v0.13).
+// v0.15 adds ScanWithGovulncheck which uses call-graph analysis when
+// govulncheck is available, reducing false positives significantly.
 //
 // Scan reads go.mod, posts a batch query to api.osv.dev, and returns a
 // [Report] with one [Finding] per vulnerable (module, version) pair.
@@ -12,6 +14,7 @@
 package vuln
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -19,6 +22,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -39,11 +43,12 @@ const DefaultDBURL = "https://api.osv.dev/v1/querybatch"
 //
 //fusa:req REQ-VULN003
 type Finding struct {
-	Module  string   `json:"module"`
-	Version string   `json:"version"`
-	ID      string   `json:"id"`                // GO-XXXX-YYYY or GHSA-…
-	Aliases []string `json:"aliases,omitempty"` // CVE-…
-	Summary string   `json:"summary,omitempty"`
+	Module    string   `json:"module"`
+	Version   string   `json:"version"`
+	ID        string   `json:"id"`                // GO-XXXX-YYYY or GHSA-…
+	Aliases   []string `json:"aliases,omitempty"` // CVE-…
+	Summary   string   `json:"summary,omitempty"`
+	CallGraph []string `json:"call_graph,omitempty"` // populated by govulncheck; shows reachable call path
 }
 
 // Report is the complete vulnerability scan result for a project.
@@ -324,4 +329,117 @@ func (r *vuln001Rule) Run(_ context.Context, projectRoot string, cfg *config.Con
 		Location:    fusa.Location{File: VulnFile},
 		Remediation: "Run: gofusa vuln",
 	}}, nil
+}
+
+// ─── govulncheck integration ──────────────────────────────────────────────────
+
+// ScanWithGovulncheck runs govulncheck if it is in PATH, providing call-graph
+// analysis that filters out unreachable vulnerabilities. Falls back to the OSV
+// API scan when govulncheck is not installed.
+//
+// Install: go install golang.org/x/vuln/cmd/govulncheck@latest
+//
+//fusa:req REQ-VULN006
+func ScanWithGovulncheck(projectRoot string) (*Report, error) {
+	gvc, err := exec.LookPath("govulncheck")
+	if err != nil {
+		// govulncheck not installed — fall back to OSV API scan.
+		return Scan(projectRoot)
+	}
+	return runGovulncheck(projectRoot, gvc)
+}
+
+// govulncheckFinding is one JSON message line from govulncheck -json.
+type govulncheckMsg struct {
+	Finding *struct {
+		OSV   string `json:"osv"`
+		Trace []struct {
+			Module   string `json:"module"`
+			Version  string `json:"version"`
+			Function string `json:"function,omitempty"`
+		} `json:"trace"`
+		FixedVersion string `json:"fixed_version,omitempty"`
+	} `json:"finding,omitempty"`
+}
+
+func runGovulncheck(root, binPath string) (*Report, error) {
+	cmd := exec.CommandContext(context.Background(), binPath, "-json", "./...") //nolint:gosec // binPath from LookPath
+	cmd.Dir = root
+	// govulncheck exits non-zero when vulnerabilities are found; capture stdout regardless.
+	out, _ := cmd.Output()
+
+	report := &Report{
+		Format:      "go-FuSa Vuln v1 (govulncheck)",
+		GeneratedAt: time.Now().UTC(),
+	}
+	report.Module = moduleFromRoot(root)
+
+	seen := make(map[string]bool)
+	sc := bufio.NewScanner(bytes.NewReader(out))
+	for sc.Scan() {
+		var msg govulncheckMsg
+		if err := json.Unmarshal(sc.Bytes(), &msg); err != nil || msg.Finding == nil {
+			continue
+		}
+		f := msg.Finding
+		if len(f.Trace) == 0 {
+			continue
+		}
+		mod := f.Trace[0].Module
+		ver := f.Trace[0].Version
+		key := f.OSV + "/" + mod + "@" + ver
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+
+		var trace []string
+		for _, t := range f.Trace {
+			if t.Function != "" {
+				trace = append(trace, t.Function)
+			}
+		}
+
+		report.Findings = append(report.Findings, Finding{
+			Module:    mod,
+			Version:   ver,
+			ID:        f.OSV,
+			Summary:   "Fixed in " + f.FixedVersion,
+			CallGraph: trace,
+		})
+	}
+
+	report.Scanned = countModDeps(root)
+	sort.Slice(report.Findings, func(i, j int) bool {
+		return report.Findings[i].ID < report.Findings[j].ID
+	})
+	return report, nil
+}
+
+func countModDeps(root string) int {
+	data, err := os.ReadFile(filepath.Join(root, "go.mod"))
+	if err != nil {
+		return 0
+	}
+	n := 0
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "require ") || (strings.Contains(line, " v") && !strings.HasPrefix(line, "module") && !strings.HasPrefix(line, "go ") && !strings.HasPrefix(line, "//")) {
+			n++
+		}
+	}
+	return n
+}
+
+func moduleFromRoot(root string) string {
+	data, err := os.ReadFile(filepath.Join(root, "go.mod"))
+	if err != nil {
+		return root
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		if strings.HasPrefix(line, "module ") {
+			return strings.TrimSpace(strings.TrimPrefix(line, "module "))
+		}
+	}
+	return root
 }

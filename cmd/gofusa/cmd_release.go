@@ -2,16 +2,21 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/auditpack"
 	"github.com/SoundMatt/go-FuSa/boundary"
+	"github.com/SoundMatt/go-FuSa/config"
+	"github.com/SoundMatt/go-FuSa/cyber"
 	"github.com/SoundMatt/go-FuSa/fmea"
 	"github.com/SoundMatt/go-FuSa/release"
+	"github.com/SoundMatt/go-FuSa/tara"
 	"github.com/SoundMatt/go-FuSa/vuln"
 )
 
@@ -169,6 +174,49 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 		}
 		_ = f.Close()
 		fmt.Fprintf(stdout, "Vulnerability report written to %s (%d findings)\n", vulnPath, len(vulnReport.Findings))
+	}
+
+	// Cyber scan + TARA
+	cfg, cfgErr := config.Load(filepath.Join(projectRoot, ".fusa.json"))
+	if cfgErr != nil && !errors.Is(cfgErr, fusa.ErrNoConfig) {
+		fmt.Fprintf(stderr, "gofusa release --full: load config: %v\n", cfgErr)
+		return 1
+	}
+	if cfg == nil {
+		cfg = config.Default("", filepath.Base(projectRoot))
+	}
+	cyberFindings, cyberErr := cyber.Scan(context.Background(), projectRoot, cfg)
+	if cyberErr != nil {
+		fmt.Fprintf(stderr, "gofusa release --full: cyber scan: %v (skipping)\n", cyberErr)
+	} else {
+		cyberPath := filepath.Join(outDir, "cyber-report.json")
+		if cyberWriteErr := writeCyberReport(cyberPath, cyberFindings, projectRoot); cyberWriteErr != nil {
+			fmt.Fprintf(stderr, "gofusa release --full: write cyber-report.json: %v\n", cyberWriteErr)
+		} else {
+			fmt.Fprintf(stdout, "Cyber report written to %s (%d findings)\n", cyberPath, len(cyberFindings))
+		}
+
+		taraReport, taraErr := tara.Scan(projectRoot, cyberFindings)
+		if taraErr != nil {
+			fmt.Fprintf(stderr, "gofusa release --full: tara scan: %v (skipping)\n", taraErr)
+		} else {
+			taraJSONPath := filepath.Join(outDir, tara.TARAFile)
+			if taraJSONErr := writeFile(taraJSONPath, func(f io.Writer) error {
+				return tara.Render(f, taraReport, "json")
+			}); taraJSONErr != nil {
+				fmt.Fprintf(stderr, "gofusa release --full: write tara.json: %v\n", taraJSONErr)
+			} else {
+				fmt.Fprintf(stdout, "TARA report written to %s (%d threats)\n", taraJSONPath, len(taraReport.Entries))
+			}
+			taraMDPath := filepath.Join(outDir, tara.TARAMarkdownFile)
+			if taraMDErr := writeFile(taraMDPath, func(f io.Writer) error {
+				return tara.Render(f, taraReport, "markdown")
+			}); taraMDErr != nil {
+				fmt.Fprintf(stderr, "gofusa release --full: write tara.md: %v\n", taraMDErr)
+			} else {
+				fmt.Fprintf(stdout, "TARA markdown written to %s\n", taraMDPath)
+			}
+		}
 	}
 
 	// Audit pack

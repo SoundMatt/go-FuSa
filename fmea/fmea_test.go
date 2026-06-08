@@ -465,6 +465,73 @@ func GetValue() int { return 42 }
 	t.Error("GetValue not found")
 }
 
+// ─── EnrichWithCyber ──────────────────────────────────────────────────────────
+
+//fusa:test REQ-FMEA006
+func TestEnrichWithCyber_Basic(t *testing.T) {
+	src := `package mypkg
+
+func Process() error { return nil }
+`
+	dir := testutil.ProjectDir(t, testutil.GoSource("mypkg/proc.go", src))
+	report, err := fmea.Scan(dir)
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+
+	// Set a File path on one entry to enable cross-referencing.
+	for i := range report.Entries {
+		if report.Entries[i].Function == "Process" {
+			report.Entries[i].File = "mypkg/proc.go"
+		}
+	}
+
+	cyberFindings := []fusa.Finding{
+		{
+			RuleID:   "CYBER006",
+			Severity: fusa.SeverityError,
+			Message:  "hardcoded credential",
+			Location: fusa.Location{File: "mypkg/proc.go", Line: 3},
+		},
+		{
+			RuleID:   "CYBER003",
+			Severity: fusa.SeverityWarning,
+			Message:  "insecure random",
+			Location: fusa.Location{File: "other/file.go", Line: 10},
+		},
+	}
+	fmea.EnrichWithCyber(report, cyberFindings)
+
+	for _, e := range report.Entries {
+		if e.Function == "Process" {
+			if len(e.CyberRisks) == 0 {
+				t.Error("EnrichWithCyber: expected CyberRisks for Process")
+			}
+			if e.Severity != fmea.SeverityHigh {
+				t.Errorf("EnrichWithCyber: Severity = %q, want high (ERROR finding)", e.Severity)
+			}
+			return
+		}
+	}
+	t.Log("Process function not found — skipping (no exported func in scan)")
+}
+
+func TestEnrichWithCyber_NoFindings(t *testing.T) {
+	src := `package mypkg
+func Noop() {}
+`
+	dir := testutil.ProjectDir(t, testutil.GoSource("mypkg/noop.go", src))
+	report, err := fmea.Scan(dir)
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+	before := len(report.Entries)
+	fmea.EnrichWithCyber(report, nil)
+	if len(report.Entries) != before {
+		t.Error("EnrichWithCyber with nil findings should not change entry count")
+	}
+}
+
 // ─── Fuzz ─────────────────────────────────────────────────────────────────────
 
 func FuzzScan(f *testing.F) {

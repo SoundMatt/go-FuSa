@@ -867,6 +867,202 @@
       "text": "The tool shall emit a WARNING (CYBER010) when a string-concatenated expression is passed as the path argument to os.Open/Create/ReadFile/WriteFile or as the query argument to database Query/Exec/Prepare methods.",
       "standard": "ISO 21434",
       "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER011",
+      "title": "SSRF detection",
+      "text": "The tool shall emit a WARNING (CYBER011) when http.Get/Post/Head/NewRequest receives a variable (non-literal) URL argument (CWE-918).",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER012",
+      "title": "pprof profiling endpoint detection",
+      "text": "The tool shall emit a WARNING (CYBER012) when net/http/pprof is imported in production code (gosec G108, CWE-200).",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CYBER013",
+      "title": "Zip slip path traversal detection",
+      "text": "The tool shall emit an ERROR (CYBER013) when archive/zip is imported and an archive entry's .Name field is passed directly to os.Create/OpenFile/filepath.Join (CWE-23).",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER014",
+      "title": "TLS minimum version detection",
+      "text": "The tool shall emit a WARNING (CYBER014) when tls.Config.MinVersion is set to tls.VersionTLS10, tls.VersionTLS11, or their numeric equivalents 769/770 (CWE-326).",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CYBER015",
+      "title": "SQL injection via fmt.Sprintf detection",
+      "text": "The tool shall emit an ERROR (CYBER015) when a database Query/Exec/Prepare method receives a fmt.Sprintf or fmt.Fprintf call as its query argument (CWE-89).",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER016",
+      "title": "Permissive directory mode detection",
+      "text": "The tool shall emit a WARNING (CYBER016) when os.Mkdir or os.MkdirAll is called with a mode argument greater than 0750 (CWE-732).",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CYBER017",
+      "title": "Permissive file mode detection",
+      "text": "The tool shall emit a WARNING (CYBER017) when os.OpenFile or os.WriteFile is called with a mode argument greater than 0640 (CWE-732).",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CYBER018",
+      "title": "Path traversal from HTTP request detection",
+      "text": "The tool shall emit an ERROR (CYBER018) when http.ServeFile or os.Open/Create receives an argument derived from r.URL.Path or r.FormValue (CWE-22).",
+      "standard": "ISO 21434",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-CYBER019",
+      "title": "TOCTOU race condition detection",
+      "text": "The tool shall emit a WARNING (CYBER019) when a function contains both os.Stat and a subsequent os.Open/Create/Remove/Rename call, creating a time-of-check-to-time-of-use race (CWE-362).",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CYBER020",
+      "title": "Predictable temp file creation detection",
+      "text": "The tool shall emit a WARNING (CYBER020) when os.Create is called with a path derived from os.TempDir() or a /tmp literal, which creates a predictable temp filename (CWE-377).",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-IEC62443-001",
+      "title": "IEC 62443 configuration file presence",
+      "text": "The tool shall emit an INFO (IEC62443-001) when no .fusa-iec62443.json configuration file is found in the project root.",
+      "standard": "IEC 62443",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-IEC62443-002",
+      "title": "IEC 62443 Security Level validity",
+      "text": "The tool shall emit a WARNING (IEC62443-002) when .fusa-iec62443.json exists but target_sl is not in the range 1–4.",
+      "standard": "IEC 62443",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-IEC62443-003",
+      "title": "IEC 62443 Security Policy documentation",
+      "text": "The tool shall emit an INFO (IEC62443-003) when no SECURITY.md or equivalent security policy document is found in the project.",
+      "standard": "IEC 62443",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-IEC62443-004",
+      "title": "IEC 62443 Incident Response Plan",
+      "text": "The tool shall emit an INFO (IEC62443-004) when no incident response plan document is found in the project.",
+      "standard": "IEC 62443",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-SLSA001",
+      "title": "SLSA L2 VCS revision in provenance",
+      "text": "The tool shall emit an INFO (SLSA001) when provenance.json is missing the vcsRevision field required for SLSA Level 2.",
+      "standard": "SLSA",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-SLSA002",
+      "title": "SLSA L2 builder field in provenance",
+      "text": "The tool shall emit an INFO (SLSA002) when provenance.json is missing the builder field required for SLSA Level 2.",
+      "standard": "SLSA",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-SLSA003",
+      "title": "SLSA L3 two-party review evidence",
+      "text": "The tool shall emit an INFO (SLSA003) when no CODEOWNERS file or branch protection configuration is found, indicating absence of SLSA Level 3 two-party review evidence.",
+      "standard": "SLSA",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-VULN006",
+      "title": "govulncheck call-graph integration",
+      "text": "The tool shall use govulncheck call-graph analysis when the govulncheck binary is available, falling back to OSV API scan when it is not.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-TARA001",
+      "title": "TARA threat entry structure",
+      "text": "Each TARA entry shall include asset, threat description, STRIDE categories, CWE identifier, attack vector, likelihood, impact, IEC 62443 Security Level, current control, and residual risk.",
+      "standard": "ISO 21434 Ch. 9",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-TARA002",
+      "title": "TARA report structure",
+      "text": "The TARA report shall include format identifier, generation timestamp, module name, and a list of threat entries.",
+      "standard": "ISO 21434 Ch. 9",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-TARA003",
+      "title": "TARA generation from CYBER findings",
+      "text": "The tool shall generate a TARA by mapping CYBER findings to STRIDE/CWE/risk metadata; unknown rule IDs shall produce a default entry rather than being silently dropped.",
+      "standard": "ISO 21434 Ch. 9",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-TARA004",
+      "title": "TARA rendering in JSON and Markdown",
+      "text": "The tool shall render a TARA report as JSON (machine-readable) or Markdown table (human-readable safety case evidence).",
+      "standard": "ISO 21434 Ch. 9",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-TARA005",
+      "title": "TARA file presence check",
+      "text": "The tool shall emit an INFO (TARA001) when no tara.json is found in the project, prompting the user to run 'gofusa tara'.",
+      "standard": "ISO 21434 Ch. 9",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-FMEA006",
+      "title": "FMEA cyber risk enrichment",
+      "text": "When --cyber is specified, the tool shall cross-reference CYBER findings into FMEA entries by file path and escalate severity to High for ERROR-level findings.",
+      "standard": "ISO 26262",
+      "level": "CAL-3"
+    },
+    {
+      "id": "REQ-TRACE005",
+      "title": "Security test annotation support",
+      "text": "The traceability engine shall recognise //fusa:sec-test annotations and count them separately as SecTestedRequirements in the coverage report.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CLI018",
+      "title": "gofusa cyber subcommand",
+      "text": "The CLI shall provide a 'cyber' subcommand that runs all CYBER rules, prints a findings summary, and writes cyber-report.json.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CLI019",
+      "title": "gofusa tara subcommand",
+      "text": "The CLI shall provide a 'tara' subcommand that runs CYBER rules and generates tara.json and tara.md from the findings.",
+      "standard": "ISO 21434 Ch. 9",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CLI020",
+      "title": "gofusa fmea --cyber flag",
+      "text": "The 'fmea' subcommand shall accept a --cyber flag that enriches FMEA entries with CYBER findings cross-referenced by file path.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
     }
   ]
 }
