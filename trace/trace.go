@@ -241,9 +241,10 @@ func Build(root string) (*Matrix, error) {
 	}, nil
 }
 
-//fusa:req REQ-TRACE006
 // Render writes the traceability matrix to w in the given format.
 // Supported formats: "text" (default), "json".
+//
+//fusa:req REQ-TRACE006
 func Render(w io.Writer, m *Matrix, format string) error {
 	switch format {
 	case "", "text":

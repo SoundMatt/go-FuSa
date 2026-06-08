@@ -79,8 +79,9 @@ type Manifest struct {
 	Artifacts   []Artifact `json:"artifacts"`
 }
 
-//fusa:req REQ-RELEASE003
 // BuildSBOM generates an SBOM by parsing go.mod and go.sum in projectRoot.
+//
+//fusa:req REQ-RELEASE003
 func BuildSBOM(projectRoot string) (*SBOM, error) {
 	modPath, err := readModulePath(filepath.Join(projectRoot, "go.mod"))
 	if err != nil {
@@ -103,9 +104,10 @@ func BuildSBOM(projectRoot string) (*SBOM, error) {
 	}, nil
 }
 
-//fusa:req REQ-RELEASE005
 // BuildProvenance records the current build environment for projectRoot.
 // ctx is used for the optional git subprocess calls.
+//
+//fusa:req REQ-RELEASE005
 func BuildProvenance(ctx context.Context, projectRoot string) (*Provenance, error) {
 	modPath, err := readModulePath(filepath.Join(projectRoot, "go.mod"))
 	if err != nil {
@@ -137,8 +139,9 @@ func HashFiles(paths []string) ([]Artifact, error) {
 	return artifacts, nil
 }
 
-//fusa:req REQ-RELEASE006
 // SaveJSON writes v as indented JSON to path.
+//
+//fusa:req REQ-RELEASE006
 func SaveJSON(path string, v any) error {
 	data, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {

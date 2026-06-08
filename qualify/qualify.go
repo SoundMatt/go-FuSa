@@ -55,8 +55,9 @@ type Result struct {
 	Error  string `json:"error,omitempty"`
 }
 
-//fusa:req REQ-QUALIFY002
 // Report is the output of a full qualification run.
+//
+//fusa:req REQ-QUALIFY002
 type Report struct {
 	GeneratedAt time.Time `json:"generatedAt"`
 	GoVersion   string    `json:"goVersion"`
@@ -179,8 +180,9 @@ func hasFinding(findings []fusa.Finding, ruleID string) bool {
 	return false
 }
 
-//fusa:req REQ-QUALIFY004
 // computeHash returns a hex SHA-256 of the report JSON without the Hash field.
+//
+//fusa:req REQ-QUALIFY004
 func computeHash(r *Report) (string, error) {
 	type hashable struct {
 		GeneratedAt time.Time `json:"generatedAt"`
@@ -215,6 +217,7 @@ func (r *ruleQualifyReport) ID() string { return "QUALIFY001" }
 func (r *ruleQualifyReport) Description() string {
 	return "qualify-report.json was not found. A qualification report is required evidence in regulated environments."
 }
+
 //fusa:req REQ-QUALIFY001
 func (r *ruleQualifyReport) Run(_ context.Context, dir string, _ *config.Config) ([]fusa.Finding, error) {
 	if _, err := os.Stat(filepath.Join(dir, ReportFile)); err == nil {
