@@ -35,6 +35,7 @@ import (
 	_ "github.com/SoundMatt/go-FuSa/analyze"   // v0.3 static-analysis rules
 	_ "github.com/SoundMatt/go-FuSa/auditpack" // v0.13 audit-pack rules
 	_ "github.com/SoundMatt/go-FuSa/boundary"  // v0.12 boundary-diagram rules
+	_ "github.com/SoundMatt/go-FuSa/cyber"     // v0.14 cybersecurity analysis rules
 	_ "github.com/SoundMatt/go-FuSa/fmea"      // v0.12 dFMEA rules
 	_ "github.com/SoundMatt/go-FuSa/lint"      // v0.2 coding-standard rules
 	_ "github.com/SoundMatt/go-FuSa/qualify"   // v0.9 tool qualification rules

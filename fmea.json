@@ -1,6 +1,6 @@
 {
   "format": "go-FuSa dFMEA v1",
-  "generated_at": "2026-06-08T18:01:48.529334Z",
+  "generated_at": "2026-06-08T19:51:15.315927Z",
   "module": "github.com/SoundMatt/go-FuSa",
   "entries": [
     {
@@ -168,6 +168,63 @@
       ]
     },
     {
+      "component": "auditpack",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "auditpack",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "auditpack",
+      "function": "Pack",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-AUDIT001",
+        "REQ-AUDIT002"
+      ]
+    },
+    {
+      "component": "auditpack",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-AUDIT003"
+      ]
+    },
+    {
       "component": "boundary",
       "function": "Description",
       "failure_modes": [
@@ -295,6 +352,416 @@
       ],
       "severity": "medium",
       "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER005"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER003"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER004"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER002"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER008"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER006"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER001"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER009"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER007"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER010"
+      ]
     },
     {
       "component": "engine",
@@ -684,7 +1151,7 @@
       ]
     },
     {
-      "component": "fusa",
+      "component": "go-Fusa (fusa)",
       "function": "String",
       "failure_modes": [
         "Incorrect output"
@@ -853,24 +1320,7 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
-        "REQ-LINT002"
-      ]
-    },
-    {
-      "component": "lint",
-      "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-LINT001"
+        "REQ-LINT004"
       ]
     },
     {
@@ -904,7 +1354,7 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
-        "REQ-LINT004"
+        "REQ-LINT001"
       ]
     },
     {
@@ -921,7 +1371,7 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
-        "REQ-LINT003"
+        "REQ-LINT002"
       ]
     },
     {
@@ -939,6 +1389,23 @@
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
         "REQ-LINT006"
+      ]
+    },
+    {
+      "component": "lint",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-LINT003"
       ]
     },
     {
@@ -1241,6 +1708,22 @@
       ],
       "severity": "medium",
       "detection_control": "unit tests"
+    },
+    {
+      "component": "report",
+      "function": "RenderHTML",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-HTML001",
+        "REQ-HTML003"
+      ]
     },
     {
       "component": "report",
@@ -1715,6 +2198,54 @@
     },
     {
       "component": "trace",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "trace",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "trace",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "trace",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "trace",
       "function": "ID",
       "failure_modes": [
         "Incorrect output"
@@ -1778,6 +2309,23 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
+        "REQ-TRACE001"
+      ]
+    },
+    {
+      "component": "trace",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
         "REQ-TRACE002"
       ]
     },
@@ -1795,7 +2343,24 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
-        "REQ-TRACE001"
+        "REQ-REQQ002"
+      ]
+    },
+    {
+      "component": "trace",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-REQQ003"
       ]
     },
     {
@@ -1928,6 +2493,23 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
+        "REQ-VERIFY002"
+      ]
+    },
+    {
+      "component": "verify",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
         "REQ-VERIFY001"
       ]
     },
@@ -1946,23 +2528,6 @@
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
         "REQ-VERIFY005"
-      ]
-    },
-    {
-      "component": "verify",
-      "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-VERIFY002"
       ]
     },
     {
@@ -1990,6 +2555,108 @@
       ],
       "severity": "low",
       "detection_control": "unit tests"
+    },
+    {
+      "component": "vuln",
+      "function": "Description",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "vuln",
+      "function": "ID",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "vuln",
+      "function": "ParseGoMod",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-VULN001"
+      ]
+    },
+    {
+      "component": "vuln",
+      "function": "Render",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-VULN005"
+      ]
+    },
+    {
+      "component": "vuln",
+      "function": "Run",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-VULN003"
+      ]
+    },
+    {
+      "component": "vuln",
+      "function": "Scan",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-VULN001",
+        "REQ-VULN002"
+      ]
+    },
+    {
+      "component": "vuln",
+      "function": "ScanWithURL",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-VULN004"
+      ]
     }
   ]
 }

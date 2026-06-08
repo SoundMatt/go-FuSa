@@ -53,7 +53,7 @@ footer a{color:#64748b}
 <header>
   <div>
     <h1>Safety Compliance Report</h1>
-    <div class="meta">github.com/SoundMatt/go-FuSa &nbsp;·&nbsp; 2026-06-08T19:29:02Z</div>
+    <div class="meta">github.com/SoundMatt/go-FuSa &nbsp;·&nbsp; 2026-06-08T19:51:23Z</div>
   </div>
   <span class="badge warn">WARN</span>
 </header>
@@ -62,10 +62,10 @@ footer a{color:#64748b}
   <h2>Summary</h2>
   <div class="summary-bar">
     <div class="stat"><div class="num ok">0</div><div class="label">Errors</div></div>
-    <div class="stat"><div class="num warning">114</div><div class="label">Warnings</div></div>
-    <div class="stat"><div class="num info">115</div><div class="label">Info</div></div>
-    <div class="stat"><div class="num">229</div><div class="label">Total</div></div>
-    <div class="stat"><div class="num">114</div><div class="label">Requirements</div></div>
+    <div class="stat"><div class="num warning">83</div><div class="label">Warnings</div></div>
+    <div class="stat"><div class="num info">19</div><div class="label">Info</div></div>
+    <div class="stat"><div class="num">102</div><div class="label">Total</div></div>
+    <div class="stat"><div class="num">124</div><div class="label">Requirements</div></div>
   </div>
 </section>
 
@@ -133,84 +133,796 @@ footer a{color:#64748b}
       <span class="detail">vuln.json</span>
     </div>
     
-    <div class="card absent">
-      <span class="icon">✗</span>
+    <div class="card present">
+      <span class="icon">✓</span>
       <span class="clabel">Audit pack</span>
-      <span class="detail">Run: gofusa audit-pack</span>
+      <span class="detail">audit-pack.zip</span>
     </div>
     
   </div>
 </section>
 
 <section>
-  <h2>Findings (229)</h2>
+  <h2>Findings (102)</h2>
   
   <table>
     <thead><tr><th>Rule</th><th>Severity</th><th>Message</th><th>Location</th><th>Remediation</th></tr></thead>
     <tbody>
       
       <tr class="info">
-        <td><code>AUDITPACK001</code></td>
+        <td><code>CYBER009</code></td>
         <td><span class="sev info">INFO</span></td>
-        <td>audit-pack.zip not found — run &#39;gofusa audit-pack&#39; to bundle all evidence artifacts</td>
-        <td><code>audit-pack.zip</code></td>
-        <td>Run: gofusa audit-pack</td>
+        <td>int32(x) — explicit narrowing conversion may silently truncate bits if x exceeds the target type&#39;s range</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/runtime_test.go:89</code></td>
+        <td>add an explicit range check before the conversion, or use math/bits or saturating arithmetic</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>CYBER009</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>int32(x) — explicit narrowing conversion may silently truncate bits if x exceeds the target type&#39;s range</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/runtime_test.go:109</code></td>
+        <td>add an explicit range check before the conversion, or use math/bits or saturating arithmetic</td>
       </tr>
       
       <tr class="warning">
-        <td><code>TRACE002</code></td>
+        <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ANA001 (&#34;Goroutine termination signal check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ANA001 comment in the implementing source file</td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze_test.go:265</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
       <tr class="warning">
-        <td><code>TRACE002</code></td>
+        <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ANA002 (&#34;Goroutine-in-loop detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ANA002 comment in the implementing source file</td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go:93</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
       <tr class="warning">
-        <td><code>TRACE002</code></td>
+        <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ANA003 (&#34;Blocking sleep in goroutine detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ANA003 comment in the implementing source file</td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go:134</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
       <tr class="warning">
-        <td><code>TRACE002</code></td>
+        <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ANA004 (&#34;Defer-in-loop detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ANA004 comment in the implementing source file</td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go:176</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
       <tr class="warning">
-        <td><code>TRACE002</code></td>
+        <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-AUDIT001 (&#34;Collect evidence files&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-AUDIT001 comment in the implementing source file</td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go:234</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
       <tr class="warning">
-        <td><code>TRACE002</code></td>
+        <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-AUDIT002 (&#34;SHA-256 manifest&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-AUDIT002 comment in the implementing source file</td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack_test.go:103</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
       <tr class="warning">
-        <td><code>TRACE002</code></td>
+        <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-AUDIT003 (&#34;AUDITPACK001 engine rule&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-AUDIT003 comment in the implementing source file</td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack_test.go:111</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack_test.go:127</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary.go:377</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary_test.go:304</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_init.go:47</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_safetycase.go:134</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_version.go:11</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:50</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:62</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:69</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:77</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:240</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:253</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:361</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:389</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:416</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:471</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:518</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:572</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:610</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:68</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:81</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:169</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:213</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_test.go:563</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_test.go:687</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:34</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:60</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:86</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:110</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:141</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go:373</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea_test.go:192</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea_test.go:477</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa_test.go:50</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint_test.go:274</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go:223</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify_test.go:137</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify_test.go:148</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go:415</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go:462</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go:487</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:91</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:147</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:263</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:279</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/html.go:134</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:16</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:22</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:39</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:43</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:50</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:59</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go:237</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go:428</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase_test.go:427</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go:54</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil_test.go:103</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:269</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:275</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:306</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:310</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:327</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:331</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:367</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:51</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:66</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:369</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go:198</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go:56</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go:140</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go:254</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go:317</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go:191</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go:410</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT002</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>panic() call detected</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go:66</code></td>
+        <td>replace panic with an explicit error return; document any remaining panic usage</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>recover() call inventoried — verify it is inside a deferred function</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine_test.go:63</code></td>
+        <td>ensure recover() is called only inside a function passed to defer</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var EvidenceFiles introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go:53</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var credentialKeywords introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:129</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var narrowTypes introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:499</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var osPathFuncs introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:557</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var dbQueryFuncs introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:569</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var Default introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go:160</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var ErrNoConfig introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa.go:20</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var ErrInvalidConfig introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa.go:24</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var ErrCheckFailed introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa.go:28</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var minimalBase introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/cases.go:4</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var builtinCases introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/cases.go:37</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var testFindings introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/report_test.go:16</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
       </tr>
       
       <tr class="warning">
@@ -221,1516 +933,12 @@ footer a{color:#64748b}
         <td>add //fusa:req REQ-AUDIT004 comment in the implementing source file</td>
       </tr>
       
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-BOUNDARY001 (&#34;Scanner builds package dependency graph from imports&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-BOUNDARY001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-BOUNDARY002 (&#34;Exported types and functions identified per package node&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-BOUNDARY002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-BOUNDARY003 (&#34;Boundary diagram rendered in Mermaid flowchart format&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-BOUNDARY003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-BOUNDARY004 (&#34;Boundary diagram rendered in DOT (Graphviz) format&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-BOUNDARY004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-BOUNDARY005 (&#34;BOUNDARY001 engine rule fires when boundary.mermaid is absent&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-BOUNDARY005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CFG001 (&#34;Missing config file returns ErrNoConfig&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CFG001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CFG002 (&#34;Malformed config JSON returns error&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CFG002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CFG003 (&#34;Missing version field returns ErrInvalidConfig&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CFG003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CFG004 (&#34;Unsupported report format returns ErrInvalidConfig&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CFG004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CFG005 (&#34;Default config is valid and uses safe defaults&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CFG005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CFG006 (&#34;Config round-trips through JSON save and load&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CFG006 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CFG007 (&#34;Excluded rule IDs are skipped during engine run&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CFG007 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CFG008 (&#34;Per-rule severity override in configuration&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CFG008 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI001 (&#34;No-subcommand invocation prints usage and exits non-zero&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI002 (&#34;Unknown subcommand exits non-zero&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI003 (&#34;Help command prints usage and exits zero&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI004 (&#34;Version command prints version string and exits zero&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI005 (&#34;Check exits zero when no ERROR findings are present&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI006 (&#34;Check exits one when any ERROR finding is present&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI006 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI007 (&#34;Qualify exits zero and writes report when all cases pass&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI007 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI008 (&#34;gofusa lint runs only lint rules&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI008 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI009 (&#34;gofusa analyze runs only analyze rules&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI009 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI010 (&#34;gofusa template generates safety document templates&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI010 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI011 (&#34;--strict flag exits non-zero on WARNING or ERROR findings&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI011 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI012 (&#34;gofusa safety-case generates safety case files&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI012 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI013 (&#34;gofusa fmea generates dFMEA JSON and CSV artifacts&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI013 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI014 (&#34;gofusa boundary generates Mermaid and DOT boundary diagrams&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI014 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI015 (&#34;gofusa vuln command&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI015 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI016 (&#34;gofusa audit-pack command&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI016 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-CLI017 (&#34;gofusa trace --gaps flag&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-CLI017 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-E2E001 (&#34;Full pipeline executes successfully on a minimal Go project&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-E2E001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ENG001 (&#34;Rules execute in deterministic ID-sorted order&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ENG001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ENG002 (&#34;Rule execution errors are collected without aborting the run&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ENG002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ENG003 (&#34;HasErrors reports true when any finding has ERROR severity&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ENG003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ENG004 (&#34;MustRegister panics on duplicate rule ID&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ENG004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ENG005 (&#34;Register returns error for nil rule&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ENG005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ENG006 (&#34;Context cancellation halts rule execution&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ENG006 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ENG007 (&#34;RunFilter runs only rules matching a keep predicate&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ENG007 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ERR001 (&#34;ErrNoConfig is the sentinel for absent configuration&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ERR001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ERR002 (&#34;ErrInvalidConfig is the sentinel for malformed configuration&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ERR002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-ERR003 (&#34;ErrCheckFailed is the sentinel for ERROR-severity check failures&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-ERR003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FMEA001 (&#34;dFMEA scanner discovers exported functions from Go source&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FMEA001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FMEA002 (&#34;Failure modes derived from return types and goroutine usage&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FMEA002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FMEA003 (&#34;RequirementIDs extracted from //fusa:req annotations&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FMEA003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FMEA004 (&#34;dFMEA report exported in JSON and CSV formats&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FMEA004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FMEA005 (&#34;FMEA001 engine rule fires when fmea.json is absent&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FMEA005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FUSA001 (&#34;Configuration file presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FUSA001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FUSA002 (&#34;Go module file presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FUSA002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FUSA003 (&#34;License file presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FUSA003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FUSA004 (&#34;README file presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FUSA004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-FUSA005 (&#34;CI configuration presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-FUSA005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-HTML001 (&#34;HTML report rendering&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-HTML001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-HTML002 (&#34;Evidence status cards&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-HTML002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-HTML003 (&#34;Self-contained HTML&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-HTML003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-LINT001 (&#34;Discarded error return detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-LINT001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-LINT002 (&#34;Panic call detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-LINT002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-LINT003 (&#34;Recover call inventory&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-LINT003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-LINT004 (&#34;Unsafe package import detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-LINT004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-LINT005 (&#34;Reflect package import inventory&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-LINT005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-LINT006 (&#34;Global mutable variable detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-LINT006 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-NF001 (&#34;No external runtime dependencies&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-NF001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-NF002 (&#34;All timestamps use UTC&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-NF002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-NF003 (&#34;Recognised safety standard identifiers&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-NF003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-QUALIFY001 (&#34;Tool qualification report presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-QUALIFY001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-QUALIFY002 (&#34;Qualification report structure&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-QUALIFY002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-QUALIFY003 (&#34;Qualification cases run in isolated temporary directories&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-QUALIFY003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-QUALIFY004 (&#34;Qualification report integrity hash&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-QUALIFY004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RELEASE001 (&#34;SBOM presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RELEASE001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RELEASE002 (&#34;Build provenance presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RELEASE002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RELEASE003 (&#34;SBOM includes module path, Go version, and direct dependencies&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RELEASE003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RELEASE004 (&#34;SBOM components include dependency name, version, and hash&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RELEASE004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RELEASE005 (&#34;Provenance record includes build environment fields&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RELEASE005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RELEASE006 (&#34;SBOM and provenance serialise as valid JSON&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RELEASE006 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RELEASE007 (&#34;SBOM output conforms to SPDX 3.0.1 JSON-LD format&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RELEASE007 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RELEASE008 (&#34;Artifact manifest records SHA-256 hashes for all release files&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RELEASE008 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-REQQ001 (&#34;Untraced requirement detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-REQQ001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-REQQ002 (&#34;Test gap detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-REQQ002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-REQQ003 (&#34;Requirement text completeness&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-REQQ003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RPT001 (&#34;Text report includes rule ID, severity, and location&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RPT001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RPT002 (&#34;Text report shows PASS or FAIL result line&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RPT002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RPT003 (&#34;Report summary counts match finding severities&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RPT003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RPT004 (&#34;JSON report is valid parseable JSON&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RPT004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-RPT005 (&#34;JSON report includes all required top-level fields&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-RPT005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-SAFETYCASE001 (&#34;Safety case presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-SAFETYCASE001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-SC001 (&#34;Safety case Build collects evidence items from project root&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-SC001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-SC002 (&#34;SafetyCase gaps slice lists absent evidence IDs&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-SC002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-SC003 (&#34;Render supports text, JSON, and Mermaid formats&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-SC003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-SC004 (&#34;Mermaid output uses G/S/Sn node prefixes and hierarchical connections&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-SC004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-SC005 (&#34;Compliance mapping for iso26262, iec61508, iso21434, and generic standards&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-SC005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-TRACE001 (&#34;Requirements manifest presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-TRACE001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-TRACE002 (&#34;Requirement implementation traceability check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-TRACE002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-TRACE003 (&#34;TracedRequirements count is accurate&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-TRACE003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-TRACE004 (&#34;TestedRequirements count is accurate&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-TRACE004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-TRACE005 (&#34;Scanner excludes vendor, testdata, and hidden directories&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-TRACE005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-TRACE006 (&#34;Traceability matrix renders in text and JSON formats&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-TRACE006 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-TRACE007 (&#34;Annotations with empty requirement ID are silently skipped&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-TRACE007 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VERIFY001 (&#34;Test evidence bundle presence check&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VERIFY001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VERIFY002 (&#34;Test failure detection&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VERIFY002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VERIFY003 (&#34;Evidence bundle includes provenance fields&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VERIFY003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VERIFY004 (&#34;Evidence bundle records per-test detail&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VERIFY004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VERIFY005 (&#34;verify.Run invokes go test with JSON output&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VERIFY005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VULN001 (&#34;Parse go.mod dependencies&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VULN001 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VULN002 (&#34;Query OSV batch API&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VULN002 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VULN003 (&#34;VULN001 engine rule&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VULN003 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VULN004 (&#34;HTTP error handling&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VULN004 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="warning">
-        <td><code>TRACE002</code></td>
-        <td><span class="sev warning">WARNING</span></td>
-        <td>requirement REQ-VULN005 (&#34;Vulnerability report rendering&#34;) has no //fusa:req implementation tag</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:req REQ-VULN005 comment in the implementing source file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ANA001 (&#34;Goroutine termination signal check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ANA001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ANA002 (&#34;Goroutine-in-loop detection&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ANA002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ANA003 (&#34;Blocking sleep in goroutine detection&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ANA003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ANA004 (&#34;Defer-in-loop detection&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ANA004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-AUDIT001 (&#34;Collect evidence files&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-AUDIT001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-AUDIT002 (&#34;SHA-256 manifest&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-AUDIT002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-AUDIT003 (&#34;AUDITPACK001 engine rule&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-AUDIT003 in a _test.go file</td>
-      </tr>
-      
       <tr class="info">
         <td><code>TRACE003</code></td>
         <td><span class="sev info">INFO</span></td>
         <td>requirement REQ-AUDIT004 (&#34;Audit pack format&#34;) has no //fusa:test tag — test coverage gap</td>
         <td><code>.fusa-reqs.json</code></td>
         <td>add //fusa:test REQ-AUDIT004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-BOUNDARY001 (&#34;Scanner builds package dependency graph from imports&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-BOUNDARY001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-BOUNDARY002 (&#34;Exported types and functions identified per package node&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-BOUNDARY002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-BOUNDARY003 (&#34;Boundary diagram rendered in Mermaid flowchart format&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-BOUNDARY003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-BOUNDARY004 (&#34;Boundary diagram rendered in DOT (Graphviz) format&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-BOUNDARY004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-BOUNDARY005 (&#34;BOUNDARY001 engine rule fires when boundary.mermaid is absent&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-BOUNDARY005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CFG001 (&#34;Missing config file returns ErrNoConfig&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CFG001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CFG002 (&#34;Malformed config JSON returns error&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CFG002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CFG003 (&#34;Missing version field returns ErrInvalidConfig&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CFG003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CFG004 (&#34;Unsupported report format returns ErrInvalidConfig&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CFG004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CFG005 (&#34;Default config is valid and uses safe defaults&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CFG005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CFG006 (&#34;Config round-trips through JSON save and load&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CFG006 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CFG007 (&#34;Excluded rule IDs are skipped during engine run&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CFG007 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CFG008 (&#34;Per-rule severity override in configuration&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CFG008 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI001 (&#34;No-subcommand invocation prints usage and exits non-zero&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI002 (&#34;Unknown subcommand exits non-zero&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI003 (&#34;Help command prints usage and exits zero&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI004 (&#34;Version command prints version string and exits zero&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI005 (&#34;Check exits zero when no ERROR findings are present&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI006 (&#34;Check exits one when any ERROR finding is present&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI006 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI007 (&#34;Qualify exits zero and writes report when all cases pass&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI007 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI008 (&#34;gofusa lint runs only lint rules&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI008 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI009 (&#34;gofusa analyze runs only analyze rules&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI009 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI010 (&#34;gofusa template generates safety document templates&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI010 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI011 (&#34;--strict flag exits non-zero on WARNING or ERROR findings&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI011 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI012 (&#34;gofusa safety-case generates safety case files&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI012 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI013 (&#34;gofusa fmea generates dFMEA JSON and CSV artifacts&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI013 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI014 (&#34;gofusa boundary generates Mermaid and DOT boundary diagrams&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI014 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI015 (&#34;gofusa vuln command&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI015 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI016 (&#34;gofusa audit-pack command&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI016 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-CLI017 (&#34;gofusa trace --gaps flag&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-CLI017 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-E2E001 (&#34;Full pipeline executes successfully on a minimal Go project&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-E2E001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ENG001 (&#34;Rules execute in deterministic ID-sorted order&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ENG001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ENG002 (&#34;Rule execution errors are collected without aborting the run&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ENG002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ENG003 (&#34;HasErrors reports true when any finding has ERROR severity&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ENG003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ENG004 (&#34;MustRegister panics on duplicate rule ID&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ENG004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ENG005 (&#34;Register returns error for nil rule&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ENG005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ENG006 (&#34;Context cancellation halts rule execution&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ENG006 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ENG007 (&#34;RunFilter runs only rules matching a keep predicate&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ENG007 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ERR001 (&#34;ErrNoConfig is the sentinel for absent configuration&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ERR001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ERR002 (&#34;ErrInvalidConfig is the sentinel for malformed configuration&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ERR002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-ERR003 (&#34;ErrCheckFailed is the sentinel for ERROR-severity check failures&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-ERR003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FMEA001 (&#34;dFMEA scanner discovers exported functions from Go source&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FMEA001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FMEA002 (&#34;Failure modes derived from return types and goroutine usage&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FMEA002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FMEA003 (&#34;RequirementIDs extracted from //fusa:req annotations&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FMEA003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FMEA004 (&#34;dFMEA report exported in JSON and CSV formats&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FMEA004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FMEA005 (&#34;FMEA001 engine rule fires when fmea.json is absent&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FMEA005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FUSA001 (&#34;Configuration file presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FUSA001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FUSA002 (&#34;Go module file presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FUSA002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FUSA003 (&#34;License file presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FUSA003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FUSA004 (&#34;README file presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FUSA004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-FUSA005 (&#34;CI configuration presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-FUSA005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-HTML001 (&#34;HTML report rendering&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-HTML001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-HTML002 (&#34;Evidence status cards&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-HTML002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-HTML003 (&#34;Self-contained HTML&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-HTML003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-LINT001 (&#34;Discarded error return detection&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-LINT001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-LINT002 (&#34;Panic call detection&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-LINT002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-LINT003 (&#34;Recover call inventory&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-LINT003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-LINT004 (&#34;Unsafe package import detection&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-LINT004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-LINT005 (&#34;Reflect package import inventory&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-LINT005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-LINT006 (&#34;Global mutable variable detection&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-LINT006 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-NF001 (&#34;No external runtime dependencies&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-NF001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-NF002 (&#34;All timestamps use UTC&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-NF002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-NF003 (&#34;Recognised safety standard identifiers&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-NF003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-QUALIFY001 (&#34;Tool qualification report presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-QUALIFY001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-QUALIFY002 (&#34;Qualification report structure&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-QUALIFY002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-QUALIFY003 (&#34;Qualification cases run in isolated temporary directories&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-QUALIFY003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-QUALIFY004 (&#34;Qualification report integrity hash&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-QUALIFY004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RELEASE001 (&#34;SBOM presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RELEASE001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RELEASE002 (&#34;Build provenance presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RELEASE002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RELEASE003 (&#34;SBOM includes module path, Go version, and direct dependencies&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RELEASE003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RELEASE004 (&#34;SBOM components include dependency name, version, and hash&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RELEASE004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RELEASE005 (&#34;Provenance record includes build environment fields&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RELEASE005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RELEASE006 (&#34;SBOM and provenance serialise as valid JSON&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RELEASE006 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RELEASE007 (&#34;SBOM output conforms to SPDX 3.0.1 JSON-LD format&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RELEASE007 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RELEASE008 (&#34;Artifact manifest records SHA-256 hashes for all release files&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RELEASE008 in a _test.go file</td>
       </tr>
       
       <tr class="info">
@@ -1757,237 +965,13 @@ footer a{color:#64748b}
         <td>add //fusa:test REQ-REQQ003 in a _test.go file</td>
       </tr>
       
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RPT001 (&#34;Text report includes rule ID, severity, and location&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RPT001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RPT002 (&#34;Text report shows PASS or FAIL result line&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RPT002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RPT003 (&#34;Report summary counts match finding severities&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RPT003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RPT004 (&#34;JSON report is valid parseable JSON&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RPT004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-RPT005 (&#34;JSON report includes all required top-level fields&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-RPT005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-SAFETYCASE001 (&#34;Safety case presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-SAFETYCASE001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-SC001 (&#34;Safety case Build collects evidence items from project root&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-SC001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-SC002 (&#34;SafetyCase gaps slice lists absent evidence IDs&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-SC002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-SC003 (&#34;Render supports text, JSON, and Mermaid formats&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-SC003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-SC004 (&#34;Mermaid output uses G/S/Sn node prefixes and hierarchical connections&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-SC004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-SC005 (&#34;Compliance mapping for iso26262, iec61508, iso21434, and generic standards&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-SC005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-TRACE001 (&#34;Requirements manifest presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-TRACE001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-TRACE002 (&#34;Requirement implementation traceability check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-TRACE002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-TRACE003 (&#34;TracedRequirements count is accurate&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-TRACE003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-TRACE004 (&#34;TestedRequirements count is accurate&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-TRACE004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-TRACE005 (&#34;Scanner excludes vendor, testdata, and hidden directories&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-TRACE005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-TRACE006 (&#34;Traceability matrix renders in text and JSON formats&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-TRACE006 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-TRACE007 (&#34;Annotations with empty requirement ID are silently skipped&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-TRACE007 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VERIFY001 (&#34;Test evidence bundle presence check&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VERIFY001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VERIFY002 (&#34;Test failure detection&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VERIFY002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VERIFY003 (&#34;Evidence bundle includes provenance fields&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VERIFY003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VERIFY004 (&#34;Evidence bundle records per-test detail&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VERIFY004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VERIFY005 (&#34;verify.Run invokes go test with JSON output&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VERIFY005 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VULN001 (&#34;Parse go.mod dependencies&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VULN001 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VULN002 (&#34;Query OSV batch API&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VULN002 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VULN003 (&#34;VULN001 engine rule&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VULN003 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VULN004 (&#34;HTTP error handling&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VULN004 in a _test.go file</td>
-      </tr>
-      
-      <tr class="info">
-        <td><code>TRACE003</code></td>
-        <td><span class="sev info">INFO</span></td>
-        <td>requirement REQ-VULN005 (&#34;Vulnerability report rendering&#34;) has no //fusa:test tag — test coverage gap</td>
-        <td><code>.fusa-reqs.json</code></td>
-        <td>add //fusa:test REQ-VULN005 in a _test.go file</td>
-      </tr>
-      
     </tbody>
   </table>
   
 </section>
 
 <footer>
-  Generated by <a href="https://github.com/SoundMatt/go-FuSa">go-FuSa</a> v0.13.0
+  Generated by <a href="https://github.com/SoundMatt/go-FuSa">go-FuSa</a> v0.14.0
 </footer>
 </div>
 </body>

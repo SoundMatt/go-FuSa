@@ -31,7 +31,8 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `safetycase/` | Safety case assembly — evidence collection, GSN diagram, compliance mapping |
 | `fmea/` | dFMEA generation — derives failure modes, effects, and severities from exported functions |
 | `boundary/` | Component boundary diagrams — package dependency graph in Mermaid and DOT formats |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary` |
+| `cyber/` | Cybersecurity static analysis — 10 CWE-mapped rules (ISO 21434, CERT, MISRA-C:2023) |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack` |
 
 ## Install
 
@@ -54,6 +55,9 @@ gofusa lint
 
 # Run only static-analysis rules
 gofusa analyze
+
+# Run cybersecurity analysis (CYBER rules: weak crypto, command injection, hardcoded credentials, …)
+# Cybersecurity rules are also included in gofusa check
 
 # Generate safety document templates (SAFETY_PLAN.md, TEST_EVIDENCE.md, HARA.md)
 gofusa template --type all

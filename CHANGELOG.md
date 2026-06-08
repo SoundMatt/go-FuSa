@@ -7,6 +7,24 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.14.0] — 2026-06-08
+
+### Added
+- `cyber` package — 10 cybersecurity static analysis rules mapped to CWE, ISO 21434, SEI CERT C, and MISRA-C:2023 (REQ-CYBER001–010)
+  - **CYBER001** — `crypto/md5` or `crypto/sha1` import (CWE-327, ISO 21434 §8.5) → WARNING
+  - **CYBER002** — `crypto/des` or `crypto/rc4` import (CWE-327, MISRA Dir 4.8) → WARNING
+  - **CYBER003** — `math/rand` import for pseudo-random source (CWE-330, CERT MSC50) → INFO
+  - **CYBER004** — `unsafe` package import bypasses type safety (CWE-242, MISRA Rule 11.3) → WARNING
+  - **CYBER005** — `exec.Command`/`exec.CommandContext` with non-literal command name (CWE-78, Contrast ProcessControl) → WARNING
+  - **CYBER006** — variable/constant with credential-suggestive name assigned a string literal (CWE-798) → ERROR
+  - **CYBER007** — `InsecureSkipVerify: true` in TLS config (CWE-295, ISO 21434 §10.4) → ERROR
+  - **CYBER008** — `http.ListenAndServe`/`ListenAndServeTLS` without timeouts (CWE-400) → WARNING
+  - **CYBER009** — explicit narrowing integer conversion on non-literal (CWE-190, MISRA Rule 10.3) → INFO
+  - **CYBER010** — string concatenation as first argument to OS path or DB query function (CWE-22 path traversal, CWE-89 SQL injection) → WARNING
+- `FuzzCyberScan` fuzz target for AST parsing robustness
+- All 10 rules auto-registered via `init()` and activated by blank-importing `cyber` in `main.go`
+- 10 new requirements (REQ-CYBER001–010), total 124
+
 ## [0.13.0] — 2026-06-08
 
 ### Added
