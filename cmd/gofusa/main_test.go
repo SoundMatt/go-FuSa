@@ -447,3 +447,104 @@ func TestRun_SafetyCase_WithAllEvidence(t *testing.T) {
 		t.Errorf("safety-case all-evidence: expected 'Gaps: none'\nout: %s", out.String())
 	}
 }
+
+// ─── fmea ─────────────────────────────────────────────────────────────────────
+
+func TestRun_FMEA_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"fmea", "--help"}, &out, &errOut)
+	if !strings.Contains(out.String()+errOut.String(), "gofusa fmea") {
+		t.Error("fmea --help: output missing 'gofusa fmea'")
+	}
+}
+
+//fusa:test REQ-CLI013
+func TestRun_FMEA_GeneratesFiles(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"fmea", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("fmea: exit code = %d\n%s", code, errOut.String())
+	}
+	for _, name := range []string{"fmea.json", "fmea.csv"} {
+		if _, err := os.Stat(filepath.Join(outDir, name)); err != nil {
+			t.Errorf("fmea: expected %s to exist: %v", name, err)
+		}
+	}
+	if !strings.Contains(out.String(), "Entries:") {
+		t.Error("fmea: output missing 'Entries:'")
+	}
+}
+
+func TestRun_FMEA_WithGoSource(t *testing.T) {
+	files := testutil.GoSource("mypkg/work.go", `package mypkg
+
+//fusa:req REQ-TEST001
+func DoWork() error { return nil }
+`)
+	dir := testutil.ProjectDir(t, files)
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"fmea", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("fmea with source: exit code = %d\n%s", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), "high:") {
+		t.Error("fmea with source: expected high severity entry for safety-req function")
+	}
+}
+
+// ─── boundary ─────────────────────────────────────────────────────────────────
+
+func TestRun_Boundary_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"boundary", "--help"}, &out, &errOut)
+	if !strings.Contains(out.String()+errOut.String(), "gofusa boundary") {
+		t.Error("boundary --help: output missing 'gofusa boundary'")
+	}
+}
+
+//fusa:test REQ-CLI014
+func TestRun_Boundary_GeneratesFiles(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"boundary", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("boundary: exit code = %d\n%s", code, errOut.String())
+	}
+	for _, name := range []string{"boundary.mermaid", "boundary.dot"} {
+		if _, err := os.Stat(filepath.Join(outDir, name)); err != nil {
+			t.Errorf("boundary: expected %s to exist: %v", name, err)
+		}
+	}
+	if !strings.Contains(out.String(), "Packages:") {
+		t.Error("boundary: output missing 'Packages:'")
+	}
+}
+
+func TestRun_Boundary_WithPackages(t *testing.T) {
+	files := testutil.MinimalProject()
+	files["pkga/a.go"] = `package pkga
+import "github.com/example/test/pkgb"
+func DoA() { pkgb.DoB() }
+`
+	files["pkgb/b.go"] = `package pkgb
+func DoB() {}
+`
+	dir := testutil.ProjectDir(t, files)
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"boundary", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("boundary with packages: exit code = %d\n%s", code, errOut.String())
+	}
+	mermaid, err := os.ReadFile(filepath.Join(outDir, "boundary.mermaid"))
+	if err != nil {
+		t.Fatalf("boundary.mermaid not found: %v", err)
+	}
+	if !strings.Contains(string(mermaid), "-->") {
+		t.Error("boundary.mermaid: expected edges (-->)")
+	}
+}

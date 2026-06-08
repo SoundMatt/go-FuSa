@@ -7,6 +7,21 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.12.0] — 2026-06-08
+
+### Added
+- `fmea` package — dFMEA generation from Go source: parses exported functions, derives failure modes, effects, and severities from return types, goroutine usage, and `//fusa:req` annotations (REQ-FMEA001–005)
+- `fmea.Scan` — walks project root, produces one `Entry` per exported function with component, failure modes, effects, severity (high/medium/low), and detection control
+- `fmea.Render` — JSON (indented) and CSV formats; CSV is import-ready for DOORS, Polarion, or Excel
+- `FMEA001` engine rule — INFO finding when fmea.json is absent
+- `boundary` package — component boundary diagram generation from Go package structure: builds package dependency graph using go/ast imports (REQ-BOUNDARY001–005)
+- `boundary.Scan` — derives package nodes (with exported API surface) and directed import edges; skips vendor, testdata, hidden dirs
+- `boundary.Render` — Mermaid flowchart LR and Graphviz DOT formats
+- `BOUNDARY001` engine rule — INFO finding when boundary.mermaid is absent
+- `gofusa fmea` CLI command — writes fmea.json + fmea.csv (REQ-CLI013)
+- `gofusa boundary` CLI command — writes boundary.mermaid + boundary.dot (REQ-CLI014)
+- 12 new requirements (REQ-FMEA001–005, REQ-BOUNDARY001–005, REQ-CLI013–014), total 96
+
 ## [0.11.0] — 2026-06-08
 
 ### Added

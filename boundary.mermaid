@@ -1,0 +1,69 @@
+%{init: {"theme": "default"}}%
+flowchart LR
+    % Module: github.com/SoundMatt/go-FuSa
+    % Generated: 2026-06-08T18:01:48Z
+
+    github_com_SoundMatt_go_FuSa["fusa"]
+    github_com_SoundMatt_go_FuSa_analyze["analyze"]
+    github_com_SoundMatt_go_FuSa_boundary["boundary"]
+    github_com_SoundMatt_go_FuSa_cmd_gofusa["github.com/SoundMatt/go-FuSa/cmd/gofusa"]
+    github_com_SoundMatt_go_FuSa_config["config"]
+    github_com_SoundMatt_go_FuSa_engine["engine"]
+    github_com_SoundMatt_go_FuSa_fmea["fmea"]
+    github_com_SoundMatt_go_FuSa_lint["lint"]
+    github_com_SoundMatt_go_FuSa_qualify["qualify"]
+    github_com_SoundMatt_go_FuSa_release["release"]
+    github_com_SoundMatt_go_FuSa_report["report"]
+    github_com_SoundMatt_go_FuSa_runtime["runtime"]
+    github_com_SoundMatt_go_FuSa_safetycase["safetycase"]
+    github_com_SoundMatt_go_FuSa_template["template"]
+    github_com_SoundMatt_go_FuSa_testutil["testutil"]
+    github_com_SoundMatt_go_FuSa_trace["trace"]
+    github_com_SoundMatt_go_FuSa_verify["verify"]
+
+    github_com_SoundMatt_go_FuSa_analyze --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_analyze --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_analyze --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_boundary --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_boundary --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_boundary --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_analyze
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_boundary
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_fmea
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_lint
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_qualify
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_release
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_report
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_safetycase
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_template
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_trace
+    github_com_SoundMatt_go_FuSa_cmd_gofusa --> github_com_SoundMatt_go_FuSa_verify
+    github_com_SoundMatt_go_FuSa_config --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_engine --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_engine --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_fmea --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_fmea --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_fmea --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_lint --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_lint --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_lint --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_qualify --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_qualify --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_qualify --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_release --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_release --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_release --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_report --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_safetycase --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_safetycase --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_safetycase --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_testutil --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_trace --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_trace --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_trace --> github_com_SoundMatt_go_FuSa_engine
+    github_com_SoundMatt_go_FuSa_verify --> github_com_SoundMatt_go_FuSa
+    github_com_SoundMatt_go_FuSa_verify --> github_com_SoundMatt_go_FuSa_config
+    github_com_SoundMatt_go_FuSa_verify --> github_com_SoundMatt_go_FuSa_engine

@@ -1,8 +1,12 @@
 go-FuSa Safety Report
-Generated: 2026-06-08 17:14:27 UTC
+Generated: 2026-06-08 18:02:54 UTC
 Project:   /Users/matt/Documents/Coding/SoundMatt/go-Fusa
 
 [WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze_test.go:265:3)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary.go:377:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary_test.go:304:3)
   → assign all return values to named variables and handle each explicitly
 [WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_init.go:47:5)
   → assign all return values to named variables and handle each explicitly
@@ -28,6 +32,10 @@ Project:   /Users/matt/Documents/Coding/SoundMatt/go-Fusa
   → assign all return values to named variables and handle each explicitly
 [WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:416:6)
   → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:471:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:518:6)
+  → assign all return values to named variables and handle each explicitly
 [WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:68:2)
   → assign all return values to named variables and handle each explicitly
 [WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:81:2)
@@ -45,6 +53,12 @@ Project:   /Users/matt/Documents/Coding/SoundMatt/go-Fusa
 [WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:110:6)
   → assign all return values to named variables and handle each explicitly
 [WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:141:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go:373:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea_test.go:192:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea_test.go:477:3)
   → assign all return values to named variables and handle each explicitly
 [WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa_test.go:50:2)
   → assign all return values to named variables and handle each explicitly
@@ -139,5 +153,5 @@ Project:   /Users/matt/Documents/Coding/SoundMatt/go-Fusa
 [INFO] LINT006  package-level var testFindings introduces global mutable state (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/report_test.go:16:5)
   → prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)
 
-Summary: 68 total  0 errors  60 warnings  8 infos
+Summary: 75 total  0 errors  67 warnings  8 infos
 Result:  PASS
