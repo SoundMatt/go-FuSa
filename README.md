@@ -82,6 +82,21 @@ gofusa fmea
 
 # Generate a component boundary diagram (Mermaid + DOT)
 gofusa boundary
+
+# Scan dependencies for known vulnerabilities (OSV database / ISO 21434)
+gofusa vuln
+
+# Bundle all evidence artifacts into a single ZIP for auditors
+gofusa audit-pack
+
+# Generate a full HTML compliance report
+gofusa report --format html --output safety-report.html
+
+# Show test coverage gaps (requirements with no //fusa:test tag)
+gofusa trace --gaps
+
+# Generate everything in one command (SBOM, provenance, fmea, boundary, vuln, audit-pack)
+gofusa release --full
 ```
 
 ## Docker quick start

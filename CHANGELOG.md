@@ -7,6 +7,28 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.13.0] — 2026-06-08
+
+### Added
+- `vuln` package — dependency vulnerability scanner against the OSV database (ISO 21434 §8.5, REQ-VULN001–005)
+  - `vuln.Scan` — reads go.mod, POSTs batch query to `api.osv.dev/v1/querybatch`, returns one `Finding` per vulnerable (module, version) pair
+  - `vuln.ParseGoMod` — parses block and single-line require forms; strips `// indirect` comments; zero external deps
+  - `vuln.Render` — JSON (default) and text formats
+  - `VULN001` engine rule — INFO finding when vuln.json is absent, description references ISO 21434 §8.5
+  - `FuzzParseGoMod` fuzz target
+- `auditpack` package — bundles all evidence artifacts into a ZIP for auditors (REQ-AUDIT001–004)
+  - `auditpack.Pack` — collects 16 standard evidence files, computes SHA-256 per file, writes AUDIT-MANIFEST.json inside the archive
+  - `AUDITPACK001` engine rule — INFO finding when audit-pack.zip is absent
+- `report.RenderHTML` — self-contained HTML report with findings table, evidence status cards, and PASS/WARN/FAIL badge (REQ-HTML001–003)
+  - Wired into `gofusa report --format html`
+- `TRACE003` engine rule — INFO finding for every requirement with no `//fusa:test` tag (test coverage gap) (REQ-REQQ002)
+- `TRACE004` engine rule — WARNING finding for every requirement missing its `text` field (REQ-REQQ003)
+- `gofusa vuln` CLI command — scans deps and writes vuln.json (REQ-CLI015)
+- `gofusa audit-pack` CLI command — bundles evidence into audit-pack.zip (REQ-CLI016)
+- `gofusa trace --gaps` flag — lists requirements with no test tag; exits 1 when gaps exist (REQ-CLI017)
+- `gofusa release --full` flag — runs fmea, boundary, vuln scan, and audit-pack in addition to SBOM/provenance
+- 18 new requirements (REQ-VULN001–005, REQ-AUDIT001–004, REQ-HTML001–003, REQ-REQQ001–003, REQ-CLI015–017), total 114
+
 ## [0.12.0] — 2026-06-08
 
 ### Added

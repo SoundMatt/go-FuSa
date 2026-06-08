@@ -55,13 +55,15 @@ func New(projectRoot string, findings []fusa.Finding) *Report {
 	return r
 }
 
-// Render writes r to w in the requested format ("text" or "json").
+// Render writes r to w in the requested format ("text", "json", or "html").
 func Render(w io.Writer, r *Report, format string) error {
 	switch format {
 	case "", "text":
 		return renderText(w, r)
 	case "json":
 		return renderJSON(w, r)
+	case "html":
+		return RenderHTML(w, r)
 	default:
 		return fmt.Errorf("report: unsupported format %q", format)
 	}

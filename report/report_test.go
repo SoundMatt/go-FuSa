@@ -130,9 +130,49 @@ func TestRender_JSON_Valid(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HTML001
+//fusa:test REQ-HTML003
+func TestRender_HTML_ContainsKeyElements(t *testing.T) {
+	r := report.New(t.TempDir(), testFindings)
+	var buf bytes.Buffer
+	if err := report.Render(&buf, r, "html"); err != nil {
+		t.Fatalf("Render html: %v", err)
+	}
+	out := buf.String()
+	for _, want := range []string{"<!DOCTYPE html>", "Safety Compliance Report", "FUSA001", "FAIL"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("html output missing %q", want)
+		}
+	}
+}
+
+//fusa:test REQ-HTML002
+func TestRender_HTML_EvidenceCards(t *testing.T) {
+	r := report.New(t.TempDir(), nil)
+	var buf bytes.Buffer
+	if err := report.Render(&buf, r, "html"); err != nil {
+		t.Fatalf("Render html: %v", err)
+	}
+	out := buf.String()
+	if !strings.Contains(out, "Evidence Status") {
+		t.Error("html output missing Evidence Status section")
+	}
+}
+
+func TestRender_HTML_PassBadge(t *testing.T) {
+	r := report.New(t.TempDir(), nil)
+	var buf bytes.Buffer
+	if err := report.Render(&buf, r, "html"); err != nil {
+		t.Fatalf("Render html: %v", err)
+	}
+	if !strings.Contains(buf.String(), "PASS") {
+		t.Error("html output missing PASS badge for empty findings")
+	}
+}
+
 func TestRender_UnknownFormat(t *testing.T) {
 	r := report.New("/proj", nil)
-	if err := report.Render(&bytes.Buffer{}, r, "html"); err == nil {
+	if err := report.Render(&bytes.Buffer{}, r, "xml"); err == nil {
 		t.Error("Render unknown format: expected error, got nil")
 	}
 }

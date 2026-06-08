@@ -671,6 +671,132 @@
       "text": "The 'gofusa boundary' command shall scan the project root, generate boundary.mermaid and boundary.dot in the output directory, and print a summary of package and edge counts.",
       "standard": "ISO 21434",
       "level": "CAL-1"
+    },
+    {
+      "id": "REQ-VULN001",
+      "title": "Parse go.mod dependencies",
+      "text": "The tool shall parse all require entries from go.mod, including block and single-line forms, stripping indirect comments.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-VULN002",
+      "title": "Query OSV batch API",
+      "text": "The tool shall POST a querybatch request to the OSV API for all parsed dependencies and return one Finding per vulnerable (module, version) pair.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-VULN003",
+      "title": "VULN001 engine rule",
+      "text": "The engine shall emit an INFO finding VULN001 when vuln.json is absent from the project root.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-VULN004",
+      "title": "HTTP error handling",
+      "text": "The tool shall return an error when the OSV API responds with a non-200 HTTP status.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-VULN005",
+      "title": "Vulnerability report rendering",
+      "text": "The tool shall render the vulnerability report in json or text format, returning an error for unsupported formats.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-AUDIT001",
+      "title": "Collect evidence files",
+      "text": "Pack shall collect all present standard evidence files from the project root into a ZIP archive.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-AUDIT002",
+      "title": "SHA-256 manifest",
+      "text": "Pack shall compute a SHA-256 digest for each collected file and record it in AUDIT-MANIFEST.json inside the archive.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-AUDIT003",
+      "title": "AUDITPACK001 engine rule",
+      "text": "The engine shall emit an INFO finding AUDITPACK001 when audit-pack.zip is absent from the project root.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-AUDIT004",
+      "title": "Audit pack format",
+      "text": "The audit pack shall be a valid ZIP file containing the evidence files and AUDIT-MANIFEST.json.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-HTML001",
+      "title": "HTML report rendering",
+      "text": "The report package shall render a self-contained HTML page with findings table, evidence status cards, and summary badge.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-HTML002",
+      "title": "Evidence status cards",
+      "text": "The HTML report shall include a card for each standard evidence file indicating present or absent status.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-HTML003",
+      "title": "Self-contained HTML",
+      "text": "The HTML output shall be a single file with no external CDN or network dependencies.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-REQQ001",
+      "title": "Untraced requirement detection",
+      "text": "The engine shall emit a WARNING finding TRACE002 for every requirement with no //fusa:req implementation tag.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-REQQ002",
+      "title": "Test gap detection",
+      "text": "The engine shall emit an INFO finding TRACE003 for every requirement with no //fusa:test tag; gofusa trace --gaps shall list these gaps.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-REQQ003",
+      "title": "Requirement text completeness",
+      "text": "The engine shall emit a WARNING finding TRACE004 for every requirement whose text field is empty or absent.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-CLI015",
+      "title": "gofusa vuln command",
+      "text": "The CLI shall provide a vuln command that scans go.mod dependencies and writes vuln.json.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-CLI016",
+      "title": "gofusa audit-pack command",
+      "text": "The CLI shall provide an audit-pack command that bundles all evidence artifacts into audit-pack.zip.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-CLI017",
+      "title": "gofusa trace --gaps flag",
+      "text": "The trace command shall support a --gaps flag that lists requirements with no //fusa:test tag and exits 1 when gaps exist.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
     }
   ]
 }
