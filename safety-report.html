@@ -53,7 +53,7 @@ footer a{color:#64748b}
 <header>
   <div>
     <h1>Safety Compliance Report</h1>
-    <div class="meta">github.com/SoundMatt/go-FuSa &nbsp;·&nbsp; 2026-06-08T19:51:23Z</div>
+    <div class="meta">github.com/SoundMatt/go-FuSa &nbsp;·&nbsp; 2026-06-08T20:30:59Z</div>
   </div>
   <span class="badge warn">WARN</span>
 </header>
@@ -62,10 +62,10 @@ footer a{color:#64748b}
   <h2>Summary</h2>
   <div class="summary-bar">
     <div class="stat"><div class="num ok">0</div><div class="label">Errors</div></div>
-    <div class="stat"><div class="num warning">83</div><div class="label">Warnings</div></div>
-    <div class="stat"><div class="num info">19</div><div class="label">Info</div></div>
-    <div class="stat"><div class="num">102</div><div class="label">Total</div></div>
-    <div class="stat"><div class="num">124</div><div class="label">Requirements</div></div>
+    <div class="stat"><div class="num warning">149</div><div class="label">Warnings</div></div>
+    <div class="stat"><div class="num info">56</div><div class="label">Info</div></div>
+    <div class="stat"><div class="num">205</div><div class="label">Total</div></div>
+    <div class="stat"><div class="num">152</div><div class="label">Requirements</div></div>
   </div>
 </section>
 
@@ -143,11 +143,19 @@ footer a{color:#64748b}
 </section>
 
 <section>
-  <h2>Findings (102)</h2>
+  <h2>Findings (205)</h2>
   
   <table>
     <thead><tr><th>Rule</th><th>Severity</th><th>Message</th><th>Location</th><th>Remediation</th></tr></thead>
     <tbody>
+      
+      <tr class="warning">
+        <td><code>CYBER005</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>exec.CommandContext called with a non-literal command name — verify the value cannot be influenced by untrusted input</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go:366</code></td>
+        <td>use a fixed command name string literal; pass variable data only as arguments, never as the command name</td>
+      </tr>
       
       <tr class="info">
         <td><code>CYBER009</code></td>
@@ -163,6 +171,422 @@ footer a{color:#64748b}
         <td>int32(x) — explicit narrowing conversion may silently truncate bits if x exceeds the target type&#39;s range</td>
         <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/runtime_test.go:109</code></td>
         <td>add an explicit range check before the conversion, or use math/bits or saturating arithmetic</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_auditpack.go:55</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_boundary.go:57</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_fmea.go:80</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_release.go:58</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_safetycase.go:59</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_vuln.go:52</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:30</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go:148</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go:57</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go:19</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER016</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>directory created with mode more permissive than 0750</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:138</code></td>
+        <td>use mode 0750 (owner&#43;group rwx) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:33</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:436</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:622</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config.go:112</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:78</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:212</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea_test.go:476</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443_test.go:172</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go:112</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go:151</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify_test.go:145</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go:184</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:23</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:27</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:128</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:239</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:242</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:278</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase_test.go:50</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go:60</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template_test.go:54</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go:22</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:108</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:63</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:101</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:104</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:142</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:162</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:179</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:208</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:211</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:368</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go:158</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go:151</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go:161</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go:90</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go:124</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER017</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>os.WriteFile called with mode more permissive than 0640</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go:409</code></td>
+        <td>use mode 0640 (owner rw, group r) or stricter</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>CYBER019</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>Pack: os.Stat followed by file operation — TOCTOU race; another process may modify the file between check and use</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go:93</code></td>
+        <td>open the file directly and handle ENOENT/EEXIST; avoid stat-then-open patterns</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>IEC62443-001</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>no .fusa-iec62443.json found — IEC 62443 Security Level not declared</td>
+        <td><code>.fusa-iec62443.json</code></td>
+        <td>run &#39;gofusa init&#39; or create .fusa-iec62443.json with target_sl, component_type, and incident_resp_doc</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>IEC62443-004</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>no cyber incident response plan found — required for IEC 62443-4-2 CR 6.2.1</td>
+        <td><code>INCIDENT-RESPONSE.md</code></td>
+        <td>create INCIDENT-RESPONSE.md or set incident_resp_doc in .fusa-iec62443.json</td>
       </tr>
       
       <tr class="warning">
@@ -409,6 +833,14 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go:142</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
         <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_test.go:563</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
@@ -465,7 +897,7 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go:373</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go:377</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -490,6 +922,54 @@ footer a{color:#64748b}
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
         <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa_test.go:50</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go:79</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go:132</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go:163</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go:168</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443_test.go:164</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443_test.go:175</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -665,6 +1145,54 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go:125</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara.go:352</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara_test.go:95</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara_test.go:124</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara_test.go:144</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara_test.go:177</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
         <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go:54</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
@@ -681,7 +1209,7 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:269</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:285</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -689,7 +1217,7 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:275</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:291</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -697,7 +1225,7 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:306</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:322</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -705,7 +1233,7 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:310</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:326</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -713,7 +1241,7 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:327</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:343</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -721,7 +1249,7 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:331</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:347</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -729,7 +1257,7 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:367</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:383</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -793,7 +1321,15 @@ footer a{color:#64748b}
         <td><code>LINT001</code></td>
         <td><span class="sev warning">WARNING</span></td>
         <td>return value discarded with blank identifier in multi-value call</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go:317</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go:322</code></td>
+        <td>assign all return values to named variables and handle each explicitly</td>
+      </tr>
+      
+      <tr class="warning">
+        <td><code>LINT001</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>return value discarded with blank identifier in multi-value call</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go:369</code></td>
         <td>assign all return values to named variables and handle each explicitly</td>
       </tr>
       
@@ -841,7 +1377,7 @@ footer a{color:#64748b}
         <td><code>LINT006</code></td>
         <td><span class="sev info">INFO</span></td>
         <td>package-level var credentialKeywords introduces global mutable state</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:129</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:140</code></td>
         <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
       </tr>
       
@@ -849,7 +1385,7 @@ footer a{color:#64748b}
         <td><code>LINT006</code></td>
         <td><span class="sev info">INFO</span></td>
         <td>package-level var narrowTypes introduces global mutable state</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:499</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:510</code></td>
         <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
       </tr>
       
@@ -857,7 +1393,7 @@ footer a{color:#64748b}
         <td><code>LINT006</code></td>
         <td><span class="sev info">INFO</span></td>
         <td>package-level var osPathFuncs introduces global mutable state</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:557</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:568</code></td>
         <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
       </tr>
       
@@ -865,7 +1401,15 @@ footer a{color:#64748b}
         <td><code>LINT006</code></td>
         <td><span class="sev info">INFO</span></td>
         <td>package-level var dbQueryFuncs introduces global mutable state</td>
-        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:569</code></td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go:580</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var dbQueryNames introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go:253</code></td>
         <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
       </tr>
       
@@ -904,6 +1448,22 @@ footer a{color:#64748b}
       <tr class="info">
         <td><code>LINT006</code></td>
         <td><span class="sev info">INFO</span></td>
+        <td>package-level var secPolicyFiles introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go:127</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var incidentRespFiles introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go:154</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
         <td>package-level var minimalBase introduces global mutable state</td>
         <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/cases.go:4</code></td>
         <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
@@ -925,6 +1485,46 @@ footer a{color:#64748b}
         <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
       </tr>
       
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var codeownersFiles introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go:110</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var branchProtectionFiles introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go:116</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>LINT006</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>package-level var ruleMeta introduces global mutable state</td>
+        <td><code>/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara.go:182</code></td>
+        <td>prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>SLSA002</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>provenance.json missing builder field — SLSA L2 requires the build system to be identified</td>
+        <td><code>provenance.json</code></td>
+        <td>add a builder field to provenance.json (e.g., via CI environment variable GITHUB_ACTIONS_URL) and regenerate with &#39;gofusa release&#39;</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>SLSA003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>no CODEOWNERS file or branch-protection policy found — SLSA L3 requires documented two-party review</td>
+        <td><code>.github/CODEOWNERS</code></td>
+        <td>create .github/CODEOWNERS and enable branch protection requiring at least one reviewer</td>
+      </tr>
+      
       <tr class="warning">
         <td><code>TRACE002</code></td>
         <td><span class="sev warning">WARNING</span></td>
@@ -933,12 +1533,164 @@ footer a{color:#64748b}
         <td>add //fusa:req REQ-AUDIT004 comment in the implementing source file</td>
       </tr>
       
+      <tr class="warning">
+        <td><code>TRACE002</code></td>
+        <td><span class="sev warning">WARNING</span></td>
+        <td>requirement REQ-CLI020 (&#34;gofusa fmea --cyber flag&#34;) has no //fusa:req implementation tag</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:req REQ-CLI020 comment in the implementing source file</td>
+      </tr>
+      
       <tr class="info">
         <td><code>TRACE003</code></td>
         <td><span class="sev info">INFO</span></td>
         <td>requirement REQ-AUDIT004 (&#34;Audit pack format&#34;) has no //fusa:test tag — test coverage gap</td>
         <td><code>.fusa-reqs.json</code></td>
         <td>add //fusa:test REQ-AUDIT004 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CLI018 (&#34;gofusa cyber subcommand&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CLI018 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CLI019 (&#34;gofusa tara subcommand&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CLI019 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CLI020 (&#34;gofusa fmea --cyber flag&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CLI020 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER011 (&#34;SSRF detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER011 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER012 (&#34;pprof profiling endpoint detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER012 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER013 (&#34;Zip slip path traversal detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER013 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER014 (&#34;TLS minimum version detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER014 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER015 (&#34;SQL injection via fmt.Sprintf detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER015 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER016 (&#34;Permissive directory mode detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER016 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER017 (&#34;Permissive file mode detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER017 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER018 (&#34;Path traversal from HTTP request detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER018 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER019 (&#34;TOCTOU race condition detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER019 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-CYBER020 (&#34;Predictable temp file creation detection&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-CYBER020 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-FMEA006 (&#34;FMEA cyber risk enrichment&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-FMEA006 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-IEC62443-001 (&#34;IEC 62443 configuration file presence&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-IEC62443-001 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-IEC62443-002 (&#34;IEC 62443 Security Level validity&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-IEC62443-002 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-IEC62443-003 (&#34;IEC 62443 Security Policy documentation&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-IEC62443-003 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-IEC62443-004 (&#34;IEC 62443 Incident Response Plan&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-IEC62443-004 in a _test.go file</td>
       </tr>
       
       <tr class="info">
@@ -965,13 +1717,85 @@ footer a{color:#64748b}
         <td>add //fusa:test REQ-REQQ003 in a _test.go file</td>
       </tr>
       
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-SLSA001 (&#34;SLSA L2 VCS revision in provenance&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-SLSA001 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-SLSA002 (&#34;SLSA L2 builder field in provenance&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-SLSA002 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-SLSA003 (&#34;SLSA L3 two-party review evidence&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-SLSA003 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-TARA001 (&#34;TARA threat entry structure&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-TARA001 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-TARA002 (&#34;TARA report structure&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-TARA002 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-TARA003 (&#34;TARA generation from CYBER findings&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-TARA003 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-TARA004 (&#34;TARA rendering in JSON and Markdown&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-TARA004 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-TARA005 (&#34;TARA file presence check&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-TARA005 in a _test.go file</td>
+      </tr>
+      
+      <tr class="info">
+        <td><code>TRACE003</code></td>
+        <td><span class="sev info">INFO</span></td>
+        <td>requirement REQ-VULN006 (&#34;govulncheck call-graph integration&#34;) has no //fusa:test tag — test coverage gap</td>
+        <td><code>.fusa-reqs.json</code></td>
+        <td>add //fusa:test REQ-VULN006 in a _test.go file</td>
+      </tr>
+      
     </tbody>
   </table>
   
 </section>
 
 <footer>
-  Generated by <a href="https://github.com/SoundMatt/go-FuSa">go-FuSa</a> v0.14.0
+  Generated by <a href="https://github.com/SoundMatt/go-FuSa">go-FuSa</a> v0.15.0
 </footer>
 </div>
 </body>

@@ -1,11 +1,12 @@
 {
   "format": "go-FuSa dFMEA v1",
-  "generated_at": "2026-06-08T19:51:15.315927Z",
+  "generated_at": "2026-06-08T20:30:53.983073Z",
   "module": "github.com/SoundMatt/go-FuSa",
   "entries": [
     {
       "component": "analyze",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -18,6 +19,7 @@
     {
       "component": "analyze",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -30,6 +32,7 @@
     {
       "component": "analyze",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -42,6 +45,7 @@
     {
       "component": "analyze",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -54,6 +58,7 @@
     {
       "component": "analyze",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -66,6 +71,7 @@
     {
       "component": "analyze",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -78,6 +84,7 @@
     {
       "component": "analyze",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -90,6 +97,7 @@
     {
       "component": "analyze",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -102,6 +110,7 @@
     {
       "component": "analyze",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -119,23 +128,7 @@
     {
       "component": "analyze",
       "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-ANA003"
-      ]
-    },
-    {
-      "component": "analyze",
-      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -153,6 +146,25 @@
     {
       "component": "analyze",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-ANA003"
+      ]
+    },
+    {
+      "component": "analyze",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -170,6 +182,7 @@
     {
       "component": "auditpack",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -182,6 +195,7 @@
     {
       "component": "auditpack",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -194,6 +208,7 @@
     {
       "component": "auditpack",
       "function": "Pack",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -210,6 +225,7 @@
     {
       "component": "auditpack",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -227,6 +243,7 @@
     {
       "component": "boundary",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -239,6 +256,7 @@
     {
       "component": "boundary",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -251,6 +269,7 @@
     {
       "component": "boundary",
       "function": "Render",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -267,6 +286,7 @@
     {
       "component": "boundary",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -284,6 +304,7 @@
     {
       "component": "boundary",
       "function": "Scan",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/boundary/boundary.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -300,6 +321,7 @@
     {
       "component": "config",
       "function": "Default",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -315,6 +337,7 @@
     {
       "component": "config",
       "function": "Load",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -327,6 +350,7 @@
     {
       "component": "config",
       "function": "Save",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config.go",
       "failure_modes": [
         "Returns unexpected error",
         "Partial write / data corruption"
@@ -344,6 +368,7 @@
     {
       "component": "config",
       "function": "Validate",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -356,6 +381,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -368,6 +394,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -380,6 +407,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -392,6 +420,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -404,6 +433,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -416,6 +446,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -428,6 +459,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -440,6 +472,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -452,6 +485,7 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -464,6 +498,137 @@
     {
       "component": "cyber",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -476,6 +641,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -488,6 +654,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -500,6 +667,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -512,6 +680,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -524,6 +693,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -536,6 +706,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -548,6 +719,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -560,6 +732,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -572,6 +745,7 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -584,6 +758,137 @@
     {
       "component": "cyber",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "cyber",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -596,40 +901,7 @@
     {
       "component": "cyber",
       "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-CYBER005"
-      ]
-    },
-    {
-      "component": "cyber",
-      "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-CYBER003"
-      ]
-    },
-    {
-      "component": "cyber",
-      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -647,40 +919,7 @@
     {
       "component": "cyber",
       "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-CYBER002"
-      ]
-    },
-    {
-      "component": "cyber",
-      "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-CYBER008"
-      ]
-    },
-    {
-      "component": "cyber",
-      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -698,40 +937,7 @@
     {
       "component": "cyber",
       "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-CYBER001"
-      ]
-    },
-    {
-      "component": "cyber",
-      "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-CYBER009"
-      ]
-    },
-    {
-      "component": "cyber",
-      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -749,6 +955,205 @@
     {
       "component": "cyber",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER014"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER013"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER003"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER015"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER012"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER011"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER016"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER005"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER002"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER017"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER020"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -764,8 +1169,112 @@
       ]
     },
     {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER018"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER009"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER001"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber_gosec.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER019"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-CYBER008"
+      ]
+    },
+    {
+      "component": "cyber",
+      "function": "Scan",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cyber/cyber.go",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "medium",
+      "detection_control": "unit tests"
+    },
+    {
       "component": "engine",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -778,6 +1287,7 @@
     {
       "component": "engine",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -790,6 +1300,7 @@
     {
       "component": "engine",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -802,6 +1313,7 @@
     {
       "component": "engine",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -814,6 +1326,7 @@
     {
       "component": "engine",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -826,6 +1339,7 @@
     {
       "component": "engine",
       "function": "HasErrors",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -841,6 +1355,7 @@
     {
       "component": "engine",
       "function": "HasWarnings",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -853,6 +1368,7 @@
     {
       "component": "engine",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -865,6 +1381,7 @@
     {
       "component": "engine",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -877,6 +1394,7 @@
     {
       "component": "engine",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -889,6 +1407,7 @@
     {
       "component": "engine",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -901,6 +1420,7 @@
     {
       "component": "engine",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -913,6 +1433,7 @@
     {
       "component": "engine",
       "function": "MustRegister",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -928,6 +1449,7 @@
     {
       "component": "engine",
       "function": "NewRegistry",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -940,6 +1462,7 @@
     {
       "component": "engine",
       "function": "Register",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -952,6 +1475,7 @@
     {
       "component": "engine",
       "function": "Rules",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -964,40 +1488,7 @@
     {
       "component": "engine",
       "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-FUSA004"
-      ]
-    },
-    {
-      "component": "engine",
-      "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-FUSA003"
-      ]
-    },
-    {
-      "component": "engine",
-      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1015,6 +1506,7 @@
     {
       "component": "engine",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1032,6 +1524,25 @@
     {
       "component": "engine",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-FUSA003"
+      ]
+    },
+    {
+      "component": "engine",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1046,6 +1557,25 @@
     {
       "component": "engine",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-FUSA004"
+      ]
+    },
+    {
+      "component": "engine",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1063,6 +1593,7 @@
     {
       "component": "engine",
       "function": "RunFilter",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1080,6 +1611,7 @@
     {
       "component": "fmea",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1091,7 +1623,24 @@
     },
     {
       "component": "fmea",
+      "function": "EnrichWithCyber",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-FMEA006"
+      ]
+    },
+    {
+      "component": "fmea",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1104,6 +1653,7 @@
     {
       "component": "fmea",
       "function": "Render",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1119,6 +1669,7 @@
     {
       "component": "fmea",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1136,6 +1687,7 @@
     {
       "component": "fmea",
       "function": "Scan",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1153,6 +1705,7 @@
     {
       "component": "go-Fusa (fusa)",
       "function": "String",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1163,8 +1716,9 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1175,8 +1729,9 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1187,8 +1742,9 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1199,8 +1755,9 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1211,32 +1768,9 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
-      "function": "Description",
-      "failure_modes": [
-        "Incorrect output"
-      ],
-      "effects": [
-        "Incorrect system behavior"
-      ],
-      "severity": "low",
-      "detection_control": "unit tests"
-    },
-    {
-      "component": "lint",
-      "function": "Description",
-      "failure_modes": [
-        "Incorrect output"
-      ],
-      "effects": [
-        "Incorrect system behavior"
-      ],
-      "severity": "low",
-      "detection_control": "unit tests"
-    },
-    {
-      "component": "lint",
+      "component": "iec62443",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1247,8 +1781,9 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1259,8 +1794,9 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1271,8 +1807,9 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1283,32 +1820,22 @@
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
-      "function": "ID",
+      "component": "iec62443",
+      "function": "LoadConfig",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
-        "Incorrect output"
+        "Returns unexpected error"
       ],
       "effects": [
-        "Incorrect system behavior"
+        "Silent failure propagated to caller"
       ],
-      "severity": "low",
+      "severity": "medium",
       "detection_control": "unit tests"
     },
     {
-      "component": "lint",
-      "function": "ID",
-      "failure_modes": [
-        "Incorrect output"
-      ],
-      "effects": [
-        "Incorrect system behavior"
-      ],
-      "severity": "low",
-      "detection_control": "unit tests"
-    },
-    {
-      "component": "lint",
+      "component": "iec62443",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1320,12 +1847,13 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
-        "REQ-LINT004"
+        "REQ-IEC62443-004"
       ]
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1337,12 +1865,13 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
-        "REQ-LINT005"
+        "REQ-IEC62443-002"
       ]
     },
     {
-      "component": "lint",
+      "component": "iec62443",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1354,12 +1883,187 @@
       "severity": "high",
       "detection_control": "requirement testing + unit tests",
       "requirement_ids": [
-        "REQ-LINT001"
+        "REQ-IEC62443-001"
+      ]
+    },
+    {
+      "component": "iec62443",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-IEC62443-003"
       ]
     },
     {
       "component": "lint",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "lint",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1377,6 +2081,61 @@
     {
       "component": "lint",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-LINT004"
+      ]
+    },
+    {
+      "component": "lint",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-LINT005"
+      ]
+    },
+    {
+      "component": "lint",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-LINT001"
+      ]
+    },
+    {
+      "component": "lint",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1394,6 +2153,7 @@
     {
       "component": "lint",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1411,6 +2171,7 @@
     {
       "component": "qualify",
       "function": "BuiltinCases",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1423,6 +2184,7 @@
     {
       "component": "qualify",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1435,6 +2197,7 @@
     {
       "component": "qualify",
       "function": "HasFailures",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1447,6 +2210,7 @@
     {
       "component": "qualify",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1459,6 +2223,7 @@
     {
       "component": "qualify",
       "function": "Load",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1471,6 +2236,7 @@
     {
       "component": "qualify",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1485,6 +2251,7 @@
     {
       "component": "qualify",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1502,6 +2269,7 @@
     {
       "component": "qualify",
       "function": "Save",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
       "failure_modes": [
         "Returns unexpected error",
         "Partial write / data corruption"
@@ -1516,6 +2284,7 @@
     {
       "component": "release",
       "function": "BuildManifest",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1531,6 +2300,7 @@
     {
       "component": "release",
       "function": "BuildProvenance",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1546,6 +2316,7 @@
     {
       "component": "release",
       "function": "BuildSBOM",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1561,6 +2332,7 @@
     {
       "component": "release",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1573,6 +2345,7 @@
     {
       "component": "release",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1585,6 +2358,7 @@
     {
       "component": "release",
       "function": "HashFiles",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1597,6 +2371,7 @@
     {
       "component": "release",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1609,6 +2384,7 @@
     {
       "component": "release",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1621,23 +2397,7 @@
     {
       "component": "release",
       "function": "Run",
-      "failure_modes": [
-        "Returns unexpected error",
-        "Uncontrolled execution"
-      ],
-      "effects": [
-        "Silent failure propagated to caller",
-        "Resource exhaustion"
-      ],
-      "severity": "high",
-      "detection_control": "requirement testing + unit tests",
-      "requirement_ids": [
-        "REQ-RELEASE001"
-      ]
-    },
-    {
-      "component": "release",
-      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -1654,7 +2414,26 @@
     },
     {
       "component": "release",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-RELEASE001"
+      ]
+    },
+    {
+      "component": "release",
       "function": "SaveJSON",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Returns unexpected error",
         "Partial write / data corruption"
@@ -1672,6 +2451,7 @@
     {
       "component": "release",
       "function": "ToSPDX31",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1684,6 +2464,7 @@
     {
       "component": "report",
       "function": "New",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/report.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1700,6 +2481,7 @@
     {
       "component": "report",
       "function": "Render",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/report.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1712,6 +2494,7 @@
     {
       "component": "report",
       "function": "RenderHTML",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/html.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1728,6 +2511,7 @@
     {
       "component": "report",
       "function": "RenderToFile",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/report.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -1740,6 +2524,7 @@
     {
       "component": "runtime",
       "function": "Beat",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/heartbeat.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1752,6 +2537,7 @@
     {
       "component": "runtime",
       "function": "Clear",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/diagnostic.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1764,6 +2550,7 @@
     {
       "component": "runtime",
       "function": "Count",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/faultmonitor.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1776,6 +2563,7 @@
     {
       "component": "runtime",
       "function": "Count",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/diagnostic.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1788,6 +2576,7 @@
     {
       "component": "runtime",
       "function": "Diagnostics",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/diagnostic.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1800,6 +2589,7 @@
     {
       "component": "runtime",
       "function": "IsRunning",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/watchdog.go",
       "failure_modes": [
         "Uncontrolled execution"
       ],
@@ -1812,6 +2602,7 @@
     {
       "component": "runtime",
       "function": "IsRunning",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/heartbeat.go",
       "failure_modes": [
         "Uncontrolled execution"
       ],
@@ -1824,6 +2615,7 @@
     {
       "component": "runtime",
       "function": "Kick",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/watchdog.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1836,6 +2628,7 @@
     {
       "component": "runtime",
       "function": "NewDiagManager",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/diagnostic.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1848,6 +2641,7 @@
     {
       "component": "runtime",
       "function": "NewFaultMonitor",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/faultmonitor.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1860,6 +2654,7 @@
     {
       "component": "runtime",
       "function": "NewHeartbeat",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/heartbeat.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1872,6 +2667,7 @@
     {
       "component": "runtime",
       "function": "NewStateManager",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/safestate.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1884,6 +2680,7 @@
     {
       "component": "runtime",
       "function": "NewWatchdog",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/watchdog.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1896,6 +2693,7 @@
     {
       "component": "runtime",
       "function": "Record",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/faultmonitor.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1908,6 +2706,7 @@
     {
       "component": "runtime",
       "function": "Record",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/diagnostic.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1920,6 +2719,7 @@
     {
       "component": "runtime",
       "function": "Reset",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/faultmonitor.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1932,6 +2732,7 @@
     {
       "component": "runtime",
       "function": "SetThreshold",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/faultmonitor.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1944,6 +2745,7 @@
     {
       "component": "runtime",
       "function": "Start",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/heartbeat.go",
       "failure_modes": [
         "Returns unexpected error",
         "Goroutine not terminated"
@@ -1958,6 +2760,7 @@
     {
       "component": "runtime",
       "function": "Start",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/watchdog.go",
       "failure_modes": [
         "Returns unexpected error",
         "Goroutine not terminated"
@@ -1972,6 +2775,7 @@
     {
       "component": "runtime",
       "function": "State",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/safestate.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1984,6 +2788,7 @@
     {
       "component": "runtime",
       "function": "Stop",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/watchdog.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -1996,6 +2801,7 @@
     {
       "component": "runtime",
       "function": "Stop",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/heartbeat.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2008,6 +2814,7 @@
     {
       "component": "runtime",
       "function": "String",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/safestate.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2020,6 +2827,7 @@
     {
       "component": "runtime",
       "function": "String",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/diagnostic.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2032,6 +2840,7 @@
     {
       "component": "runtime",
       "function": "Transition",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/safestate.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2044,6 +2853,7 @@
     {
       "component": "safetycase",
       "function": "Build",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2059,6 +2869,7 @@
     {
       "component": "safetycase",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2071,6 +2882,7 @@
     {
       "component": "safetycase",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2083,6 +2895,7 @@
     {
       "component": "safetycase",
       "function": "Render",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2098,6 +2911,7 @@
     {
       "component": "safetycase",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2113,8 +2927,217 @@
       ]
     },
     {
+      "component": "slsa",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "slsa",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "slsa",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "slsa",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "slsa",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "slsa",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "slsa",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-SLSA002"
+      ]
+    },
+    {
+      "component": "slsa",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-SLSA001"
+      ]
+    },
+    {
+      "component": "slsa",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/slsa/slsa.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-SLSA003"
+      ]
+    },
+    {
+      "component": "tara",
+      "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "tara",
+      "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara.go",
+      "failure_modes": [
+        "Incorrect output"
+      ],
+      "effects": [
+        "Incorrect system behavior"
+      ],
+      "severity": "low",
+      "detection_control": "unit tests"
+    },
+    {
+      "component": "tara",
+      "function": "Render",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara.go",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-TARA004"
+      ]
+    },
+    {
+      "component": "tara",
+      "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara.go",
+      "failure_modes": [
+        "Returns unexpected error",
+        "Uncontrolled execution"
+      ],
+      "effects": [
+        "Silent failure propagated to caller",
+        "Resource exhaustion"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-TARA005"
+      ]
+    },
+    {
+      "component": "tara",
+      "function": "Scan",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/tara/tara.go",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-TARA003"
+      ]
+    },
+    {
       "component": "template",
       "function": "Generate",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2127,6 +3150,7 @@
     {
       "component": "testutil",
       "function": "GoSource",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2139,6 +3163,7 @@
     {
       "component": "testutil",
       "function": "MinimalProject",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2151,6 +3176,7 @@
     {
       "component": "testutil",
       "function": "ProjectDir",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2163,6 +3189,7 @@
     {
       "component": "trace",
       "function": "Build",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2175,6 +3202,7 @@
     {
       "component": "trace",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2187,6 +3215,7 @@
     {
       "component": "trace",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2199,6 +3228,7 @@
     {
       "component": "trace",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2211,6 +3241,7 @@
     {
       "component": "trace",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2223,6 +3254,7 @@
     {
       "component": "trace",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2235,6 +3267,7 @@
     {
       "component": "trace",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2247,6 +3280,7 @@
     {
       "component": "trace",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2259,6 +3293,7 @@
     {
       "component": "trace",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2271,6 +3306,7 @@
     {
       "component": "trace",
       "function": "LoadRequirements",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2283,6 +3319,7 @@
     {
       "component": "trace",
       "function": "Render",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2298,6 +3335,7 @@
     {
       "component": "trace",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2315,6 +3353,7 @@
     {
       "component": "trace",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2332,6 +3371,7 @@
     {
       "component": "trace",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2349,6 +3389,7 @@
     {
       "component": "trace",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2366,6 +3407,7 @@
     {
       "component": "trace",
       "function": "SaveRequirements",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error",
         "Partial write / data corruption"
@@ -2380,6 +3422,7 @@
     {
       "component": "trace",
       "function": "ScanTags",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2392,6 +3435,7 @@
     {
       "component": "verify",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2404,6 +3448,7 @@
     {
       "component": "verify",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2416,6 +3461,7 @@
     {
       "component": "verify",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2428,6 +3474,7 @@
     {
       "component": "verify",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2440,6 +3487,7 @@
     {
       "component": "verify",
       "function": "Load",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2452,6 +3500,7 @@
     {
       "component": "verify",
       "function": "New",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2467,6 +3516,7 @@
     {
       "component": "verify",
       "function": "Parse",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2482,6 +3532,7 @@
     {
       "component": "verify",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2499,6 +3550,7 @@
     {
       "component": "verify",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2516,6 +3568,7 @@
     {
       "component": "verify",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2533,6 +3586,7 @@
     {
       "component": "verify",
       "function": "Save",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Returns unexpected error",
         "Partial write / data corruption"
@@ -2547,6 +3601,7 @@
     {
       "component": "verify",
       "function": "Summarise",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2559,6 +3614,7 @@
     {
       "component": "vuln",
       "function": "Description",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2571,6 +3627,7 @@
     {
       "component": "vuln",
       "function": "ID",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
       "failure_modes": [
         "Incorrect output"
       ],
@@ -2583,6 +3640,7 @@
     {
       "component": "vuln",
       "function": "ParseGoMod",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2598,6 +3656,7 @@
     {
       "component": "vuln",
       "function": "Render",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2613,6 +3672,7 @@
     {
       "component": "vuln",
       "function": "Run",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
       "failure_modes": [
         "Returns unexpected error",
         "Uncontrolled execution"
@@ -2630,6 +3690,7 @@
     {
       "component": "vuln",
       "function": "Scan",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
       "failure_modes": [
         "Returns unexpected error"
       ],
@@ -2645,7 +3706,24 @@
     },
     {
       "component": "vuln",
+      "function": "ScanWithGovulncheck",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
+      "failure_modes": [
+        "Returns unexpected error"
+      ],
+      "effects": [
+        "Silent failure propagated to caller"
+      ],
+      "severity": "high",
+      "detection_control": "requirement testing + unit tests",
+      "requirement_ids": [
+        "REQ-VULN006"
+      ]
+    },
+    {
+      "component": "vuln",
       "function": "ScanWithURL",
+      "file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
       "failure_modes": [
         "Returns unexpected error"
       ],

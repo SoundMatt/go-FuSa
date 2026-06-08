@@ -1,0 +1,1016 @@
+{
+  "format": "go-FuSa TARA v1",
+  "generated_at": "2026-06-08T20:30:54.191958Z",
+  "module": "github.com/SoundMatt/go-FuSa",
+  "entries": [
+    {
+      "id": "TARA-001",
+      "asset": "vuln.go",
+      "threat": "Command injection from variable input enables arbitrary command execution",
+      "stride": [
+        "E",
+        "R"
+      ],
+      "cwe": "CWE-78",
+      "attack_vector": "Network",
+      "likelihood": "Medium",
+      "impact": "High",
+      "security_level": 3,
+      "current_control": "Use exec.Command with fixed command and sanitised args",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER005",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln.go",
+      "source_line": 366
+    },
+    {
+      "id": "TARA-002",
+      "asset": "runtime_test.go",
+      "threat": "Integer narrowing conversion causes silent data truncation",
+      "stride": [
+        "T",
+        "D"
+      ],
+      "cwe": "CWE-190",
+      "standard": "MISRA Rule 10.3",
+      "attack_vector": "Local",
+      "likelihood": "Low",
+      "impact": "Medium",
+      "security_level": 1,
+      "current_control": "Add range check before conversion",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER009",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/runtime_test.go",
+      "source_line": 89
+    },
+    {
+      "id": "TARA-003",
+      "asset": "runtime_test.go",
+      "threat": "Integer narrowing conversion causes silent data truncation",
+      "stride": [
+        "T",
+        "D"
+      ],
+      "cwe": "CWE-190",
+      "standard": "MISRA Rule 10.3",
+      "attack_vector": "Local",
+      "likelihood": "Low",
+      "impact": "Medium",
+      "security_level": 1,
+      "current_control": "Add range check before conversion",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER009",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/runtime/runtime_test.go",
+      "source_line": 109
+    },
+    {
+      "id": "TARA-004",
+      "asset": "cmd_auditpack.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_auditpack.go",
+      "source_line": 55
+    },
+    {
+      "id": "TARA-005",
+      "asset": "cmd_boundary.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_boundary.go",
+      "source_line": 57
+    },
+    {
+      "id": "TARA-006",
+      "asset": "cmd_fmea.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_fmea.go",
+      "source_line": 80
+    },
+    {
+      "id": "TARA-007",
+      "asset": "cmd_release.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_release.go",
+      "source_line": 58
+    },
+    {
+      "id": "TARA-008",
+      "asset": "cmd_safetycase.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_safetycase.go",
+      "source_line": 59
+    },
+    {
+      "id": "TARA-009",
+      "asset": "cmd_vuln.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_vuln.go",
+      "source_line": 52
+    },
+    {
+      "id": "TARA-010",
+      "asset": "e2e_test.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go",
+      "source_line": 30
+    },
+    {
+      "id": "TARA-011",
+      "asset": "qualify.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
+      "source_line": 148
+    },
+    {
+      "id": "TARA-012",
+      "asset": "template.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go",
+      "source_line": 57
+    },
+    {
+      "id": "TARA-013",
+      "asset": "testutil.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go",
+      "source_line": 19
+    },
+    {
+      "id": "TARA-014",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable directory allows unauthorised file access",
+      "stride": [
+        "E",
+        "I"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create directory with mode 0750 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER016",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 138
+    },
+    {
+      "id": "TARA-015",
+      "asset": "e2e_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go",
+      "source_line": 33
+    },
+    {
+      "id": "TARA-016",
+      "asset": "main_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go",
+      "source_line": 436
+    },
+    {
+      "id": "TARA-017",
+      "asset": "main_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go",
+      "source_line": 622
+    },
+    {
+      "id": "TARA-018",
+      "asset": "config.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config.go",
+      "source_line": 112
+    },
+    {
+      "id": "TARA-019",
+      "asset": "config_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go",
+      "source_line": 78
+    },
+    {
+      "id": "TARA-020",
+      "asset": "config_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go",
+      "source_line": 212
+    },
+    {
+      "id": "TARA-021",
+      "asset": "fmea_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fmea/fmea_test.go",
+      "source_line": 476
+    },
+    {
+      "id": "TARA-022",
+      "asset": "iec62443_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/iec62443/iec62443_test.go",
+      "source_line": 172
+    },
+    {
+      "id": "TARA-023",
+      "asset": "qualify.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
+      "source_line": 112
+    },
+    {
+      "id": "TARA-024",
+      "asset": "qualify.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go",
+      "source_line": 151
+    },
+    {
+      "id": "TARA-025",
+      "asset": "qualify_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify_test.go",
+      "source_line": 145
+    },
+    {
+      "id": "TARA-026",
+      "asset": "release.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go",
+      "source_line": 184
+    },
+    {
+      "id": "TARA-027",
+      "asset": "release_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+      "source_line": 23
+    },
+    {
+      "id": "TARA-028",
+      "asset": "release_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+      "source_line": 27
+    },
+    {
+      "id": "TARA-029",
+      "asset": "release_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+      "source_line": 128
+    },
+    {
+      "id": "TARA-030",
+      "asset": "release_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+      "source_line": 239
+    },
+    {
+      "id": "TARA-031",
+      "asset": "release_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+      "source_line": 242
+    },
+    {
+      "id": "TARA-032",
+      "asset": "release_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go",
+      "source_line": 278
+    },
+    {
+      "id": "TARA-033",
+      "asset": "safetycase_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase_test.go",
+      "source_line": 50
+    },
+    {
+      "id": "TARA-034",
+      "asset": "template.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go",
+      "source_line": 60
+    },
+    {
+      "id": "TARA-035",
+      "asset": "template_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template_test.go",
+      "source_line": 54
+    },
+    {
+      "id": "TARA-036",
+      "asset": "testutil.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil.go",
+      "source_line": 22
+    },
+    {
+      "id": "TARA-037",
+      "asset": "trace.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go",
+      "source_line": 108
+    },
+    {
+      "id": "TARA-038",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 63
+    },
+    {
+      "id": "TARA-039",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 101
+    },
+    {
+      "id": "TARA-040",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 104
+    },
+    {
+      "id": "TARA-041",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 142
+    },
+    {
+      "id": "TARA-042",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 162
+    },
+    {
+      "id": "TARA-043",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 179
+    },
+    {
+      "id": "TARA-044",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 208
+    },
+    {
+      "id": "TARA-045",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 211
+    },
+    {
+      "id": "TARA-046",
+      "asset": "trace_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go",
+      "source_line": 368
+    },
+    {
+      "id": "TARA-047",
+      "asset": "verify.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go",
+      "source_line": 158
+    },
+    {
+      "id": "TARA-048",
+      "asset": "verify_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go",
+      "source_line": 151
+    },
+    {
+      "id": "TARA-049",
+      "asset": "verify_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go",
+      "source_line": 161
+    },
+    {
+      "id": "TARA-050",
+      "asset": "vuln_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go",
+      "source_line": 90
+    },
+    {
+      "id": "TARA-051",
+      "asset": "vuln_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go",
+      "source_line": 124
+    },
+    {
+      "id": "TARA-052",
+      "asset": "vuln_test.go",
+      "threat": "World-readable/writable file allows unauthorised data access or tampering",
+      "stride": [
+        "I",
+        "T"
+      ],
+      "cwe": "CWE-732",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Create file with mode 0640 or stricter",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER017",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/vuln/vuln_test.go",
+      "source_line": 409
+    },
+    {
+      "id": "TARA-053",
+      "asset": "auditpack.go",
+      "threat": "TOCTOU race allows attacker to substitute file between check and use",
+      "stride": [
+        "E",
+        "T"
+      ],
+      "cwe": "CWE-362",
+      "attack_vector": "Local",
+      "likelihood": "Medium",
+      "impact": "Medium",
+      "security_level": 2,
+      "current_control": "Open file directly; handle ENOENT/EEXIST atomically",
+      "residual_risk": "Low after remediation",
+      "cyber_rule_id": "CYBER019",
+      "source_file": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/auditpack/auditpack.go",
+      "source_line": 93
+    }
+  ]
+}

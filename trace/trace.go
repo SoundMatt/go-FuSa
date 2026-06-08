@@ -38,6 +38,9 @@ const (
 	KindImpl TagKind = "impl"
 	// KindTest marks a source location that tests a requirement.
 	KindTest TagKind = "test"
+	// KindSecTest marks a security-test that verifies a CYBER/security requirement.
+	// Used with //fusa:sec-test <REQ-ID> annotations.
+	KindSecTest TagKind = "sec-test"
 )
 
 // Requirement is a traceable safety requirement.
@@ -59,9 +62,10 @@ type Tag struct {
 
 // Coverage holds traceability coverage metrics.
 type Coverage struct {
-	TotalRequirements  int `json:"totalRequirements"`
-	TracedRequirements int `json:"tracedRequirements"`
-	TestedRequirements int `json:"testedRequirements"`
+	TotalRequirements     int `json:"totalRequirements"`
+	TracedRequirements    int `json:"tracedRequirements"`
+	TestedRequirements    int `json:"testedRequirements"`
+	SecTestedRequirements int `json:"secTestedRequirements"` // //fusa:sec-test tags
 }
 
 // Matrix is the full traceability matrix for a project.
@@ -160,23 +164,27 @@ func scanFile(path string) ([]Tag, error) {
 	for sc.Scan() {
 		lineNum++
 		text := strings.TrimSpace(sc.Text())
-		for _, prefix := range []string{"//fusa:req ", "//fusa:test "} {
-			if !strings.HasPrefix(text, prefix) {
+		for _, pair := range []struct {
+			prefix string
+			kind   TagKind
+		}{
+			{"//fusa:req ", KindImpl},
+			{"//fusa:test ", KindTest},
+			{"//fusa:sec-test ", KindSecTest},
+		} {
+			if !strings.HasPrefix(text, pair.prefix) {
 				continue
 			}
 			//fusa:req REQ-TRACE007
-			reqID := strings.TrimSpace(text[len(prefix):])
+			//fusa:req REQ-TRACE005
+			reqID := strings.TrimSpace(text[len(pair.prefix):])
 			if reqID == "" {
 				continue
-			}
-			kind := KindImpl
-			if prefix == "//fusa:test " {
-				kind = KindTest
 			}
 			tags = append(tags, Tag{
 				RequirementID: reqID,
 				Line:          lineNum,
-				Kind:          kind,
+				Kind:          pair.kind,
 			})
 		}
 	}
@@ -213,12 +221,15 @@ func Build(root string) (*Matrix, error) {
 
 	traced := make(map[string]bool)
 	tested := make(map[string]bool)
+	secTested := make(map[string]bool)
 	for _, t := range tags {
 		switch t.Kind {
 		case KindImpl:
 			traced[t.RequirementID] = true
 		case KindTest:
 			tested[t.RequirementID] = true
+		case KindSecTest:
+			secTested[t.RequirementID] = true
 		}
 	}
 
@@ -231,6 +242,10 @@ func Build(root string) (*Matrix, error) {
 		//fusa:req REQ-TRACE004
 		if tested[req.ID] {
 			cov.TestedRequirements++
+		}
+		//fusa:req REQ-TRACE005
+		if secTested[req.ID] {
+			cov.SecTestedRequirements++
 		}
 	}
 
@@ -259,10 +274,11 @@ func Render(w io.Writer, m *Matrix, format string) error {
 func renderText(w io.Writer, m *Matrix) error {
 	lines := []string{
 		"Requirements Traceability Matrix",
-		fmt.Sprintf("Requirements: %d  Traced: %d  Tested: %d",
+		fmt.Sprintf("Requirements: %d  Traced: %d  Tested: %d  Sec-Tested: %d",
 			m.Coverage.TotalRequirements,
 			m.Coverage.TracedRequirements,
-			m.Coverage.TestedRequirements),
+			m.Coverage.TestedRequirements,
+			m.Coverage.SecTestedRequirements),
 		"",
 	}
 	for _, l := range lines {

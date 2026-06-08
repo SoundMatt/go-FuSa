@@ -1,7 +1,8 @@
-// Package cyber provides go-FuSa cybersecurity static analysis rules (v0.14).
+// Package cyber provides go-FuSa cybersecurity static analysis rules (v0.14–v0.15).
 //
 // Rules are mapped to CWE weaknesses, ISO 21434 cybersecurity requirements,
 // SEI CERT C-derived patterns adapted for Go, and MISRA-C:2023 directives.
+// v0.15 adds gosec-inspired rules (CYBER011–020) and exposes Scan for cross-package use.
 //
 // Rule catalogue:
 //
@@ -15,6 +16,16 @@
 //	CYBER008  HTTP server without timeouts               CWE-400
 //	CYBER009  Integer narrowing conversion               CWE-190 / MISRA 10.3
 //	CYBER010  String concatenation in OS/DB API call     CWE-22 / CWE-89
+//	CYBER011  SSRF — URL from variable in HTTP client    CWE-918 (gosec G107)
+//	CYBER012  Profiling endpoint exposed (pprof)         gosec G108
+//	CYBER013  Zip slip — unsafe archive extraction       CWE-23  (gosec G110)
+//	CYBER014  TLS minimum version too low                CWE-326 (gosec G112)
+//	CYBER015  SQL injection via fmt.Sprintf              CWE-89  (gosec G202)
+//	CYBER016  Permissive directory creation mode         CWE-732 (gosec G301)
+//	CYBER017  Permissive file creation mode              CWE-732 (gosec G302)
+//	CYBER018  File path derived from HTTP request        CWE-22  (gosec G304)
+//	CYBER019  TOCTOU race condition on filesystem        CWE-362
+//	CYBER020  Insecure temporary file creation           CWE-377 (gosec G303)
 //
 // Activate by importing this package for its side effects:
 //
@@ -635,4 +646,17 @@ func (r *ruleStringConcatInAPI) Run(_ context.Context, projectRoot string, _ *co
 		})
 	}
 	return findings, nil
+}
+
+// Scan runs all CYBER rules against projectRoot and returns the findings.
+// Other packages (fmea, tara) call this to obtain cyber findings without
+// importing the engine directly.
+func Scan(ctx context.Context, projectRoot string, cfg *config.Config) ([]fusa.Finding, error) {
+	result, err := engine.Default.RunFilter(ctx, projectRoot, cfg, func(r engine.Rule) bool {
+		return strings.HasPrefix(r.ID(), "CYBER")
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.Findings, nil
 }

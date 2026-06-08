@@ -238,6 +238,27 @@ Deliverables: `cyber` package with 10 rules; 82.3% overall coverage; 20/20 packa
 
 ---
 
+## v0.15 — Cybersecurity Deep Dive ✅
+
+**Goal:** Complete the gosec rule set, add industry standards (IEC 62443, SLSA), integrate security evidence across dFMEA/TARA/requirements, and add govulncheck call-graph analysis.
+
+Features:
+- **CYBER011–020** — gosec-inspired rules: SSRF (CWE-918), pprof exposure (CWE-200), zip slip (CWE-23), TLS min version (CWE-326), SQL via fmt.Sprintf (CWE-89), permissive dir/file modes (CWE-732), path from request (CWE-22), TOCTOU (CWE-362), predictable temp file (CWE-377)
+- **IEC 62443** — Security Level compliance checks (SL 1–4), SECURITY.md policy, incident response plan
+- **SLSA L2/L3** — provenance field checks (vcsRevision, builder), CODEOWNERS/branch-protection evidence
+- **govulncheck integration** — call-graph analysis wrapper; falls back to OSV API when binary absent
+- **TARA generation** — `tara.Scan` + `tara.Render` (JSON/Markdown); `TARA001` engine rule; full ISO 21434 Ch. 9 metadata for CYBER001–020
+- **CYBER→dFMEA enrichment** — `fmea.EnrichWithCyber` cross-references findings by file path
+- **`//fusa:sec-test` annotation** — new trace tag kind; `SecTestedRequirements` in coverage summary
+- **`gofusa cyber`** subcommand — runs CYBER rules, writes cyber-report.json
+- **`gofusa tara`** subcommand — generates tara.json and tara.md
+- **`gofusa fmea --cyber`** flag — enriches FMEA with security context
+- **`gofusa release --full`** now additionally generates cyber-report.json, tara.json, tara.md
+
+Deliverables: 23/23 packages pass; 0 lint issues; 152 requirements (REQ-CYBER011–020, REQ-IEC62443-001–004, REQ-SLSA001–003, REQ-VULN006, REQ-TARA001–005, REQ-FMEA006, REQ-TRACE005, REQ-CLI018–020)
+
+---
+
 ## v1.0 — Enterprise Ready
 
 **Goal:** Production adoption.

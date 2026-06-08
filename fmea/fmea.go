@@ -54,11 +54,13 @@ const (
 type Entry struct {
 	Component        string   `json:"component"`
 	Function         string   `json:"function"`
+	File             string   `json:"file,omitempty"`
 	FailureModes     []string `json:"failure_modes"`
 	Effects          []string `json:"effects"`
 	Severity         Severity `json:"severity"`
 	DetectionControl string   `json:"detection_control"`
 	RequirementIDs   []string `json:"requirement_ids,omitempty"`
+	CyberRisks       []string `json:"cyber_risks,omitempty"` // populated by EnrichWithCyber
 }
 
 // Report is the complete dFMEA output for a project.
@@ -180,6 +182,7 @@ func scanFile(path string, hasTests bool) ([]Entry, error) {
 		entries = append(entries, Entry{
 			Component:        component,
 			Function:         funcDecl.Name.Name,
+			File:             path,
 			FailureModes:     modes,
 			Effects:          effects,
 			Severity:         sev,
@@ -210,7 +213,7 @@ func renderCSV(w io.Writer, r *Report) error {
 	cw := csv.NewWriter(w)
 	if err := cw.Write([]string{
 		"Component", "Function", "FailureModes", "Effects",
-		"Severity", "DetectionControl", "RequirementIDs",
+		"Severity", "DetectionControl", "RequirementIDs", "CyberRisks",
 	}); err != nil {
 		return err
 	}
@@ -223,6 +226,7 @@ func renderCSV(w io.Writer, r *Report) error {
 			string(e.Severity),
 			e.DetectionControl,
 			strings.Join(e.RequirementIDs, "; "),
+			strings.Join(e.CyberRisks, "; "),
 		}); err != nil {
 			return err
 		}
@@ -380,4 +384,30 @@ func (r *fmea001Rule) Run(_ context.Context, projectRoot string, cfg *config.Con
 		Location:    fusa.Location{File: FMEAFile},
 		Remediation: "Run: gofusa fmea",
 	}}, nil
+}
+
+// ─── cyber enrichment ─────────────────────────────────────────────────────────
+
+// EnrichWithCyber cross-references cyberFindings into FMEA entries by source file.
+// For each CYBER finding whose file matches a function's file, the finding message
+// is appended to CyberRisks and the entry Severity is raised to high when the
+// finding is ERROR-level.
+//
+//fusa:req REQ-FMEA006
+func EnrichWithCyber(report *Report, cyberFindings []fusa.Finding) {
+	// Build a map from file path to entry indices for O(n) matching.
+	fileIndex := make(map[string][]int, len(report.Entries))
+	for i, e := range report.Entries {
+		if e.File != "" {
+			fileIndex[e.File] = append(fileIndex[e.File], i)
+		}
+	}
+	for _, f := range cyberFindings {
+		for _, idx := range fileIndex[f.Location.File] {
+			report.Entries[idx].CyberRisks = append(report.Entries[idx].CyberRisks, f.RuleID+": "+f.Message)
+			if f.Severity == fusa.SeverityError && report.Entries[idx].Severity != SeverityHigh {
+				report.Entries[idx].Severity = SeverityHigh
+			}
+		}
+	}
 }

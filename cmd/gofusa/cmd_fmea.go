@@ -1,12 +1,17 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
+	"github.com/SoundMatt/go-FuSa/config"
+	"github.com/SoundMatt/go-FuSa/cyber"
 	"github.com/SoundMatt/go-FuSa/fmea"
 )
 
@@ -28,6 +33,7 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 	var (
 		dir       = fs.String("dir", "", "project root directory (default: current directory)")
 		outputDir = fs.String("output-dir", "", "output directory (default: project root)")
+		withCyber = fs.Bool("cyber", false, "enrich FMEA entries with CYBER findings (adds CyberRisks column)")
 	)
 	if err := fs.Parse(args); err != nil {
 		return 1
@@ -52,6 +58,23 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa fmea: scan: %v\n", err)
 		return 1
+	}
+
+	if *withCyber {
+		cfg, cfgErr := config.Load(projectRoot)
+		if cfgErr != nil && !errors.Is(cfgErr, fusa.ErrNoConfig) {
+			fmt.Fprintf(stderr, "gofusa fmea: load config: %v\n", cfgErr)
+			return 1
+		}
+		if cfg == nil {
+			cfg = config.Default("", filepath.Base(projectRoot))
+		}
+		cyberFindings, cyberErr := cyber.Scan(context.Background(), projectRoot, cfg)
+		if cyberErr != nil {
+			fmt.Fprintf(stderr, "gofusa fmea: cyber scan: %v\n", cyberErr)
+			return 1
+		}
+		fmea.EnrichWithCyber(report, cyberFindings)
 	}
 
 	if err := os.MkdirAll(outDir, 0o755); err != nil {

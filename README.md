@@ -31,8 +31,12 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `safetycase/` | Safety case assembly — evidence collection, GSN diagram, compliance mapping |
 | `fmea/` | dFMEA generation — derives failure modes, effects, and severities from exported functions |
 | `boundary/` | Component boundary diagrams — package dependency graph in Mermaid and DOT formats |
-| `cyber/` | Cybersecurity static analysis — 10 CWE-mapped rules (ISO 21434, CERT, MISRA-C:2023) |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack` |
+| `cyber/` | Cybersecurity static analysis — 20 CWE-mapped rules (ISO 21434, gosec, CERT, MISRA-C:2023) |
+| `iec62443/` | IEC 62443 industrial cybersecurity compliance — Security Level checks, SECURITY.md, incident response |
+| `slsa/` | SLSA L2/L3 supply-chain checks — provenance fields, CODEOWNERS, branch-protection evidence |
+| `tara/` | Threat Analysis and Risk Assessment (TARA) — ISO 21434 Ch. 9, STRIDE/CWE/risk mapping, Markdown export |
+| `vuln/` | Dependency vulnerability scanner — OSV API + govulncheck call-graph analysis |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara` |
 
 ## Install
 
@@ -56,8 +60,15 @@ gofusa lint
 # Run only static-analysis rules
 gofusa analyze
 
-# Run cybersecurity analysis (CYBER rules: weak crypto, command injection, hardcoded credentials, …)
-# Cybersecurity rules are also included in gofusa check
+# Run cybersecurity analysis (20 rules: gosec, ISO 21434, CWE-mapped; writes cyber-report.json)
+gofusa cyber
+gofusa cyber --strict  # exit 1 on any finding
+
+# Generate a Threat Analysis and Risk Assessment (TARA) per ISO 21434 Ch. 9
+gofusa tara  # writes tara.json + tara.md
+
+# Enrich dFMEA with cyber risk context
+gofusa fmea --cyber  # cross-references CYBER findings into FMEA entries by file
 
 # Generate safety document templates (SAFETY_PLAN.md, TEST_EVIDENCE.md, HARA.md)
 gofusa template --type all
@@ -99,7 +110,7 @@ gofusa report --format html --output safety-report.html
 # Show test coverage gaps (requirements with no //fusa:test tag)
 gofusa trace --gaps
 
-# Generate everything in one command (SBOM, provenance, fmea, boundary, vuln, audit-pack)
+# Generate everything in one command (SBOM, provenance, fmea, boundary, vuln, cyber, tara, audit-pack)
 gofusa release --full
 ```
 
@@ -133,7 +144,9 @@ See [docker-compose.yml](docker-compose.yml) for a full-pipeline example.
 |---|---|
 | ISO 26262 | Automotive functional safety (ASIL A–D) |
 | IEC 61508 | General functional safety (SIL 1–4) |
-| ISO 21434 | Automotive cybersecurity (evidence hooks) |
+| ISO 21434 | Automotive cybersecurity — CYBER rules, TARA generation, FMEA enrichment |
+| IEC 62443 | Industrial/OT cybersecurity — Security Level compliance checks |
+| SLSA L2/L3 | Supply-chain security — provenance fields, CODEOWNERS, branch protection |
 | DO-178C | Aerospace software (process alignment) |
 
 ## Tool qualification

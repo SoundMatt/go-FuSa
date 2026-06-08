@@ -5,7 +5,7 @@
       "type": "CreationInfo",
       "spdxId": "_:creationInfo0",
       "specVersion": "SPDX-3.0.1",
-      "created": "2026-06-08T19:51:20Z",
+      "created": "2026-06-08T20:30:53Z",
       "createdBy": [
         "_:tool0"
       ]
@@ -13,7 +13,7 @@
     {
       "type": "Tool",
       "spdxId": "_:tool0",
-      "name": "go-FuSa/0.14.0",
+      "name": "go-FuSa/0.15.0",
       "creationInfo": "_:creationInfo0"
     },
     {

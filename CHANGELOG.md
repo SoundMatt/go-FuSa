@@ -7,6 +7,45 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.15.0] — 2026-06-08
+
+### Added
+- `cyber` package — 10 additional gosec-inspired rules (CYBER011–020, REQ-CYBER011–020):
+  - **CYBER011** — SSRF: `http.Get/Post/Head/NewRequest` with variable URL (CWE-918) → WARNING
+  - **CYBER012** — pprof endpoint exposed: `net/http/pprof` import (CWE-200, gosec G108) → WARNING
+  - **CYBER013** — Zip slip: archive entry `.Name` passed to `os.Create/OpenFile/filepath.Join` (CWE-23, gosec G110) → ERROR
+  - **CYBER014** — TLS minimum version: `tls.Config{MinVersion: tls.VersionTLS10/11}` (CWE-326, gosec G112) → WARNING
+  - **CYBER015** — SQL injection via `fmt.Sprintf`: `db.Query(fmt.Sprintf(...))` (CWE-89, gosec G201/G202) → ERROR
+  - **CYBER016** — Permissive directory mode: `os.Mkdir/MkdirAll` with mode > 0750 (CWE-732, gosec G301/G302) → WARNING
+  - **CYBER017** — Permissive file mode: `os.OpenFile/WriteFile` with mode > 0640 (CWE-732, gosec G304/G306) → WARNING
+  - **CYBER018** — Path from HTTP request: `http.ServeFile`/`os.Open` with `r.URL.Path` (CWE-22) → ERROR
+  - **CYBER019** — TOCTOU: function with both `os.Stat` and `os.Open/Create/Remove/Rename` (CWE-362) → WARNING
+  - **CYBER020** — Predictable temp file: `os.Create(filepath.Join(os.TempDir(),...))` (CWE-377) → WARNING
+- `cyber.Scan` — public function running all CYBER rules via `engine.Default.RunFilter`
+- `iec62443` package — IEC 62443 industrial cybersecurity compliance checks (REQ-IEC62443-001–004):
+  - **IEC62443-001** — Missing `.fusa-iec62443.json` configuration file → INFO
+  - **IEC62443-002** — `target_sl` not in 1–4 → WARNING
+  - **IEC62443-003** — No SECURITY.md or equivalent security policy document → INFO
+  - **IEC62443-004** — No incident response plan document → INFO
+  - `LoadConfig` — parses `.fusa-iec62443.json` (target_sl, component_type, zone_conduit, security_reqs_doc, incident_resp_doc)
+- `slsa` package — SLSA L2/L3 supply-chain compliance rules (REQ-SLSA001–003):
+  - **SLSA001** — `provenance.json` missing `vcsRevision` field (SLSA L2) → INFO
+  - **SLSA002** — `provenance.json` missing `builder` field (SLSA L2) → INFO
+  - **SLSA003** — No CODEOWNERS or branch-protection configuration (SLSA L3) → INFO
+- `tara` package — Threat Analysis and Risk Assessment per ISO 21434 Chapter 9 (REQ-TARA001–005):
+  - `tara.Scan` — maps CYBER findings to `ThreatEntry` with STRIDE, CWE, attack vector, likelihood, impact, IEC 62443 SL, control, residual risk; unknown rules produce default entries
+  - `tara.Render` — JSON and Markdown table formats for safety case evidence
+  - `TARA001` engine rule — INFO finding when `tara.json` is absent
+  - `ruleMeta` map — full metadata for all CYBER001–020 rules
+- `vuln.ScanWithGovulncheck` — uses govulncheck call-graph analysis when binary available, falls back to OSV API scan; reduces false positives by flagging only reachable call paths (REQ-VULN006)
+- `fmea.EnrichWithCyber` — cross-references CYBER findings into FMEA entries by file path; escalates severity to High for ERROR-level findings (REQ-FMEA006)
+- `trace.KindSecTest` — `//fusa:sec-test REQ-ID` annotation; counted as `SecTestedRequirements` in coverage report (REQ-TRACE005)
+- `gofusa cyber` CLI subcommand — runs CYBER rules, prints summary, writes `cyber-report.json` (REQ-CLI018)
+- `gofusa tara` CLI subcommand — runs CYBER rules and generates `tara.json` + `tara.md` (REQ-CLI019)
+- `gofusa fmea --cyber` flag — enriches FMEA entries with CYBER findings (REQ-CLI020)
+- `gofusa release --full` now additionally generates `cyber-report.json`, `tara.json`, and `tara.md`
+- 28 new requirements (REQ-CYBER011–020, REQ-IEC62443-001–004, REQ-SLSA001–003, REQ-VULN006, REQ-TARA001–005, REQ-FMEA006, REQ-TRACE005, REQ-CLI018–020), total 152
+
 ## [0.14.0] — 2026-06-08
 
 ### Added
