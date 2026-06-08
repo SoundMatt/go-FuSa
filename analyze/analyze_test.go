@@ -239,6 +239,18 @@ func walk(n int) {
 	}
 }
 
+// ─── Descriptions ─────────────────────────────────────────────────────────────
+
+func TestAnalyzeRuleDescriptions(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if len(r.ID()) >= 3 && r.ID()[:3] == "ANA" {
+			if r.Description() == "" {
+				t.Errorf("%s: Description() returned empty string", r.ID())
+			}
+		}
+	}
+}
+
 // ─── Fuzz ─────────────────────────────────────────────────────────────────────
 
 func FuzzAnalyzeRules(f *testing.F) {

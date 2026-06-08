@@ -343,6 +343,18 @@ func isNoConfig(err error) bool {
 	return err != nil && strings.Contains(err.Error(), "no configuration file found")
 }
 
+// ─── Descriptions ─────────────────────────────────────────────────────────────
+
+func TestTraceRuleDescriptions(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if len(r.ID()) >= 5 && r.ID()[:5] == "TRACE" {
+			if r.Description() == "" {
+				t.Errorf("%s: Description() returned empty string", r.ID())
+			}
+		}
+	}
+}
+
 // ─── Fuzz ─────────────────────────────────────────────────────────────────────
 
 func FuzzScanTags(f *testing.F) {

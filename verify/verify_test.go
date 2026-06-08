@@ -255,6 +255,18 @@ func FuzzParse(f *testing.F) {
 	})
 }
 
+// ─── Descriptions ─────────────────────────────────────────────────────────────
+
+func TestVerifyRuleDescriptions(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if len(r.ID()) >= 6 && r.ID()[:6] == "VERIFY" {
+			if r.Description() == "" {
+				t.Errorf("%s: Description() returned empty string", r.ID())
+			}
+		}
+	}
+}
+
 func TestVERIFY002_AllTestsPassed(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	results := []verify.TestResult{

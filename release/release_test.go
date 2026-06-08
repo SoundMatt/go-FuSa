@@ -188,6 +188,29 @@ func TestSaveJSON_SPDX31(t *testing.T) {
 	}
 }
 
+func TestToSPDX31_WithComponents(t *testing.T) {
+	gomod := "module example.com/proj\n\ngo 1.22\n\nrequire (\n\texample.com/dep v1.2.3\n)\n"
+	gosum := "example.com/dep v1.2.3 h1:47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\nexample.com/dep v1.2.3/go.mod h1:def==\n"
+	dir := moduleDir(t, gomod, gosum)
+	sbom, err := release.BuildSBOM(dir)
+	if err != nil {
+		t.Fatalf("BuildSBOM: %v", err)
+	}
+	doc := release.ToSPDX31(sbom)
+	var hasPkg bool
+	for _, el := range doc.Graph {
+		if el.Type == "software_Package" && el.Name == "example.com/dep" {
+			hasPkg = true
+			if len(el.VerifiedUsing) == 0 {
+				t.Error("ToSPDX31: expected VerifiedUsing hash for component with h1: hash")
+			}
+		}
+	}
+	if !hasPkg {
+		t.Error("ToSPDX31: expected software_Package element for dependency")
+	}
+}
+
 func TestToSPDX31_ModuleName(t *testing.T) {
 	dir := moduleDir(t, "module github.com/example/proj\n\ngo 1.22\n", "")
 	sbom, err := release.BuildSBOM(dir)

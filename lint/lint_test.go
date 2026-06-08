@@ -247,6 +247,18 @@ func run() {
 	}
 }
 
+// ─── Descriptions ─────────────────────────────────────────────────────────────
+
+func TestLintRuleDescriptions(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if len(r.ID()) >= 4 && r.ID()[:4] == "LINT" {
+			if r.Description() == "" {
+				t.Errorf("%s: Description() returned empty string", r.ID())
+			}
+		}
+	}
+}
+
 // ─── Fuzz ─────────────────────────────────────────────────────────────────────
 
 func FuzzLintRules(f *testing.F) {

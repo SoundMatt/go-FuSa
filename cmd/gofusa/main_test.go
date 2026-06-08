@@ -183,6 +183,30 @@ func TestRun_Lint_Help(t *testing.T) {
 	}
 }
 
+func TestRun_Lint_Strict_FailsOnWarning(t *testing.T) {
+	src := "package main\n\nimport \"os\"\n\nfunc f() {\n\tx, _ := os.Open(\"\")\n\t_ = x\n}\n"
+	files := testutil.MinimalProject()
+	files["bad.go"] = src
+	dir := testutil.ProjectDir(t, files)
+	var out, errOut bytes.Buffer
+	code := run([]string{"lint", "--dir", dir, "--strict"}, &out, &errOut)
+	if code == 0 {
+		t.Error("lint --strict: expected exit 1 when LINT001 WARNING present")
+	}
+}
+
+func TestRun_Lint_BadConfig(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod":     "module github.com/x/y\n\ngo 1.22\n",
+		".fusa.json": "not valid json",
+	})
+	var out, errOut bytes.Buffer
+	code := run([]string{"lint", "--dir", dir}, &out, &errOut)
+	if code == 0 {
+		t.Error("lint with bad config: expected non-zero exit code")
+	}
+}
+
 // ─── analyze ──────────────────────────────────────────────────────────────────
 
 //fusa:test REQ-CLI009

@@ -129,7 +129,7 @@ jobs:
           fetch-depth: 0
       - name: Check DCO sign-off on all PR commits
         run: |
-          git log --format="%H" origin/${{ github.base_ref }}..HEAD | while read -r sha; do
+          git log --format="%H" ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | while read -r sha; do
             body=$(git log -1 --format="%B" "$sha")
             if ! echo "$body" | grep -qE "^Signed-off-by: .+ <.+@.+>"; then
               echo "FAIL: commit $sha is missing a Signed-off-by line"
