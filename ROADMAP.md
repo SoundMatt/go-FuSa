@@ -118,6 +118,29 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.17 — Developer Workflow Integration ✅
+
+**Goal:** Make go-FuSa a daily-driver tool with richer output formats, CI regression gates,
+and developer-facing commands.
+
+Features:
+- **SARIF output** — `gofusa check --format sarif` for GitHub Advanced Security / Code Scanning
+- **SVG badge** — `gofusa badge` generates a Shields.io-style status badge from a JSON report
+- **Diff command** — `gofusa diff baseline.json current.json` categorises new/resolved/unchanged
+  findings; exits 1 on regressions (CI gate)
+- **`--sec-tested` gate** — `gofusa trace --sec-tested 80` enforces ≥80% requirements have tests
+- **`gofusa req`** — inspect requirements and their impl/test annotation locations
+- **`gofusa fix`** — surfaces auto-fixable findings with per-finding remediation guidance
+- **`gofusa hooks`** — install/remove a `gofusa check --strict` pre-commit git hook
+- **`gofusa sign`** — HMAC-SHA256 sign and verify release artifacts; `--keygen` for key generation
+- **ANA005–ANA008** — four new static analysis rules: context propagation, error wrapping,
+  nil dereference risk, and goroutine/package-level variable races
+
+Deliverables: `sarif/`, `badge/`, `diff/` packages; `cmd_diff`, `cmd_badge`, `cmd_req`,
+`cmd_fix`, `cmd_hooks`, `cmd_sign`; `analyze/rules_005_008.go`
+
+---
+
 ## v0.16 — Docker Quickstart ✅
 
 **Goal:** Zero-install evaluation and CI integration via container.

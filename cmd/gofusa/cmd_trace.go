@@ -21,10 +21,12 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 	}
 
 	var (
-		dir    = fs.String("dir", "", "project root directory (default: current directory)")
-		format = fs.String("format", "text", "output format: text or json")
-		output = fs.String("output", "", "write output to file (default: stdout)")
-		gaps   = fs.Bool("gaps", false, "show only requirements with no //fusa:test tag (test coverage gaps)")
+		dir        = fs.String("dir", "", "project root directory (default: current directory)")
+		format     = fs.String("format", "text", "output format: text or json")
+		output     = fs.String("output", "", "write output to file (default: stdout)")
+		gaps       = fs.Bool("gaps", false, "show only requirements with no //fusa:test tag (test coverage gaps)")
+		//fusa:req REQ-CLI-TRACE001
+		secTested  = fs.Int("sec-tested", 0, "exit 1 if fewer than N%% of requirements have //fusa:test tags (0 = disabled)")
 	)
 	if err := fs.Parse(args); err != nil {
 		return 1
@@ -50,6 +52,10 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 		return runTraceGaps(matrix, stdout, stderr)
 	}
 
+	if *secTested > 0 {
+		return runTraceSecTested(matrix, *secTested, stdout, stderr)
+	}
+
 	w := stdout
 	if *output != "" {
 		f, err := os.Create(*output)
@@ -63,6 +69,30 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 
 	if err := trace.Render(w, matrix, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa trace: render: %v\n", err)
+		return 1
+	}
+	return 0
+}
+
+// runTraceSecTested exits 1 if test coverage is below threshold percent.
+//
+//fusa:req REQ-CLI-TRACE002
+func runTraceSecTested(matrix *trace.Matrix, threshold int, stdout, stderr io.Writer) int {
+	if len(matrix.Requirements) == 0 {
+		fmt.Fprintf(stdout, "sec-tested: no requirements found\n")
+		return 0
+	}
+	tested := make(map[string]bool)
+	for _, t := range matrix.Tags {
+		if t.Kind == trace.KindTest {
+			tested[t.RequirementID] = true
+		}
+	}
+	pct := len(tested) * 100 / len(matrix.Requirements)
+	fmt.Fprintf(stdout, "sec-tested: %d%% (%d/%d requirements have //fusa:test tags)\n",
+		pct, len(tested), len(matrix.Requirements))
+	if pct < threshold {
+		fmt.Fprintf(stderr, "gofusa trace: sec-tested gate failed: %d%% < required %d%%\n", pct, threshold)
 		return 1
 	}
 	return 0

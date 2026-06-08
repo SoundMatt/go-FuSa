@@ -36,7 +36,10 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `slsa/` | SLSA L2/L3 supply-chain checks — provenance fields, CODEOWNERS, branch-protection evidence |
 | `tara/` | Threat Analysis and Risk Assessment (TARA) — ISO 21434 Ch. 9, STRIDE/CWE/risk mapping, Markdown export |
 | `vuln/` | Dependency vulnerability scanner — OSV API + govulncheck call-graph analysis |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara` |
+| `sarif/` | SARIF 2.1.0 renderer — produces GitHub Code Scanning compatible output |
+| `badge/` | SVG badge generator — Shields.io-style status badge from check results |
+| `diff/` | Report diff engine — compares two JSON reports (introduced/resolved/unchanged) |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign` |
 
 ## Install
 
@@ -109,6 +112,34 @@ gofusa report --format html --output safety-report.html
 
 # Show test coverage gaps (requirements with no //fusa:test tag)
 gofusa trace --gaps
+
+# Enforce ≥80% of requirements have //fusa:test tags (CI gate)
+gofusa trace --sec-tested 80
+
+# Show a specific requirement and its annotation locations
+gofusa req REQ-CYBER001
+
+# Show auto-fixable findings with remediation guidance
+gofusa fix
+
+# Install a pre-commit hook that runs gofusa check --strict
+gofusa hooks install
+gofusa hooks remove
+
+# Sign a release artifact (HMAC-SHA256)
+gofusa sign --keygen my.key
+gofusa sign --key my.key artifact.zip          # creates artifact.zip.sig
+gofusa sign --verify --key my.key artifact.zip  # verifies artifact.zip.sig
+
+# Compare two check reports (CI regression gate — exits 1 if new findings introduced)
+gofusa diff baseline.json current.json
+
+# Generate an SVG status badge from a check report
+gofusa check --format json --output report.json
+gofusa badge report.json --output badge.svg
+
+# Output SARIF 2.1.0 for GitHub Advanced Security / Code Scanning
+gofusa check --format sarif --output results.sarif
 
 # Generate everything in one command (SBOM, provenance, fmea, boundary, vuln, cyber, tara, audit-pack)
 gofusa release --full

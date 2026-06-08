@@ -23,6 +23,12 @@
 //	tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)
 //	vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)
 //	audit-pack   Bundle all evidence artifacts into a single ZIP for auditors
+//	diff         Compare two check report JSON files (introduced/resolved/unchanged)
+//	badge        Generate an SVG status badge from a check report
+//	req          Show requirements and their source/test locations
+//	fix          Show auto-fixable findings with remediation guidance
+//	hooks        Install/remove git pre-commit hook
+//	sign         Sign or verify a file with HMAC-SHA256
 //	version      Print the go-FuSa version
 //
 // Run 'gofusa <command> --help' for per-command flags.
@@ -96,6 +102,18 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runVuln(args[1:], stdout, stderr)
 	case "audit-pack":
 		return runAuditPack(args[1:], stdout, stderr)
+	case "diff":
+		return runDiff(args[1:], stdout, stderr)
+	case "badge":
+		return runBadge(args[1:], stdout, stderr)
+	case "req":
+		return runReq(args[1:], stdout, stderr)
+	case "fix":
+		return runFix(args[1:], stdout, stderr)
+	case "hooks":
+		return runHooks(args[1:], stdout, stderr)
+	case "sign":
+		return runSign(args[1:], stdout, stderr)
 	case "version":
 		//fusa:req REQ-CLI004
 		return runVersion(stdout)
@@ -133,6 +151,12 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)\n")
 	fmt.Fprintf(w, "  vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)\n")
 	fmt.Fprintf(w, "  audit-pack   Bundle all evidence artifacts into a single ZIP for auditors\n")
+	fmt.Fprintf(w, "  diff         Compare two check report JSON files (introduced/resolved/unchanged)\n")
+	fmt.Fprintf(w, "  badge        Generate an SVG status badge from a check report\n")
+	fmt.Fprintf(w, "  req          Show requirements and their source/test locations\n")
+	fmt.Fprintf(w, "  fix          Show auto-fixable findings with remediation guidance\n")
+	fmt.Fprintf(w, "  hooks        Install/remove git pre-commit hook\n")
+	fmt.Fprintf(w, "  sign         Sign or verify a file with HMAC-SHA256\n")
 	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")
 	fmt.Fprintf(w, "\nRun 'gofusa <command> --help' for command-specific flags.\n")
 }

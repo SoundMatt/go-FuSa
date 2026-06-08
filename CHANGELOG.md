@@ -7,6 +7,36 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.17.0] — 2026-06-08
+
+### Added
+- **`sarif/` package + `gofusa check --format sarif`** — SARIF 2.1.0 output for GitHub
+  Advanced Security / Code Scanning integration. Maps ERROR→`error`, WARNING→`warning`,
+  INFO→`note`.
+- **`badge/` package + `gofusa badge` command** — generates a Shields.io-style flat SVG
+  status badge from a JSON check report. Three states: passing (green), warnings (yellow),
+  failing (red).
+- **`diff/` package + `gofusa diff` command** — compares two `gofusa check --format json`
+  reports and categorises findings as introduced, resolved, or unchanged. Exits 1 if new
+  findings were introduced; suitable as a CI regression gate.
+- **`gofusa trace --sec-tested N`** — exits 1 if fewer than N% of requirements have
+  `//fusa:test` annotations; enforces a quantitative test-coverage gate.
+- **`gofusa req` command** — shows requirements from `.fusa-reqs.json` with their source
+  (`//fusa:req`) and test (`//fusa:test`) location listings.
+- **`gofusa fix` command** — lists auto-fixable findings from `gofusa check` with their
+  remediation guidance; also writes a full JSON report with `--report`.
+- **`gofusa hooks install/remove/show`** — installs or removes a `gofusa check --strict`
+  pre-commit hook in `.git/hooks/pre-commit`.
+- **`gofusa sign` command** — HMAC-SHA256 sign/verify for release artifacts; `--keygen`
+  generates a new random key.
+- **ANA005** — `context.Background()`/`context.TODO()` called inside a function that
+  already accepts a `context.Context` parameter (context propagation dropped).
+- **ANA006** — `fmt.Errorf` called without `%w`; error chain is lost for `errors.Is/As`.
+- **ANA007** — value from a two-result function call used on the next line without an
+  intervening `err != nil` check (nil dereference risk).
+- **ANA008** — goroutine function literal accesses a package-level variable without
+  synchronisation (data race risk).
+
 ## [0.16.0] — 2026-06-08
 
 ### Added
