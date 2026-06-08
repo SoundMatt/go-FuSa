@@ -28,7 +28,8 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `qualify/` | Tool qualification suite — self-test framework and evidence report |
 | `runtime/` | Reusable safety patterns — watchdog, heartbeat, safe-state transitions |
 | `testutil/` | Test harness helpers |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify` |
+| `safetycase/` | Safety case assembly — evidence collection, GSN diagram, compliance mapping |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case` |
 
 ## Install
 
@@ -69,6 +70,10 @@ gofusa qualify
 
 # Generate a full compliance report
 gofusa report
+
+# Assemble a safety case (Markdown + JSON + Mermaid GSN diagram)
+gofusa safety-case
+gofusa safety-case --standard iso26262
 ```
 
 ## Docker quick start

@@ -162,6 +162,55 @@
       "level": "SIL-1"
     },
     {
+      "id": "REQ-CLI012",
+      "title": "gofusa safety-case generates safety case files",
+      "text": "gofusa safety-case shall write safety-case.json (machine-readable), safety-case.md (Markdown), and safety-case.mermaid (GSN diagram) to the output directory, accepting --dir, --output-dir, and --standard flags.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-SAFETYCASE001",
+      "title": "Safety case presence check",
+      "text": "The tool shall report an INFO finding (SAFETYCASE001) when no safety-case.json safety case document is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-SC001",
+      "title": "Safety case Build collects evidence items from project root",
+      "text": "safetycase.Build shall read evidence files (check-report.json, .fusa-reqs.json, .fusa-evidence.json, qualify-report.json, sbom.json, provenance.json) from projectRoot and return a SafetyCase with an EvidenceItem for each file indicating its presence status and detail.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-SC002",
+      "title": "SafetyCase gaps slice lists absent evidence IDs",
+      "text": "The Gaps field of a SafetyCase shall contain the ID of every EvidenceItem whose Status is absent; the slice shall be empty when all evidence is present.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-SC003",
+      "title": "Render supports text, JSON, and Mermaid formats",
+      "text": "safetycase.Render shall write the safety case as Markdown when format is 'text', as JSON when format is 'json' or empty, and as a Mermaid flowchart when format is 'mermaid'; it shall return an error for any other value.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-SC004",
+      "title": "Mermaid output uses G/S/Sn node prefixes and hierarchical connections",
+      "text": "The Mermaid output shall use G-prefixed nodes for goals, S-prefixed nodes for strategies, and Sn-prefixed nodes for solutions; the top goal G1 shall connect to the strategy S1 which connects to all sub-goals.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-SC005",
+      "title": "Compliance mapping for iso26262, iec61508, iso21434, and generic standards",
+      "text": "safetycase.Build shall include compliance clause mappings for the configured standard; supported values are 'iso26262', 'iec61508', 'iso21434', and 'generic'; unrecognised values shall default to generic mappings.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
       "id": "REQ-ENG001",
       "title": "Rules execute in deterministic ID-sorted order",
       "text": "engine.Registry.Rules shall return rules sorted lexicographically by ID, ensuring that rule execution order and report output are deterministic across runs.",

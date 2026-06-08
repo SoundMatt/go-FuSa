@@ -166,14 +166,16 @@ Deliverables: `gofusa lint`, `gofusa analyze`, `gofusa template`, `--strict`, SP
 
 ---
 
-## v0.11 — Safety Case Generation
+## v0.11 — Safety Case Generation ✅
 
 **Goal:** Automated evidence assembly.
 
 Features:
-- Safety case templates
-- Goal Structuring Notation (GSN)
-- Compliance report generation
+- Safety case assembly from existing evidence files
+- Goal Structuring Notation (GSN) diagram output (Mermaid)
+- Compliance clause mapping for ISO 26262, IEC 61508, ISO 21434, generic
+- Gap detection — identifies absent evidence items
+- Markdown + JSON + Mermaid output formats
 
 Deliverables: `gofusa safety-case`
 

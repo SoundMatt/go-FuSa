@@ -1,14 +1,14 @@
 {
   "format": "go-FuSa Manifest v1",
-  "generatedAt": "2026-06-08T16:20:34.677185Z",
+  "generatedAt": "2026-06-08T17:12:08.82308Z",
   "artifacts": [
     {
       "path": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/sbom.json",
-      "sha256": "5eb2a7161b44f7e8f70464e63586addeadf77fe9aa103c4756868bc99dfb20ea"
+      "sha256": "12f2f771172f0e8c47bbb3c8453a540efbff564e435f90ccb951d7b7b9b5a492"
     },
     {
       "path": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa/provenance.json",
-      "sha256": "a1044f5a8b2618d490d03e8f76ebd5c6832ff88aee497a1f37416b8ab80799e3"
+      "sha256": "626fde23bcbd8dbfc4239c6b6a8e029cac67fcadf138c2f867c4481994a0473f"
     }
   ]
 }

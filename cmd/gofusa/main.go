@@ -6,17 +6,18 @@
 //
 // Commands:
 //
-//	init      Initialise a go-FuSa project configuration
-//	check     Run all safety checks (exits 1 on ERROR findings)
-//	lint      Run coding-standard checks only (LINT rules)
-//	analyze   Run static analysis checks only (ANA rules)
-//	report    Generate a safety compliance report
-//	template  Generate safety documentation templates
-//	trace     Show requirements traceability matrix
-//	verify    Run tests and save a test evidence bundle
-//	release   Generate SBOM (SPDX 3.0.1), provenance, and artifact manifest
-//	qualify   Run the tool qualification suite
-//	version   Print the go-FuSa version
+//	init         Initialise a go-FuSa project configuration
+//	check        Run all safety checks (exits 1 on ERROR findings)
+//	lint         Run coding-standard checks only (LINT rules)
+//	analyze      Run static analysis checks only (ANA rules)
+//	report       Generate a safety compliance report
+//	template     Generate safety documentation templates
+//	trace        Show requirements traceability matrix
+//	verify       Run tests and save a test evidence bundle
+//	release      Generate SBOM (SPDX 3.0.1), provenance, and artifact manifest
+//	qualify      Run the tool qualification suite
+//	safety-case  Assemble a structured safety case from evidence
+//	version      Print the go-FuSa version
 //
 // Run 'gofusa <command> --help' for per-command flags.
 package main
@@ -67,6 +68,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runRelease(args[1:], stdout, stderr)
 	case "qualify":
 		return runQualify(args[1:], stdout, stderr)
+	case "safety-case":
+		return runSafetyCase(args[1:], stdout, stderr)
 	case "version":
 		//fusa:req REQ-CLI004
 		return runVersion(stdout)
@@ -87,16 +90,17 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "Usage:\n")
 	fmt.Fprintf(w, "  gofusa <command> [flags]\n\n")
 	fmt.Fprintf(w, "Commands:\n")
-	fmt.Fprintf(w, "  init      Initialise a go-FuSa project configuration\n")
-	fmt.Fprintf(w, "  check     Run all safety checks (exits 1 on ERROR findings)\n")
-	fmt.Fprintf(w, "  lint      Run coding-standard checks only (LINT rules)\n")
-	fmt.Fprintf(w, "  analyze   Run static analysis checks only (ANA rules)\n")
-	fmt.Fprintf(w, "  report    Generate a safety compliance report\n")
-	fmt.Fprintf(w, "  template  Generate safety documentation templates\n")
-	fmt.Fprintf(w, "  trace     Show requirements traceability matrix\n")
-	fmt.Fprintf(w, "  verify    Run tests and save a test evidence bundle\n")
-	fmt.Fprintf(w, "  release   Generate SBOM (SPDX 3.0.1), provenance, and artifact manifest\n")
-	fmt.Fprintf(w, "  qualify   Run the tool qualification suite\n")
-	fmt.Fprintf(w, "  version   Print the go-FuSa version\n")
+	fmt.Fprintf(w, "  init         Initialise a go-FuSa project configuration\n")
+	fmt.Fprintf(w, "  check        Run all safety checks (exits 1 on ERROR findings)\n")
+	fmt.Fprintf(w, "  lint         Run coding-standard checks only (LINT rules)\n")
+	fmt.Fprintf(w, "  analyze      Run static analysis checks only (ANA rules)\n")
+	fmt.Fprintf(w, "  report       Generate a safety compliance report\n")
+	fmt.Fprintf(w, "  template     Generate safety documentation templates\n")
+	fmt.Fprintf(w, "  trace        Show requirements traceability matrix\n")
+	fmt.Fprintf(w, "  verify       Run tests and save a test evidence bundle\n")
+	fmt.Fprintf(w, "  release      Generate SBOM (SPDX 3.0.1), provenance, and artifact manifest\n")
+	fmt.Fprintf(w, "  qualify      Run the tool qualification suite\n")
+	fmt.Fprintf(w, "  safety-case  Assemble a structured safety case from evidence\n")
+	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")
 	fmt.Fprintf(w, "\nRun 'gofusa <command> --help' for command-specific flags.\n")
 }
