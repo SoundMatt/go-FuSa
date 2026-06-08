@@ -238,3 +238,30 @@ func walk(n int) {
 		t.Error("ANA004: expected finding for defer in for loop")
 	}
 }
+
+// ─── Descriptions ─────────────────────────────────────────────────────────────
+
+func TestAnalyzeRuleDescriptions(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if len(r.ID()) >= 3 && r.ID()[:3] == "ANA" {
+			if r.Description() == "" {
+				t.Errorf("%s: Description() returned empty string", r.ID())
+			}
+		}
+	}
+}
+
+// ─── Fuzz ─────────────────────────────────────────────────────────────────────
+
+func FuzzAnalyzeRules(f *testing.F) {
+	f.Add("package main\nfunc main(){}\n")
+	f.Add("package main\nfunc fn(){go func(){for{}}()}\n")
+	f.Add("package main\nimport \"time\"\nfunc fn(){go func(){time.Sleep(1)}()}\n")
+	f.Add("")
+	f.Add("not valid go source")
+	f.Fuzz(func(t *testing.T, src string) {
+		dir := testutil.ProjectDir(t, testutil.GoSource("fuzz.go", src))
+		cfg := config.Default("fuzztest", "fuzztest")
+		_, _ = engine.Default.Run(context.Background(), dir, cfg) // must not panic
+	})
+}

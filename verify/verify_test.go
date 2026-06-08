@@ -242,6 +242,31 @@ func TestVERIFY002_FailedTests(t *testing.T) {
 	}
 }
 
+// ─── Fuzz ─────────────────────────────────────────────────────────────────────
+
+func FuzzParse(f *testing.F) {
+	f.Add(`{"Action":"pass","Test":"TestFoo","Package":"p","Elapsed":0.001}` + "\n")
+	f.Add(`{"Action":"fail","Test":"T","Package":"p"}` + "\n")
+	f.Add("")
+	f.Add("not json\n")
+	f.Add(`{}` + "\n")
+	f.Fuzz(func(t *testing.T, data string) {
+		_, _ = verify.Parse(strings.NewReader(data)) // must not panic
+	})
+}
+
+// ─── Descriptions ─────────────────────────────────────────────────────────────
+
+func TestVerifyRuleDescriptions(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if len(r.ID()) >= 6 && r.ID()[:6] == "VERIFY" {
+			if r.Description() == "" {
+				t.Errorf("%s: Description() returned empty string", r.ID())
+			}
+		}
+	}
+}
+
 func TestVERIFY002_AllTestsPassed(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	results := []verify.TestResult{

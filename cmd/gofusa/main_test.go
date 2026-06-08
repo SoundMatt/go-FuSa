@@ -148,6 +148,150 @@ func TestRun_Init_WithDocs(t *testing.T) {
 	}
 }
 
+// ─── lint ─────────────────────────────────────────────────────────────────────
+
+//fusa:test REQ-CLI008
+func TestRun_Lint_CleanProject(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"lint", "--dir", dir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("lint clean project: exit code = %d\n%s", code, errOut.String())
+	}
+}
+
+func TestRun_Lint_OnlyLintFindings(t *testing.T) {
+	src := "package main\n\nimport \"os\"\n\nfunc f() {\n\tx, _ := os.Open(\"\")\n\t_ = x\n}\n"
+	files := testutil.MinimalProject()
+	files["bad.go"] = src
+	dir := testutil.ProjectDir(t, files)
+	var out, errOut bytes.Buffer
+	code := run([]string{"lint", "--dir", dir, "--format", "text"}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("lint: unexpected exit code %d\n%s", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), "LINT001") {
+		t.Error("lint: expected LINT001 in output")
+	}
+}
+
+func TestRun_Lint_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"lint", "--help"}, &out, &errOut)
+	if !strings.Contains(out.String()+errOut.String(), "gofusa lint") {
+		t.Error("lint --help: output missing 'gofusa lint'")
+	}
+}
+
+func TestRun_Lint_Strict_FailsOnWarning(t *testing.T) {
+	src := "package main\n\nimport \"os\"\n\nfunc f() {\n\tx, _ := os.Open(\"\")\n\t_ = x\n}\n"
+	files := testutil.MinimalProject()
+	files["bad.go"] = src
+	dir := testutil.ProjectDir(t, files)
+	var out, errOut bytes.Buffer
+	code := run([]string{"lint", "--dir", dir, "--strict"}, &out, &errOut)
+	if code == 0 {
+		t.Error("lint --strict: expected exit 1 when LINT001 WARNING present")
+	}
+}
+
+func TestRun_Lint_BadConfig(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod":     "module github.com/x/y\n\ngo 1.22\n",
+		".fusa.json": "not valid json",
+	})
+	var out, errOut bytes.Buffer
+	code := run([]string{"lint", "--dir", dir}, &out, &errOut)
+	if code == 0 {
+		t.Error("lint with bad config: expected non-zero exit code")
+	}
+}
+
+// ─── analyze ──────────────────────────────────────────────────────────────────
+
+//fusa:test REQ-CLI009
+func TestRun_Analyze_CleanProject(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"analyze", "--dir", dir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("analyze clean project: exit code = %d\n%s", code, errOut.String())
+	}
+}
+
+func TestRun_Analyze_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"analyze", "--help"}, &out, &errOut)
+	if !strings.Contains(out.String()+errOut.String(), "gofusa analyze") {
+		t.Error("analyze --help: output missing 'gofusa analyze'")
+	}
+}
+
+// ─── template ─────────────────────────────────────────────────────────────────
+
+//fusa:test REQ-CLI010
+func TestRun_Template_SafetyPlan(t *testing.T) {
+	dir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"template", "--dir", dir, "--type", "safety-plan"}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("template safety-plan: exit code = %d\n%s", code, errOut.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, "SAFETY_PLAN.md")); err != nil {
+		t.Errorf("template: expected SAFETY_PLAN.md to exist: %v", err)
+	}
+}
+
+func TestRun_Template_All(t *testing.T) {
+	dir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"template", "--dir", dir, "--type", "all"}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("template all: exit code = %d\n%s", code, errOut.String())
+	}
+	for _, name := range []string{"SAFETY_PLAN.md", "TEST_EVIDENCE.md", "HARA.md"} {
+		if _, err := os.Stat(filepath.Join(dir, name)); err != nil {
+			t.Errorf("template: expected %s to exist: %v", name, err)
+		}
+	}
+}
+
+func TestRun_Template_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"template", "--help"}, &out, &errOut)
+	if !strings.Contains(out.String()+errOut.String(), "gofusa template") {
+		t.Error("template --help: output missing 'gofusa template'")
+	}
+}
+
+// ─── check --strict ───────────────────────────────────────────────────────────
+
+//fusa:test REQ-CLI011
+func TestRun_Check_Strict_FailsOnWarning(t *testing.T) {
+	// MinimalProject has no sbom.json → RELEASE001 WARNING.
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"check", "--dir", dir, "--strict"}, &out, &errOut)
+	if code == 0 {
+		t.Error("check --strict: expected exit 1 when WARNING findings exist")
+	}
+}
+
+func TestRun_Check_Strict_PassesOnInfoOnly(t *testing.T) {
+	files := testutil.MinimalProject()
+	files["sbom.json"] = `{"@context":"https://spdx.org/rdf/3.0.1/spdx-context.jsonld","@graph":[]}`
+	files["provenance.json"] = `{"format":"go-FuSa Provenance v1"}`
+	files[".fusa-evidence.json"] = `{"generatedAt":"2026-01-01T00:00:00Z","projectRoot":".","goVersion":"go1.22","results":[],"summary":{"total":0,"passed":0,"failed":0,"skipped":0}}`
+	files["qualify-report.json"] = `{"generatedAt":"2026-01-01T00:00:00Z","total":44,"passed":44,"failed":0,"results":[],"hash":"x"}`
+	dir := testutil.ProjectDir(t, files)
+	var out, errOut bytes.Buffer
+	code := run([]string{"check", "--dir", dir, "--strict"}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("check --strict with INFO-only: exit code = %d\nstdout: %s\nstderr: %s",
+			code, out.String(), errOut.String())
+	}
+}
+
 // ─── trace ────────────────────────────────────────────────────────────────────
 
 func TestRun_Trace_Help(t *testing.T) {
@@ -241,7 +385,7 @@ func TestRun_Release_GeneratesFiles(t *testing.T) {
 	if code != 0 {
 		t.Errorf("release: exit code = %d\n%s", code, errOut.String())
 	}
-	for _, name := range []string{"sbom.json", "provenance.json"} {
+	for _, name := range []string{"sbom.json", "provenance.json", "artifact-manifest.json"} {
 		if _, err := os.Stat(filepath.Join(outDir, name)); err != nil {
 			t.Errorf("release: expected %s to exist: %v", name, err)
 		}

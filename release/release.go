@@ -15,6 +15,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -37,6 +38,39 @@ const (
 	ProvenanceFile = "provenance.json"
 	ManifestFile   = "artifact-manifest.json"
 )
+
+// ─── SPDX 3.0.1 types ────────────────────────────────────────────────────────
+
+// SPDX31Document is a Software Bill of Materials in SPDX 3.0.1 JSON-LD format.
+// Produced by ToSPDX31; this is the canonical output written to sbom.json.
+//
+//fusa:req REQ-RELEASE007
+type SPDX31Document struct {
+	Context string          `json:"@context"`
+	Graph   []SPDX31Element `json:"@graph"`
+}
+
+// SPDX31Element is a single node in the SPDX 3.0.1 document @graph.
+type SPDX31Element struct {
+	Type            string       `json:"type"`
+	SpdxID          string       `json:"spdxId"`
+	SpecVersion     string       `json:"specVersion,omitempty"`
+	Created         string       `json:"created,omitempty"`
+	CreatedBy       []string     `json:"createdBy,omitempty"`
+	Name            string       `json:"name,omitempty"`
+	CreationInfo    string       `json:"creationInfo,omitempty"`
+	Element         []string     `json:"element,omitempty"`
+	RootElement     []string     `json:"rootElement,omitempty"`
+	SoftwareVersion string       `json:"software_packageVersion,omitempty"`
+	VerifiedUsing   []SPDX31Hash `json:"verifiedUsing,omitempty"`
+}
+
+// SPDX31Hash is a hash entry in an SPDX 3.0.1 element.
+type SPDX31Hash struct {
+	Type      string `json:"type"`
+	Algorithm string `json:"algorithm"`
+	HashValue string `json:"hashValue"`
+}
 
 // Component is a dependency entry in the SBOM.
 type Component struct {
@@ -151,6 +185,91 @@ func SaveJSON(path string, v any) error {
 		return fmt.Errorf("release: write %s: %w", path, err)
 	}
 	return nil
+}
+
+// ToSPDX31 converts a go-FuSa SBOM into an SPDX 3.0.1 JSON-LD document
+// suitable for writing to sbom.json.
+func ToSPDX31(sbom *SBOM) *SPDX31Document {
+	ciID := "_:creationInfo0"
+	toolID := "_:tool0"
+	created := sbom.GeneratedAt.UTC().Format(time.RFC3339)
+	docID := "https://spdx.org/spdxdocs/" + strings.ReplaceAll(sbom.Module, "/", "-")
+
+	elements := make([]SPDX31Element, 0, 3+len(sbom.Components))
+
+	elements = append(elements, SPDX31Element{
+		Type:        "CreationInfo",
+		SpdxID:      ciID,
+		SpecVersion: "SPDX-3.0.1",
+		Created:     created,
+		CreatedBy:   []string{toolID},
+	})
+	elements = append(elements, SPDX31Element{
+		Type:         "Tool",
+		SpdxID:       toolID,
+		Name:         "go-FuSa/" + fusa.Version,
+		CreationInfo: ciID,
+	})
+
+	pkgIDs := make([]string, 0, len(sbom.Components))
+	for _, c := range sbom.Components {
+		id := docID + "/pkg/" + c.Name + "@" + c.Version
+		pkgIDs = append(pkgIDs, id)
+		elem := SPDX31Element{
+			Type:            "software_Package",
+			SpdxID:          id,
+			Name:            c.Name,
+			SoftwareVersion: c.Version,
+			CreationInfo:    ciID,
+		}
+		if h := h1ToHex(c.Hash); h != "" {
+			elem.VerifiedUsing = []SPDX31Hash{{Type: "Hash", Algorithm: "SHA-256", HashValue: h}}
+		}
+		elements = append(elements, elem)
+	}
+
+	elements = append(elements, SPDX31Element{
+		Type:         "SpdxDocument",
+		SpdxID:       docID,
+		Name:         sbom.Module,
+		CreationInfo: ciID,
+		Element:      pkgIDs,
+		RootElement:  pkgIDs,
+	})
+
+	return &SPDX31Document{
+		Context: "https://spdx.org/rdf/3.0.1/spdx-context.jsonld",
+		Graph:   elements,
+	}
+}
+
+// h1ToHex converts a go.sum h1: hash (base64-encoded SHA-256) to lowercase hex.
+// Returns the original string unchanged if it is not a valid h1: value.
+func h1ToHex(h1 string) string {
+	s := strings.TrimPrefix(h1, "h1:")
+	if s == h1 || s == "" {
+		return ""
+	}
+	b, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		return ""
+	}
+	return hex.EncodeToString(b)
+}
+
+// BuildManifest hashes the named artifact files and returns a Manifest.
+//
+//fusa:req REQ-RELEASE008
+func BuildManifest(paths []string) (*Manifest, error) {
+	artifacts, err := HashFiles(paths)
+	if err != nil {
+		return nil, fmt.Errorf("release: build manifest: %w", err)
+	}
+	return &Manifest{
+		Format:      "go-FuSa Manifest v1",
+		GeneratedAt: time.Now().UTC(),
+		Artifacts:   artifacts,
+	}, nil
 }
 
 // ─── internal helpers ──────────────────────────────────────────────────────────

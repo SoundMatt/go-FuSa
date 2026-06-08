@@ -7,6 +7,21 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.10.0] — 2026-06-08
+
+### Added
+- `gofusa lint` subcommand — runs only LINT* rules via the new `engine.RunFilter` predicate API (REQ-CLI008)
+- `gofusa analyze` subcommand — runs only ANA* rules (REQ-CLI009)
+- `gofusa template` subcommand — standalone safety document template generator (REQ-CLI010)
+- `--strict` flag on `gofusa check` (and lint/analyze) — exits non-zero on any WARNING or ERROR finding (REQ-CLI011)
+- `Config.Rules.Severity` map — per-rule severity overrides in `.fusa.json` (REQ-CFG008)
+- `engine.Registry.RunFilter` — filtered rule execution with a `keep func(Rule) bool` predicate (REQ-ENG007)
+- `release.ToSPDX31` — converts SBOM to SPDX 3.0.1 JSON-LD format; `gofusa release` now writes SPDX 3.0.1 SBOMs (REQ-RELEASE007)
+- `release.BuildManifest` — SHA-256 artifact manifest (`artifact-manifest.json`) generated alongside SBOM and provenance (REQ-RELEASE008)
+- DCO CI job — validates `Signed-off-by` on every PR commit
+- Fuzz tests in `config`, `release`, `lint`, `analyze`, `trace`, and `verify` packages
+- 8 new requirements (REQ-CLI008–011, REQ-CFG008, REQ-ENG007, REQ-RELEASE007–008), total 77
+
 ## [0.9.0] — 2026-06-07
 
 ### Added

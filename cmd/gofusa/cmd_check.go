@@ -29,6 +29,8 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 		dir    = fs.String("dir", "", "project root directory (default: current directory)")
 		format = fs.String("format", "", "output format: text or json (default: from config or text)")
 		output = fs.String("output", "", "write report to file (default: stdout)")
+		//fusa:req REQ-CLI011
+		strict = fs.Bool("strict", false, "exit 1 on any WARNING or ERROR finding (default: exit 1 on ERROR only)")
 	)
 	if err := fs.Parse(args); err != nil {
 		return 1
@@ -89,6 +91,9 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 
 	//fusa:req REQ-CLI006
 	if result.HasErrors() {
+		return 1
+	}
+	if *strict && result.HasWarnings() {
 		return 1
 	}
 	//fusa:req REQ-CLI005

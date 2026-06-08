@@ -28,7 +28,7 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `qualify/` | Tool qualification suite — self-test framework and evidence report |
 | `runtime/` | Reusable safety patterns — watchdog, heartbeat, safe-state transitions |
 | `testutil/` | Test harness helpers |
-| `cmd/gofusa` | CLI — `init`, `check`, `report`, `trace`, `verify`, `release`, `qualify` |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify` |
 
 ## Install
 
@@ -42,8 +42,18 @@ go install github.com/SoundMatt/go-FuSa/cmd/gofusa@latest
 # Initialise a project
 gofusa init
 
-# Run all safety checks
+# Run all safety checks (exit 1 on ERROR; --strict exits 1 on WARNING too)
 gofusa check
+gofusa check --strict
+
+# Run only coding-standard lint rules
+gofusa lint
+
+# Run only static-analysis rules
+gofusa analyze
+
+# Generate safety document templates (SAFETY_PLAN.md, TEST_EVIDENCE.md, HARA.md)
+gofusa template --type all
 
 # Show the requirements traceability matrix
 gofusa trace
@@ -51,7 +61,7 @@ gofusa trace
 # Run tests and save a test evidence bundle
 gofusa verify
 
-# Generate SBOM and build provenance
+# Generate SBOM (SPDX 3.0.1), build provenance, and artifact manifest
 gofusa release
 
 # Run the tool qualification suite

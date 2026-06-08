@@ -118,6 +118,26 @@ jobs:
             provenance.json
             qualify-report.json
 
+  # ── DCO sign-off check ───────────────────────────────────────────────────
+  dco:
+    name: DCO sign-off
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Check DCO sign-off on all PR commits
+        run: |
+          git log --format="%H" ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | while read -r sha; do
+            body=$(git log -1 --format="%B" "$sha")
+            if ! echo "$body" | grep -qE "^Signed-off-by: .+ <.+@.+>"; then
+              echo "FAIL: commit $sha is missing a Signed-off-by line"
+              exit 1
+            fi
+          done
+          echo "DCO check passed"
+
   # ── Lint ──────────────────────────────────────────────────────────────────
   lint:
     name: golangci-lint

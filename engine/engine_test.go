@@ -165,6 +165,57 @@ func TestResult_HasErrors_Empty(t *testing.T) {
 	}
 }
 
+func TestResult_HasWarnings(t *testing.T) {
+	r := &engine.Result{Findings: []fusa.Finding{
+		{RuleID: "W", Severity: fusa.SeverityWarning},
+	}}
+	if !r.HasWarnings() {
+		t.Error("HasWarnings: want true for WARNING finding")
+	}
+	r2 := &engine.Result{Findings: []fusa.Finding{
+		{RuleID: "I", Severity: fusa.SeverityInfo},
+	}}
+	if r2.HasWarnings() {
+		t.Error("HasWarnings: want false for INFO-only finding")
+	}
+}
+
+//fusa:test REQ-ENG007
+func TestRegistry_RunFilter(t *testing.T) {
+	reg := engine.NewRegistry()
+	reg.MustRegister(&stubRule{id: "AAA001", findings: []fusa.Finding{{RuleID: "AAA001", Severity: fusa.SeverityInfo}}})
+	reg.MustRegister(&stubRule{id: "BBB001", findings: []fusa.Finding{{RuleID: "BBB001", Severity: fusa.SeverityInfo}}})
+	cfg := config.Default("github.com/x/y", "y")
+
+	result, err := reg.RunFilter(context.Background(), t.TempDir(), cfg,
+		func(r engine.Rule) bool { return r.ID() == "AAA001" })
+	if err != nil {
+		t.Fatalf("RunFilter: %v", err)
+	}
+	if len(result.Findings) != 1 || result.Findings[0].RuleID != "AAA001" {
+		t.Errorf("RunFilter: got findings %v, want only AAA001", result.Findings)
+	}
+}
+
+//fusa:test REQ-CFG008
+func TestRegistry_Run_SeverityOverride(t *testing.T) {
+	reg := engine.NewRegistry()
+	reg.MustRegister(&stubRule{id: "OVR001", findings: []fusa.Finding{{RuleID: "OVR001", Severity: fusa.SeverityWarning}}})
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Rules.Severity = map[string]string{"OVR001": "ERROR"}
+
+	result, err := reg.Run(context.Background(), t.TempDir(), cfg)
+	if err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if len(result.Findings) != 1 {
+		t.Fatalf("findings count = %d, want 1", len(result.Findings))
+	}
+	if result.Findings[0].Severity != fusa.SeverityError {
+		t.Errorf("severity after override = %s, want ERROR", result.Findings[0].Severity)
+	}
+}
+
 // ─── Built-in rules ───────────────────────────────────────────────────────────
 
 func TestBuiltinRules_FullProject(t *testing.T) {
