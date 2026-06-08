@@ -30,7 +30,7 @@ Deliverables: `gofusa init`, `gofusa report`, `gofusa check`
 
 ---
 
-## v0.2 — Coding Standard
+## v0.2 — Coding Standard ✅
 
 **Goal:** Safety-oriented Go coding guidelines.
 
@@ -46,7 +46,7 @@ Deliverables: `gofusa lint`
 
 ---
 
-## v0.3 — Static Analysis
+## v0.3 — Static Analysis ✅
 
 **Goal:** Detect safety risks automatically.
 
@@ -134,7 +134,7 @@ Deliverables: `Dockerfile`, `docker-compose.yml`, updated `README.md`, GitHub Ac
 
 ---
 
-## v0.9 — Tool Qualification
+## v0.9 — Tool Qualification ✅
 
 **Goal:** Support use in regulated environments.
 
@@ -148,7 +148,25 @@ Deliverables: Tool Qualification Kit
 
 ---
 
-## v0.10 — Safety Case Generation
+## v0.10 — Gap Closure ✅
+
+**Goal:** Close audit gaps identified in v0.9 self-qualification.
+
+Features:
+- `gofusa lint` and `gofusa analyze` as dedicated CLI subcommands
+- `gofusa template` standalone document generator
+- `--strict` flag on `gofusa check` (WARNING-or-above exits non-zero)
+- Per-rule severity overrides in `.fusa.json` (`rules.severity` map)
+- SPDX 3.0.1 JSON-LD SBOM output
+- Artifact manifest (`artifact-manifest.json`) with SHA-256 hashes
+- DCO CI enforcement on all PRs
+- Fuzz tests across parser-heavy packages
+
+Deliverables: `gofusa lint`, `gofusa analyze`, `gofusa template`, `--strict`, SPDX 3.0.1 SBOM, artifact manifest
+
+---
+
+## v0.11 — Safety Case Generation
 
 **Goal:** Automated evidence assembly.
 

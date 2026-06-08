@@ -170,3 +170,46 @@ func TestSave_FileCreated(t *testing.T) {
 		t.Errorf("file not created: %v", err)
 	}
 }
+
+//fusa:test REQ-CFG008
+func TestRulesConfig_SeverityRoundtrip(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, config.ConfigFile)
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Rules.Severity = map[string]string{"LINT001": "ERROR", "LINT002": "WARNING"}
+
+	if err := config.Save(path, cfg); err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+	loaded, err := config.Load(path)
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if loaded.Rules.Severity["LINT001"] != "ERROR" {
+		t.Errorf("Severity[LINT001] = %q, want ERROR", loaded.Rules.Severity["LINT001"])
+	}
+	if loaded.Rules.Severity["LINT002"] != "WARNING" {
+		t.Errorf("Severity[LINT002] = %q, want WARNING", loaded.Rules.Severity["LINT002"])
+	}
+}
+
+func TestValidate_InvalidSeverityOverride(t *testing.T) {
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Rules.Severity = map[string]string{"LINT001": "CRITICAL"}
+	if err := config.Validate(cfg); err == nil {
+		t.Error("Validate: expected error for invalid severity override")
+	}
+}
+
+func FuzzLoad(f *testing.F) {
+	f.Add(`{"version":"1","project":{"name":"x","module":"m","standard":"generic"},"rules":{},"report":{"format":"text"}}`)
+	f.Add(`{}`)
+	f.Add(`not json`)
+	f.Add(`{"version":"1","rules":{"severity":{"X":"ERROR"}}}`)
+	f.Fuzz(func(t *testing.T, data string) {
+		dir := t.TempDir()
+		path := filepath.Join(dir, config.ConfigFile)
+		_ = os.WriteFile(path, []byte(data), 0o644)
+		_, _ = config.Load(path) // must not panic
+	})
+}

@@ -342,3 +342,18 @@ func TestTRACE002_EmptyRequirements(t *testing.T) {
 func isNoConfig(err error) bool {
 	return err != nil && strings.Contains(err.Error(), "no configuration file found")
 }
+
+// ─── Fuzz ─────────────────────────────────────────────────────────────────────
+
+func FuzzScanTags(f *testing.F) {
+	f.Add("package main\n\n//fusa:req REQ-001\nfunc Foo() {}\n")
+	f.Add("package main\n\n//fusa:test REQ-001\nfunc TestFoo(t *testing.T) {}\n")
+	f.Add("//fusa:req \n")
+	f.Add("")
+	f.Add("not valid go\x00source")
+	f.Fuzz(func(t *testing.T, src string) {
+		dir := t.TempDir()
+		_ = os.WriteFile(filepath.Join(dir, "fuzz.go"), []byte(src), 0o644)
+		_, _ = trace.ScanTags(dir) // must not panic
+	})
+}

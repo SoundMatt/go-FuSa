@@ -1,7 +1,26 @@
 {
-  "format": "go-FuSa SBOM v1",
-  "generatedAt": "2026-06-08T00:39:07.879366Z",
-  "module": "github.com/SoundMatt/go-FuSa",
-  "goVersion": "1.22",
-  "components": []
+  "@context": "https://spdx.org/rdf/3.0.1/spdx-context.jsonld",
+  "@graph": [
+    {
+      "type": "CreationInfo",
+      "spdxId": "_:creationInfo0",
+      "specVersion": "SPDX-3.0.1",
+      "created": "2026-06-08T16:20:34Z",
+      "createdBy": [
+        "_:tool0"
+      ]
+    },
+    {
+      "type": "Tool",
+      "spdxId": "_:tool0",
+      "name": "go-FuSa/0.9.0",
+      "creationInfo": "_:creationInfo0"
+    },
+    {
+      "type": "SpdxDocument",
+      "spdxId": "https://spdx.org/spdxdocs/github.com-SoundMatt-go-FuSa",
+      "name": "github.com/SoundMatt/go-FuSa",
+      "creationInfo": "_:creationInfo0"
+    }
+  ]
 }

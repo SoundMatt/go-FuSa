@@ -246,3 +246,19 @@ func run() {
 		t.Error("LINT006: unexpected finding for local var")
 	}
 }
+
+// ─── Fuzz ─────────────────────────────────────────────────────────────────────
+
+func FuzzLintRules(f *testing.F) {
+	f.Add("package main\nfunc main(){}\n")
+	f.Add("package main\nimport \"os\"\nfunc f(){x,_:=os.Open(\"\");_=x}\n")
+	f.Add("package main\nfunc f(){panic(\"x\")}\n")
+	f.Add("package main\nimport \"unsafe\"\nvar _=unsafe.Sizeof(0)\n")
+	f.Add("")
+	f.Add("not valid go source")
+	f.Fuzz(func(t *testing.T, src string) {
+		dir := testutil.ProjectDir(t, testutil.GoSource("fuzz.go", src))
+		cfg := config.Default("fuzztest", "fuzztest")
+		_, _ = engine.Default.Run(context.Background(), dir, cfg) // must not panic
+	})
+}

@@ -153,7 +153,8 @@ func TestHashFiles_Missing(t *testing.T) {
 // ─── SaveJSON ─────────────────────────────────────────────────────────────────
 
 //fusa:test REQ-RELEASE006
-func TestSaveJSON_Roundtrip(t *testing.T) {
+//fusa:test REQ-RELEASE007
+func TestSaveJSON_SPDX31(t *testing.T) {
 	dir := t.TempDir()
 	dir2 := moduleDir(t, "module github.com/example/proj\n\ngo 1.22\n", "")
 	sbom, err := release.BuildSBOM(dir2)
@@ -161,21 +162,99 @@ func TestSaveJSON_Roundtrip(t *testing.T) {
 		t.Fatalf("BuildSBOM: %v", err)
 	}
 	path := filepath.Join(dir, "sbom.json")
-	err = release.SaveJSON(path, sbom)
-	if err != nil {
+	spdxDoc := release.ToSPDX31(sbom)
+	if err = release.SaveJSON(path, spdxDoc); err != nil {
 		t.Fatalf("SaveJSON: %v", err)
 	}
 	data, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
 	}
-	if !strings.Contains(string(data), "go-FuSa SBOM") {
-		t.Error("SaveJSON: expected SBOM format string in output")
+	if !strings.Contains(string(data), "SPDX-3.0.1") {
+		t.Error("SaveJSON: expected SPDX-3.0.1 context in SBOM output")
 	}
-	var parsed release.SBOM
+	if !strings.Contains(string(data), "SpdxDocument") {
+		t.Error("SaveJSON: expected SpdxDocument element in output")
+	}
+	var parsed release.SPDX31Document
 	if err := json.Unmarshal(data, &parsed); err != nil {
 		t.Fatalf("SaveJSON: invalid JSON: %v", err)
 	}
+	if parsed.Context == "" {
+		t.Error("SPDX31Document: @context should be set")
+	}
+	if len(parsed.Graph) == 0 {
+		t.Error("SPDX31Document: @graph should not be empty")
+	}
+}
+
+func TestToSPDX31_ModuleName(t *testing.T) {
+	dir := moduleDir(t, "module github.com/example/proj\n\ngo 1.22\n", "")
+	sbom, err := release.BuildSBOM(dir)
+	if err != nil {
+		t.Fatalf("BuildSBOM: %v", err)
+	}
+	doc := release.ToSPDX31(sbom)
+	var hasDoc bool
+	for _, el := range doc.Graph {
+		if el.Type == "SpdxDocument" && strings.Contains(el.Name, "github.com/example/proj") {
+			hasDoc = true
+		}
+	}
+	if !hasDoc {
+		t.Error("ToSPDX31: SpdxDocument element not found with correct module name")
+	}
+}
+
+// ─── BuildManifest ────────────────────────────────────────────────────────────
+
+//fusa:test REQ-RELEASE008
+func TestBuildManifest(t *testing.T) {
+	dir := t.TempDir()
+	p1 := filepath.Join(dir, "a.json")
+	p2 := filepath.Join(dir, "b.json")
+	if err := os.WriteFile(p1, []byte(`{"a":1}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(p2, []byte(`{"b":2}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	m, err := release.BuildManifest([]string{p1, p2})
+	if err != nil {
+		t.Fatalf("BuildManifest: %v", err)
+	}
+	if len(m.Artifacts) != 2 {
+		t.Errorf("Artifacts len = %d, want 2", len(m.Artifacts))
+	}
+	for _, a := range m.Artifacts {
+		if len(a.Hash) != 64 {
+			t.Errorf("artifact %s: hash length = %d, want 64", a.Path, len(a.Hash))
+		}
+	}
+	if m.Format == "" {
+		t.Error("Manifest.Format should be set")
+	}
+}
+
+func TestBuildManifest_MissingFile(t *testing.T) {
+	_, err := release.BuildManifest([]string{filepath.Join(t.TempDir(), "missing.json")})
+	if err == nil {
+		t.Error("BuildManifest: expected error for missing file")
+	}
+}
+
+// ─── Fuzz ─────────────────────────────────────────────────────────────────────
+
+func FuzzBuildSBOM(f *testing.F) {
+	f.Add("module example.com/proj\n\ngo 1.22\n")
+	f.Add("module x\ngo 1.22\nrequire example.com/dep v1.0.0\n")
+	f.Add("")
+	f.Add("not a go.mod file at all")
+	f.Fuzz(func(t *testing.T, gomod string) {
+		dir := t.TempDir()
+		_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o644)
+		_, _ = release.BuildSBOM(dir) // must not panic
+	})
 }
 
 // ─── Engine rules ─────────────────────────────────────────────────────────────
@@ -201,7 +280,7 @@ func TestRELEASE001_NoSBOM(t *testing.T) {
 
 func TestRELEASE001_SBOMPresent(t *testing.T) {
 	files := testutil.MinimalProject()
-	files[release.SBOMFile] = `{"format":"go-FuSa SBOM v1"}`
+	files[release.SBOMFile] = `{"@context":"https://spdx.org/rdf/3.0.1/spdx-context.jsonld","@graph":[]}`
 	findings := runRelease(t, files)
 	if hasRule(findings, "RELEASE001") {
 		t.Error("RELEASE001: unexpected finding when sbom.json is present")

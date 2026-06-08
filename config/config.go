@@ -47,9 +47,14 @@ type ProjectConfig struct {
 	SIL      string   `json:"sil,omitempty"`  // SIL-1 … SIL-4 (IEC 61508)
 }
 
-// RulesConfig controls which rules are active.
+// RulesConfig controls which rules are active and how findings are reported.
 type RulesConfig struct {
 	Exclude []string `json:"exclude,omitempty"`
+	// Severity overrides the severity of findings for the keyed rule ID.
+	// Values must be "ERROR", "WARNING", or "INFO".
+	//
+	//fusa:req REQ-CFG008
+	Severity map[string]string `json:"severity,omitempty"`
 }
 
 // ReportConfig controls report output.
@@ -125,6 +130,14 @@ func Validate(cfg *Config) error {
 	default:
 		//fusa:req REQ-CFG004
 		return fmt.Errorf("%w: unsupported report format %q", fusa.ErrInvalidConfig, cfg.Report.Format)
+	}
+	for id, sev := range cfg.Rules.Severity {
+		switch sev {
+		case "ERROR", "WARNING", "INFO":
+			// valid
+		default:
+			return fmt.Errorf("%w: rule %s has invalid severity override %q (must be ERROR, WARNING, or INFO)", fusa.ErrInvalidConfig, id, sev)
+		}
 	}
 	return nil
 }

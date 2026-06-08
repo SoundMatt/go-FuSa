@@ -238,3 +238,18 @@ func walk(n int) {
 		t.Error("ANA004: expected finding for defer in for loop")
 	}
 }
+
+// ─── Fuzz ─────────────────────────────────────────────────────────────────────
+
+func FuzzAnalyzeRules(f *testing.F) {
+	f.Add("package main\nfunc main(){}\n")
+	f.Add("package main\nfunc fn(){go func(){for{}}()}\n")
+	f.Add("package main\nimport \"time\"\nfunc fn(){go func(){time.Sleep(1)}()}\n")
+	f.Add("")
+	f.Add("not valid go source")
+	f.Fuzz(func(t *testing.T, src string) {
+		dir := testutil.ProjectDir(t, testutil.GoSource("fuzz.go", src))
+		cfg := config.Default("fuzztest", "fuzztest")
+		_, _ = engine.Default.Run(context.Background(), dir, cfg) // must not panic
+	})
+}

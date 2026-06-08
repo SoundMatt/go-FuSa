@@ -78,6 +78,13 @@
       "level": "SIL-1"
     },
     {
+      "id": "REQ-CFG008",
+      "title": "Per-rule severity override in configuration",
+      "text": "Config.Rules.Severity shall be a map from rule ID to severity string ('ERROR', 'WARNING', or 'INFO'); after a rule executes, any finding whose rule ID appears in this map shall have its severity replaced with the configured value.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
       "id": "REQ-CLI001",
       "title": "No-subcommand invocation prints usage and exits non-zero",
       "text": "When gofusa is invoked with no arguments, the CLI shall print a usage message and exit with a non-zero status code.",
@@ -127,6 +134,34 @@
       "level": "SIL-1"
     },
     {
+      "id": "REQ-CLI008",
+      "title": "gofusa lint runs only lint rules",
+      "text": "gofusa lint shall run only rules whose ID begins with 'LINT', producing the same output format as gofusa check and accepting the same --dir, --format, --output, and --strict flags.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI009",
+      "title": "gofusa analyze runs only analyze rules",
+      "text": "gofusa analyze shall run only rules whose ID begins with 'ANA', producing the same output format as gofusa check and accepting the same --dir, --format, --output, and --strict flags.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI010",
+      "title": "gofusa template generates safety document templates",
+      "text": "gofusa template shall generate one or more safety document templates (SAFETY_PLAN.md, TEST_EVIDENCE.md, HARA.md) in the specified output directory, accepting --dir and --type flags.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI011",
+      "title": "--strict flag exits non-zero on WARNING or ERROR findings",
+      "text": "When gofusa check (or any filtered subcommand) is invoked with --strict, it shall exit with status 1 when any finding of WARNING or ERROR severity is present, even if no ERROR-only findings exist.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
       "id": "REQ-ENG001",
       "title": "Rules execute in deterministic ID-sorted order",
       "text": "engine.Registry.Rules shall return rules sorted lexicographically by ID, ensuring that rule execution order and report output are deterministic across runs.",
@@ -165,6 +200,13 @@
       "id": "REQ-ENG006",
       "title": "Context cancellation halts rule execution",
       "text": "engine.Registry.Run shall stop executing rules and return promptly when the supplied context is cancelled, enabling timeout and cancellation support in CI pipelines.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG007",
+      "title": "RunFilter runs only rules matching a keep predicate",
+      "text": "engine.Registry.RunFilter shall accept a keep func(Rule) bool predicate and execute only rules for which keep returns true, enabling focused rule subsets such as lint-only or analyze-only runs.",
       "standard": "ISO 26262",
       "level": "ASIL-A"
     },
@@ -354,6 +396,20 @@
       "id": "REQ-RELEASE006",
       "title": "SBOM and provenance serialise as valid JSON",
       "text": "release.SaveJSON shall write any SBOM or Provenance value as indented, valid JSON that can be parsed by a standard JSON decoder.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RELEASE007",
+      "title": "SBOM output conforms to SPDX 3.0.1 JSON-LD format",
+      "text": "release.ToSPDX31 shall convert an SBOM to an SPDX 3.0.1 JSON-LD document containing a @context pointing to the SPDX 3.0.1 context URL and a @graph with CreationInfo, Tool, SpdxDocument, and software_Package elements.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RELEASE008",
+      "title": "Artifact manifest records SHA-256 hashes for all release files",
+      "text": "release.BuildManifest shall accept a list of file paths and produce a Manifest containing the path and SHA-256 hex digest for each file, failing if any file cannot be read.",
       "standard": "ISO 21434",
       "level": "CAL-2"
     },

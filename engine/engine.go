@@ -96,10 +96,29 @@ func (r *Result) HasErrors() bool {
 	return false
 }
 
+// HasWarnings reports whether any Finding carries SeverityWarning or SeverityError.
+// Used by gofusa check --strict to fail on any actionable finding.
+func (r *Result) HasWarnings() bool {
+	for _, f := range r.Findings {
+		if f.Severity == fusa.SeverityWarning || f.Severity == fusa.SeverityError {
+			return true
+		}
+	}
+	return false
+}
+
 // Run executes all registered rules against projectRoot, skipping any whose
 // ID appears in cfg.Rules.Exclude. Rule execution errors are collected in
 // Result.Errors and do not abort the run.
 func (reg *Registry) Run(ctx context.Context, projectRoot string, cfg *config.Config) (*Result, error) {
+	return reg.RunFilter(ctx, projectRoot, cfg, nil)
+}
+
+// RunFilter is like Run but only executes rules for which keep returns true.
+// A nil keep function runs all non-excluded rules.
+//
+//fusa:req REQ-ENG007
+func (reg *Registry) RunFilter(ctx context.Context, projectRoot string, cfg *config.Config, keep func(Rule) bool) (*Result, error) {
 	//fusa:req REQ-CFG007
 	excluded := make(map[string]struct{}, len(cfg.Rules.Exclude))
 	for _, id := range cfg.Rules.Exclude {
@@ -115,11 +134,20 @@ func (reg *Registry) Run(ctx context.Context, projectRoot string, cfg *config.Co
 		if _, skip := excluded[rule.ID()]; skip {
 			continue
 		}
+		if keep != nil && !keep(rule) {
+			continue
+		}
 		findings, err := rule.Run(ctx, projectRoot, cfg)
 		if err != nil {
 			//fusa:req REQ-ENG002
 			result.Errors = append(result.Errors, fmt.Errorf("rule %s: %w", rule.ID(), err))
 			continue
+		}
+		// Apply per-rule severity overrides from config.
+		for i, f := range findings {
+			if sev, ok := cfg.Rules.Severity[f.RuleID]; ok {
+				findings[i].Severity = fusa.Severity(sev)
+			}
 		}
 		result.Findings = append(result.Findings, findings...)
 	}
