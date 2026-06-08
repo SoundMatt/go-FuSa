@@ -128,3 +128,15 @@ func TestSLSA_FullProject_NoFindings(t *testing.T) {
 		}
 	}
 }
+
+// TestSLSA_Descriptions ensures Description() is non-empty for all three SLSA rules.
+func TestSLSA_Descriptions(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if !strings.HasPrefix(r.ID(), "SLSA") {
+			continue
+		}
+		if r.Description() == "" {
+			t.Errorf("rule %s: Description() is empty", r.ID())
+		}
+	}
+}

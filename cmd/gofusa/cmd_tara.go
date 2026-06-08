@@ -52,7 +52,7 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 		outDir = projectRoot
 	}
 
-	cfg, err := config.Load(projectRoot)
+	cfg, err := config.Load(filepath.Join(projectRoot, ".fusa.json"))
 	if err != nil && !errors.Is(err, fusa.ErrNoConfig) {
 		fmt.Fprintf(stderr, "gofusa tara: load config: %v\n", err)
 		return 1

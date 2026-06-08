@@ -10,11 +10,27 @@ import (
 
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
+	"github.com/SoundMatt/go-FuSa/cyber"
 	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/testutil"
-
-	_ "github.com/SoundMatt/go-FuSa/cyber" // register rules via init
 )
+
+// ─── cyber.Scan public API ────────────────────────────────────────────────────
+
+func TestCyberScan_ReturnsFindings(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	cfg := config.Default("github.com/example/test", "test")
+	findings, err := cyber.Scan(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("cyber.Scan: %v", err)
+	}
+	// A minimal project with no Go source produces no CYBER findings.
+	for _, f := range findings {
+		if f.RuleID[:5] != "CYBER" {
+			t.Errorf("non-CYBER finding returned: %s", f.RuleID)
+		}
+	}
+}
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 

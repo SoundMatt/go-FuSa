@@ -313,3 +313,17 @@ func WriteTmp() {
 		t.Error("CYBER020 should not fire for os.CreateTemp")
 	}
 }
+
+// TestCYBER020_LiteralTmpPath covers the containsTmp helper for "/tmp" literal paths.
+func TestCYBER020_LiteralTmpPath(t *testing.T) {
+	findings := runCyber(t, `package pkg
+import "os"
+func WriteTmp() {
+	f, _ := os.Create("/tmp/myapp.tmp")
+	_ = f
+}
+`)
+	if !hasRule(findings, "CYBER020") {
+		t.Error("expected CYBER020 for os.Create(\"/tmp/...\")")
+	}
+}

@@ -2,10 +2,13 @@ package tara_test
 
 import (
 	"bytes"
+	"context"
 	"strings"
 	"testing"
 
 	fusa "github.com/SoundMatt/go-FuSa"
+	"github.com/SoundMatt/go-FuSa/config"
+	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/tara"
 	"github.com/SoundMatt/go-FuSa/testutil"
 )
@@ -179,6 +182,59 @@ func TestTARA_001_MissingFile(t *testing.T) {
 	// The engine rule is tested via integration; verify TARAFile constant.
 	if tara.TARAFile != "tara.json" {
 		t.Errorf("TARAFile constant: want tara.json got %s", tara.TARAFile)
+	}
+}
+
+// TestTARA_001_EngineRule runs the TARA001 rule via the engine to cover Description and Run.
+func TestTARA_001_EngineRule(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod": "module example.com/test\ngo 1.22\n",
+	})
+	cfg := config.Default("", "test")
+	result, err := engine.Default.RunFilter(context.Background(), dir, cfg, func(r engine.Rule) bool {
+		return r.ID() == "TARA001"
+	})
+	if err != nil {
+		t.Fatalf("RunFilter: %v", err)
+	}
+	// Without tara.json, TARA001 should fire.
+	found := false
+	for _, f := range result.Findings {
+		if f.RuleID == "TARA001" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("expected TARA001 finding for missing tara.json")
+	}
+	// Cover Description.
+	for _, r := range engine.Default.Rules() {
+		if r.ID() == "TARA001" {
+			if r.Description() == "" {
+				t.Error("TARA001: Description() is empty")
+			}
+		}
+	}
+}
+
+// TestTARA_SeverityInfo covers the SeverityInfo branch of severityToLikelihood.
+func TestTARA_SeverityInfo(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod": "module example.com/test\ngo 1.22\n",
+	})
+	findings := []fusa.Finding{
+		makeFinding("CYBER003", fusa.SeverityInfo, "random.go", 3),
+	}
+	report, err := tara.Scan(dir, findings)
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+	for _, e := range report.Entries {
+		if e.CyberRuleID == "CYBER003" {
+			if e.Likelihood != "Low" {
+				t.Errorf("SeverityInfo: want Likelihood=Low, got %s", e.Likelihood)
+			}
+		}
 	}
 }
 

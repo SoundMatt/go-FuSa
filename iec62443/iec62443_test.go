@@ -11,8 +11,6 @@ import (
 	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/iec62443"
 	"github.com/SoundMatt/go-FuSa/testutil"
-
-	_ "github.com/SoundMatt/go-FuSa/iec62443" // register rules
 )
 
 // runIEC runs only IEC62443-* rules and returns ruleID-keyed findings.
@@ -191,5 +189,50 @@ func TestIEC62443_FullProject_NoFindings(t *testing.T) {
 		if n > 0 {
 			t.Errorf("unexpected finding %s in complete project", id)
 		}
+	}
+}
+
+// TestIEC62443_Descriptions verifies Description() is non-empty for all four rules.
+func TestIEC62443_Descriptions(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod": "module example.com/test\ngo 1.22\n",
+	})
+	cfg := config.Default("", "test")
+	result, err := engine.Default.RunFilter(context.Background(), dir, cfg, func(r engine.Rule) bool {
+		return strings.HasPrefix(r.ID(), "IEC62443-")
+	})
+	if err != nil {
+		t.Fatalf("RunFilter: %v", err)
+	}
+	// Verify each rule's Description is non-empty via the engine registry.
+	for _, r := range engine.Default.Rules() {
+		if !strings.HasPrefix(r.ID(), "IEC62443-") {
+			continue
+		}
+		if r.Description() == "" {
+			t.Errorf("rule %s: Description() is empty", r.ID())
+		}
+	}
+	_ = result
+}
+
+// TestLoadConfig_ValidJSON exercises the LoadConfig path with a valid file.
+func TestLoadConfig_ValidJSON(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod":              "module example.com/test\ngo 1.22\n",
+		".fusa-iec62443.json": `{"target_sl":3,"component_type":"embedded","zone_conduit":true,"security_reqs_doc":"SECURITY.md","incident_resp_doc":"IR.md"}`,
+	})
+	cfg, err := iec62443.LoadConfig(dir)
+	if err != nil {
+		t.Fatalf("LoadConfig: %v", err)
+	}
+	if cfg.TargetSL != 3 {
+		t.Errorf("TargetSL = %d, want 3", cfg.TargetSL)
+	}
+	if !cfg.ZoneConduit {
+		t.Error("ZoneConduit should be true")
+	}
+	if cfg.SecurityReqsDoc != "SECURITY.md" {
+		t.Errorf("SecurityReqsDoc = %q, want SECURITY.md", cfg.SecurityReqsDoc)
 	}
 }

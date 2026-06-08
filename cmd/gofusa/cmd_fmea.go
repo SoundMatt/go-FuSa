@@ -61,7 +61,7 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if *withCyber {
-		cfg, cfgErr := config.Load(projectRoot)
+		cfg, cfgErr := config.Load(filepath.Join(projectRoot, ".fusa.json"))
 		if cfgErr != nil && !errors.Is(cfgErr, fusa.ErrNoConfig) {
 			fmt.Fprintf(stderr, "gofusa fmea: load config: %v\n", cfgErr)
 			return 1
