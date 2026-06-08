@@ -21,12 +21,12 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 	}
 
 	var (
-		dir        = fs.String("dir", "", "project root directory (default: current directory)")
-		format     = fs.String("format", "text", "output format: text or json")
-		output     = fs.String("output", "", "write output to file (default: stdout)")
-		gaps       = fs.Bool("gaps", false, "show only requirements with no //fusa:test tag (test coverage gaps)")
+		dir    = fs.String("dir", "", "project root directory (default: current directory)")
+		format = fs.String("format", "text", "output format: text or json")
+		output = fs.String("output", "", "write output to file (default: stdout)")
+		gaps   = fs.Bool("gaps", false, "show only requirements with no //fusa:test tag (test coverage gaps)")
 		//fusa:req REQ-CLI-TRACE001
-		secTested  = fs.Int("sec-tested", 0, "exit 1 if fewer than N%% of requirements have //fusa:test tags (0 = disabled)")
+		secTested = fs.Int("sec-tested", 0, "exit 1 if fewer than N%% of requirements have //fusa:test tags (0 = disabled)")
 	)
 	if err := fs.Parse(args); err != nil {
 		return 1

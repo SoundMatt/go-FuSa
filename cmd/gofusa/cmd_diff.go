@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/SoundMatt/go-FuSa/diff"
 )
@@ -42,11 +41,10 @@ func runDiff(args []string, stdout, stderr io.Writer) int {
 	}
 
 	d := diff.Compare(baseline, current)
-	if err := diff.Render(os.Stdout, d, *format); err != nil {
+	if err := diff.Render(stdout, d, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa diff: %v\n", err)
 		return 1
 	}
-	_ = stdout
 	if len(d.Introduced) > 0 {
 		return 1
 	}

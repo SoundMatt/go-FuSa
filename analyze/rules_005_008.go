@@ -189,7 +189,7 @@ func (r *ruleNilDerefRisk) Run(_ context.Context, projectRoot string, _ *config.
 				if !ok || (errIdent.Name != "err" && errIdent.Name != "_") {
 					continue
 				}
-				if _, ok := assign.Rhs[0].(*ast.CallExpr); !ok {
+				if _, isCall := assign.Rhs[0].(*ast.CallExpr); !isCall {
 					continue
 				}
 				valIdent, ok := assign.Lhs[0].(*ast.Ident)

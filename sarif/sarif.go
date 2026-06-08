@@ -21,8 +21,8 @@ const sarifSchema = "https://json.schemastore.org/sarif-2.1.0.json"
 // ─── SARIF schema types ───────────────────────────────────────────────────────
 
 type sarifLog struct {
-	Schema  string    `json:"$schema"`
-	Version string    `json:"version"`
+	Schema  string     `json:"$schema"`
+	Version string     `json:"version"`
 	Runs    []sarifRun `json:"runs"`
 }
 
@@ -43,11 +43,11 @@ type sarifDriver struct {
 }
 
 type sarifRule struct {
-	ID               string              `json:"id"`
-	Name             string              `json:"name,omitempty"`
-	ShortDescription sarifMessage        `json:"shortDescription"`
-	HelpURI          string              `json:"helpUri,omitempty"`
-	Properties       map[string]any      `json:"properties,omitempty"`
+	ID               string         `json:"id"`
+	Name             string         `json:"name,omitempty"`
+	ShortDescription sarifMessage   `json:"shortDescription"`
+	HelpURI          string         `json:"helpUri,omitempty"`
+	Properties       map[string]any `json:"properties,omitempty"`
 }
 
 type sarifResult struct {
