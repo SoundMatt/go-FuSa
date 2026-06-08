@@ -56,10 +56,11 @@ func (reg *Registry) Register(r Rule) error {
 	return nil
 }
 
-//fusa:req REQ-ENG004
 // MustRegister calls Register and panics if it returns an error.
 // Intended for use in package init functions where duplicate registration
 // indicates a programming error that cannot be recovered from at runtime.
+//
+//fusa:req REQ-ENG004
 func (reg *Registry) MustRegister(r Rule) {
 	if err := reg.Register(r); err != nil {
 		panic(err)
@@ -83,8 +84,9 @@ type Result struct {
 	Errors []error
 }
 
-//fusa:req REQ-ENG003
 // HasErrors reports whether any Finding carries SeverityError.
+//
+//fusa:req REQ-ENG003
 func (r *Result) HasErrors() bool {
 	for _, f := range r.Findings {
 		if f.Severity == fusa.SeverityError {

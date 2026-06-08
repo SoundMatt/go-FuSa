@@ -17,8 +17,9 @@ import (
 // ConfigFile is the conventional name for the go-FuSa configuration file.
 const ConfigFile = ".fusa.json"
 
-//fusa:req REQ-NF003
 // Standard is a recognised functional safety standard identifier.
+//
+//fusa:req REQ-NF003
 type Standard string
 
 const (
@@ -57,8 +58,9 @@ type ReportConfig struct {
 	Output string `json:"output,omitempty"` // file path; stdout if empty
 }
 
-//fusa:req REQ-CFG005
 // Default returns a starter Config for the given module path and project name.
+//
+//fusa:req REQ-CFG005
 func Default(module, name string) *Config {
 	return &Config{
 		Version: "1",
@@ -93,8 +95,9 @@ func Load(path string) (*Config, error) {
 	return &cfg, nil
 }
 
-//fusa:req REQ-CFG006
 // Save marshals cfg to indented JSON and writes it to path.
+//
+//fusa:req REQ-CFG006
 func Save(path string, cfg *Config) error {
 	data, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {

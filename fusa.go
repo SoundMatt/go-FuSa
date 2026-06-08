@@ -12,6 +12,7 @@ import "errors"
 const Version = "0.9.0"
 
 // Sentinel errors. Callers should use errors.Is for comparison.
+//
 //fusa:req REQ-NF001
 var (
 	//fusa:req REQ-ERR001
