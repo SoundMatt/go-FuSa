@@ -61,3 +61,19 @@ func TestNoExternalDependencies(t *testing.T) {
 		t.Error("go.mod must not declare external dependencies (zero-dep design)")
 	}
 }
+
+func TestSeverity_String(t *testing.T) {
+	cases := []struct {
+		s    fusa.Severity
+		want string
+	}{
+		{fusa.SeverityError, "ERROR"},
+		{fusa.SeverityWarning, "WARNING"},
+		{fusa.SeverityInfo, "INFO"},
+	}
+	for _, tc := range cases {
+		if got := tc.s.String(); got != tc.want {
+			t.Errorf("Severity(%q).String() = %q, want %q", tc.s, got, tc.want)
+		}
+	}
+}

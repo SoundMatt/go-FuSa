@@ -38,13 +38,13 @@ jobs:
           [ -z "$pkgs" ] && echo "no Go packages found" && exit 0
           go test -race -count=1 -coverprofile=coverage.out ./...
 
-      - name: Coverage gate (≥ 75 %)
+      - name: Coverage gate (≥ 80 %)
         if: matrix.os == 'ubuntu-latest' && matrix.go == '1.22'
         shell: bash
         run: |
           pct=$(go tool cover -func=coverage.out | awk '/^total:/{gsub(/%/,"",$3); print $3}')
           printf "Coverage: %.1f%%\n" "$pct"
-          awk -v p="$pct" 'BEGIN{ if (p+0 < 75) { print "FAIL: coverage " p "% is below the 75% threshold"; exit 1 } print "PASS" }'
+          awk -v p="$pct" 'BEGIN{ if (p+0 < 80) { print "FAIL: coverage " p "% is below the 80% threshold"; exit 1 } print "PASS" }'
 
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest' && matrix.go == '1.22'
