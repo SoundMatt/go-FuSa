@@ -84,9 +84,9 @@ func TestWatchdog_IsRunning(t *testing.T) {
 // ─── Heartbeat ────────────────────────────────────────────────────────────────
 
 func TestHeartbeat_MissedCallbackFires(t *testing.T) {
-	var missed atomic.Int32
+	var missed atomic.Int64
 	hb := fusaruntime.NewHeartbeat(20*time.Millisecond, func(n int) {
-		missed.Store(int32(n))
+		missed.Store(int64(n))
 	})
 	if err := hb.Start(); err != nil {
 		t.Fatalf("Start: %v", err)
@@ -104,9 +104,9 @@ func TestHeartbeat_MissedCallbackFires(t *testing.T) {
 }
 
 func TestHeartbeat_RegularBeatSuppressesCallback(t *testing.T) {
-	var missed atomic.Int32
+	var missed atomic.Int64
 	hb := fusaruntime.NewHeartbeat(50*time.Millisecond, func(n int) {
-		missed.Store(int32(n))
+		missed.Store(int64(n))
 	})
 	if err := hb.Start(); err != nil {
 		t.Fatalf("Start: %v", err)

@@ -105,6 +105,7 @@ func TestPack_EmptyProject(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-AUDIT004
 func TestPack_ZIPIsReadable(t *testing.T) {
 	dir := projectWithEvidence(t)
 	outPath := filepath.Join(t.TempDir(), auditpack.AuditPackFile)

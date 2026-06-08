@@ -54,10 +54,10 @@ func write(dir, name, content string) error {
 	if _, err := os.Stat(path); err == nil {
 		return fmt.Errorf("template: %s already exists; delete it to regenerate", path)
 	}
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o750); err != nil {
 		return fmt.Errorf("template: mkdir %s: %w", dir, err)
 	}
-	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte(content), 0o640); err != nil {
 		return fmt.Errorf("template: write %s: %w", path, err)
 	}
 	return nil

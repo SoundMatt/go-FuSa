@@ -51,7 +51,7 @@ func TestGenerate_UnknownType(t *testing.T) {
 func TestGenerate_AlreadyExists(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "SAFETY_PLAN.md")
-	if err := os.WriteFile(path, []byte("existing"), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte("existing"), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	if err := template.Generate(dir, template.TypeSafetyPlan); err == nil {

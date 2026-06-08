@@ -468,6 +468,7 @@ func GetValue() int { return 42 }
 // ─── EnrichWithCyber ──────────────────────────────────────────────────────────
 
 //fusa:test REQ-FMEA006
+//fusa:test REQ-CLI020
 func TestEnrichWithCyber_Basic(t *testing.T) {
 	src := `package mypkg
 
@@ -540,7 +541,7 @@ func FuzzScan(f *testing.F) {
 	f.Add("")
 	f.Fuzz(func(t *testing.T, src string) {
 		dir := t.TempDir()
-		_ = os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o644)
+		_ = os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o640)
 		_, _ = fmea.Scan(dir) // must not panic
 	})
 }

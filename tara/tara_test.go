@@ -22,6 +22,8 @@ func makeFinding(ruleID string, sev fusa.Severity, file string, line int) fusa.F
 	}
 }
 
+//fusa:test REQ-TARA002
+//fusa:test REQ-TARA003
 func TestScan_EmptyFindings(t *testing.T) {
 	dir := testutil.ProjectDir(t, map[string]string{
 		"go.mod": "module example.com/test\ngo 1.22\n",
@@ -38,6 +40,7 @@ func TestScan_EmptyFindings(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TARA001
 func TestScan_KnownRules(t *testing.T) {
 	dir := testutil.ProjectDir(t, map[string]string{
 		"go.mod": "module example.com/test\ngo 1.22\n",
@@ -117,6 +120,7 @@ func padded(n int) string {
 
 // ─── Render ───────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-TARA004
 func TestRender_JSON(t *testing.T) {
 	dir := testutil.ProjectDir(t, map[string]string{
 		"go.mod": "module example.com/test\ngo 1.22\n",
@@ -171,6 +175,7 @@ func TestRender_UnknownFormat(t *testing.T) {
 
 // ─── TARA001 engine rule ──────────────────────────────────────────────────────
 
+//fusa:test REQ-TARA005
 func TestTARA_001_MissingFile(t *testing.T) {
 	dir := testutil.ProjectDir(t, map[string]string{
 		"go.mod": "module example.com/test\ngo 1.22\n",

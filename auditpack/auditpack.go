@@ -74,6 +74,7 @@ var EvidenceFiles = []string{
 //
 //fusa:req REQ-AUDIT001
 //fusa:req REQ-AUDIT002
+//fusa:req REQ-AUDIT004
 func Pack(projectRoot, outputPath string) (*AuditManifest, error) {
 	module := readModule(projectRoot)
 	manifest := &AuditManifest{
@@ -82,7 +83,8 @@ func Pack(projectRoot, outputPath string) (*AuditManifest, error) {
 		Module:      module,
 	}
 
-	// Collect present files
+	// Hash all evidence files that are present; skip absent ones.
+	// Open-and-hash in a single step avoids a TOCTOU race (CWE-362).
 	type fileEntry struct {
 		name string
 		path string
@@ -90,18 +92,15 @@ func Pack(projectRoot, outputPath string) (*AuditManifest, error) {
 	var present []fileEntry
 	for _, name := range EvidenceFiles {
 		path := filepath.Join(projectRoot, name)
-		if _, err := os.Stat(path); err == nil {
-			present = append(present, fileEntry{name: name, path: path})
-		}
-	}
-
-	// Hash all files before writing archive
-	for _, fe := range present {
-		entry, err := hashFile(fe.path, fe.name)
+		entry, err := hashFile(path, name)
 		if err != nil {
-			return nil, fmt.Errorf("auditpack: hash %s: %w", fe.name, err)
+			if os.IsNotExist(err) {
+				continue
+			}
+			return nil, fmt.Errorf("auditpack: hash %s: %w", name, err)
 		}
 		manifest.Files = append(manifest.Files, entry)
+		present = append(present, fileEntry{name: name, path: path})
 	}
 
 	// Create ZIP

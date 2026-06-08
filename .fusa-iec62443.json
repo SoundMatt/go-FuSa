@@ -1,0 +1,7 @@
+{
+  "target_sl": 2,
+  "component_type": "application",
+  "zone_conduit": false,
+  "security_reqs_doc": "SECURITY.md",
+  "incident_resp_doc": "INCIDENT-RESPONSE.md"
+}

@@ -109,7 +109,7 @@ func Save(path string, r *Report) error {
 	if err != nil {
 		return fmt.Errorf("qualify: marshal report: %w", err)
 	}
-	return os.WriteFile(path, data, 0o644)
+	return os.WriteFile(path, data, 0o640)
 }
 
 // Load reads a qualification report from path.
@@ -145,10 +145,10 @@ func runCase(ctx context.Context, reg *engine.Registry, c Case) Result {
 
 	for rel, content := range c.Files {
 		path := filepath.Join(dir, rel)
-		if mkErr := os.MkdirAll(filepath.Dir(path), 0o755); mkErr != nil {
+		if mkErr := os.MkdirAll(filepath.Dir(path), 0o750); mkErr != nil {
 			return Result{Case: c, Error: fmt.Sprintf("mkdir %s: %v", rel, mkErr)}
 		}
-		if wErr := os.WriteFile(path, []byte(content), 0o644); wErr != nil {
+		if wErr := os.WriteFile(path, []byte(content), 0o640); wErr != nil {
 			return Result{Case: c, Error: fmt.Sprintf("write %s: %v", rel, wErr)}
 		}
 	}

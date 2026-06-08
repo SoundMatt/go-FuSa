@@ -363,7 +363,7 @@ type govulncheckMsg struct {
 }
 
 func runGovulncheck(root, binPath string) (*Report, error) {
-	cmd := exec.CommandContext(context.Background(), binPath, "-json", "./...") //nolint:gosec // binPath from LookPath
+	cmd := exec.CommandContext(context.Background(), binPath, "-json", "./...") //nolint:gosec,CYBER005 // binPath from LookPath
 	cmd.Dir = root
 	// govulncheck exits non-zero when vulnerabilities are found; capture stdout regardless.
 	out, _ := cmd.Output()

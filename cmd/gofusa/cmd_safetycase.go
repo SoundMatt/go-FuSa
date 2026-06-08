@@ -56,7 +56,7 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
-	if err := os.MkdirAll(outDir, 0o755); err != nil {
+	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa safety-case: mkdir: %v\n", err)
 		return 1
 	}

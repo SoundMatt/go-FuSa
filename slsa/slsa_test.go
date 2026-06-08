@@ -31,6 +31,7 @@ func runSLSA(t *testing.T, files map[string]string) map[string]int {
 
 // ─── SLSA001 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-SLSA001
 func TestSLSA001_MissingRevision(t *testing.T) {
 	counts := runSLSA(t, map[string]string{
 		"go.mod":          "module example.com/test\ngo 1.22\n",
@@ -63,6 +64,7 @@ func TestSLSA001_MissingProvenanceFile(t *testing.T) {
 
 // ─── SLSA002 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-SLSA002
 func TestSLSA002_MissingBuilder(t *testing.T) {
 	counts := runSLSA(t, map[string]string{
 		"go.mod":          "module example.com/test\ngo 1.22\n",
@@ -85,6 +87,7 @@ func TestSLSA002_BuilderPresent(t *testing.T) {
 
 // ─── SLSA003 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-SLSA003
 func TestSLSA003_MissingCODEOWNERS(t *testing.T) {
 	counts := runSLSA(t, map[string]string{
 		"go.mod": "module example.com/test\ngo 1.22\n",

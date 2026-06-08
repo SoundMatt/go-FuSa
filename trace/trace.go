@@ -105,7 +105,7 @@ func SaveRequirements(dir string, reqs []Requirement) error {
 		return fmt.Errorf("trace: marshal requirements: %w", err)
 	}
 	path := filepath.Join(dir, ReqsFile)
-	if err := os.WriteFile(path, append(data, '\n'), 0o644); err != nil {
+	if err := os.WriteFile(path, append(data, '\n'), 0o640); err != nil {
 		return fmt.Errorf("trace: write %s: %w", ReqsFile, err)
 	}
 	return nil
@@ -120,6 +120,9 @@ func ScanTags(root string) ([]Tag, error) {
 			return walkErr
 		}
 		if d.IsDir() {
+			if path == root {
+				return nil // never skip the root itself
+			}
 			name := d.Name()
 			//fusa:req REQ-TRACE005
 			if name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".") {

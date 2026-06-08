@@ -87,7 +87,7 @@ require (
 require github.com/single/dep v0.1.0
 `
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	deps, err := vuln.ParseGoMod(filepath.Join(dir, "go.mod"))
@@ -121,7 +121,7 @@ func TestParseGoMod_MissingFile(t *testing.T) {
 func TestParseGoMod_NoDeps(t *testing.T) {
 	gomod := "module github.com/example/test\n\ngo 1.22\n"
 	dir := t.TempDir()
-	_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o644)
+	_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o640)
 	deps, err := vuln.ParseGoMod(filepath.Join(dir, "go.mod"))
 	if err != nil {
 		t.Fatalf("ParseGoMod: %v", err)
@@ -398,6 +398,7 @@ func TestVULN001_Description(t *testing.T) {
 
 // ─── ScanWithGovulncheck ──────────────────────────────────────────────────────
 
+//fusa:test REQ-VULN006
 func TestScanWithGovulncheck_FallbackNoDeps(t *testing.T) {
 	// With no deps, ScanWithGovulncheck falls back to Scan which returns early
 	// without making network requests, regardless of govulncheck presence.
@@ -429,7 +430,7 @@ func FuzzParseGoMod(f *testing.F) {
 	f.Fuzz(func(t *testing.T, content string) {
 		dir := t.TempDir()
 		path := filepath.Join(dir, "go.mod")
-		_ = os.WriteFile(path, []byte(content), 0o644)
+		_ = os.WriteFile(path, []byte(content), 0o640)
 		_, _ = vuln.ParseGoMod(path) // must not panic
 	})
 }

@@ -6,5 +6,6 @@
   "goos": "darwin",
   "goarch": "arm64",
   "vcsRevision": "21885dbede8713f58df686818545fe871a42fc6e",
-  "vcsModified": true
+  "vcsModified": true,
+  "builder": "https://github.com/actions/runner"
 }

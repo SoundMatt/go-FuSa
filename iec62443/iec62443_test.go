@@ -33,6 +33,7 @@ func runIEC(t *testing.T, files map[string]string) map[string]int {
 
 // ─── IEC62443-001 ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-IEC62443-001
 func TestIEC62443_001_MissingConfig(t *testing.T) {
 	counts := runIEC(t, map[string]string{
 		"go.mod": "module example.com/test\ngo 1.22\n",
@@ -54,6 +55,7 @@ func TestIEC62443_001_ConfigPresent(t *testing.T) {
 
 // ─── IEC62443-002 ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-IEC62443-002
 func TestIEC62443_002_SLZero(t *testing.T) {
 	counts := runIEC(t, map[string]string{
 		"go.mod":              "module example.com/test\ngo 1.22\n",
@@ -86,6 +88,7 @@ func TestIEC62443_002_SL5Invalid(t *testing.T) {
 
 // ─── IEC62443-003 ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-IEC62443-003
 func TestIEC62443_003_MissingSecurityPolicy(t *testing.T) {
 	counts := runIEC(t, map[string]string{
 		"go.mod": "module example.com/test\ngo 1.22\n",
@@ -107,6 +110,7 @@ func TestIEC62443_003_SecurityPolicyPresent(t *testing.T) {
 
 // ─── IEC62443-004 ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-IEC62443-004
 func TestIEC62443_004_MissingIncidentResponse(t *testing.T) {
 	counts := runIEC(t, map[string]string{
 		"go.mod": "module example.com/test\ngo 1.22\n",
@@ -167,7 +171,7 @@ func TestLoadConfig_Missing(t *testing.T) {
 
 func TestLoadConfig_InvalidJSON(t *testing.T) {
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, iec62443.ConfigFile), []byte("{bad json"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, iec62443.ConfigFile), []byte("{bad json"), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	_, err := iec62443.LoadConfig(dir)

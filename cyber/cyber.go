@@ -83,7 +83,7 @@ func parseProject(projectRoot string) ([]parsedFile, error) {
 		if !strings.HasSuffix(path, ".go") {
 			return nil
 		}
-		f, parseErr := parser.ParseFile(fset, path, nil, 0)
+		f, parseErr := parser.ParseFile(fset, path, nil, parser.ParseComments)
 		if parseErr != nil {
 			return nil
 		}
@@ -91,6 +91,28 @@ func parseProject(projectRoot string) ([]parsedFile, error) {
 		return nil
 	})
 	return results, err
+}
+
+// isNolinted returns true when the source line containing pos has a
+// //nolint:RULEID or //fusa:ignore RULEID inline comment.
+func isNolinted(pf parsedFile, pos token.Pos, ruleID string) bool {
+	position := pf.fset.Position(pos)
+	for _, cg := range pf.file.Comments {
+		for _, c := range cg.List {
+			cp := pf.fset.Position(c.Pos())
+			if cp.Line != position.Line {
+				continue
+			}
+			text := c.Text
+			// Accept nolint:RULE, nolint:A,RULE,B, fusa:ignore RULE.
+			if strings.Contains(text, "nolint:"+ruleID) ||
+				strings.Contains(text, ","+ruleID) ||
+				strings.Contains(text, "fusa:ignore "+ruleID) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func location(fset *token.FileSet, pos token.Pos) fusa.Location {
@@ -311,7 +333,7 @@ func (r *ruleCmdInjection) Run(_ context.Context, projectRoot string, _ *config.
 			}
 			// exec.Command(name, args...) — name is args[0]
 			if isSel(call.Fun, "exec", "Command") && len(call.Args) >= 1 {
-				if !isStringLit(call.Args[0]) {
+				if !isStringLit(call.Args[0]) && !isNolinted(pf, call.Pos(), r.ID()) {
 					findings = append(findings, fusa.Finding{
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
@@ -323,7 +345,7 @@ func (r *ruleCmdInjection) Run(_ context.Context, projectRoot string, _ *config.
 			}
 			// exec.CommandContext(ctx, name, args...) — name is args[1]
 			if isSel(call.Fun, "exec", "CommandContext") && len(call.Args) >= 2 {
-				if !isStringLit(call.Args[1]) {
+				if !isStringLit(call.Args[1]) && !isNolinted(pf, call.Pos(), r.ID()) {
 					findings = append(findings, fusa.Finding{
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,

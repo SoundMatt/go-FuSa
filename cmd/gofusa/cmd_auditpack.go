@@ -52,7 +52,7 @@ func runAuditPack(args []string, stdout, stderr io.Writer) int {
 	}
 
 	outDir := filepath.Dir(outPath)
-	if err := os.MkdirAll(outDir, 0o755); err != nil {
+	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa audit-pack: mkdir: %v\n", err)
 		return 1
 	}

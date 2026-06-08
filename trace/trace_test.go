@@ -60,7 +60,7 @@ func TestLoadRequirements_NotFound(t *testing.T) {
 func TestLoadRequirements_InvalidJSON(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, trace.ReqsFile)
-	if err := os.WriteFile(path, []byte("not json"), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte("not json"), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	_, err := trace.LoadRequirements(dir)
@@ -98,10 +98,10 @@ func TestScanTags_FindsImplAndTestTags(t *testing.T) {
 	dir := t.TempDir()
 	src := "package main\n\n//fusa:req REQ-001\nfunc Foo() {}\n"
 	testSrc := "package main\n\n//fusa:test REQ-001\nfunc TestFoo(t *testing.T) {}\n"
-	if err := os.WriteFile(filepath.Join(dir, "foo.go"), []byte(src), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "foo.go"), []byte(src), 0o640); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(dir, "foo_test.go"), []byte(testSrc), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "foo_test.go"), []byte(testSrc), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	tags, err := trace.ScanTags(dir)
@@ -135,11 +135,11 @@ func TestScanTags_FindsImplAndTestTags(t *testing.T) {
 func TestScanTags_IgnoresVendorAndHidden(t *testing.T) {
 	dir := t.TempDir()
 	for _, subdir := range []string{"vendor", ".hidden"} {
-		if err := os.MkdirAll(filepath.Join(dir, subdir), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Join(dir, subdir), 0o750); err != nil {
 			t.Fatal(err)
 		}
 		src := "package x\n\n//fusa:req REQ-999\n"
-		if err := os.WriteFile(filepath.Join(dir, subdir, "x.go"), []byte(src), 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(dir, subdir, "x.go"), []byte(src), 0o640); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -159,7 +159,7 @@ func TestScanTags_EmptyID_Skipped(t *testing.T) {
 	dir := t.TempDir()
 	// Bare annotation with no ID after it should be silently skipped.
 	src := "package main\n\n//fusa:req \nfunc Foo() {}\n"
-	if err := os.WriteFile(filepath.Join(dir, "foo.go"), []byte(src), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "foo.go"), []byte(src), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	tags, err := trace.ScanTags(dir)
@@ -176,7 +176,7 @@ func TestScanTags_EmptyID_Skipped(t *testing.T) {
 func TestBuild_NoReqsFile(t *testing.T) {
 	dir := t.TempDir()
 	src := "package main\n\n//fusa:req REQ-001\nfunc Foo() {}\n"
-	if err := os.WriteFile(filepath.Join(dir, "foo.go"), []byte(src), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "foo.go"), []byte(src), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	m, err := trace.Build(dir)
@@ -193,6 +193,8 @@ func TestBuild_NoReqsFile(t *testing.T) {
 
 //fusa:test REQ-TRACE003
 //fusa:test REQ-TRACE004
+//fusa:test REQ-REQQ002
+//fusa:test REQ-REQQ003
 func TestBuild_CoverageMetrics(t *testing.T) {
 	dir := t.TempDir()
 	reqs := []trace.Requirement{
@@ -205,10 +207,10 @@ func TestBuild_CoverageMetrics(t *testing.T) {
 	// REQ-001 has impl + test, REQ-002 has impl only, REQ-003 is untraced.
 	src := "package main\n\n//fusa:req REQ-001\n//fusa:req REQ-002\nfunc F() {}\n"
 	testSrc := "package main\n\n//fusa:test REQ-001\nfunc TestF() {}\n"
-	if err := os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o640); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(filepath.Join(dir, "f_test.go"), []byte(testSrc), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "f_test.go"), []byte(testSrc), 0o640); err != nil {
 		t.Fatal(err)
 	}
 
@@ -299,6 +301,7 @@ func TestTRACE001_ReqsFilePresent(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE002
+//fusa:test REQ-REQQ001
 func TestTRACE002_UntracedRequirement(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	reqs := []trace.Requirement{{ID: "REQ-001", Title: "Error handling"}}
@@ -365,7 +368,7 @@ func FuzzScanTags(f *testing.F) {
 	f.Add("not valid go\x00source")
 	f.Fuzz(func(t *testing.T, src string) {
 		dir := t.TempDir()
-		_ = os.WriteFile(filepath.Join(dir, "fuzz.go"), []byte(src), 0o644)
+		_ = os.WriteFile(filepath.Join(dir, "fuzz.go"), []byte(src), 0o640)
 		_, _ = trace.ScanTags(dir) // must not panic
 	})
 }

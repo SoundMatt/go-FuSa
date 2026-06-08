@@ -75,7 +75,7 @@ func TestLoad_Missing(t *testing.T) {
 func TestLoad_InvalidJSON(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, config.ConfigFile)
-	if err := os.WriteFile(path, []byte("{not valid json"), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte("{not valid json"), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	_, err := config.Load(path)
@@ -209,7 +209,7 @@ func FuzzLoad(f *testing.F) {
 	f.Fuzz(func(t *testing.T, data string) {
 		dir := t.TempDir()
 		path := filepath.Join(dir, config.ConfigFile)
-		_ = os.WriteFile(path, []byte(data), 0o644)
+		_ = os.WriteFile(path, []byte(data), 0o640)
 		_, _ = config.Load(path) // must not panic
 	})
 }

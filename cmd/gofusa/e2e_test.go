@@ -27,10 +27,10 @@ func TestPipeline_EndToEnd(t *testing.T) {
 	}
 	for rel, content := range files {
 		full := filepath.Join(dir, rel)
-		if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(full), 0o750); err != nil {
 			t.Fatalf("mkdir %s: %v", filepath.Dir(full), err)
 		}
-		if err := os.WriteFile(full, []byte(content), 0o644); err != nil {
+		if err := os.WriteFile(full, []byte(content), 0o640); err != nil {
 			t.Fatalf("write %s: %v", rel, err)
 		}
 	}

@@ -155,7 +155,7 @@ func Save(path string, b *Bundle) error {
 	if err != nil {
 		return fmt.Errorf("verify: marshal bundle: %w", err)
 	}
-	if err := os.WriteFile(path, append(data, '\n'), 0o644); err != nil {
+	if err := os.WriteFile(path, append(data, '\n'), 0o640); err != nil {
 		return fmt.Errorf("verify: write %s: %w", path, err)
 	}
 	return nil

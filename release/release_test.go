@@ -20,11 +20,11 @@ import (
 func moduleDir(t *testing.T, gomod, gosum string) string {
 	t.Helper()
 	dir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	if gosum != "" {
-		if err := os.WriteFile(filepath.Join(dir, "go.sum"), []byte(gosum), 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(dir, "go.sum"), []byte(gosum), 0o640); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -125,7 +125,7 @@ func TestBuildProvenance(t *testing.T) {
 func TestHashFiles(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "artifact.bin")
-	if err := os.WriteFile(path, []byte("hello"), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte("hello"), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	artifacts, err := release.HashFiles([]string{path})
@@ -236,10 +236,10 @@ func TestBuildManifest(t *testing.T) {
 	dir := t.TempDir()
 	p1 := filepath.Join(dir, "a.json")
 	p2 := filepath.Join(dir, "b.json")
-	if err := os.WriteFile(p1, []byte(`{"a":1}`), 0o644); err != nil {
+	if err := os.WriteFile(p1, []byte(`{"a":1}`), 0o640); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.WriteFile(p2, []byte(`{"b":2}`), 0o644); err != nil {
+	if err := os.WriteFile(p2, []byte(`{"b":2}`), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	m, err := release.BuildManifest([]string{p1, p2})
@@ -275,7 +275,7 @@ func FuzzBuildSBOM(f *testing.F) {
 	f.Add("not a go.mod file at all")
 	f.Fuzz(func(t *testing.T, gomod string) {
 		dir := t.TempDir()
-		_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o644)
+		_ = os.WriteFile(filepath.Join(dir, "go.mod"), []byte(gomod), 0o640)
 		_, _ = release.BuildSBOM(dir) // must not panic
 	})
 }

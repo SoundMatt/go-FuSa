@@ -149,7 +149,7 @@ func TestLoad_NotFound(t *testing.T) {
 func TestRun_PassingTests(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"),
-		[]byte("module testmod\n\ngo 1.22\n"), 0o644); err != nil {
+		[]byte("module testmod\n\ngo 1.22\n"), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	src := `package testmod
@@ -158,7 +158,7 @@ import "testing"
 
 func TestAlwaysPass(t *testing.T) { _ = t }
 `
-	if err := os.WriteFile(filepath.Join(dir, "pass_test.go"), []byte(src), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "pass_test.go"), []byte(src), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	results, err := verify.Run(context.Background(), dir)

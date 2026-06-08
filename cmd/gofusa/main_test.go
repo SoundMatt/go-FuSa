@@ -433,7 +433,7 @@ func TestRun_SafetyCase_WithAllEvidence(t *testing.T) {
 		"sbom.json":           `{"@context":"x","@graph":[]}`,
 		"provenance.json":     `{"format":"go-FuSa Provenance v1"}`,
 	} {
-		if err := os.WriteFile(filepath.Join(dir, name), []byte(content), 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(dir, name), []byte(content), 0o640); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -619,7 +619,7 @@ func TestRun_AuditPack_BadOutputPath(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	// Use a path whose parent is a regular file — fails on all platforms.
 	blocker := filepath.Join(t.TempDir(), "notadir")
-	if err := os.WriteFile(blocker, []byte("x"), 0o644); err != nil {
+	if err := os.WriteFile(blocker, []byte("x"), 0o640); err != nil {
 		t.Fatal(err)
 	}
 	badPath := filepath.Join(blocker, "x.zip")

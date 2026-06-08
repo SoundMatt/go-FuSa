@@ -55,7 +55,7 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 		outDir = projectRoot
 	}
 
-	if err := os.MkdirAll(outDir, 0o755); err != nil {
+	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa release: create output directory: %v\n", err)
 		return 1
 	}

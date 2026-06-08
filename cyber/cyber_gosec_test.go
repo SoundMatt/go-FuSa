@@ -8,6 +8,7 @@ import (
 
 // ─── CYBER011: SSRF ──────────────────────────────────────────────────────────
 
+//fusa:test REQ-CYBER011
 func TestCYBER011_SSRF_Get(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import "net/http"
@@ -40,6 +41,7 @@ func Fetch() (*http.Response, error) { return http.Get("https://api.example.com/
 
 // ─── CYBER012: pprof ─────────────────────────────────────────────────────────
 
+//fusa:test REQ-CYBER012
 func TestCYBER012_Pprof(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import _ "net/http/pprof"
@@ -61,6 +63,7 @@ func Listen() { _ = http.ListenAndServe(":8080", nil) }
 
 // ─── CYBER013: zip slip ───────────────────────────────────────────────────────
 
+//fusa:test REQ-CYBER013
 func TestCYBER013_ZipSlip(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import (
@@ -93,6 +96,7 @@ func Open(name string) *os.File {
 
 // ─── CYBER014: TLS min version ───────────────────────────────────────────────
 
+//fusa:test REQ-CYBER014
 func TestCYBER014_VersionTLS10(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import "crypto/tls"
@@ -135,6 +139,7 @@ func Config() *tls.Config { return &tls.Config{MinVersion: tls.VersionTLS12} }
 
 // ─── CYBER015: SQL via fmt.Sprintf ───────────────────────────────────────────
 
+//fusa:test REQ-CYBER015
 func TestCYBER015_SQLSprintf(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import (
@@ -164,6 +169,7 @@ func GetUser(db *sql.DB, id string) {
 
 // ─── CYBER016: permissive dir mode ───────────────────────────────────────────
 
+//fusa:test REQ-CYBER016
 func TestCYBER016_PermissiveDir(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import "os"
@@ -196,6 +202,7 @@ func MakeDir(path string) { os.Mkdir(path, 0750) }
 
 // ─── CYBER017: permissive file mode ──────────────────────────────────────────
 
+//fusa:test REQ-CYBER017
 func TestCYBER017_OpenFile(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import "os"
@@ -228,6 +235,7 @@ func Write(path string, data []byte) { os.WriteFile(path, data, 0600) }
 
 // ─── CYBER018: path from request ─────────────────────────────────────────────
 
+//fusa:test REQ-CYBER018
 func TestCYBER018_ServeFile(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import "net/http"
@@ -254,6 +262,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 // ─── CYBER019: TOCTOU ────────────────────────────────────────────────────────
 
+//fusa:test REQ-CYBER019
 func TestCYBER019_TOCTOU(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import "os"
@@ -285,6 +294,7 @@ func Process(path string) (*os.File, error) {
 
 // ─── CYBER020: insecure temp file ────────────────────────────────────────────
 
+//fusa:test REQ-CYBER020
 func TestCYBER020_TempCreate(t *testing.T) {
 	findings := runCyber(t, `package pkg
 import (

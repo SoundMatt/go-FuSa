@@ -181,7 +181,7 @@ func SaveJSON(path string, v any) error {
 	if err != nil {
 		return fmt.Errorf("release: marshal: %w", err)
 	}
-	if err := os.WriteFile(path, append(data, '\n'), 0o644); err != nil {
+	if err := os.WriteFile(path, append(data, '\n'), 0o640); err != nil {
 		return fmt.Errorf("release: write %s: %w", path, err)
 	}
 	return nil

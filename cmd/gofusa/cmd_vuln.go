@@ -49,7 +49,7 @@ func runVuln(args []string, stdout, stderr io.Writer) int {
 		outDir = projectRoot
 	}
 
-	if mkErr := os.MkdirAll(outDir, 0o755); mkErr != nil {
+	if mkErr := os.MkdirAll(outDir, 0o750); mkErr != nil {
 		fmt.Fprintf(stderr, "gofusa vuln: mkdir: %v\n", mkErr)
 		return 1
 	}

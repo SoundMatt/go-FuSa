@@ -33,6 +33,7 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 	var (
 		dir       = fs.String("dir", "", "project root directory (default: current directory)")
 		outputDir = fs.String("output-dir", "", "output directory (default: project root)")
+		//fusa:req REQ-CLI020
 		withCyber = fs.Bool("cyber", false, "enrich FMEA entries with CYBER findings (adds CyberRisks column)")
 	)
 	if err := fs.Parse(args); err != nil {
@@ -77,7 +78,7 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 		fmea.EnrichWithCyber(report, cyberFindings)
 	}
 
-	if err := os.MkdirAll(outDir, 0o755); err != nil {
+	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa fmea: mkdir: %v\n", err)
 		return 1
 	}

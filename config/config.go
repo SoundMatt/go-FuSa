@@ -109,7 +109,7 @@ func Save(path string, cfg *Config) error {
 		return fmt.Errorf("config: marshal: %w", err)
 	}
 	data = append(data, '\n')
-	if err := os.WriteFile(path, data, 0o644); err != nil {
+	if err := os.WriteFile(path, data, 0o640); err != nil {
 		return fmt.Errorf("config: write %s: %w", path, err)
 	}
 	return nil
