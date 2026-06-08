@@ -617,8 +617,14 @@ func TestRun_AuditPack_CreatesZIP(t *testing.T) {
 
 func TestRun_AuditPack_BadOutputPath(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	// Use a path whose parent is a regular file — fails on all platforms.
+	blocker := filepath.Join(t.TempDir(), "notadir")
+	if err := os.WriteFile(blocker, []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	badPath := filepath.Join(blocker, "x.zip")
 	var out, errOut bytes.Buffer
-	code := run([]string{"audit-pack", "--dir", dir, "--output", "/nonexistent/dir/x.zip"}, &out, &errOut)
+	code := run([]string{"audit-pack", "--dir", dir, "--output", badPath}, &out, &errOut)
 	if code == 0 {
 		t.Error("audit-pack bad path: expected non-zero exit code")
 	}
