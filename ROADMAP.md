@@ -179,6 +179,28 @@ Deliverables: `gofusa safety-case`
 
 ---
 
+## v0.12 — Safety Analysis Generation
+
+**Goal:** Automatically derive safety analysis artefacts from code structure and requirements.
+
+Features:
+- **dFMEA generation** — parse function signatures, error paths, goroutine interactions, and
+  requirement annotations to produce a Design Failure Mode and Effects Analysis table;
+  each row maps a code item to its potential failure mode, effect, severity, detection
+  control, and linked requirement/test evidence
+- **Boundary diagram generation** — derive component boundary diagrams from Go package
+  structure, exported interfaces, and `//fusa:req` annotations; output in Mermaid and
+  DOT formats; shows trust boundaries, data flows, and external interfaces for ISO 21434
+  threat modelling and ISO 26262 system design reviews
+- FMEA worksheet export (CSV + JSON) suitable for import into DOORS, Polarion, or Excel
+- Boundary diagram annotations in `.fusa.json` to label trust levels and interface types
+- Engine rules flagging code paths with no FMEA entry and interface functions missing
+  boundary annotations
+
+Deliverables: `gofusa fmea`, `gofusa boundary`, FMEA worksheet, Mermaid/DOT boundary diagrams
+
+---
+
 ## v1.0 — Enterprise Ready
 
 **Goal:** Production adoption.
@@ -221,6 +243,8 @@ and automatically produce:
 - Requirement traceability matrix
 - Test coverage report
 - Verification evidence
+- Design FMEA worksheet (derived from code + requirements)
+- Component boundary diagrams (Mermaid / DOT)
 - SBOM
 - Build provenance
 - Release signatures
