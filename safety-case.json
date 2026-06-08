@@ -1,0 +1,91 @@
+{
+  "format": "go-FuSa Safety Case v1",
+  "generatedAt": "2026-06-08T17:14:27.603534Z",
+  "module": "github.com/SoundMatt/go-FuSa",
+  "standard": "generic",
+  "evidence": [
+    {
+      "id": "check",
+      "description": "Coding standard and static analysis checks",
+      "file": "check-report.json",
+      "status": "present"
+    },
+    {
+      "id": "trace",
+      "description": "Requirements traceability matrix",
+      "file": ".fusa-reqs.json",
+      "status": "present",
+      "detail": "84 requirements"
+    },
+    {
+      "id": "verify",
+      "description": "Test evidence bundle",
+      "file": ".fusa-evidence.json",
+      "status": "present",
+      "detail": "170/170 tests passed"
+    },
+    {
+      "id": "qualify",
+      "description": "Tool qualification report",
+      "file": "qualify-report.json",
+      "status": "present",
+      "detail": "44/44 cases passed"
+    },
+    {
+      "id": "sbom",
+      "description": "SBOM (SPDX 3.0.1)",
+      "file": "sbom.json",
+      "status": "present"
+    },
+    {
+      "id": "provenance",
+      "description": "Build provenance",
+      "file": "provenance.json",
+      "status": "present"
+    }
+  ],
+  "clauses": [
+    {
+      "standard": "Generic",
+      "clause": "CS-1",
+      "title": "Coding standard compliance",
+      "evidenceIds": [
+        "check"
+      ]
+    },
+    {
+      "standard": "Generic",
+      "clause": "CS-2",
+      "title": "Requirements traceability",
+      "evidenceIds": [
+        "trace"
+      ]
+    },
+    {
+      "standard": "Generic",
+      "clause": "CS-3",
+      "title": "Test evidence",
+      "evidenceIds": [
+        "verify"
+      ]
+    },
+    {
+      "standard": "Generic",
+      "clause": "CS-4",
+      "title": "Tool qualification",
+      "evidenceIds": [
+        "qualify"
+      ]
+    },
+    {
+      "standard": "Generic",
+      "clause": "CS-5",
+      "title": "Release inventory",
+      "evidenceIds": [
+        "sbom",
+        "provenance"
+      ]
+    }
+  ],
+  "gaps": null
+}

@@ -1,0 +1,143 @@
+go-FuSa Safety Report
+Generated: 2026-06-08 17:14:27 UTC
+Project:   /Users/matt/Documents/Coding/SoundMatt/go-Fusa
+
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/analyze/analyze_test.go:265:3)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_init.go:47:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_safetycase.go:134:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/cmd_version.go:11:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:50:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:62:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:69:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/e2e_test.go:77:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:240:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:253:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:361:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:389:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/cmd/gofusa/main_test.go:416:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:68:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:81:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:169:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/config/config_test.go:213:3)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:34:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:60:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:86:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:110:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/rules.go:141:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa_test.go:50:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/lint/lint_test.go:274:3)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify.go:223:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify_test.go:137:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/qualify_test.go:148:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go:415:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go:462:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release.go:487:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:91:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:147:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:263:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/release/release_test.go:279:3)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:16:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:22:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:39:7)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:43:8)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:50:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/text.go:59:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go:237:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase.go:428:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/safetycase/safetycase_test.go:427:3)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/template/template.go:54:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/testutil/testutil_test.go:103:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:269:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:275:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:306:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:310:7)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:327:6)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:331:7)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace.go:365:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:51:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:66:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/trace/trace_test.go:369:3)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify.go:198:5)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go:56:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go:140:2)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT001  return value discarded with blank identifier in multi-value call (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/verify/verify_test.go:254:3)
+  → assign all return values to named variables and handle each explicitly
+[WARNING] LINT002  panic() call detected (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go:66:3)
+  → replace panic with an explicit error return; document any remaining panic usage
+[INFO] LINT003  recover() call inventoried — verify it is inside a deferred function (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine_test.go:63:13)
+  → ensure recover() is called only inside a function passed to defer
+[INFO] LINT006  package-level var Default introduces global mutable state (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/engine/engine.go:160:5)
+  → prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)
+[INFO] LINT006  package-level var ErrNoConfig introduces global mutable state (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa.go:20:2)
+  → prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)
+[INFO] LINT006  package-level var ErrInvalidConfig introduces global mutable state (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa.go:24:2)
+  → prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)
+[INFO] LINT006  package-level var ErrCheckFailed introduces global mutable state (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/fusa.go:28:2)
+  → prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)
+[INFO] LINT006  package-level var minimalBase introduces global mutable state (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/cases.go:4:5)
+  → prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)
+[INFO] LINT006  package-level var builtinCases introduces global mutable state (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/qualify/cases.go:37:5)
+  → prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)
+[INFO] LINT006  package-level var testFindings introduces global mutable state (/Users/matt/Documents/Coding/SoundMatt/go-Fusa/report/report_test.go:16:5)
+  → prefer passing state explicitly; document justification for any global variable (registries, once-initialised singletons are acceptable)
+
+Summary: 68 total  0 errors  60 warnings  8 infos
+Result:  PASS

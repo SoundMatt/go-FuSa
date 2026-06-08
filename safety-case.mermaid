@@ -1,0 +1,28 @@
+flowchart TD
+    G1["**G1** github.com/SoundMatt/go-FuSa is acceptably safe\nfor use in generic context"]
+    S1{{"**S1** Argued over safety lifecycle\nprocess compliance"}}
+    G2["**G2** Coding standard and static analysis checks\n✅ check-report.json"]
+    Sn1(["**Sn1** check-report.json"])
+    G3["**G3** Requirements traceability matrix\n✅ 84 requirements"]
+    Sn2(["**Sn2** .fusa-reqs.json"])
+    G4["**G4** Test evidence bundle\n✅ 170/170 tests passed"]
+    Sn3(["**Sn3** .fusa-evidence.json"])
+    G5["**G5** Tool qualification report\n✅ 44/44 cases passed"]
+    Sn4(["**Sn4** qualify-report.json"])
+    G6["**G6** SBOM (SPDX 3.0.1)\n✅ sbom.json"]
+    Sn5(["**Sn5** sbom.json"])
+    G7["**G7** Build provenance\n✅ provenance.json"]
+    Sn6(["**Sn6** provenance.json"])
+    G1 --> S1
+    S1 --> G2
+    S1 --> G3
+    S1 --> G4
+    S1 --> G5
+    S1 --> G6
+    S1 --> G7
+    G2 --> Sn1
+    G3 --> Sn2
+    G4 --> Sn3
+    G5 --> Sn4
+    G6 --> Sn5
+    G7 --> Sn6

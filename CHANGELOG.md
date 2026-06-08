@@ -7,6 +7,17 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.11.0] — 2026-06-08
+
+### Added
+- `safetycase` package — assembles structured safety case from evidence files (REQ-SC001–005)
+- `safetycase.Build` — reads check-report.json, .fusa-reqs.json, .fusa-evidence.json, qualify-report.json, sbom.json, provenance.json; reports gaps for absent items
+- `safetycase.Render` — Markdown (`text`), JSON, and Mermaid GSN diagram (`mermaid`) formats
+- Compliance clause mappings for ISO 26262, IEC 61508, ISO 21434, and generic standards
+- `SAFETYCASE001` engine rule — INFO finding when safety-case.json is absent
+- `gofusa safety-case` CLI command — writes safety-case.json, safety-case.md, safety-case.mermaid (REQ-CLI012)
+- 7 new requirements (REQ-CLI012, REQ-SAFETYCASE001, REQ-SC001–005), total 84
+
 ## [0.10.0] — 2026-06-08
 
 ### Added

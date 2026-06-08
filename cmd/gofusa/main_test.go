@@ -391,3 +391,59 @@ func TestRun_Release_GeneratesFiles(t *testing.T) {
 		}
 	}
 }
+
+// ─── safety-case ──────────────────────────────────────────────────────────────
+
+func TestRun_SafetyCase_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"safety-case", "--help"}, &out, &errOut)
+	combined := out.String() + errOut.String()
+	if !strings.Contains(combined, "gofusa safety-case") {
+		t.Error("safety-case --help: output missing 'gofusa safety-case'")
+	}
+}
+
+//fusa:test REQ-CLI012
+func TestRun_SafetyCase_GeneratesFiles(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"safety-case", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("safety-case: exit code = %d\n%s", code, errOut.String())
+	}
+	for _, name := range []string{"safety-case.json", "safety-case.md", "safety-case.mermaid"} {
+		if _, err := os.Stat(filepath.Join(outDir, name)); err != nil {
+			t.Errorf("safety-case: expected %s to exist: %v", name, err)
+		}
+	}
+	if !strings.Contains(out.String(), "Safety case written") {
+		t.Error("safety-case: output missing 'Safety case written'")
+	}
+}
+
+func TestRun_SafetyCase_WithAllEvidence(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	// plant evidence files so all items are present
+	for name, content := range map[string]string{
+		"check-report.json":   `{"summary":{"total":0,"errors":0,"warnings":0,"infos":0}}`,
+		".fusa-reqs.json":     `{"requirements":[{"id":"REQ-001"}]}`,
+		".fusa-evidence.json": `{"summary":{"total":5,"passed":5,"failed":0,"skipped":0}}`,
+		"qualify-report.json": `{"total":44,"passed":44,"failed":0}`,
+		"sbom.json":           `{"@context":"x","@graph":[]}`,
+		"provenance.json":     `{"format":"go-FuSa Provenance v1"}`,
+	} {
+		if err := os.WriteFile(filepath.Join(dir, name), []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"safety-case", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("safety-case all-evidence: exit code = %d\n%s", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), "Gaps: none") {
+		t.Errorf("safety-case all-evidence: expected 'Gaps: none'\nout: %s", out.String())
+	}
+}
