@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-08T00:23:51.535274Z",
+  "generatedAt": "2026-06-08T00:44:41.800119Z",
   "projectRoot": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa",
   "goVersion": "go1.26.3",
   "results": [
@@ -94,126 +94,6 @@
       "elapsedSeconds": 0
     },
     {
-      "name": "TestRun_NoArgs",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_UnknownCommand",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Help",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Version",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Check_CleanProject",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Check_MissingConfig_FallsBack",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Check_JSONFormat",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Check_OutputFile",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Report",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Init",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Init_AlreadyExists",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Init_WithDocs",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Trace_Help",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Trace_NoReqs",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Trace_JSONFormat",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Trace_OutputFile",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Qualify_Help",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Qualify_AllPass",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0.04
-    },
-    {
-      "name": "TestRun_Release_Help",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRun_Release_GeneratesFiles",
-      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
-      "status": "pass",
-      "elapsedSeconds": 0.01
-    },
-    {
       "name": "TestDefault",
       "package": "github.com/SoundMatt/go-FuSa/config",
       "status": "pass",
@@ -282,102 +162,6 @@
     {
       "name": "TestSave_FileCreated",
       "package": "github.com/SoundMatt/go-FuSa/config",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_Register",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_Register_Nil",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_Register_Duplicate",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_MustRegister_Panics",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_Rules_Sorted",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_Run_Findings",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_Run_Exclude",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_Run_RuleError",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestRegistry_Run_ContextCancelled",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestResult_HasErrors_Empty",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestBuiltinRules_FullProject",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestBuiltinRule_FUSA001_MissingConfig",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestBuiltinRule_FUSA002_MissingGoMod",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestBuiltinRule_FUSA003_MissingLicense",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestBuiltinRule_FUSA004_MissingReadme",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
-      "status": "pass",
-      "elapsedSeconds": 0
-    },
-    {
-      "name": "TestBuiltinRule_FUSA005_MissingCI",
-      "package": "github.com/SoundMatt/go-FuSa/engine",
       "status": "pass",
       "elapsedSeconds": 0
     },
@@ -526,6 +310,102 @@
       "elapsedSeconds": 0
     },
     {
+      "name": "TestRegistry_Register",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRegistry_Register_Nil",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRegistry_Register_Duplicate",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRegistry_MustRegister_Panics",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRegistry_Rules_Sorted",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRegistry_Run_Findings",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRegistry_Run_Exclude",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRegistry_Run_RuleError",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRegistry_Run_ContextCancelled",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestResult_HasErrors_Empty",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestBuiltinRules_FullProject",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestBuiltinRule_FUSA001_MissingConfig",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestBuiltinRule_FUSA002_MissingGoMod",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestBuiltinRule_FUSA003_MissingLicense",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestBuiltinRule_FUSA004_MissingReadme",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestBuiltinRule_FUSA005_MissingCI",
+      "package": "github.com/SoundMatt/go-FuSa/engine",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
       "name": "TestBuildSBOM_NoDeps",
       "package": "github.com/SoundMatt/go-FuSa/release",
       "status": "pass",
@@ -547,7 +427,7 @@
       "name": "TestBuildProvenance",
       "package": "github.com/SoundMatt/go-FuSa/release",
       "status": "pass",
-      "elapsedSeconds": 0.01
+      "elapsedSeconds": 0.02
     },
     {
       "name": "TestHashFiles",
@@ -850,6 +730,132 @@
       "elapsedSeconds": 0
     },
     {
+      "name": "TestPipeline_EndToEnd",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 1.99
+    },
+    {
+      "name": "TestRun_NoArgs",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_UnknownCommand",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Help",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Version",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Check_CleanProject",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Check_MissingConfig_FallsBack",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Check_JSONFormat",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Check_OutputFile",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Report",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Init",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Init_AlreadyExists",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Init_WithDocs",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Trace_Help",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Trace_NoReqs",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Trace_JSONFormat",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Trace_OutputFile",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Qualify_Help",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Qualify_AllPass",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0.04
+    },
+    {
+      "name": "TestRun_Release_Help",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestRun_Release_GeneratesFiles",
+      "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
+      "status": "pass",
+      "elapsedSeconds": 0.01
+    },
+    {
       "name": "TestLoadRequirements_NotFound",
       "package": "github.com/SoundMatt/go-FuSa/trace",
       "status": "pass",
@@ -991,7 +997,7 @@
       "name": "TestRun_PassingTests",
       "package": "github.com/SoundMatt/go-FuSa/verify",
       "status": "pass",
-      "elapsedSeconds": 0.4
+      "elapsedSeconds": 0.39
     },
     {
       "name": "TestVERIFY001_NoBundleFile",
@@ -1019,8 +1025,8 @@
     }
   ],
   "summary": {
-    "total": 169,
-    "passed": 169,
+    "total": 170,
+    "passed": 170,
     "failed": 0,
     "skipped": 0
   }

@@ -475,6 +475,13 @@
       "text": "verify.Run shall execute go test -json -count=1 ./... in the specified directory, producing machine-readable output that is parsed into structured test results.",
       "standard": "ISO 26262",
       "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-E2E001",
+      "title": "Full pipeline executes successfully on a minimal Go project",
+      "text": "The complete gofusa pipeline (init, check, trace, verify, release, qualify) shall execute in sequence on a minimal Go project and produce all required output artifacts: .fusa.json, .fusa-evidence.json, sbom.json, provenance.json, and qualify-report.json.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
     }
   ]
 }

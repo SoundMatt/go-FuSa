@@ -42,6 +42,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		usage(stdout)
 		return 1
 	}
+	//fusa:req REQ-E2E001
 	switch args[0] {
 	case "init":
 		return runInit(args[1:], stdout, stderr)
