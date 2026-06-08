@@ -19,6 +19,8 @@
 //	safety-case  Assemble a structured safety case from evidence
 //	fmea         Generate a dFMEA table from exported functions
 //	boundary     Generate a component boundary diagram
+//	vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)
+//	audit-pack   Bundle all evidence artifacts into a single ZIP for auditors
 //	version      Print the go-FuSa version
 //
 // Run 'gofusa <command> --help' for per-command flags.
@@ -30,14 +32,16 @@ import (
 	"os"
 
 	// Blank imports activate built-in rule sets registered via init().
-	_ "github.com/SoundMatt/go-FuSa/analyze"  // v0.3 static-analysis rules
-	_ "github.com/SoundMatt/go-FuSa/boundary" // v0.12 boundary-diagram rules
-	_ "github.com/SoundMatt/go-FuSa/fmea"     // v0.12 dFMEA rules
-	_ "github.com/SoundMatt/go-FuSa/lint"     // v0.2 coding-standard rules
-	_ "github.com/SoundMatt/go-FuSa/qualify"  // v0.9 tool qualification rules
-	_ "github.com/SoundMatt/go-FuSa/release"  // v0.6 release-evidence rules
-	_ "github.com/SoundMatt/go-FuSa/trace"    // v0.4 traceability rules
-	_ "github.com/SoundMatt/go-FuSa/verify"   // v0.5 test-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/analyze"   // v0.3 static-analysis rules
+	_ "github.com/SoundMatt/go-FuSa/auditpack" // v0.13 audit-pack rules
+	_ "github.com/SoundMatt/go-FuSa/boundary"  // v0.12 boundary-diagram rules
+	_ "github.com/SoundMatt/go-FuSa/fmea"      // v0.12 dFMEA rules
+	_ "github.com/SoundMatt/go-FuSa/lint"      // v0.2 coding-standard rules
+	_ "github.com/SoundMatt/go-FuSa/qualify"   // v0.9 tool qualification rules
+	_ "github.com/SoundMatt/go-FuSa/release"   // v0.6 release-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/trace"     // v0.4 traceability rules
+	_ "github.com/SoundMatt/go-FuSa/verify"    // v0.5 test-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/vuln"      // v0.13 vulnerability rules
 )
 
 func main() {
@@ -78,6 +82,10 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runFmea(args[1:], stdout, stderr)
 	case "boundary":
 		return runBoundary(args[1:], stdout, stderr)
+	case "vuln":
+		return runVuln(args[1:], stdout, stderr)
+	case "audit-pack":
+		return runAuditPack(args[1:], stdout, stderr)
 	case "version":
 		//fusa:req REQ-CLI004
 		return runVersion(stdout)
@@ -111,6 +119,8 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  safety-case  Assemble a structured safety case from evidence\n")
 	fmt.Fprintf(w, "  fmea         Generate a dFMEA table from exported functions\n")
 	fmt.Fprintf(w, "  boundary     Generate a component boundary diagram\n")
+	fmt.Fprintf(w, "  vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)\n")
+	fmt.Fprintf(w, "  audit-pack   Bundle all evidence artifacts into a single ZIP for auditors\n")
 	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")
 	fmt.Fprintf(w, "\nRun 'gofusa <command> --help' for command-specific flags.\n")
 }

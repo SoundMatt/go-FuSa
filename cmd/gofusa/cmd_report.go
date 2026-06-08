@@ -27,7 +27,7 @@ func runReport(args []string, stdout, stderr io.Writer) int {
 
 	var (
 		dir    = fs.String("dir", "", "project root directory (default: current directory)")
-		format = fs.String("format", "", "output format: text or json (default: from config or text)")
+		format = fs.String("format", "", "output format: text, json, or html (default: from config or text)")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 	)
 	if err := fs.Parse(args); err != nil {

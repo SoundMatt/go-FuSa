@@ -350,6 +350,8 @@ func renderJSON(w io.Writer, m *Matrix) error {
 func init() {
 	engine.Default.MustRegister(&ruleReqsPresent{})
 	engine.Default.MustRegister(&ruleAllReqsTraced{})
+	engine.Default.MustRegister(&ruleUntestedReqs{})
+	engine.Default.MustRegister(&ruleReqMissingText{})
 }
 
 // TRACE001 — .fusa-reqs.json should be present.
@@ -379,6 +381,8 @@ func (r *ruleReqsPresent) Run(_ context.Context, projectRoot string, _ *config.C
 }
 
 // TRACE002 — all requirements must have at least one //fusa:req implementation tag.
+//
+//fusa:req REQ-REQQ001
 type ruleAllReqsTraced struct{}
 
 func (r *ruleAllReqsTraced) ID() string { return "TRACE002" }
@@ -412,6 +416,79 @@ func (r *ruleAllReqsTraced) Run(_ context.Context, projectRoot string, _ *config
 				Message:     fmt.Sprintf("requirement %s (%q) has no //fusa:req implementation tag", req.ID, req.Title),
 				Location:    fusa.Location{File: ReqsFile},
 				Remediation: "add //fusa:req " + req.ID + " comment in the implementing source file",
+			})
+		}
+	}
+	return findings, nil
+}
+
+// TRACE003 — requirements with no //fusa:test tag are a test gap.
+type ruleUntestedReqs struct{}
+
+func (r *ruleUntestedReqs) ID() string { return "TRACE003" }
+func (r *ruleUntestedReqs) Description() string {
+	return "Requirements in .fusa-reqs.json with no //fusa:test tag have no automated test evidence."
+}
+
+//fusa:req REQ-REQQ002
+func (r *ruleUntestedReqs) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	matrix, err := Build(projectRoot)
+	if err != nil {
+		return nil, err
+	}
+	if len(matrix.Requirements) == 0 {
+		return nil, nil
+	}
+
+	tested := make(map[string]bool)
+	for _, t := range matrix.Tags {
+		if t.Kind == KindTest {
+			tested[t.RequirementID] = true
+		}
+	}
+
+	var findings []fusa.Finding
+	for _, req := range matrix.Requirements {
+		if !tested[req.ID] {
+			findings = append(findings, fusa.Finding{
+				RuleID:      r.ID(),
+				Severity:    fusa.SeverityInfo,
+				Message:     fmt.Sprintf("requirement %s (%q) has no //fusa:test tag — test coverage gap", req.ID, req.Title),
+				Location:    fusa.Location{File: ReqsFile},
+				Remediation: "add //fusa:test " + req.ID + " in a _test.go file",
+			})
+		}
+	}
+	return findings, nil
+}
+
+// TRACE004 — requirements missing the text field lack formal specification.
+type ruleReqMissingText struct{}
+
+func (r *ruleReqMissingText) ID() string { return "TRACE004" }
+func (r *ruleReqMissingText) Description() string {
+	return "Requirements without a text field lack a formal specification statement."
+}
+
+//fusa:req REQ-REQQ003
+func (r *ruleReqMissingText) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	reqs, err := LoadRequirements(projectRoot)
+	if err != nil {
+		if errors.Is(err, fusa.ErrNoConfig) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var findings []fusa.Finding
+	for _, req := range reqs {
+		if strings.TrimSpace(req.Text) == "" {
+			findings = append(findings, fusa.Finding{
+				RuleID:      r.ID(),
+				Severity:    fusa.SeverityWarning,
+				Message:     fmt.Sprintf("requirement %s (%q) is missing its text field", req.ID, req.Title),
+				Location:    fusa.Location{File: ReqsFile},
+				Remediation: "add a \"text\" field to " + req.ID + " with a complete requirement statement",
 			})
 		}
 	}

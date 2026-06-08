@@ -548,3 +548,121 @@ func DoB() {}
 		t.Error("boundary.mermaid: expected edges (-->)")
 	}
 }
+
+// ─── vuln ─────────────────────────────────────────────────────────────────────
+
+func TestRun_Vuln_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"vuln", "--help"}, &out, &errOut)
+	if !strings.Contains(out.String()+errOut.String(), "gofusa vuln") {
+		t.Error("vuln --help: output missing 'gofusa vuln'")
+	}
+}
+
+//fusa:test REQ-CLI015
+func TestRun_Vuln_NoDeps(t *testing.T) {
+	// MinimalProject has no go.mod deps, so Scan returns immediately (no HTTP).
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"vuln", "--dir", dir, "--output-dir", outDir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("vuln no-deps: exit code = %d\nstderr: %s", code, errOut.String())
+	}
+	if _, err := os.Stat(filepath.Join(outDir, "vuln.json")); err != nil {
+		t.Errorf("vuln: vuln.json not created: %v", err)
+	}
+	if !strings.Contains(out.String(), "vuln.json") {
+		t.Error("vuln: output missing 'vuln.json'")
+	}
+}
+
+func TestRun_Vuln_TextFormat(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	outDir := t.TempDir()
+	var out, errOut bytes.Buffer
+	code := run([]string{"vuln", "--dir", dir, "--output-dir", outDir, "--format", "text"}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("vuln --format text: exit code = %d\nstderr: %s", code, errOut.String())
+	}
+}
+
+// ─── audit-pack ───────────────────────────────────────────────────────────────
+
+func TestRun_AuditPack_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"audit-pack", "--help"}, &out, &errOut)
+	if !strings.Contains(out.String()+errOut.String(), "gofusa audit-pack") {
+		t.Error("audit-pack --help: output missing 'gofusa audit-pack'")
+	}
+}
+
+//fusa:test REQ-CLI016
+func TestRun_AuditPack_CreatesZIP(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	outDir := t.TempDir()
+	zipPath := filepath.Join(outDir, "audit-pack.zip")
+	var out, errOut bytes.Buffer
+	code := run([]string{"audit-pack", "--dir", dir, "--output", zipPath}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("audit-pack: exit code = %d\nstderr: %s", code, errOut.String())
+	}
+	if _, err := os.Stat(zipPath); err != nil {
+		t.Errorf("audit-pack: zip not created: %v", err)
+	}
+	if !strings.Contains(out.String(), "Audit pack written") {
+		t.Error("audit-pack: output missing 'Audit pack written'")
+	}
+}
+
+func TestRun_AuditPack_BadOutputPath(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"audit-pack", "--dir", dir, "--output", "/nonexistent/dir/x.zip"}, &out, &errOut)
+	if code == 0 {
+		t.Error("audit-pack bad path: expected non-zero exit code")
+	}
+}
+
+// ─── trace --gaps ─────────────────────────────────────────────────────────────
+
+//fusa:test REQ-CLI017
+func TestRun_Trace_Gaps_NoReqs(t *testing.T) {
+	// No .fusa-reqs.json → 0 requirements → 0 gaps → exit 0.
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"trace", "--dir", dir, "--gaps"}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("trace --gaps no reqs: exit code = %d\nstdout: %s\nstderr: %s",
+			code, out.String(), errOut.String())
+	}
+}
+
+func TestRun_Trace_Gaps_WithUntestedReqs(t *testing.T) {
+	files := testutil.MinimalProject()
+	files[".fusa-reqs.json"] = `{"requirements":[{"id":"REQ-001","title":"Do something"}]}`
+	dir := testutil.ProjectDir(t, files)
+	var out, errOut bytes.Buffer
+	code := run([]string{"trace", "--dir", dir, "--gaps"}, &out, &errOut)
+	// Should exit 1 because REQ-001 has no //fusa:test tag.
+	if code == 0 {
+		t.Error("trace --gaps with untested req: expected exit 1")
+	}
+	if !strings.Contains(out.String(), "REQ-001") {
+		t.Error("trace --gaps: expected REQ-001 in output")
+	}
+}
+
+// ─── report --format html ─────────────────────────────────────────────────────
+
+func TestRun_Report_HTMLFormat(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	var out, errOut bytes.Buffer
+	code := run([]string{"report", "--dir", dir, "--format", "html"}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("report --format html: exit code = %d\n%s", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), "<!DOCTYPE html>") {
+		t.Error("report html: output missing DOCTYPE")
+	}
+}

@@ -203,6 +203,21 @@ Deliverables: `gofusa fmea`, `gofusa boundary`, FMEA worksheet, Mermaid/DOT boun
 
 ---
 
+## v0.13 — Audit Package & Vulnerability Scan ✅
+
+**Goal:** Close the "evidence is present but incomplete" problem auditors always flag; add ISO 21434 cybersecurity evidence.
+
+Features:
+- **Vulnerability scan** — query go.mod dependencies against the OSV database (`api.osv.dev/v1/querybatch`); zero external deps; `VULN001` engine rule; ISO 21434 §8.5 compliance reference
+- **Audit pack** — bundle all evidence artifacts into a single `audit-pack.zip` with SHA-256 manifest for auditor submission; `AUDITPACK001` engine rule
+- **HTML report** — self-contained HTML page with findings table, evidence status cards, and PASS/WARN/FAIL badge; `gofusa report --format html`
+- **Requirement quality rules** — `TRACE003` (test gap detection: req with no `//fusa:test`) + `TRACE004` (req missing text field); `gofusa trace --gaps` exit-1 gap report
+- **`gofusa release --full`** — single command produces SBOM, provenance, dFMEA, boundary diagram, vulnerability scan, and audit pack
+
+Deliverables: `gofusa vuln`, `gofusa audit-pack`, `gofusa report --format html`, `gofusa trace --gaps`, `gofusa release --full`
+
+---
+
 ## v1.0 — Enterprise Ready
 
 **Goal:** Production adoption.
