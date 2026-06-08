@@ -37,6 +37,7 @@ func main() {
 }
 
 func run(args []string, stdout, stderr io.Writer) int {
+	//fusa:req REQ-CLI001
 	if len(args) == 0 {
 		usage(stdout)
 		return 1
@@ -57,11 +58,14 @@ func run(args []string, stdout, stderr io.Writer) int {
 	case "qualify":
 		return runQualify(args[1:], stdout, stderr)
 	case "version":
+		//fusa:req REQ-CLI004
 		return runVersion(stdout)
 	case "help", "--help", "-h":
+		//fusa:req REQ-CLI003
 		usage(stdout)
 		return 0
 	default:
+		//fusa:req REQ-CLI002
 		fmt.Fprintf(stderr, "gofusa: unknown command %q\n", args[0])
 		fmt.Fprintf(stderr, "Run 'gofusa help' for usage.\n")
 		return 1

@@ -70,5 +70,6 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 	if report.HasFailures() {
 		return 1
 	}
+	//fusa:req REQ-CLI007
 	return 0
 }

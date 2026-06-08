@@ -55,6 +55,7 @@ type Result struct {
 	Error  string `json:"error,omitempty"`
 }
 
+//fusa:req REQ-QUALIFY002
 // Report is the output of a full qualification run.
 type Report struct {
 	GeneratedAt time.Time `json:"generatedAt"`
@@ -134,6 +135,7 @@ func BuiltinCases() []Case { return builtinCases }
 
 // runCase executes a single qualification test case.
 func runCase(ctx context.Context, reg *engine.Registry, c Case) Result {
+	//fusa:req REQ-QUALIFY003
 	dir, err := os.MkdirTemp("", "fusa-qualify-*")
 	if err != nil {
 		return Result{Case: c, Error: fmt.Sprintf("mktemp: %v", err)}
@@ -177,6 +179,7 @@ func hasFinding(findings []fusa.Finding, ruleID string) bool {
 	return false
 }
 
+//fusa:req REQ-QUALIFY004
 // computeHash returns a hex SHA-256 of the report JSON without the Hash field.
 func computeHash(r *Report) (string, error) {
 	type hashable struct {

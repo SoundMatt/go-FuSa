@@ -71,6 +71,7 @@ type testEvent struct {
 	Elapsed float64 `json:"Elapsed"`
 }
 
+//fusa:req REQ-VERIFY004
 // Parse reads go test -json output from r and returns per-test results.
 // Package-level events (no Test field) are ignored.
 func Parse(r io.Reader) ([]TestResult, error) {
@@ -115,6 +116,7 @@ func Summarise(results []TestResult) Summary {
 	return s
 }
 
+//fusa:req REQ-VERIFY003
 // New builds a Bundle from test results for the given project root.
 func New(projectRoot string, results []TestResult) *Bundle {
 	return &Bundle{
@@ -126,6 +128,7 @@ func New(projectRoot string, results []TestResult) *Bundle {
 	}
 }
 
+//fusa:req REQ-VERIFY005
 // Run executes go test -json -count=1 ./... in dir and returns parsed results.
 // A test-failure exit code is not an error; the results will contain StatusFail
 // entries. Other execution errors (go not found, no module) are returned as errors.

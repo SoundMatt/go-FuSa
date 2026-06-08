@@ -35,6 +35,7 @@ func TestRegistry_Register(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG005
 func TestRegistry_Register_Nil(t *testing.T) {
 	reg := engine.NewRegistry()
 	if err := reg.Register(nil); err == nil {
@@ -53,6 +54,7 @@ func TestRegistry_Register_Duplicate(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG004
 func TestRegistry_MustRegister_Panics(t *testing.T) {
 	reg := engine.NewRegistry()
 	r := &stubRule{id: "TEST001"}
@@ -65,6 +67,7 @@ func TestRegistry_MustRegister_Panics(t *testing.T) {
 	reg.MustRegister(r)
 }
 
+//fusa:test REQ-ENG001
 func TestRegistry_Rules_Sorted(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{id: "C"})
@@ -76,6 +79,7 @@ func TestRegistry_Rules_Sorted(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG003
 func TestRegistry_Run_Findings(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{
@@ -97,6 +101,7 @@ func TestRegistry_Run_Findings(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CFG007
 func TestRegistry_Run_Exclude(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{id: "SKIP", findings: []fusa.Finding{{RuleID: "SKIP", Severity: fusa.SeverityError}}})
@@ -117,6 +122,7 @@ func TestRegistry_Run_Exclude(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG002
 func TestRegistry_Run_RuleError(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{id: "FAIL", err: errors.New("rule internal error")})
@@ -130,6 +136,7 @@ func TestRegistry_Run_RuleError(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG006
 func TestRegistry_Run_ContextCancelled(t *testing.T) {
 	reg := engine.NewRegistry()
 	for _, id := range []string{"A", "B", "C"} {

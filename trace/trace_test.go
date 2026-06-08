@@ -131,6 +131,7 @@ func TestScanTags_FindsImplAndTestTags(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TRACE005
 func TestScanTags_IgnoresVendorAndHidden(t *testing.T) {
 	dir := t.TempDir()
 	for _, subdir := range []string{"vendor", ".hidden"} {
@@ -153,6 +154,7 @@ func TestScanTags_IgnoresVendorAndHidden(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TRACE007
 func TestScanTags_EmptyID_Skipped(t *testing.T) {
 	dir := t.TempDir()
 	// Bare annotation with no ID after it should be silently skipped.
@@ -189,6 +191,8 @@ func TestBuild_NoReqsFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TRACE003
+//fusa:test REQ-TRACE004
 func TestBuild_CoverageMetrics(t *testing.T) {
 	dir := t.TempDir()
 	reqs := []trace.Requirement{
@@ -225,6 +229,7 @@ func TestBuild_CoverageMetrics(t *testing.T) {
 
 // ─── Render ───────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-TRACE006
 func TestRender_TextFormat(t *testing.T) {
 	dir := t.TempDir()
 	reqs := []trace.Requirement{{ID: "REQ-001", Title: "Error handling"}}

@@ -13,6 +13,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 )
 
+//fusa:req REQ-RPT005
 // Report is the top-level go-FuSa compliance report.
 type Report struct {
 	GeneratedAt time.Time      `json:"generatedAt"`
@@ -29,6 +30,8 @@ type Summary struct {
 	Infos    int `json:"infos"`
 }
 
+//fusa:req REQ-RPT003
+//fusa:req REQ-NF002
 // New builds a Report from findings and computes the Summary.
 func New(projectRoot string, findings []fusa.Finding) *Report {
 	r := &Report{

@@ -62,6 +62,8 @@ func TestBuildSBOM_NoDeps(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RELEASE003
+//fusa:test REQ-RELEASE004
 func TestBuildSBOM_WithDeps(t *testing.T) {
 	gomod := "module example.com/proj\n\ngo 1.22\n\nrequire (\n\texample.com/dep v1.2.3\n)\n"
 	gosum := "example.com/dep v1.2.3 h1:abc123==\nexample.com/dep v1.2.3/go.mod h1:def456==\n"
@@ -94,6 +96,7 @@ func TestBuildSBOM_MissingGoMod(t *testing.T) {
 
 // ─── BuildProvenance ──────────────────────────────────────────────────────────
 
+//fusa:test REQ-RELEASE005
 func TestBuildProvenance(t *testing.T) {
 	dir := moduleDir(t, "module github.com/example/proj\n\ngo 1.22\n", "")
 	prov, err := release.BuildProvenance(context.Background(), dir)
@@ -149,6 +152,7 @@ func TestHashFiles_Missing(t *testing.T) {
 
 // ─── SaveJSON ─────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-RELEASE006
 func TestSaveJSON_Roundtrip(t *testing.T) {
 	dir := t.TempDir()
 	dir2 := moduleDir(t, "module github.com/example/proj\n\ngo 1.22\n", "")

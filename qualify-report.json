@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-08T00:09:46.420673Z",
+  "generatedAt": "2026-06-08T00:23:51.587612Z",
   "goVersion": "go1.26.3",
   "module": "github.com/SoundMatt/go-FuSa",
   "total": 44,
@@ -733,5 +733,5 @@
       "passed": true
     }
   ],
-  "hash": "81596e91b7b6889c35fb4c26ad1c00bb6c51f23d7e54cd374f5345a500778860"
+  "hash": "3166050cfcba2a6da9ffbfeb82c3ba73d81e8859bf6f6916df5d7f0009a946cc"
 }

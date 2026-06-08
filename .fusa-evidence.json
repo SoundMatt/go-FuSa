@@ -1,13 +1,37 @@
 {
-  "generatedAt": "2026-06-08T00:09:46.356865Z",
+  "generatedAt": "2026-06-08T00:23:51.535274Z",
   "projectRoot": "/Users/matt/Documents/Coding/SoundMatt/go-Fusa",
   "goVersion": "go1.26.3",
   "results": [
     {
+      "name": "TestErrNoConfig_Wrappable",
+      "package": "github.com/SoundMatt/go-FuSa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestErrInvalidConfig_Wrappable",
+      "package": "github.com/SoundMatt/go-FuSa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestErrCheckFailed_Wrappable",
+      "package": "github.com/SoundMatt/go-FuSa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestNoExternalDependencies",
+      "package": "github.com/SoundMatt/go-FuSa",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
       "name": "TestANA001_GoroutineNoSignal",
       "package": "github.com/SoundMatt/go-FuSa/analyze",
       "status": "pass",
-      "elapsedSeconds": 0.02
+      "elapsedSeconds": 0
     },
     {
       "name": "TestANA001_GoroutineWithSelect_NoFinding",
@@ -175,7 +199,7 @@
       "name": "TestRun_Qualify_AllPass",
       "package": "github.com/SoundMatt/go-FuSa/cmd/gofusa",
       "status": "pass",
-      "elapsedSeconds": 0.05
+      "elapsedSeconds": 0.04
     },
     {
       "name": "TestRun_Release_Help",
@@ -245,6 +269,12 @@
     },
     {
       "name": "TestValidate",
+      "package": "github.com/SoundMatt/go-FuSa/config",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
+      "name": "TestStandard_Identifiers",
       "package": "github.com/SoundMatt/go-FuSa/config",
       "status": "pass",
       "elapsedSeconds": 0
@@ -610,6 +640,12 @@
       "elapsedSeconds": 0
     },
     {
+      "name": "TestReport_GeneratedAtIsUTC",
+      "package": "github.com/SoundMatt/go-FuSa/report",
+      "status": "pass",
+      "elapsedSeconds": 0
+    },
+    {
       "name": "TestRenderToFile_DefaultFormat",
       "package": "github.com/SoundMatt/go-FuSa/report",
       "status": "pass",
@@ -955,7 +991,7 @@
       "name": "TestRun_PassingTests",
       "package": "github.com/SoundMatt/go-FuSa/verify",
       "status": "pass",
-      "elapsedSeconds": 0.39
+      "elapsedSeconds": 0.4
     },
     {
       "name": "TestVERIFY001_NoBundleFile",
@@ -983,8 +1019,8 @@
     }
   ],
   "summary": {
-    "total": 163,
-    "passed": 163,
+    "total": 169,
+    "passed": 169,
     "failed": 0,
     "skipped": 0
   }

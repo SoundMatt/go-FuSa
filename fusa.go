@@ -12,13 +12,17 @@ import "errors"
 const Version = "0.9.0"
 
 // Sentinel errors. Callers should use errors.Is for comparison.
+//fusa:req REQ-NF001
 var (
+	//fusa:req REQ-ERR001
 	// ErrNoConfig is returned when no .fusa.json is present.
 	ErrNoConfig = errors.New("fusa: no configuration file found")
 
+	//fusa:req REQ-ERR002
 	// ErrInvalidConfig is returned when the configuration is malformed.
 	ErrInvalidConfig = errors.New("fusa: invalid configuration")
 
+	//fusa:req REQ-ERR003
 	// ErrCheckFailed is returned when one or more ERROR-severity findings exist.
 	ErrCheckFailed = errors.New("fusa: one or more safety checks failed")
 )

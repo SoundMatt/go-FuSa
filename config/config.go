@@ -17,6 +17,7 @@ import (
 // ConfigFile is the conventional name for the go-FuSa configuration file.
 const ConfigFile = ".fusa.json"
 
+//fusa:req REQ-NF003
 // Standard is a recognised functional safety standard identifier.
 type Standard string
 
@@ -56,6 +57,7 @@ type ReportConfig struct {
 	Output string `json:"output,omitempty"` // file path; stdout if empty
 }
 
+//fusa:req REQ-CFG005
 // Default returns a starter Config for the given module path and project name.
 func Default(module, name string) *Config {
 	return &Config{
@@ -75,12 +77,14 @@ func Load(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
+			//fusa:req REQ-CFG001
 			return nil, fmt.Errorf("%w: %s", fusa.ErrNoConfig, path)
 		}
 		return nil, fmt.Errorf("config: read %s: %w", path, err)
 	}
 	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {
+		//fusa:req REQ-CFG002
 		return nil, fmt.Errorf("config: parse %s: %w", path, err)
 	}
 	if err := Validate(&cfg); err != nil {
@@ -89,6 +93,7 @@ func Load(path string) (*Config, error) {
 	return &cfg, nil
 }
 
+//fusa:req REQ-CFG006
 // Save marshals cfg to indented JSON and writes it to path.
 func Save(path string, cfg *Config) error {
 	data, err := json.MarshalIndent(cfg, "", "  ")
@@ -107,6 +112,7 @@ func Validate(cfg *Config) error {
 	if cfg == nil {
 		return fmt.Errorf("%w: nil config", fusa.ErrInvalidConfig)
 	}
+	//fusa:req REQ-CFG003
 	if cfg.Version == "" {
 		return fmt.Errorf("%w: missing version field", fusa.ErrInvalidConfig)
 	}
@@ -114,6 +120,7 @@ func Validate(cfg *Config) error {
 	case "", "text", "json":
 		// valid
 	default:
+		//fusa:req REQ-CFG004
 		return fmt.Errorf("%w: unsupported report format %q", fusa.ErrInvalidConfig, cfg.Report.Format)
 	}
 	return nil

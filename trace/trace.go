@@ -117,6 +117,7 @@ func ScanTags(root string) ([]Tag, error) {
 		}
 		if d.IsDir() {
 			name := d.Name()
+			//fusa:req REQ-TRACE005
 			if name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".") {
 				return filepath.SkipDir
 			}
@@ -163,6 +164,7 @@ func scanFile(path string) ([]Tag, error) {
 			if !strings.HasPrefix(text, prefix) {
 				continue
 			}
+			//fusa:req REQ-TRACE007
 			reqID := strings.TrimSpace(text[len(prefix):])
 			if reqID == "" {
 				continue
@@ -222,9 +224,11 @@ func Build(root string) (*Matrix, error) {
 
 	cov := Coverage{TotalRequirements: len(reqs)}
 	for _, req := range reqs {
+		//fusa:req REQ-TRACE003
 		if traced[req.ID] {
 			cov.TracedRequirements++
 		}
+		//fusa:req REQ-TRACE004
 		if tested[req.ID] {
 			cov.TestedRequirements++
 		}
@@ -237,6 +241,7 @@ func Build(root string) (*Matrix, error) {
 	}, nil
 }
 
+//fusa:req REQ-TRACE006
 // Render writes the traceability matrix to w in the given format.
 // Supported formats: "text" (default), "json".
 func Render(w io.Writer, m *Matrix, format string) error {
