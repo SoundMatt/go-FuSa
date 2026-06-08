@@ -18,12 +18,12 @@ func TestPipeline_EndToEnd(t *testing.T) {
 	// Minimal Go project: real module, real test, all structural files present.
 	// No .fusa.json — gofusa init will create it in stage 1.
 	files := map[string]string{
-		"go.mod":  "module example.com/e2e\n\ngo 1.22\n",
-		"LICENSE": "MIT License\n\nCopyright (c) 2024 Example\n",
-		"README.md": "# e2e\n",
+		"go.mod":                   "module example.com/e2e\n\ngo 1.22\n",
+		"LICENSE":                  "MIT License\n\nCopyright (c) 2024 Example\n",
+		"README.md":                "# e2e\n",
 		".github/workflows/ci.yml": "name: CI\non: [push]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: go test ./...\n",
-		"compute.go":      "package e2e\n\n// Add returns the sum of a and b.\nfunc Add(a, b int) int { return a + b }\n",
-		"compute_test.go": "package e2e\n\nimport \"testing\"\n\nfunc TestAdd(t *testing.T) {\n\tif got := Add(1, 2); got != 3 {\n\t\tt.Errorf(\"Add(1,2) = %d, want 3\", got)\n\t}\n}\n",
+		"compute.go":               "package e2e\n\n// Add returns the sum of a and b.\nfunc Add(a, b int) int { return a + b }\n",
+		"compute_test.go":          "package e2e\n\nimport \"testing\"\n\nfunc TestAdd(t *testing.T) {\n\tif got := Add(1, 2); got != 3 {\n\t\tt.Errorf(\"Add(1,2) = %d, want 3\", got)\n\t}\n}\n",
 	}
 	for rel, content := range files {
 		full := filepath.Join(dir, rel)
