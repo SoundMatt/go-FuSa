@@ -187,6 +187,7 @@ func runRelease(t *testing.T, files map[string]string) []fusa.Finding {
 	return result.Findings
 }
 
+//fusa:test REQ-RELEASE001
 func TestRELEASE001_NoSBOM(t *testing.T) {
 	findings := runRelease(t, testutil.MinimalProject())
 	if !hasRule(findings, "RELEASE001") {
@@ -203,6 +204,7 @@ func TestRELEASE001_SBOMPresent(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RELEASE002
 func TestRELEASE002_NoProvenance(t *testing.T) {
 	findings := runRelease(t, testutil.MinimalProject())
 	if !hasRule(findings, "RELEASE002") {

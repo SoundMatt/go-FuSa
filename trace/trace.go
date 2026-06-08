@@ -354,6 +354,7 @@ func (r *ruleReqsPresent) Description() string {
 	return "Project should have a .fusa-reqs.json requirements manifest for traceability."
 }
 
+//fusa:req REQ-TRACE001
 func (r *ruleReqsPresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	_, err := os.Stat(filepath.Join(projectRoot, ReqsFile))
 	if err == nil {
@@ -379,6 +380,7 @@ func (r *ruleAllReqsTraced) Description() string {
 	return "Every requirement in .fusa-reqs.json must have at least one //fusa:req implementation tag."
 }
 
+//fusa:req REQ-TRACE002
 func (r *ruleAllReqsTraced) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	matrix, err := Build(projectRoot)
 	if err != nil {

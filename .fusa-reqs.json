@@ -1,0 +1,158 @@
+{
+  "requirements": [
+    {
+      "id": "REQ-FUSA001",
+      "title": "Configuration file presence check",
+      "text": "The tool shall report an ERROR finding (FUSA001) when no .fusa.json configuration file is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-FUSA002",
+      "title": "Go module file presence check",
+      "text": "The tool shall report an ERROR finding (FUSA002) when no go.mod file is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-FUSA003",
+      "title": "License file presence check",
+      "text": "The tool shall report a WARNING finding (FUSA003) when no LICENSE file is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-FUSA004",
+      "title": "README file presence check",
+      "text": "The tool shall report a WARNING finding (FUSA004) when no README file is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-FUSA005",
+      "title": "CI configuration presence check",
+      "text": "The tool shall report a WARNING finding (FUSA005) when no CI configuration file or directory is present in the project.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-LINT001",
+      "title": "Discarded error return detection",
+      "text": "The tool shall report a WARNING finding (LINT001) when a multi-value function call uses a blank identifier to discard one or more of its return values.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-LINT002",
+      "title": "Panic call detection",
+      "text": "The tool shall report a WARNING finding (LINT002) for every panic() call found in the source code under analysis.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-LINT003",
+      "title": "Recover call inventory",
+      "text": "The tool shall report an INFO finding (LINT003) for every recover() call found in the source code under analysis.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-LINT004",
+      "title": "Unsafe package import detection",
+      "text": "The tool shall report a WARNING finding (LINT004) for every file that imports the unsafe package.",
+      "standard": "ISO 26262",
+      "level": "ASIL-C"
+    },
+    {
+      "id": "REQ-LINT005",
+      "title": "Reflect package import inventory",
+      "text": "The tool shall report an INFO finding (LINT005) for every file that imports the reflect package.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-LINT006",
+      "title": "Global mutable variable detection",
+      "text": "The tool shall report a WARNING finding (LINT006) for every mutable package-level variable declaration found in the source code under analysis.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-ANA001",
+      "title": "Goroutine termination signal check",
+      "text": "The tool shall report a WARNING finding (ANA001) when a zero-parameter goroutine function literal contains no select statement and no reference to a recognised cancellation signal (ctx, done, stop, quit).",
+      "standard": "ISO 26262",
+      "level": "ASIL-C"
+    },
+    {
+      "id": "REQ-ANA002",
+      "title": "Goroutine-in-loop detection",
+      "text": "The tool shall report a WARNING finding (ANA002) when a go statement appears directly inside the body of a for or range loop.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA003",
+      "title": "Blocking sleep in goroutine detection",
+      "text": "The tool shall report a WARNING finding (ANA003) when a time.Sleep call appears inside a goroutine function literal.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA004",
+      "title": "Defer-in-loop detection",
+      "text": "The tool shall report a WARNING finding (ANA004) when a defer statement appears directly inside the body of a for or range loop.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-TRACE001",
+      "title": "Requirements manifest presence check",
+      "text": "The tool shall report an INFO finding (TRACE001) when no .fusa-reqs.json requirements manifest is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-TRACE002",
+      "title": "Requirement implementation traceability check",
+      "text": "The tool shall report a WARNING finding (TRACE002) for every requirement in the manifest that has no matching //fusa:req implementation tag anywhere in the source tree.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-VERIFY001",
+      "title": "Test evidence bundle presence check",
+      "text": "The tool shall report an INFO finding (VERIFY001) when no .fusa-evidence.json test evidence bundle is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-VERIFY002",
+      "title": "Test failure detection",
+      "text": "The tool shall report a WARNING finding (VERIFY002) when the test evidence bundle contains one or more test results with a failed status.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-RELEASE001",
+      "title": "SBOM presence check",
+      "text": "The tool shall report a WARNING finding (RELEASE001) when no sbom.json Software Bill of Materials file is present in the project root directory.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-RELEASE002",
+      "title": "Build provenance presence check",
+      "text": "The tool shall report a WARNING finding (RELEASE002) when no provenance.json build provenance record is present in the project root directory.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-QUALIFY001",
+      "title": "Tool qualification report presence check",
+      "text": "The tool shall report an INFO finding (QUALIFY001) when no qualify-report.json tool qualification report is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    }
+  ]
+}

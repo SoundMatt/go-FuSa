@@ -1,0 +1,737 @@
+{
+  "generatedAt": "2026-06-08T00:09:46.420673Z",
+  "goVersion": "go1.26.3",
+  "module": "github.com/SoundMatt/go-FuSa",
+  "total": 44,
+  "passed": 44,
+  "failed": 0,
+  "results": [
+    {
+      "case": {
+        "name": "FUSA001-pos: missing .fusa.json",
+        "ruleId": "FUSA001",
+        "description": "Project without .fusa.json must produce a FUSA001 finding.",
+        "files": {
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA001-neg: .fusa.json present",
+        "ruleId": "FUSA001",
+        "description": "Project with .fusa.json must not produce a FUSA001 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA002-pos: missing go.mod",
+        "ruleId": "FUSA002",
+        "description": "Project without go.mod must produce a FUSA002 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          "LICENSE": "MPL 2.0\n",
+          "README.md": "# test\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA002-neg: go.mod present",
+        "ruleId": "FUSA002",
+        "description": "Project with go.mod must not produce a FUSA002 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA003-pos: missing LICENSE",
+        "ruleId": "FUSA003",
+        "description": "Project without LICENSE must produce a FUSA003 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          "README.md": "# test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA003-neg: LICENSE present",
+        "ruleId": "FUSA003",
+        "description": "Project with LICENSE must not produce a FUSA003 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA004-pos: missing README",
+        "ruleId": "FUSA004",
+        "description": "Project without README must produce a FUSA004 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          "LICENSE": "MPL 2.0\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA004-neg: README.md present",
+        "ruleId": "FUSA004",
+        "description": "Project with README.md must not produce a FUSA004 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA005-pos: missing CI config",
+        "ruleId": "FUSA005",
+        "description": "Project without .github/workflows/*.yml must produce a FUSA005 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          "LICENSE": "MPL 2.0\n",
+          "README.md": "# test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "FUSA005-neg: CI config present",
+        "ruleId": "FUSA005",
+        "description": "Project with a CI workflow must not produce a FUSA005 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT001-pos: error return discarded with blank identifier",
+        "ruleId": "LINT001",
+        "description": "A multi-return call that uses _ to discard the error must produce LINT001.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nimport \"os\"\n\nfunc Foo() {\n\tf, _ := os.Open(\"x\")\n\t_ = f\n}\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT001-neg: all return values captured",
+        "ruleId": "LINT001",
+        "description": "A call that captures all return values must not produce LINT001.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nimport \"os\"\n\nfunc Foo() error {\n\tf, err := os.Open(\"x\")\n\tif err != nil {\n\t\treturn err\n\t}\n\t_ = f\n\treturn nil\n}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT002-pos: panic() call present",
+        "ruleId": "LINT002",
+        "description": "A file containing panic() must produce a LINT002 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nfunc Foo() {\n\tpanic(\"not implemented\")\n}\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT002-neg: no panic() call",
+        "ruleId": "LINT002",
+        "description": "A file with no panic() must not produce a LINT002 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nfunc Foo() {}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT003-pos: recover() call present",
+        "ruleId": "LINT003",
+        "description": "A file using recover() must produce a LINT003 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nfunc Foo() {\n\tdefer func() { recover() }()\n}\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT003-neg: no recover() call",
+        "ruleId": "LINT003",
+        "description": "A file with no recover() must not produce a LINT003 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nfunc Foo() {}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT004-pos: unsafe import",
+        "ruleId": "LINT004",
+        "description": "Importing \"unsafe\" must produce a LINT004 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nimport \"unsafe\"\n\nvar _ = unsafe.Sizeof(0)\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT004-neg: no unsafe import",
+        "ruleId": "LINT004",
+        "description": "A file that does not import \"unsafe\" must not produce LINT004.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nfunc Foo() {}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT005-pos: reflect import",
+        "ruleId": "LINT005",
+        "description": "Importing \"reflect\" must produce a LINT005 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nimport \"reflect\"\n\nfunc Foo(v interface{}) string {\n\treturn reflect.TypeOf(v).String()\n}\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT005-neg: no reflect import",
+        "ruleId": "LINT005",
+        "description": "A file that does not import \"reflect\" must not produce LINT005.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nfunc Foo() {}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT006-pos: global mutable var",
+        "ruleId": "LINT006",
+        "description": "A package-level mutable var must produce a LINT006 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nvar GlobalState = \"active\"\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "LINT006-neg: no global mutable var",
+        "ruleId": "LINT006",
+        "description": "A package with only functions and constants must not produce LINT006.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nconst Version = \"1.0\"\n\nfunc Foo() {}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "ANA001-pos: goroutine with no termination signal",
+        "ruleId": "ANA001",
+        "description": "A goroutine with an infinite loop and no select must produce ANA001.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nfunc Foo() {\n\tgo func() {\n\t\tfor {\n\t\t}\n\t}()\n}\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "ANA001-neg: goroutine with select on stop channel",
+        "ruleId": "ANA001",
+        "description": "A goroutine whose loop contains a select must not produce ANA001.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nfunc Foo(stop chan struct{}) {\n\tgo func() {\n\t\tfor {\n\t\t\tselect {\n\t\t\tcase \u003c-stop:\n\t\t\t\treturn\n\t\t\t}\n\t\t}\n\t}()\n}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "ANA002-pos: goroutine spawned inside for loop",
+        "ruleId": "ANA002",
+        "description": "A go statement inside a for loop must produce ANA002.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nfunc Foo() {\n\tfor i := 0; i \u003c 10; i++ {\n\t\tgo func() {}()\n\t}\n}\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "ANA002-neg: goroutine spawned outside loop",
+        "ruleId": "ANA002",
+        "description": "A go statement outside any loop must not produce ANA002.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nfunc Foo() {\n\tgo func() {}()\n}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "ANA003-pos: time.Sleep inside goroutine",
+        "ruleId": "ANA003",
+        "description": "A time.Sleep call inside a goroutine must produce ANA003.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nimport \"time\"\n\nfunc Foo() {\n\tgo func() {\n\t\ttime.Sleep(time.Second)\n\t}()\n}\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "ANA003-neg: no time.Sleep in goroutine",
+        "ruleId": "ANA003",
+        "description": "A goroutine that does not call time.Sleep must not produce ANA003.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nfunc Foo(stop chan struct{}) {\n\tgo func() {\n\t\tfor {\n\t\t\tselect {\n\t\t\tcase \u003c-stop:\n\t\t\t\treturn\n\t\t\t}\n\t\t}\n\t}()\n}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "ANA004-pos: defer inside for loop",
+        "ruleId": "ANA004",
+        "description": "A defer statement inside a for loop must produce ANA004.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "bad.go": "package main\n\nfunc Foo(ch chan int) {\n\tfor range 5 {\n\t\tdefer close(ch)\n\t}\n}\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "ANA004-neg: defer outside loop",
+        "ruleId": "ANA004",
+        "description": "A defer statement outside any loop must not produce ANA004.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "ok.go": "package main\n\nimport \"os\"\n\nfunc Foo(path string) error {\n\tf, err := os.Open(path)\n\tif err != nil {\n\t\treturn err\n\t}\n\tdefer f.Close()\n\treturn nil\n}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "TRACE001-pos: .fusa-reqs.json absent",
+        "ruleId": "TRACE001",
+        "description": "Project without .fusa-reqs.json must produce a TRACE001 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "TRACE001-neg: .fusa-reqs.json present",
+        "ruleId": "TRACE001",
+        "description": "Project with .fusa-reqs.json must not produce a TRACE001 finding.",
+        "files": {
+          ".fusa-reqs.json": "{\"requirements\":[]}",
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "TRACE002-pos: requirement not traced in source",
+        "ruleId": "TRACE002",
+        "description": "A requirement in .fusa-reqs.json with no //fusa:req tag must produce TRACE002.",
+        "files": {
+          ".fusa-reqs.json": "{\"requirements\":[{\"id\":\"REQ-001\",\"title\":\"Safety requirement\"}]}",
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "TRACE002-neg: requirement traced in source",
+        "ruleId": "TRACE002",
+        "description": "A requirement with a matching //fusa:req tag must not produce TRACE002.",
+        "files": {
+          ".fusa-reqs.json": "{\"requirements\":[{\"id\":\"REQ-001\",\"title\":\"Safety requirement\"}]}",
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "impl.go": "package main\n\n//fusa:req REQ-001\nfunc Foo() {}\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "VERIFY001-pos: .fusa-evidence.json absent",
+        "ruleId": "VERIFY001",
+        "description": "Project without .fusa-evidence.json must produce a VERIFY001 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "VERIFY001-neg: .fusa-evidence.json present",
+        "ruleId": "VERIFY001",
+        "description": "Project with .fusa-evidence.json must not produce a VERIFY001 finding.",
+        "files": {
+          ".fusa-evidence.json": "{\"generatedAt\":\"2026-01-01T00:00:00Z\",\"projectRoot\":\".\",\"goVersion\":\"go1.22\",\"results\":[],\"summary\":{\"total\":0,\"passed\":0,\"failed\":0,\"skipped\":0}}",
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "VERIFY002-pos: bundle contains failed tests",
+        "ruleId": "VERIFY002",
+        "description": "A test evidence bundle with failures must produce a VERIFY002 finding.",
+        "files": {
+          ".fusa-evidence.json": "{\"generatedAt\":\"2026-01-01T00:00:00Z\",\"projectRoot\":\".\",\"goVersion\":\"go1.22\",\"results\":[{\"name\":\"TestFail\",\"package\":\"pkg\",\"status\":\"fail\",\"elapsed\":0.001}],\"summary\":{\"total\":1,\"passed\":0,\"failed\":1,\"skipped\":0}}",
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "VERIFY002-neg: bundle contains only passed tests",
+        "ruleId": "VERIFY002",
+        "description": "A test evidence bundle with no failures must not produce VERIFY002.",
+        "files": {
+          ".fusa-evidence.json": "{\"generatedAt\":\"2026-01-01T00:00:00Z\",\"projectRoot\":\".\",\"goVersion\":\"go1.22\",\"results\":[{\"name\":\"TestPass\",\"package\":\"pkg\",\"status\":\"pass\",\"elapsed\":0.001}],\"summary\":{\"total\":1,\"passed\":1,\"failed\":0,\"skipped\":0}}",
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "RELEASE001-pos: sbom.json absent",
+        "ruleId": "RELEASE001",
+        "description": "Project without sbom.json must produce a RELEASE001 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "RELEASE001-neg: sbom.json present",
+        "ruleId": "RELEASE001",
+        "description": "Project with sbom.json must not produce a RELEASE001 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "sbom.json": "{\"spdxVersion\":\"SPDX-2.3\",\"name\":\"qualify-test\",\"packages\":[]}"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "RELEASE002-pos: provenance.json absent",
+        "ruleId": "RELEASE002",
+        "description": "Project without provenance.json must produce a RELEASE002 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "RELEASE002-neg: provenance.json present",
+        "ruleId": "RELEASE002",
+        "description": "Project with provenance.json must not produce a RELEASE002 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "provenance.json": "{\"buildTimestamp\":\"2026-01-01T00:00:00Z\",\"module\":\"github.com/fusa-qualify/test\",\"goVersion\":\"go1.22\",\"vcs\":{\"system\":\"git\",\"commit\":\"\",\"branch\":\"\",\"dirty\":false}}"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "QUALIFY001-pos: qualify-report.json absent",
+        "ruleId": "QUALIFY001",
+        "description": "Project without qualify-report.json must produce a QUALIFY001 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n"
+        },
+        "expectFinding": true
+      },
+      "passed": true
+    },
+    {
+      "case": {
+        "name": "QUALIFY001-neg: qualify-report.json present",
+        "ruleId": "QUALIFY001",
+        "description": "Project with qualify-report.json must not produce a QUALIFY001 finding.",
+        "files": {
+          ".fusa.json": "{\n  \"version\": \"1\",\n  \"project\": {\n    \"name\": \"qualify-test\",\n    \"module\": \"github.com/fusa-qualify/test\",\n    \"standard\": \"generic\"\n  },\n  \"rules\": {},\n  \"report\": {\"format\": \"text\"}\n}",
+          ".github/workflows/ci.yml": "name: CI\n",
+          "LICENSE": "Mozilla Public License 2.0\n",
+          "README.md": "# qualify-test\n",
+          "go.mod": "module github.com/fusa-qualify/test\n\ngo 1.22\n",
+          "qualify-report.json": "{\"generatedAt\":\"2026-01-01T00:00:00Z\",\"goVersion\":\"go1.22\",\"module\":\"github.com/SoundMatt/go-FuSa\",\"total\":44,\"passed\":44,\"failed\":0,\"results\":[],\"hash\":\"abc123\"}"
+        },
+        "expectFinding": false
+      },
+      "passed": true
+    }
+  ],
+  "hash": "81596e91b7b6889c35fb4c26ad1c00bb6c51f23d7e54cd374f5345a500778860"
+}

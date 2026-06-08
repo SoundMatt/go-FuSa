@@ -34,6 +34,7 @@ func hasRule(findings []fusa.Finding, ruleID string) bool {
 
 // ─── LINT001 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-LINT001
 func TestLINT001_DiscardedError(t *testing.T) {
 	src := `package main
 
@@ -87,6 +88,7 @@ func main() {
 
 // ─── LINT002 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-LINT002
 func TestLINT002_PanicDetected(t *testing.T) {
 	src := `package main
 
@@ -113,6 +115,7 @@ func load() error { return nil }
 
 // ─── LINT003 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-LINT003
 func TestLINT003_RecoverInventoried(t *testing.T) {
 	src := `package main
 
@@ -144,6 +147,7 @@ func add(a, b int) int { return a + b }
 
 // ─── LINT004 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-LINT004
 func TestLINT004_UnsafeInventoried(t *testing.T) {
 	src := `package main
 
@@ -173,6 +177,7 @@ func add(a, b int) int { return a + b }
 
 // ─── LINT005 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-LINT005
 func TestLINT005_ReflectInventoried(t *testing.T) {
 	src := `package main
 
@@ -201,6 +206,7 @@ func double(n int) int { return n * 2 }
 
 // ─── LINT006 ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-LINT006
 func TestLINT006_GlobalVar(t *testing.T) {
 	src := `package main
 

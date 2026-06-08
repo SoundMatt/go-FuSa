@@ -91,6 +91,7 @@ func (r *ruleNoDiscardedErrors) Description() string {
 	return "Blank identifier must not discard a return value in a call assignment."
 }
 
+//fusa:req REQ-LINT001
 func (r *ruleNoDiscardedErrors) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {
@@ -137,6 +138,7 @@ func (r *rulePanicDetect) Description() string {
 	return "panic() calls must be explicitly reviewed and justified in safety-critical code."
 }
 
+//fusa:req REQ-LINT002
 func (r *rulePanicDetect) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {
@@ -175,6 +177,7 @@ func (r *ruleRecoverInventory) Description() string {
 	return "recover() calls are inventoried to verify correct usage within deferred functions."
 }
 
+//fusa:req REQ-LINT003
 func (r *ruleRecoverInventory) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {
@@ -213,6 +216,7 @@ func (r *ruleUnsafeInventory) Description() string {
 	return `Import of "unsafe" is inventoried and must be justified.`
 }
 
+//fusa:req REQ-LINT004
 func (r *ruleUnsafeInventory) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {
@@ -245,6 +249,7 @@ func (r *ruleReflectInventory) Description() string {
 	return `Import of "reflect" is inventoried; reflection reduces code auditability.`
 }
 
+//fusa:req REQ-LINT005
 func (r *ruleReflectInventory) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {
@@ -277,6 +282,7 @@ func (r *ruleGlobalMutableState) Description() string {
 	return "Package-level var declarations introduce global mutable state; each must be justified."
 }
 
+//fusa:req REQ-LINT006
 func (r *ruleGlobalMutableState) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {

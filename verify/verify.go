@@ -186,6 +186,7 @@ func (r *ruleEvidencePresent) Description() string {
 	return "Project should have a .fusa-evidence.json test evidence bundle."
 }
 
+//fusa:req REQ-VERIFY001
 func (r *ruleEvidencePresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	path := projectRoot + "/" + BundleFile
 	if _, err := os.Stat(path); err == nil {
@@ -208,6 +209,7 @@ func (r *ruleNoTestFailures) Description() string {
 	return "Test evidence bundle must contain no failed tests."
 }
 
+//fusa:req REQ-VERIFY002
 func (r *ruleNoTestFailures) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	b, err := Load(projectRoot + "/" + BundleFile)
 	if err != nil {

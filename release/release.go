@@ -331,6 +331,7 @@ func (r *ruleSBOMPresent) Description() string {
 	return "Project should have an sbom.json Software Bill of Materials."
 }
 
+//fusa:req REQ-RELEASE001
 func (r *ruleSBOMPresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	_, err := os.Stat(filepath.Join(projectRoot, SBOMFile))
 	if err == nil {
@@ -355,6 +356,7 @@ func (r *ruleProvenancePresent) Description() string {
 	return "Project should have a provenance.json build provenance record."
 }
 
+//fusa:req REQ-RELEASE002
 func (r *ruleProvenancePresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	_, err := os.Stat(filepath.Join(projectRoot, ProvenanceFile))
 	if err == nil {

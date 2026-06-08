@@ -46,6 +46,7 @@ func TestBuiltinCases_EachHasRuleAndName(t *testing.T) {
 
 // ─── Run ──────────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-QUALIFY001
 func TestRun_AllBuiltinCases(t *testing.T) {
 	cases := qualify.BuiltinCases()
 	report, err := qualify.Run(context.Background(), engine.Default, cases)

@@ -172,6 +172,7 @@ func TestBuiltinRules_FullProject(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA001
 func TestBuiltinRule_FUSA001_MissingConfig(t *testing.T) {
 	dir := testutil.ProjectDir(t, map[string]string{
 		"go.mod": "module github.com/x/y\n\ngo 1.22\n",
@@ -186,6 +187,7 @@ func TestBuiltinRule_FUSA001_MissingConfig(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA002
 func TestBuiltinRule_FUSA002_MissingGoMod(t *testing.T) {
 	dir := testutil.ProjectDir(t, map[string]string{
 		config.ConfigFile: `{"version":"1","project":{"name":"x","module":"github.com/x/y","standard":"generic"},"report":{"format":"text"}}`,
@@ -200,6 +202,7 @@ func TestBuiltinRule_FUSA002_MissingGoMod(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA003
 func TestBuiltinRule_FUSA003_MissingLicense(t *testing.T) {
 	files := testutil.MinimalProject()
 	delete(files, "LICENSE")
@@ -214,6 +217,7 @@ func TestBuiltinRule_FUSA003_MissingLicense(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA004
 func TestBuiltinRule_FUSA004_MissingReadme(t *testing.T) {
 	files := testutil.MinimalProject()
 	delete(files, "README.md")
@@ -228,6 +232,7 @@ func TestBuiltinRule_FUSA004_MissingReadme(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA005
 func TestBuiltinRule_FUSA005_MissingCI(t *testing.T) {
 	files := testutil.MinimalProject()
 	delete(files, ".github/workflows/ci.yml")

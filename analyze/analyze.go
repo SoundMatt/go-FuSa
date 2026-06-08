@@ -92,6 +92,7 @@ func (r *ruleGoroutineWithoutSignal) Description() string {
 	return "Goroutine function literals without parameters or select may lack a termination signal."
 }
 
+//fusa:req REQ-ANA001
 func (r *ruleGoroutineWithoutSignal) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {
@@ -173,6 +174,7 @@ func (r *ruleGoroutineInLoop) Description() string {
 	return "Goroutine spawned inside a loop without an explicit concurrency bound may cause leaks."
 }
 
+//fusa:req REQ-ANA002
 func (r *ruleGoroutineInLoop) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {
@@ -244,6 +246,7 @@ func (r *ruleBlockingInGoroutine) Description() string {
 	return "time.Sleep inside a goroutine cannot be interrupted; use select with context or done channel."
 }
 
+//fusa:req REQ-ANA003
 func (r *ruleBlockingInGoroutine) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {
@@ -295,6 +298,7 @@ func (r *ruleDeferInLoop) Description() string {
 	return "defer inside a loop delays resource release until function return, not loop iteration."
 }
 
+//fusa:req REQ-ANA004
 func (r *ruleDeferInLoop) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	pfs, err := parseProject(projectRoot)
 	if err != nil {

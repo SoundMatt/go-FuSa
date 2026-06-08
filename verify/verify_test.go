@@ -194,6 +194,7 @@ func runVerify(t *testing.T, files map[string]string) []fusa.Finding {
 	return result.Findings
 }
 
+//fusa:test REQ-VERIFY001
 func TestVERIFY001_NoBundleFile(t *testing.T) {
 	findings := runVerify(t, testutil.MinimalProject())
 	if !hasRule(findings, "VERIFY001") {
@@ -217,6 +218,7 @@ func TestVERIFY001_BundlePresent(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-VERIFY002
 func TestVERIFY002_FailedTests(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	results := []verify.TestResult{

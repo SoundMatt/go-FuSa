@@ -276,6 +276,7 @@ func TestRender_UnknownFormat(t *testing.T) {
 
 // ─── Engine rules ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-TRACE001
 func TestTRACE001_NoReqsFile(t *testing.T) {
 	findings := runTrace(t, testutil.MinimalProject())
 	if !hasRule(findings, "TRACE001") {
@@ -292,6 +293,7 @@ func TestTRACE001_ReqsFilePresent(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TRACE002
 func TestTRACE002_UntracedRequirement(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	reqs := []trace.Requirement{{ID: "REQ-001", Title: "Error handling"}}

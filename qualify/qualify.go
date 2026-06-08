@@ -212,6 +212,7 @@ func (r *ruleQualifyReport) ID() string { return "QUALIFY001" }
 func (r *ruleQualifyReport) Description() string {
 	return "qualify-report.json was not found. A qualification report is required evidence in regulated environments."
 }
+//fusa:req REQ-QUALIFY001
 func (r *ruleQualifyReport) Run(_ context.Context, dir string, _ *config.Config) ([]fusa.Finding, error) {
 	if _, err := os.Stat(filepath.Join(dir, ReportFile)); err == nil {
 		return nil, nil
