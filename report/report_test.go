@@ -35,6 +35,7 @@ var testFindings = []fusa.Finding{
 	},
 }
 
+//fusa:test REQ-RPT003
 func TestNew_Summary(t *testing.T) {
 	r := report.New("/tmp/proj", testFindings)
 	if r.Summary.Total != 3 {
@@ -61,6 +62,7 @@ func TestNew_EmptyFindings(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RPT001
 func TestRender_Text_ContainsFindings(t *testing.T) {
 	r := report.New("/proj", testFindings)
 	var buf bytes.Buffer
@@ -75,6 +77,7 @@ func TestRender_Text_ContainsFindings(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RPT002
 func TestRender_Text_Pass(t *testing.T) {
 	r := report.New("/proj", nil)
 	var buf bytes.Buffer
@@ -106,6 +109,8 @@ func TestRender_Text_LocationFormatting(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RPT004
+//fusa:test REQ-RPT005
 func TestRender_JSON_Valid(t *testing.T) {
 	r := report.New("/proj", testFindings)
 	r.GeneratedAt = time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -145,6 +150,14 @@ func TestRenderToFile(t *testing.T) {
 	}
 	if !strings.Contains(string(data), "FUSA001") {
 		t.Error("output file missing FUSA001")
+	}
+}
+
+//fusa:test REQ-NF002
+func TestReport_GeneratedAtIsUTC(t *testing.T) {
+	r := report.New("/proj", nil)
+	if r.GeneratedAt.Location() != time.UTC {
+		t.Errorf("GeneratedAt location = %v, want UTC", r.GeneratedAt.Location())
 	}
 }
 

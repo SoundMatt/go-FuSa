@@ -14,6 +14,8 @@ import (
 )
 
 // Report is the top-level go-FuSa compliance report.
+//
+//fusa:req REQ-RPT005
 type Report struct {
 	GeneratedAt time.Time      `json:"generatedAt"`
 	ProjectRoot string         `json:"projectRoot"`
@@ -30,6 +32,9 @@ type Summary struct {
 }
 
 // New builds a Report from findings and computes the Summary.
+//
+//fusa:req REQ-RPT003
+//fusa:req REQ-NF002
 func New(projectRoot string, findings []fusa.Finding) *Report {
 	r := &Report{
 		GeneratedAt: time.Now().UTC(),

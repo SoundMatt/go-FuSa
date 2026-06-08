@@ -1,0 +1,63 @@
+name: Feature request
+description: Propose a new rule, command, or capability
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, check ROADMAP.md — your feature may already be planned.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New safety rule (LINT / ANA / FUSA / other)
+        - New CLI command
+        - Traceability / trace
+        - Test evidence / verify
+        - Release artifacts / release
+        - Tool qualification / qualify
+        - Runtime safety patterns
+        - CI integration
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What safety concern or workflow friction does this address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: |
+        Describe the behaviour you'd like. For a new rule, include:
+        - Rule ID (if you have a suggestion)
+        - Trigger condition
+        - Severity (ERROR / WARNING / INFO)
+        - Remediation message
+    validations:
+      required: true
+
+  - type: textarea
+    id: standard
+    attributes:
+      label: Safety standard reference (if applicable)
+      description: |
+        e.g. ISO 26262-6:8.4.4, IEC 61508-3 Table A.3, DO-178C Section 6.4
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false

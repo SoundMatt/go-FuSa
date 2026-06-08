@@ -1,0 +1,9 @@
+.git
+.claude
+dist/
+*.test
+qualify-report.json
+.fusa-evidence.json
+sbom.json
+provenance.json
+artifact-manifest.json

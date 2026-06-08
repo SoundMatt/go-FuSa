@@ -10,6 +10,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/testutil"
 )
 
+//fusa:test REQ-CLI001
 func TestRun_NoArgs(t *testing.T) {
 	var out, errOut bytes.Buffer
 	code := run(nil, &out, &errOut)
@@ -18,6 +19,7 @@ func TestRun_NoArgs(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI002
 func TestRun_UnknownCommand(t *testing.T) {
 	var out, errOut bytes.Buffer
 	code := run([]string{"bogus"}, &out, &errOut)
@@ -26,6 +28,7 @@ func TestRun_UnknownCommand(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI003
 func TestRun_Help(t *testing.T) {
 	var out, errOut bytes.Buffer
 	code := run([]string{"help"}, &out, &errOut)
@@ -37,6 +40,7 @@ func TestRun_Help(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI004
 func TestRun_Version(t *testing.T) {
 	var out, errOut bytes.Buffer
 	code := run([]string{"version"}, &out, &errOut)
@@ -48,6 +52,7 @@ func TestRun_Version(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI005
 func TestRun_Check_CleanProject(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	var out, errOut bytes.Buffer
@@ -58,6 +63,7 @@ func TestRun_Check_CleanProject(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI006
 func TestRun_Check_MissingConfig_FallsBack(t *testing.T) {
 	// A project without .fusa.json should still run (engine provides defaults).
 	dir := testutil.ProjectDir(t, map[string]string{
@@ -185,6 +191,34 @@ func TestRun_Trace_OutputFile(t *testing.T) {
 	code := run([]string{"trace", "--dir", dir, "--output", outFile}, &out, &errOut)
 	if code != 0 {
 		t.Errorf("trace --output: exit code = %d\n%s", code, errOut.String())
+	}
+}
+
+// ─── qualify ──────────────────────────────────────────────────────────────────
+
+func TestRun_Qualify_Help(t *testing.T) {
+	var out, errOut bytes.Buffer
+	_ = run([]string{"qualify", "--help"}, &out, &errOut)
+	combined := out.String() + errOut.String()
+	if !strings.Contains(combined, "gofusa qualify") {
+		t.Error("qualify --help: output missing 'gofusa qualify'")
+	}
+}
+
+//fusa:test REQ-CLI007
+func TestRun_Qualify_AllPass(t *testing.T) {
+	outFile := filepath.Join(t.TempDir(), "qualify-report.json")
+	var out, errOut bytes.Buffer
+	code := run([]string{"qualify", "--output", outFile}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("qualify: exit code = %d\nstdout: %s\nstderr: %s",
+			code, out.String(), errOut.String())
+	}
+	if _, err := os.Stat(outFile); err != nil {
+		t.Errorf("qualify: expected %s to exist: %v", outFile, err)
+	}
+	if !strings.Contains(out.String(), "passed") {
+		t.Error("qualify: output missing 'passed'")
 	}
 }
 

@@ -23,6 +23,7 @@ func renderText(w io.Writer, r *Report) error {
 			return err
 		}
 	} else {
+		//fusa:req REQ-RPT001
 		for _, f := range r.Findings {
 			loc := f.Location.File
 			if f.Location.Line > 0 {
@@ -50,6 +51,7 @@ func renderText(w io.Writer, r *Report) error {
 		r.Summary.Total, r.Summary.Errors, r.Summary.Warnings, r.Summary.Infos); err != nil {
 		return err
 	}
+	//fusa:req REQ-RPT002
 	result := "PASS"
 	if r.Summary.Errors > 0 {
 		result = "FAIL"

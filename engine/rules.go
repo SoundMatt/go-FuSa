@@ -28,6 +28,7 @@ func (r *ruleConfigPresent) Description() string {
 	return "Project must have a .fusa.json configuration file."
 }
 
+//fusa:req REQ-FUSA001
 func (r *ruleConfigPresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	path := filepath.Join(projectRoot, config.ConfigFile)
 	if _, err := os.Stat(path); err != nil {
@@ -53,6 +54,7 @@ func (r *ruleGoModPresent) Description() string {
 	return "Project must be a Go module (go.mod present)."
 }
 
+//fusa:req REQ-FUSA002
 func (r *ruleGoModPresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	path := filepath.Join(projectRoot, "go.mod")
 	if _, err := os.Stat(path); err != nil {
@@ -78,6 +80,7 @@ func (r *ruleLicensePresent) Description() string {
 	return "Project must have a LICENSE file for IP clarity in safety cases."
 }
 
+//fusa:req REQ-FUSA003
 func (r *ruleLicensePresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	for _, name := range []string{"LICENSE", "LICENSE.txt", "LICENSE.md", "LICENCE"} {
 		if _, err := os.Stat(filepath.Join(projectRoot, name)); err == nil {
@@ -101,6 +104,7 @@ func (r *ruleReadmePresent) Description() string {
 	return "Project must have a README for assessor orientation."
 }
 
+//fusa:req REQ-FUSA004
 func (r *ruleReadmePresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	for _, name := range []string{"README.md", "README.txt", "README"} {
 		if _, err := os.Stat(filepath.Join(projectRoot, name)); err == nil {
@@ -124,6 +128,7 @@ func (r *ruleCIPresent) Description() string {
 	return "Project must have CI configuration for automated evidence generation."
 }
 
+//fusa:req REQ-FUSA005
 func (r *ruleCIPresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	for _, rel := range []string{
 		filepath.Join(".github", "workflows"),

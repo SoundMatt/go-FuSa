@@ -25,6 +25,7 @@ const sampleJSON = `{"Action":"run","Test":"TestFoo","Package":"example/pkg"}
 {"Action":"pass","Package":"example/pkg","Elapsed":0.003}
 `
 
+//fusa:test REQ-VERIFY004
 func TestParse_Results(t *testing.T) {
 	results, err := verify.Parse(strings.NewReader(sampleJSON))
 	if err != nil {
@@ -94,6 +95,7 @@ func TestSummarise(t *testing.T) {
 
 // ─── New / Save / Load ────────────────────────────────────────────────────────
 
+//fusa:test REQ-VERIFY003
 func TestNewBundle(t *testing.T) {
 	results := []verify.TestResult{
 		{Name: "TestOne", Package: "pkg", Status: verify.StatusPass, Elapsed: 0.001},
@@ -143,6 +145,7 @@ func TestLoad_NotFound(t *testing.T) {
 
 // ─── Run (integration) ────────────────────────────────────────────────────────
 
+//fusa:test REQ-VERIFY005
 func TestRun_PassingTests(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"),
@@ -194,6 +197,7 @@ func runVerify(t *testing.T, files map[string]string) []fusa.Finding {
 	return result.Findings
 }
 
+//fusa:test REQ-VERIFY001
 func TestVERIFY001_NoBundleFile(t *testing.T) {
 	findings := runVerify(t, testutil.MinimalProject())
 	if !hasRule(findings, "VERIFY001") {
@@ -217,6 +221,7 @@ func TestVERIFY001_BundlePresent(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-VERIFY002
 func TestVERIFY002_FailedTests(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	results := []verify.TestResult{

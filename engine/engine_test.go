@@ -35,6 +35,7 @@ func TestRegistry_Register(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG005
 func TestRegistry_Register_Nil(t *testing.T) {
 	reg := engine.NewRegistry()
 	if err := reg.Register(nil); err == nil {
@@ -53,6 +54,7 @@ func TestRegistry_Register_Duplicate(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG004
 func TestRegistry_MustRegister_Panics(t *testing.T) {
 	reg := engine.NewRegistry()
 	r := &stubRule{id: "TEST001"}
@@ -65,6 +67,7 @@ func TestRegistry_MustRegister_Panics(t *testing.T) {
 	reg.MustRegister(r)
 }
 
+//fusa:test REQ-ENG001
 func TestRegistry_Rules_Sorted(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{id: "C"})
@@ -76,6 +79,7 @@ func TestRegistry_Rules_Sorted(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG003
 func TestRegistry_Run_Findings(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{
@@ -97,6 +101,7 @@ func TestRegistry_Run_Findings(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CFG007
 func TestRegistry_Run_Exclude(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{id: "SKIP", findings: []fusa.Finding{{RuleID: "SKIP", Severity: fusa.SeverityError}}})
@@ -117,6 +122,7 @@ func TestRegistry_Run_Exclude(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG002
 func TestRegistry_Run_RuleError(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{id: "FAIL", err: errors.New("rule internal error")})
@@ -130,6 +136,7 @@ func TestRegistry_Run_RuleError(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG006
 func TestRegistry_Run_ContextCancelled(t *testing.T) {
 	reg := engine.NewRegistry()
 	for _, id := range []string{"A", "B", "C"} {
@@ -172,6 +179,7 @@ func TestBuiltinRules_FullProject(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA001
 func TestBuiltinRule_FUSA001_MissingConfig(t *testing.T) {
 	dir := testutil.ProjectDir(t, map[string]string{
 		"go.mod": "module github.com/x/y\n\ngo 1.22\n",
@@ -186,6 +194,7 @@ func TestBuiltinRule_FUSA001_MissingConfig(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA002
 func TestBuiltinRule_FUSA002_MissingGoMod(t *testing.T) {
 	dir := testutil.ProjectDir(t, map[string]string{
 		config.ConfigFile: `{"version":"1","project":{"name":"x","module":"github.com/x/y","standard":"generic"},"report":{"format":"text"}}`,
@@ -200,6 +209,7 @@ func TestBuiltinRule_FUSA002_MissingGoMod(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA003
 func TestBuiltinRule_FUSA003_MissingLicense(t *testing.T) {
 	files := testutil.MinimalProject()
 	delete(files, "LICENSE")
@@ -214,6 +224,7 @@ func TestBuiltinRule_FUSA003_MissingLicense(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA004
 func TestBuiltinRule_FUSA004_MissingReadme(t *testing.T) {
 	files := testutil.MinimalProject()
 	delete(files, "README.md")
@@ -228,6 +239,7 @@ func TestBuiltinRule_FUSA004_MissingReadme(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-FUSA005
 func TestBuiltinRule_FUSA005_MissingCI(t *testing.T) {
 	files := testutil.MinimalProject()
 	delete(files, ".github/workflows/ci.yml")

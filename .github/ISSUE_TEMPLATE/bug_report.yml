@@ -1,0 +1,100 @@
+name: Bug report
+description: Report incorrect, missing, or spurious findings
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+        Please fill in as much detail as possible.
+
+  - type: input
+    id: version
+    attributes:
+      label: go-FuSa version
+      description: Output of `gofusa version`
+      placeholder: "gofusa v0.9.0"
+    validations:
+      required: true
+
+  - type: input
+    id: go-version
+    attributes:
+      label: Go version
+      description: Output of `go version`
+      placeholder: "go1.22.0 linux/amd64"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: rule
+    attributes:
+      label: Affected rule (if known)
+      options:
+        - FUSA001
+        - FUSA002
+        - FUSA003
+        - FUSA004
+        - FUSA005
+        - LINT001
+        - LINT002
+        - LINT003
+        - LINT004
+        - LINT005
+        - LINT006
+        - ANA001
+        - ANA002
+        - ANA003
+        - ANA004
+        - TRACE001
+        - TRACE002
+        - VERIFY001
+        - VERIFY002
+        - RELEASE001
+        - RELEASE002
+        - QUALIFY001
+        - Other / unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Bug kind
+      options:
+        - False positive (finding raised where none should be)
+        - False negative (finding not raised where it should be)
+        - Incorrect remediation message
+        - Crash or panic
+        - Wrong exit code
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: |
+        Smallest Go snippet or project structure that reproduces the issue.
+        Wrap code in triple backticks.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: |
+        `.fusa.json` contents, command line used, full output, safety standard
+        and ASIL/SIL level if relevant.
+    validations:
+      required: false

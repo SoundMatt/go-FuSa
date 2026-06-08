@@ -44,6 +44,7 @@ func NewRegistry() *Registry {
 // Register adds r to the registry. It returns an error if r is nil or if a
 // rule with the same ID has already been registered.
 func (reg *Registry) Register(r Rule) error {
+	//fusa:req REQ-ENG005
 	if r == nil {
 		return fmt.Errorf("engine: cannot register nil rule")
 	}
@@ -58,6 +59,8 @@ func (reg *Registry) Register(r Rule) error {
 // MustRegister calls Register and panics if it returns an error.
 // Intended for use in package init functions where duplicate registration
 // indicates a programming error that cannot be recovered from at runtime.
+//
+//fusa:req REQ-ENG004
 func (reg *Registry) MustRegister(r Rule) {
 	if err := reg.Register(r); err != nil {
 		panic(err)
@@ -68,6 +71,7 @@ func (reg *Registry) MustRegister(r Rule) {
 func (reg *Registry) Rules() []Rule {
 	out := make([]Rule, len(reg.rules))
 	copy(out, reg.rules)
+	//fusa:req REQ-ENG001
 	sort.Slice(out, func(i, j int) bool { return out[i].ID() < out[j].ID() })
 	return out
 }
@@ -81,6 +85,8 @@ type Result struct {
 }
 
 // HasErrors reports whether any Finding carries SeverityError.
+//
+//fusa:req REQ-ENG003
 func (r *Result) HasErrors() bool {
 	for _, f := range r.Findings {
 		if f.Severity == fusa.SeverityError {
@@ -94,6 +100,7 @@ func (r *Result) HasErrors() bool {
 // ID appears in cfg.Rules.Exclude. Rule execution errors are collected in
 // Result.Errors and do not abort the run.
 func (reg *Registry) Run(ctx context.Context, projectRoot string, cfg *config.Config) (*Result, error) {
+	//fusa:req REQ-CFG007
 	excluded := make(map[string]struct{}, len(cfg.Rules.Exclude))
 	for _, id := range cfg.Rules.Exclude {
 		excluded[id] = struct{}{}
@@ -101,6 +108,7 @@ func (reg *Registry) Run(ctx context.Context, projectRoot string, cfg *config.Co
 
 	var result Result
 	for _, rule := range reg.Rules() {
+		//fusa:req REQ-ENG006
 		if ctx.Err() != nil {
 			break
 		}
@@ -109,6 +117,7 @@ func (reg *Registry) Run(ctx context.Context, projectRoot string, cfg *config.Co
 		}
 		findings, err := rule.Run(ctx, projectRoot, cfg)
 		if err != nil {
+			//fusa:req REQ-ENG002
 			result.Errors = append(result.Errors, fmt.Errorf("rule %s: %w", rule.ID(), err))
 			continue
 		}

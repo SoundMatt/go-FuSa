@@ -1,0 +1,487 @@
+{
+  "requirements": [
+    {
+      "id": "REQ-ANA001",
+      "title": "Goroutine termination signal check",
+      "text": "The tool shall report a WARNING finding (ANA001) for every goroutine body that contains no channel receive, select, or context.Done() reference, indicating the goroutine has no mechanism to receive a termination signal.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA002",
+      "title": "Goroutine-in-loop detection",
+      "text": "The tool shall report a WARNING finding (ANA002) when a go statement appears inside a for or range loop body, indicating unbounded goroutine creation.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA003",
+      "title": "Blocking sleep in goroutine detection",
+      "text": "The tool shall report a WARNING finding (ANA003) when a time.Sleep call is found inside a goroutine body, indicating a blocking pattern that prevents cooperative cancellation.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA004",
+      "title": "Defer-in-loop detection",
+      "text": "The tool shall report a WARNING finding (ANA004) when a defer statement appears inside a for or range loop body, indicating deferred cleanup that will not execute until the enclosing function returns.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-CFG001",
+      "title": "Missing config file returns ErrNoConfig",
+      "text": "config.Load shall return an error wrapping fusa.ErrNoConfig when the specified .fusa.json file does not exist, allowing callers to distinguish absence from malformation.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CFG002",
+      "title": "Malformed config JSON returns error",
+      "text": "config.Load shall return a non-nil error when .fusa.json contains syntactically invalid JSON, preventing silent use of a corrupted configuration.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CFG003",
+      "title": "Missing version field returns ErrInvalidConfig",
+      "text": "config.Validate shall return an error wrapping fusa.ErrInvalidConfig when the version field is empty or absent.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CFG004",
+      "title": "Unsupported report format returns ErrInvalidConfig",
+      "text": "config.Validate shall return an error wrapping fusa.ErrInvalidConfig when report.format is set to a value other than the empty string, 'text', or 'json'.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CFG005",
+      "title": "Default config is valid and uses safe defaults",
+      "text": "config.Default shall return a Config with version='1', standard='generic', and report.format='text', which must pass Validate without error.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CFG006",
+      "title": "Config round-trips through JSON save and load",
+      "text": "A Config written by config.Save and read back by config.Load shall be identical to the original, preserving all fields including Rules.Exclude, Project.ASIL, and Project.SIL.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CFG007",
+      "title": "Excluded rule IDs are skipped during engine run",
+      "text": "Rule IDs listed in Config.Rules.Exclude shall not execute during engine.Registry.Run; their findings shall be absent from the result.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI001",
+      "title": "No-subcommand invocation prints usage and exits non-zero",
+      "text": "When gofusa is invoked with no arguments, the CLI shall print a usage message and exit with a non-zero status code.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI002",
+      "title": "Unknown subcommand exits non-zero",
+      "text": "When gofusa is invoked with an unrecognised subcommand, the CLI shall print an error message and exit with a non-zero status code.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI003",
+      "title": "Help command prints usage and exits zero",
+      "text": "gofusa help (and --help, -h) shall print usage information that includes the tool name and available subcommands, and exit with status 0.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI004",
+      "title": "Version command prints version string and exits zero",
+      "text": "gofusa version shall print a string containing the tool name and semver version, and exit with status 0.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI005",
+      "title": "Check exits zero when no ERROR findings are present",
+      "text": "gofusa check shall exit with status 0 when the engine produces no findings of ERROR severity.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI006",
+      "title": "Check exits one when any ERROR finding is present",
+      "text": "gofusa check shall exit with status 1 when the engine produces at least one finding of ERROR severity, signalling a blocking safety violation to CI pipelines.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-CLI007",
+      "title": "Qualify exits zero and writes report when all cases pass",
+      "text": "gofusa qualify shall exit with status 0 and write qualify-report.json when every built-in qualification case passes.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-ENG001",
+      "title": "Rules execute in deterministic ID-sorted order",
+      "text": "engine.Registry.Rules shall return rules sorted lexicographically by ID, ensuring that rule execution order and report output are deterministic across runs.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG002",
+      "title": "Rule execution errors are collected without aborting the run",
+      "text": "When a rule's Run method returns a non-nil error, the engine shall record the error in Result.Errors and continue executing remaining rules rather than aborting the check.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG003",
+      "title": "HasErrors reports true when any finding has ERROR severity",
+      "text": "engine.Result.HasErrors shall return true if and only if at least one Finding in the result carries SeverityError.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG004",
+      "title": "MustRegister panics on duplicate rule ID",
+      "text": "engine.Registry.MustRegister shall panic when called with a rule whose ID is already registered, making duplicate registration a hard failure detectable at program startup.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG005",
+      "title": "Register returns error for nil rule",
+      "text": "engine.Registry.Register shall return a non-nil error when called with a nil rule argument.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG006",
+      "title": "Context cancellation halts rule execution",
+      "text": "engine.Registry.Run shall stop executing rules and return promptly when the supplied context is cancelled, enabling timeout and cancellation support in CI pipelines.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ERR001",
+      "title": "ErrNoConfig is the sentinel for absent configuration",
+      "text": "fusa.ErrNoConfig shall be a non-nil sentinel error that callers can test with errors.Is to distinguish a missing .fusa.json from other I/O or parse errors.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ERR002",
+      "title": "ErrInvalidConfig is the sentinel for malformed configuration",
+      "text": "fusa.ErrInvalidConfig shall be a non-nil sentinel error that callers can test with errors.Is to identify configuration validation failures.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ERR003",
+      "title": "ErrCheckFailed is the sentinel for ERROR-severity check failures",
+      "text": "fusa.ErrCheckFailed shall be a non-nil sentinel error representing a check run in which one or more ERROR-severity findings were produced, suitable for wrapping in higher-level error values.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-FUSA001",
+      "title": "Configuration file presence check",
+      "text": "The tool shall report an ERROR finding (FUSA001) when no .fusa.json configuration file is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-FUSA002",
+      "title": "Go module file presence check",
+      "text": "The tool shall report an ERROR finding (FUSA002) when no go.mod file is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-FUSA003",
+      "title": "License file presence check",
+      "text": "The tool shall report a WARNING finding (FUSA003) when no LICENSE file is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-FUSA004",
+      "title": "README file presence check",
+      "text": "The tool shall report a WARNING finding (FUSA004) when no README file is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-FUSA005",
+      "title": "CI configuration presence check",
+      "text": "The tool shall report a WARNING finding (FUSA005) when no CI workflow file is found under .github/workflows/.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-LINT001",
+      "title": "Discarded error return detection",
+      "text": "The tool shall report a WARNING finding (LINT001) for every multi-value assignment where a blank identifier discards an error return value.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-LINT002",
+      "title": "Panic call detection",
+      "text": "The tool shall report a WARNING finding (LINT002) for every panic() call found in non-test Go source files.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-LINT003",
+      "title": "Recover call inventory",
+      "text": "The tool shall report an INFO finding (LINT003) for every recover() call found in Go source files, providing an inventory of panic recovery points.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-LINT004",
+      "title": "Unsafe package import detection",
+      "text": "The tool shall report a WARNING finding (LINT004) for every import of the 'unsafe' package.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-LINT005",
+      "title": "Reflect package import inventory",
+      "text": "The tool shall report an INFO finding (LINT005) for every import of the 'reflect' package, providing an inventory of reflection usage.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-LINT006",
+      "title": "Global mutable variable detection",
+      "text": "The tool shall report an INFO finding (LINT006) for every package-level var declaration, providing an inventory of global mutable state.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-NF001",
+      "title": "No external runtime dependencies",
+      "text": "The go-FuSa module shall declare no external runtime dependencies in go.mod. All functionality shall be implemented using the Go standard library only, ensuring supply-chain integrity.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-NF002",
+      "title": "All timestamps use UTC",
+      "text": "All GeneratedAt timestamps in reports, evidence bundles, SBOMs, provenance records, and qualification reports shall use UTC, ensuring consistent interpretation across time zones.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-NF003",
+      "title": "Recognised safety standard identifiers",
+      "text": "The config.Standard type shall accept the identifiers ISO26262, IEC61508, ISO21434, DO178C, and generic, covering the principal functional safety and cybersecurity standards.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-QUALIFY001",
+      "title": "Tool qualification report presence check",
+      "text": "The tool shall report an INFO finding (QUALIFY001) when no qualify-report.json tool qualification report is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-QUALIFY002",
+      "title": "Qualification report structure",
+      "text": "A qualification report produced by qualify.Run shall include Go version, UTC generation timestamp, total/passed/failed case counts, and the full per-case result list.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-QUALIFY003",
+      "title": "Qualification cases run in isolated temporary directories",
+      "text": "Each qualification test case shall execute in its own isolated OS temporary directory that is created before the case runs and deleted after it completes, preventing cross-case contamination.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-QUALIFY004",
+      "title": "Qualification report integrity hash",
+      "text": "The qualification report shall include a Hash field containing the SHA-256 digest (lowercase hex, 64 characters) of the report JSON excluding the Hash field itself, enabling tampering detection.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-RELEASE001",
+      "title": "SBOM presence check",
+      "text": "The tool shall report a WARNING finding (RELEASE001) when no sbom.json Software Bill of Materials is present in the project root directory.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RELEASE002",
+      "title": "Build provenance presence check",
+      "text": "The tool shall report a WARNING finding (RELEASE002) when no provenance.json build provenance record is present in the project root directory.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RELEASE003",
+      "title": "SBOM includes module path, Go version, and direct dependencies",
+      "text": "release.BuildSBOM shall produce an SBOM that includes the module path from go.mod, the Go toolchain version from go.mod, and all direct dependencies listed in the require block.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RELEASE004",
+      "title": "SBOM components include dependency name, version, and hash",
+      "text": "Each Component in the SBOM shall include the dependency module path, the declared version, and the h1: hash from go.sum where available.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RELEASE005",
+      "title": "Provenance record includes build environment fields",
+      "text": "release.BuildProvenance shall produce a record that includes module path, Go runtime version, GOOS, and GOARCH, providing a complete build environment fingerprint.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RELEASE006",
+      "title": "SBOM and provenance serialise as valid JSON",
+      "text": "release.SaveJSON shall write any SBOM or Provenance value as indented, valid JSON that can be parsed by a standard JSON decoder.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RPT001",
+      "title": "Text report includes rule ID, severity, and location",
+      "text": "The text-format report shall include for each finding: the rule ID, severity label, and location in file:line:column format when line and column are present.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-RPT002",
+      "title": "Text report shows PASS or FAIL result line",
+      "text": "The text-format report shall end with 'Result: PASS' when there are no ERROR-severity findings, and 'Result: FAIL' when at least one ERROR-severity finding exists.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-RPT003",
+      "title": "Report summary counts match finding severities",
+      "text": "report.New shall compute Summary.Total, Errors, Warnings, and Infos by counting findings in the provided slice; the counts shall equal the actual numbers of findings at each severity.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-RPT004",
+      "title": "JSON report is valid parseable JSON",
+      "text": "The json-format report shall produce output that can be decoded by a standard JSON decoder into a report.Report struct without error.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-RPT005",
+      "title": "JSON report includes all required top-level fields",
+      "text": "The json-format report shall include the fields generatedAt, projectRoot, findings, and summary at the top level.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-TRACE001",
+      "title": "Requirements manifest presence check",
+      "text": "The tool shall report an INFO finding (TRACE001) when no .fusa-reqs.json requirements manifest is present in the project root directory.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-TRACE002",
+      "title": "Requirement implementation traceability check",
+      "text": "The tool shall report a WARNING finding (TRACE002) for every requirement in .fusa-reqs.json that has no matching //fusa:req implementation tag in any Go source file.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-TRACE003",
+      "title": "TracedRequirements count is accurate",
+      "text": "The Coverage.TracedRequirements field of a traceability matrix shall equal the number of requirements in the manifest that have at least one //fusa:req KindImpl tag in the source tree.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-TRACE004",
+      "title": "TestedRequirements count is accurate",
+      "text": "The Coverage.TestedRequirements field of a traceability matrix shall equal the number of requirements in the manifest that have at least one //fusa:test KindTest tag in the source tree.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-TRACE005",
+      "title": "Scanner excludes vendor, testdata, and hidden directories",
+      "text": "trace.ScanTags shall not scan Go files inside vendor/, testdata/, or any directory whose name begins with a dot, preventing false annotations from dependencies or generated files.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-TRACE006",
+      "title": "Traceability matrix renders in text and JSON formats",
+      "text": "trace.Render shall produce a human-readable text format when format is 'text' and a machine-parseable JSON format when format is 'json', returning an error for unknown formats.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-TRACE007",
+      "title": "Annotations with empty requirement ID are silently skipped",
+      "text": "A //fusa:req or //fusa:test annotation with no requirement ID after the prefix shall be silently ignored by trace.ScanTags and shall not produce a tag.",
+      "standard": "IEC 61508",
+      "level": "SIL-1"
+    },
+    {
+      "id": "REQ-VERIFY001",
+      "title": "Test evidence bundle presence check",
+      "text": "The tool shall report an INFO finding (VERIFY001) when no .fusa-evidence.json test evidence bundle is present in the project root directory.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-VERIFY002",
+      "title": "Test failure detection",
+      "text": "The tool shall report a WARNING finding (VERIFY002) when the .fusa-evidence.json bundle records one or more failed tests.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-VERIFY003",
+      "title": "Evidence bundle includes provenance fields",
+      "text": "An evidence bundle produced by verify.New shall include the project root path, Go runtime version, and a UTC generation timestamp.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-VERIFY004",
+      "title": "Evidence bundle records per-test detail",
+      "text": "Each entry in the evidence bundle Results slice shall include the test function name, package path, pass/fail/skip status, and elapsed time in seconds.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-VERIFY005",
+      "title": "verify.Run invokes go test with JSON output",
+      "text": "verify.Run shall execute go test -json -count=1 ./... in the specified directory, producing machine-readable output that is parsed into structured test results.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-E2E001",
+      "title": "Full pipeline executes successfully on a minimal Go project",
+      "text": "The complete gofusa pipeline (init, check, trace, verify, release, qualify) shall execute in sequence on a minimal Go project and produce all required output artifacts: .fusa.json, .fusa-evidence.json, sbom.json, provenance.json, and qualify-report.json.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    }
+  ]
+}

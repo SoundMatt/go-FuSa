@@ -34,6 +34,7 @@ func hasRule(findings []fusa.Finding, ruleID string) bool {
 
 // ─── ANA001 ───────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-ANA001
 func TestANA001_GoroutineNoSignal(t *testing.T) {
 	src := `package main
 
@@ -91,6 +92,7 @@ func start(ctx context.Context) {
 
 // ─── ANA002 ───────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-ANA002
 func TestANA002_GoroutineInForLoop(t *testing.T) {
 	src := `package main
 
@@ -137,6 +139,7 @@ func spawnForever() {
 
 // ─── ANA003 ───────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-ANA003
 func TestANA003_SleepInGoroutine(t *testing.T) {
 	src := `package main
 
@@ -173,6 +176,7 @@ func wait() {
 
 // ─── ANA004 ───────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-ANA004
 func TestANA004_DeferInLoop(t *testing.T) {
 	src := `package main
 

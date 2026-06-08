@@ -6,6 +6,7 @@ import (
 	"io"
 )
 
+//fusa:req REQ-RPT004
 func renderJSON(w io.Writer, r *Report) error {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")

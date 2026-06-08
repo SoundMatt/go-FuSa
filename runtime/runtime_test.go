@@ -134,6 +134,23 @@ func TestHeartbeat_StartTwice(t *testing.T) {
 	}
 }
 
+func TestHeartbeat_IsRunning(t *testing.T) {
+	hb := fusaruntime.NewHeartbeat(50*time.Millisecond, func(int) {})
+	if hb.IsRunning() {
+		t.Error("IsRunning should be false before Start")
+	}
+	if err := hb.Start(); err != nil {
+		t.Fatalf("Start: %v", err)
+	}
+	if !hb.IsRunning() {
+		t.Error("IsRunning should be true after Start")
+	}
+	hb.Stop()
+	if hb.IsRunning() {
+		t.Error("IsRunning should be false after Stop")
+	}
+}
+
 // ─── StateManager ─────────────────────────────────────────────────────────────
 
 func TestStateManager_InitialState(t *testing.T) {

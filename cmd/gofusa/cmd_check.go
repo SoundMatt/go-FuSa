@@ -87,8 +87,10 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
+	//fusa:req REQ-CLI006
 	if result.HasErrors() {
 		return 1
 	}
+	//fusa:req REQ-CLI005
 	return 0
 }

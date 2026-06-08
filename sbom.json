@@ -1,0 +1,7 @@
+{
+  "format": "go-FuSa SBOM v1",
+  "generatedAt": "2026-06-08T00:39:07.879366Z",
+  "module": "github.com/SoundMatt/go-FuSa",
+  "goVersion": "1.22",
+  "components": []
+}

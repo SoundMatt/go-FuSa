@@ -73,6 +73,8 @@ type testEvent struct {
 
 // Parse reads go test -json output from r and returns per-test results.
 // Package-level events (no Test field) are ignored.
+//
+//fusa:req REQ-VERIFY004
 func Parse(r io.Reader) ([]TestResult, error) {
 	dec := json.NewDecoder(r)
 	var results []TestResult
@@ -116,6 +118,8 @@ func Summarise(results []TestResult) Summary {
 }
 
 // New builds a Bundle from test results for the given project root.
+//
+//fusa:req REQ-VERIFY003
 func New(projectRoot string, results []TestResult) *Bundle {
 	return &Bundle{
 		GeneratedAt: time.Now().UTC(),
@@ -129,6 +133,8 @@ func New(projectRoot string, results []TestResult) *Bundle {
 // Run executes go test -json -count=1 ./... in dir and returns parsed results.
 // A test-failure exit code is not an error; the results will contain StatusFail
 // entries. Other execution errors (go not found, no module) are returned as errors.
+//
+//fusa:req REQ-VERIFY005
 func Run(ctx context.Context, dir string) ([]TestResult, error) {
 	cmd := exec.CommandContext(ctx, "go", "test", "-json", "-count=1", "./...")
 	cmd.Dir = dir
@@ -186,6 +192,7 @@ func (r *ruleEvidencePresent) Description() string {
 	return "Project should have a .fusa-evidence.json test evidence bundle."
 }
 
+//fusa:req REQ-VERIFY001
 func (r *ruleEvidencePresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	path := projectRoot + "/" + BundleFile
 	if _, err := os.Stat(path); err == nil {
@@ -208,6 +215,7 @@ func (r *ruleNoTestFailures) Description() string {
 	return "Test evidence bundle must contain no failed tests."
 }
 
+//fusa:req REQ-VERIFY002
 func (r *ruleNoTestFailures) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	b, err := Load(projectRoot + "/" + BundleFile)
 	if err != nil {

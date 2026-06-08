@@ -80,6 +80,8 @@ type Manifest struct {
 }
 
 // BuildSBOM generates an SBOM by parsing go.mod and go.sum in projectRoot.
+//
+//fusa:req REQ-RELEASE003
 func BuildSBOM(projectRoot string) (*SBOM, error) {
 	modPath, err := readModulePath(filepath.Join(projectRoot, "go.mod"))
 	if err != nil {
@@ -104,6 +106,8 @@ func BuildSBOM(projectRoot string) (*SBOM, error) {
 
 // BuildProvenance records the current build environment for projectRoot.
 // ctx is used for the optional git subprocess calls.
+//
+//fusa:req REQ-RELEASE005
 func BuildProvenance(ctx context.Context, projectRoot string) (*Provenance, error) {
 	modPath, err := readModulePath(filepath.Join(projectRoot, "go.mod"))
 	if err != nil {
@@ -136,6 +140,8 @@ func HashFiles(paths []string) ([]Artifact, error) {
 }
 
 // SaveJSON writes v as indented JSON to path.
+//
+//fusa:req REQ-RELEASE006
 func SaveJSON(path string, v any) error {
 	data, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
@@ -196,6 +202,7 @@ func readComponents(projectRoot string) ([]Component, error) {
 	if err != nil {
 		return nil, err
 	}
+	//fusa:req REQ-RELEASE004
 	components := make([]Component, 0, len(requires))
 	for _, r := range requires {
 		c := Component{Name: r[0], Version: r[1]}
@@ -331,6 +338,7 @@ func (r *ruleSBOMPresent) Description() string {
 	return "Project should have an sbom.json Software Bill of Materials."
 }
 
+//fusa:req REQ-RELEASE001
 func (r *ruleSBOMPresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	_, err := os.Stat(filepath.Join(projectRoot, SBOMFile))
 	if err == nil {
@@ -355,6 +363,7 @@ func (r *ruleProvenancePresent) Description() string {
 	return "Project should have a provenance.json build provenance record."
 }
 
+//fusa:req REQ-RELEASE002
 func (r *ruleProvenancePresent) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
 	_, err := os.Stat(filepath.Join(projectRoot, ProvenanceFile))
 	if err == nil {

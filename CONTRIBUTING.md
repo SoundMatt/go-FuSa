@@ -58,13 +58,18 @@ have the right to contribute under the existing license.
 
 | Directory | What it contains |
 |---|---|
-| `.` | `fusa` package — core types, configuration, rule engine |
-| `cmd/gofusa` | CLI entry point (`gofusa init`, `gofusa check`, `gofusa report`) |
-| `lint/` | Safety-oriented linting rules (error handling, panic, unsafe, globals) |
+| `.` | `fusa` package — core types, sentinel errors, `Version` constant |
+| `config/` | Project configuration load/save/validate |
+| `engine/` | Rule interface, registry, FUSA001–005 built-in rules |
+| `report/` | Text and JSON compliance report renderers |
+| `template/` | Safety plan, test evidence, and HARA document generators |
+| `cmd/gofusa` | CLI (`init`, `check`, `report`, `trace`, `verify`, `release`, `qualify`) |
+| `lint/` | Safety-oriented coding rules (error handling, panic, unsafe, globals) |
 | `analyze/` | Static analysis passes (goroutine leaks, races, blocking calls) |
 | `trace/` | Requirements traceability engine |
 | `verify/` | Test evidence collection and bundle generation |
 | `release/` | SBOM, build provenance, artifact signing |
+| `qualify/` | Tool qualification suite and evidence report |
 | `runtime/` | Runtime safety patterns (watchdog, heartbeat, safe-state) |
 | `testutil/` | Test harness helpers |
 
@@ -89,4 +94,4 @@ Signed-off-by: Your Name <your@email.com>
 ```
 
 Types: `feat`, `fix`, `docs`, `test`, `chore`, `refactor`.
-Scope examples: `lint`, `analyze`, `trace`, `verify`, `release`, `cli`, `runtime`.
+Scope examples: `lint`, `analyze`, `trace`, `verify`, `release`, `qualify`, `cli`, `runtime`.

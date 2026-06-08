@@ -10,6 +10,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/config"
 )
 
+//fusa:test REQ-CFG005
 func TestDefault(t *testing.T) {
 	cfg := config.Default("github.com/example/proj", "proj")
 	if cfg.Version == "" {
@@ -29,6 +30,7 @@ func TestDefault(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CFG006
 func TestSaveLoad_Roundtrip(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, config.ConfigFile)
@@ -60,6 +62,8 @@ func TestSaveLoad_Roundtrip(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CFG001
+//fusa:test REQ-ERR001
 func TestLoad_Missing(t *testing.T) {
 	_, err := config.Load("/nonexistent/.fusa.json")
 	if !errors.Is(err, fusa.ErrNoConfig) {
@@ -67,6 +71,7 @@ func TestLoad_Missing(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CFG002
 func TestLoad_InvalidJSON(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, config.ConfigFile)
@@ -79,6 +84,9 @@ func TestLoad_InvalidJSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CFG003
+//fusa:test REQ-CFG004
+//fusa:test REQ-ERR002
 func TestValidate(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -124,6 +132,29 @@ func TestValidate(t *testing.T) {
 				t.Errorf("Validate: expected ErrInvalidConfig chain, got %v", err)
 			}
 		})
+	}
+}
+
+//fusa:test REQ-NF003
+func TestStandard_Identifiers(t *testing.T) {
+	for _, std := range []struct {
+		id   string
+		want string
+	}{
+		{"ISO26262", string(config.StandardISO26262)},
+		{"IEC61508", string(config.StandardIEC61508)},
+		{"ISO21434", string(config.StandardISO21434)},
+		{"DO178C", string(config.StandardDO178C)},
+		{"generic", string(config.StandardGeneric)},
+	} {
+		if std.id != std.want {
+			t.Errorf("Standard %s: got %q, want %q", std.id, std.want, std.id)
+		}
+		cfg := config.Default("github.com/x/y", "y")
+		cfg.Project.Standard = config.Standard(std.id)
+		if err := config.Validate(cfg); err != nil {
+			t.Errorf("Standard %q: Validate returned unexpected error: %v", std.id, err)
+		}
 	}
 }
 
