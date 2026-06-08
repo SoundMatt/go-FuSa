@@ -7,6 +7,42 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.16.0] — 2026-06-08
+
+### Added
+- **Docker publish workflow** (`.github/workflows/docker-publish.yml`) — builds and pushes
+  `ghcr.io/soundmatt/go-fusa` to GitHub Container Registry on every `v*` tag; produces
+  semver tags (`0.16.0`, `0.16`) and `latest`.
+- **GitHub Actions usage example** (`.github/gofusa-example.yml`) — drop-in workflow snippet
+  for projects that want to run `gofusa check`, `trace`, `release`, and `cyber` via the
+  published container image, with evidence artifact upload.
+- **`.fusa-iec62443.json`** — declares IEC 62443 Security Level 2 for the project itself
+  (satisfies IEC62443-001 engine rule).
+- **`.github/CODEOWNERS`** — documents review ownership (satisfies SLSA003 rule).
+- **`INCIDENT-RESPONSE.md`** — IEC 62443-4-2 CR 6.2.1 incident response plan.
+- **`provenance.json` `builder` field** — added SLSA L2 builder identification.
+
+### Fixed
+- `trace.ScanTags(".")` — relative root `"."` caused the entire source tree to be skipped
+  because `d.Name() == "."` matched the hidden-directory guard; fixed by exempting the
+  root path from the check. This was producing 304 false TRACE002/TRACE003 findings on
+  `gofusa check --dir .`.
+- CYBER005 `//nolint` suppression — `cyber.isNolinted()` helper now honours inline
+  `//nolint:CYBER005` (or comma-separated `//nolint:gosec,CYBER005`) comments; files now
+  parsed with `parser.ParseComments`.
+- CYBER016/017 — all `os.MkdirAll` calls tightened to `0o750`; all `os.WriteFile` /
+  `os.OpenFile` calls tightened to `0o640` across CLI commands, test helpers, and
+  production packages.
+- CYBER019 — TOCTOU in `auditpack.Pack` eliminated by removing the `os.Stat` pre-check;
+  files are now opened and hashed in a single step.
+- CYBER009 — `atomic.Int32` narrowing conversion in `runtime` tests replaced with
+  `atomic.Int64`.
+- Windows runner notice — CI matrix pinned to `windows-2025` (was `windows-latest`).
+
+### Changed
+- `gofusa check --dir .` now correctly reports Traced: 150, Tested: 124 (was 0/0).
+- Self-check result: **0 findings** (was 361 — 0 errors, 203 warnings, 158 infos).
+
 ## [0.15.0] — 2026-06-08
 
 ### Added

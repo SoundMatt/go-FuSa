@@ -1,0 +1,43 @@
+# Example: run go-FuSa safety checks in your own GitHub Actions workflow.
+#
+# Copy this job into your .github/workflows/ci.yml.
+# No local installation needed — the gofusa binary runs inside the container.
+
+name: Safety Checks (example)
+
+on: [push, pull_request]
+
+jobs:
+  safety:
+    name: go-FuSa safety checks
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/soundmatt/go-fusa:latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      # Run all safety checks — exits non-zero on any ERROR finding.
+      - name: gofusa check
+        run: gofusa check --dir .
+
+      # Show the requirements traceability matrix.
+      - name: gofusa trace
+        run: gofusa trace --dir .
+
+      # Generate SBOM + provenance (written to project root).
+      - name: gofusa release
+        run: gofusa release --dir .
+
+      # Run cybersecurity analysis (CWE-mapped rules).
+      - name: gofusa cyber
+        run: gofusa cyber --dir .
+
+      - name: Upload safety evidence
+        uses: actions/upload-artifact@v6
+        with:
+          name: safety-evidence
+          path: |
+            sbom.json
+            provenance.json
+            cyber-report.json

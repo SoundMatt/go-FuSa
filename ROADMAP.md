@@ -118,19 +118,20 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
-## v0.8 — Docker Quickstart
+## v0.16 — Docker Quickstart ✅
 
 **Goal:** Zero-install evaluation and CI integration via container.
 
 Features:
-- Official Docker image (`ghcr.io/soundmatt/go-fusa`)
-- Multi-stage build: minimal runtime image (~10 MB)
-- `docker run` one-liners for `init`, `check`, `trace`, `verify`, `release`
-- `docker-compose` example for full pipeline
-- GitHub Actions step using the container image
-- Volume-mount pattern for scanning a host project
+- Official Docker image (`ghcr.io/soundmatt/go-fusa`) published to GHCR on every tag
+- Multi-stage build: minimal Alpine runtime image (~10 MB)
+- `docker run` one-liners for `check`, `trace`, `verify`, `release`, `cyber`
+- `docker-compose.yml` for the full evidence-generation pipeline
+- GitHub Actions usage example (`.github/gofusa-example.yml`)
+- Volume-mount pattern for scanning a host project (`-v "$(pwd)":/project`)
+- Automated publish workflow (`.github/workflows/docker-publish.yml`) triggered on `v*` tags
 
-Deliverables: `Dockerfile`, `docker-compose.yml`, updated `README.md`, GitHub Actions example
+Deliverables: `Dockerfile`, `docker-compose.yml`, `docker-publish.yml`, `gofusa-example.yml`, updated `README.md`
 
 ---
 

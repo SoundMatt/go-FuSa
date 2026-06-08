@@ -116,27 +116,56 @@ gofusa release --full
 
 ## Docker quick start
 
-No local Go installation required:
+No local Go or gofusa installation required.
 
 ```bash
-# Pull the official image
-docker pull ghcr.io/soundmatt/go-fusa:latest
+# Run safety checks against the current directory
+docker run --rm -v "$(pwd)":/project ghcr.io/soundmatt/go-fusa:latest check
 
-# Run checks against the current directory
-docker run --rm -v "$(pwd)":/project ghcr.io/soundmatt/go-fusa check
+# Show the requirements traceability matrix
+docker run --rm -v "$(pwd)":/project ghcr.io/soundmatt/go-fusa:latest trace
 
-# Generate all release evidence
-docker run --rm -v "$(pwd)":/project ghcr.io/soundmatt/go-fusa release
+# Run cybersecurity analysis (CWE-mapped rules)
+docker run --rm -v "$(pwd)":/project ghcr.io/soundmatt/go-fusa:latest cyber
+
+# Generate all release evidence (SBOM, provenance, TARA, audit pack)
+docker run --rm -v "$(pwd)":/project ghcr.io/soundmatt/go-fusa:latest release --full
 ```
 
-Build from source:
+**Full pipeline with docker compose:**
+
+```bash
+# Run the complete evidence-generation pipeline in one command
+docker compose run --rm pipeline
+```
+
+See [docker-compose.yml](docker-compose.yml) for the full pipeline definition.
+
+**GitHub Actions — scan your project using the published image:**
+
+```yaml
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/soundmatt/go-fusa:latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: gofusa check --dir .
+      - run: gofusa trace --dir .
+      - run: gofusa cyber --dir .
+```
+
+Copy the full example from [`.github/gofusa-example.yml`](.github/gofusa-example.yml).
+
+**Build from source:**
 
 ```bash
 docker build -t go-fusa .
 docker run --rm -v "$(pwd)":/project go-fusa check
 ```
 
-See [docker-compose.yml](docker-compose.yml) for a full-pipeline example.
+Published tags: `latest`, `0.16`, `0.16.0` (and matching semver for every release).
 
 ## Standards coverage
 
