@@ -1,6 +1,6 @@
 {
   "format": "go-FuSa Safety Case v1",
-  "generatedAt": "2026-06-08T17:14:27.603534Z",
+  "generatedAt": "2026-06-08T18:02:55.111304Z",
   "module": "github.com/SoundMatt/go-FuSa",
   "standard": "generic",
   "evidence": [
@@ -15,7 +15,7 @@
       "description": "Requirements traceability matrix",
       "file": ".fusa-reqs.json",
       "status": "present",
-      "detail": "84 requirements"
+      "detail": "96 requirements"
     },
     {
       "id": "verify",

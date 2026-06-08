@@ -17,6 +17,8 @@
 //	release      Generate SBOM (SPDX 3.0.1), provenance, and artifact manifest
 //	qualify      Run the tool qualification suite
 //	safety-case  Assemble a structured safety case from evidence
+//	fmea         Generate a dFMEA table from exported functions
+//	boundary     Generate a component boundary diagram
 //	version      Print the go-FuSa version
 //
 // Run 'gofusa <command> --help' for per-command flags.
@@ -28,12 +30,14 @@ import (
 	"os"
 
 	// Blank imports activate built-in rule sets registered via init().
-	_ "github.com/SoundMatt/go-FuSa/analyze" // v0.3 static-analysis rules
-	_ "github.com/SoundMatt/go-FuSa/lint"    // v0.2 coding-standard rules
-	_ "github.com/SoundMatt/go-FuSa/qualify" // v0.9 tool qualification rules
-	_ "github.com/SoundMatt/go-FuSa/release" // v0.6 release-evidence rules
-	_ "github.com/SoundMatt/go-FuSa/trace"   // v0.4 traceability rules
-	_ "github.com/SoundMatt/go-FuSa/verify"  // v0.5 test-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/analyze"  // v0.3 static-analysis rules
+	_ "github.com/SoundMatt/go-FuSa/boundary" // v0.12 boundary-diagram rules
+	_ "github.com/SoundMatt/go-FuSa/fmea"     // v0.12 dFMEA rules
+	_ "github.com/SoundMatt/go-FuSa/lint"     // v0.2 coding-standard rules
+	_ "github.com/SoundMatt/go-FuSa/qualify"  // v0.9 tool qualification rules
+	_ "github.com/SoundMatt/go-FuSa/release"  // v0.6 release-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/trace"    // v0.4 traceability rules
+	_ "github.com/SoundMatt/go-FuSa/verify"   // v0.5 test-evidence rules
 )
 
 func main() {
@@ -70,6 +74,10 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runQualify(args[1:], stdout, stderr)
 	case "safety-case":
 		return runSafetyCase(args[1:], stdout, stderr)
+	case "fmea":
+		return runFmea(args[1:], stdout, stderr)
+	case "boundary":
+		return runBoundary(args[1:], stdout, stderr)
 	case "version":
 		//fusa:req REQ-CLI004
 		return runVersion(stdout)
@@ -101,6 +109,8 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  release      Generate SBOM (SPDX 3.0.1), provenance, and artifact manifest\n")
 	fmt.Fprintf(w, "  qualify      Run the tool qualification suite\n")
 	fmt.Fprintf(w, "  safety-case  Assemble a structured safety case from evidence\n")
+	fmt.Fprintf(w, "  fmea         Generate a dFMEA table from exported functions\n")
+	fmt.Fprintf(w, "  boundary     Generate a component boundary diagram\n")
 	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")
 	fmt.Fprintf(w, "\nRun 'gofusa <command> --help' for command-specific flags.\n")
 }

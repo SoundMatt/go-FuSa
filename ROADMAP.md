@@ -181,7 +181,7 @@ Deliverables: `gofusa safety-case`
 
 ---
 
-## v0.12 — Safety Analysis Generation
+## v0.12 — Safety Analysis Generation ✅
 
 **Goal:** Automatically derive safety analysis artefacts from code structure and requirements.
 

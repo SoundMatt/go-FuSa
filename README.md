@@ -29,7 +29,9 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `runtime/` | Reusable safety patterns — watchdog, heartbeat, safe-state transitions |
 | `testutil/` | Test harness helpers |
 | `safetycase/` | Safety case assembly — evidence collection, GSN diagram, compliance mapping |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case` |
+| `fmea/` | dFMEA generation — derives failure modes, effects, and severities from exported functions |
+| `boundary/` | Component boundary diagrams — package dependency graph in Mermaid and DOT formats |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary` |
 
 ## Install
 
@@ -74,6 +76,12 @@ gofusa report
 # Assemble a safety case (Markdown + JSON + Mermaid GSN diagram)
 gofusa safety-case
 gofusa safety-case --standard iso26262
+
+# Generate a dFMEA table from exported functions (JSON + CSV)
+gofusa fmea
+
+# Generate a component boundary diagram (Mermaid + DOT)
+gofusa boundary
 ```
 
 ## Docker quick start

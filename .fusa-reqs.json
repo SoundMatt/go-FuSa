@@ -587,6 +587,90 @@
       "text": "The complete gofusa pipeline (init, check, trace, verify, release, qualify) shall execute in sequence on a minimal Go project and produce all required output artifacts: .fusa.json, .fusa-evidence.json, sbom.json, provenance.json, and qualify-report.json.",
       "standard": "IEC 61508",
       "level": "SIL-2"
+    },
+    {
+      "id": "REQ-FMEA001",
+      "title": "dFMEA scanner discovers exported functions from Go source",
+      "text": "fmea.Scan shall walk all non-vendor, non-testdata Go source files in the project root and produce one Entry per exported function declaration, including component name, function name, and severity.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-FMEA002",
+      "title": "Failure modes derived from return types and goroutine usage",
+      "text": "fmea.Scan shall derive failure modes and effects heuristically: functions returning error receive 'Returns unexpected error', functions launching goroutines receive 'Goroutine not terminated', and severity is elevated to 'high' when a //fusa:req annotation is present.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-FMEA003",
+      "title": "RequirementIDs extracted from //fusa:req annotations",
+      "text": "fmea.Scan shall parse the doc comment of each exported function and extract all requirement IDs from //fusa:req lines, associating them with the corresponding Entry.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-FMEA004",
+      "title": "dFMEA report exported in JSON and CSV formats",
+      "text": "fmea.Render shall write the Report in 'json' format (indented JSON) or 'csv' format (RFC 4180 with header row: Component, Function, FailureModes, Effects, Severity, DetectionControl, RequirementIDs).",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-FMEA005",
+      "title": "FMEA001 engine rule fires when fmea.json is absent",
+      "text": "The FMEA001 engine rule shall emit an INFO finding when fmea.json does not exist in the project root, prompting the user to run 'gofusa fmea'.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-BOUNDARY001",
+      "title": "Scanner builds package dependency graph from imports",
+      "text": "boundary.Scan shall walk all non-vendor, non-testdata Go source files and construct a directed graph of package import relationships within the module, producing one Node per package and one Edge per import relationship.",
+      "standard": "ISO 21434",
+      "level": "CAL-1"
+    },
+    {
+      "id": "REQ-BOUNDARY002",
+      "title": "Exported types and functions identified per package node",
+      "text": "boundary.Scan shall collect all exported function names (suffix '()') and exported type names from each package and attach them to the corresponding Node as the Exports slice.",
+      "standard": "ISO 21434",
+      "level": "CAL-1"
+    },
+    {
+      "id": "REQ-BOUNDARY003",
+      "title": "Boundary diagram rendered in Mermaid flowchart format",
+      "text": "boundary.Render with format 'mermaid' shall produce a Mermaid flowchart LR diagram with one node per package and directed edges representing import dependencies.",
+      "standard": "ISO 21434",
+      "level": "CAL-1"
+    },
+    {
+      "id": "REQ-BOUNDARY004",
+      "title": "Boundary diagram rendered in DOT (Graphviz) format",
+      "text": "boundary.Render with format 'dot' shall produce a valid Graphviz DOT digraph with rankdir=LR, one node per package, and directed edges representing import dependencies.",
+      "standard": "ISO 21434",
+      "level": "CAL-1"
+    },
+    {
+      "id": "REQ-BOUNDARY005",
+      "title": "BOUNDARY001 engine rule fires when boundary.mermaid is absent",
+      "text": "The BOUNDARY001 engine rule shall emit an INFO finding when boundary.mermaid does not exist in the project root, prompting the user to run 'gofusa boundary'.",
+      "standard": "ISO 21434",
+      "level": "CAL-1"
+    },
+    {
+      "id": "REQ-CLI013",
+      "title": "gofusa fmea generates dFMEA JSON and CSV artifacts",
+      "text": "The 'gofusa fmea' command shall scan the project root, generate fmea.json and fmea.csv in the output directory, and print a summary of entry counts by severity.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-CLI014",
+      "title": "gofusa boundary generates Mermaid and DOT boundary diagrams",
+      "text": "The 'gofusa boundary' command shall scan the project root, generate boundary.mermaid and boundary.dot in the output directory, and print a summary of package and edge counts.",
+      "standard": "ISO 21434",
+      "level": "CAL-1"
     }
   ]
 }

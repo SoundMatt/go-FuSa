@@ -1,0 +1,149 @@
+Component,Function,FailureModes,Effects,Severity,DetectionControl,RequirementIDs
+analyze,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+analyze,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+analyze,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+analyze,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+analyze,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+analyze,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+analyze,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+analyze,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+analyze,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-ANA002
+analyze,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-ANA003
+analyze,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-ANA001
+analyze,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-ANA004
+boundary,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+boundary,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+boundary,Render,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-BOUNDARY003; REQ-BOUNDARY004
+boundary,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-BOUNDARY005
+boundary,Scan,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-BOUNDARY001; REQ-BOUNDARY002
+config,Default,Incorrect output,Incorrect system behavior,high,requirement testing + unit tests,REQ-CFG005
+config,Load,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+config,Save,Returns unexpected error; Partial write / data corruption,Silent failure propagated to caller; Incorrect system state,high,requirement testing + unit tests,REQ-CFG006
+config,Validate,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+engine,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,HasErrors,Incorrect output,Incorrect system behavior,high,requirement testing + unit tests,REQ-ENG003
+engine,HasWarnings,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,MustRegister,Incorrect output,Incorrect system behavior,high,requirement testing + unit tests,REQ-ENG004
+engine,NewRegistry,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,Register,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+engine,Rules,Incorrect output,Incorrect system behavior,low,unit tests,
+engine,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-FUSA004
+engine,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-FUSA003
+engine,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-FUSA002
+engine,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-FUSA001
+engine,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,medium,unit tests,
+engine,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-FUSA005
+engine,RunFilter,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-ENG007
+fmea,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+fmea,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+fmea,Render,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-FMEA004
+fmea,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-FMEA005
+fmea,Scan,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-FMEA001; REQ-FMEA002; REQ-FMEA003
+fusa,String,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+lint,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-LINT002
+lint,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-LINT001
+lint,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-LINT005
+lint,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-LINT004
+lint,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-LINT003
+lint,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-LINT006
+qualify,BuiltinCases,Incorrect output,Incorrect system behavior,low,unit tests,
+qualify,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+qualify,HasFailures,Incorrect output,Incorrect system behavior,low,unit tests,
+qualify,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+qualify,Load,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+qualify,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,medium,unit tests,
+qualify,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-QUALIFY001
+qualify,Save,Returns unexpected error; Partial write / data corruption,Silent failure propagated to caller; Incorrect system state,medium,unit tests,
+release,BuildManifest,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-RELEASE008
+release,BuildProvenance,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-RELEASE005
+release,BuildSBOM,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-RELEASE003
+release,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+release,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+release,HashFiles,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+release,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+release,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+release,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-RELEASE001
+release,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-RELEASE002
+release,SaveJSON,Returns unexpected error; Partial write / data corruption,Silent failure propagated to caller; Incorrect system state,high,requirement testing + unit tests,REQ-RELEASE006
+release,ToSPDX31,Incorrect output,Incorrect system behavior,low,unit tests,
+report,New,Incorrect output,Incorrect system behavior,high,requirement testing + unit tests,REQ-RPT003; REQ-NF002
+report,Render,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+report,RenderToFile,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+runtime,Beat,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Clear,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Count,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Count,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Diagnostics,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,IsRunning,Uncontrolled execution,Resource exhaustion,low,unit tests,
+runtime,IsRunning,Uncontrolled execution,Resource exhaustion,low,unit tests,
+runtime,Kick,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,NewDiagManager,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,NewFaultMonitor,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,NewHeartbeat,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,NewStateManager,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,NewWatchdog,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Record,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Record,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Reset,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,SetThreshold,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Start,Returns unexpected error; Goroutine not terminated,Silent failure propagated to caller; Memory leak or deadlock,medium,unit tests,
+runtime,Start,Returns unexpected error; Goroutine not terminated,Silent failure propagated to caller; Memory leak or deadlock,medium,unit tests,
+runtime,State,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Stop,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Stop,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,String,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,String,Incorrect output,Incorrect system behavior,low,unit tests,
+runtime,Transition,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+safetycase,Build,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-SC001
+safetycase,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+safetycase,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+safetycase,Render,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-SC003
+safetycase,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-SAFETYCASE001
+template,Generate,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+testutil,GoSource,Incorrect output,Incorrect system behavior,low,unit tests,
+testutil,MinimalProject,Incorrect output,Incorrect system behavior,low,unit tests,
+testutil,ProjectDir,Incorrect output,Incorrect system behavior,low,unit tests,
+trace,Build,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+trace,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+trace,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+trace,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+trace,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+trace,LoadRequirements,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+trace,Render,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-TRACE006
+trace,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-TRACE002
+trace,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-TRACE001
+trace,SaveRequirements,Returns unexpected error; Partial write / data corruption,Silent failure propagated to caller; Incorrect system state,medium,unit tests,
+trace,ScanTags,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+verify,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+verify,Description,Incorrect output,Incorrect system behavior,low,unit tests,
+verify,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+verify,ID,Incorrect output,Incorrect system behavior,low,unit tests,
+verify,Load,Returns unexpected error,Silent failure propagated to caller,medium,unit tests,
+verify,New,Incorrect output,Incorrect system behavior,high,requirement testing + unit tests,REQ-VERIFY003
+verify,Parse,Returns unexpected error,Silent failure propagated to caller,high,requirement testing + unit tests,REQ-VERIFY004
+verify,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-VERIFY001
+verify,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-VERIFY005
+verify,Run,Returns unexpected error; Uncontrolled execution,Silent failure propagated to caller; Resource exhaustion,high,requirement testing + unit tests,REQ-VERIFY002
+verify,Save,Returns unexpected error; Partial write / data corruption,Silent failure propagated to caller; Incorrect system state,medium,unit tests,
+verify,Summarise,Incorrect output,Incorrect system behavior,low,unit tests,
