@@ -118,6 +118,31 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.18 — DO-178C Deep Coverage ✅
+
+**Goal:** Close the gap between go-FuSa's evidence pipeline and a complete DO-178C submission
+package. Adds five new evidence-generating commands, four new analysis rules, and the
+infrastructure to assess Annex A compliance automatically.
+
+Features:
+- **`comp/` package + COMP001** — cyclomatic complexity rule (V(G)). Flags functions > threshold.
+- **`coupling/` package + COUP001/COUP002** — data coupling (exported vars) and control coupling
+  (func/interface parameters). DO-178C §6.4.4.3.
+- **ANA009** — dead code after unconditional `return`/`break`/`continue`/`panic`. DO-178C §6.4.4.2.
+- **TRACE005** — verification independence: same file annotates both req and test.
+- **`sci/` package + `gofusa sci`** — Software Configuration Index with SHA-256 (DO-178C §11.16).
+- **`coverage/` package + `gofusa coverage`** — structural coverage report from `coverage.out`
+  (statement + estimated decision + MC/DC requirement flag). DO-178C §6.4.4.
+- **`pr/` package + `gofusa pr`** — problem report CRUD log + PR001 engine rule. DO-178C §11.17.
+- **`do178/` package + `gofusa do178`** — 38-objective Annex A gap assessment (PASS/GAP/MANUAL/N/A).
+- **`sas/` package + `gofusa sas`** — Software Accomplishment Summary (DO-178C §11.20).
+- **Plan templates** — SVP, SCMP, SQAP added to `gofusa template`; `--type all` now generates all four.
+
+Deliverables: `comp/`, `coupling/`, `coverage/`, `pr/`, `sci/`, `do178/`, `sas/` packages;
+`cmd_do178`, `cmd_sas`, `cmd_sci`, `cmd_coverage`, `cmd_pr`; ANA009; COUP001/COUP002; TRACE005
+
+---
+
 ## v0.17 — Developer Workflow Integration ✅
 
 **Goal:** Make go-FuSa a daily-driver tool with richer output formats, CI regression gates,

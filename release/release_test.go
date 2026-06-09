@@ -333,3 +333,14 @@ func TestRELEASE002_ProvenancePresent(t *testing.T) {
 		t.Error("RELEASE002: unexpected finding when provenance.json is present")
 	}
 }
+
+func TestReleaseRules_Description(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		switch r.ID() {
+		case "RELEASE001", "RELEASE002":
+			if r.Description() == "" {
+				t.Errorf("%s Description() is empty", r.ID())
+			}
+		}
+	}
+}

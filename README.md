@@ -141,6 +141,20 @@ gofusa badge report.json --output badge.svg
 # Output SARIF 2.1.0 for GitHub Advanced Security / Code Scanning
 gofusa check --format sarif --output results.sarif
 
+# DO-178C compliance: gap report, SAS, SCI, structural coverage, problem reports
+gofusa do178 --dal DAL-B                          # Annex A objectives gap report
+gofusa sas --dal DAL-B --prepared-by "Jane Doe"   # Software Accomplishment Summary
+gofusa sci --format markdown                       # Software Configuration Index
+gofusa coverage --dal DAL-B coverage.out           # Structural coverage report
+gofusa pr init                                    # Create problem report log
+gofusa pr add --id PR-001 --title "Bug" --severity minor
+gofusa pr list
+gofusa pr close --id PR-001 --resolution "Fixed"
+
+# Plan templates (SDP, SVP, SCMP, SQAP)
+gofusa template --type svp
+gofusa template --type all   # generates SAFETY_PLAN.md, SVP.md, SCMP.md, SQAP.md
+
 # Generate everything in one command (SBOM, provenance, fmea, boundary, vuln, cyber, tara, audit-pack)
 gofusa release --full
 ```

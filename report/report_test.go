@@ -209,3 +209,15 @@ func TestRenderToFile_DefaultFormat(t *testing.T) {
 		t.Fatalf("RenderToFile empty format: %v", err)
 	}
 }
+
+func TestRender_SARIF_Valid(t *testing.T) {
+	r := report.New("/proj", testFindings)
+	var buf bytes.Buffer
+	if err := report.Render(&buf, r, "sarif"); err != nil {
+		t.Fatalf("Render sarif: %v", err)
+	}
+	out := buf.String()
+	if !strings.Contains(out, "sarif") {
+		t.Error("sarif output missing 'sarif' keyword")
+	}
+}

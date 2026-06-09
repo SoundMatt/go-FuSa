@@ -305,6 +305,14 @@ func TestBuiltinRule_FUSA005_MissingCI(t *testing.T) {
 	}
 }
 
+func TestBuiltinRules_Description(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if r.Description() == "" {
+			t.Errorf("rule %s has empty Description()", r.ID())
+		}
+	}
+}
+
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
 func findingExists(findings []fusa.Finding, ruleID string, sev fusa.Severity) bool {

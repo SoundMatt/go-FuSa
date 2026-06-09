@@ -7,6 +7,37 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.18.0] — 2026-06-08
+
+### Added
+- **`comp/` package + COMP001** — cyclomatic complexity rule (V(G) = 1 + branches).
+  Flags functions with complexity > 10 (configurable via `DefaultThreshold`). Maps to
+  DO-178C §6.3.4 / DAL-A ≤ 4, DAL-B ≤ 10 guidance.
+- **`coupling/` package + COUP001/COUP002** — data/control coupling detection.
+  COUP001 flags exported mutable package-level variables (data coupling).
+  COUP002 flags exported functions accepting `func`/`interface` parameters (control coupling).
+  Both map to DO-178C §6.4.4.3.
+- **ANA009** — dead code after unconditional `return`/`break`/`continue`/`panic` within the
+  same block. DO-178C §6.4.4.2 prohibits deactivated code at DAL-A/B.
+- **TRACE005** — verification independence: same source file has both a `//fusa:req` and
+  `//fusa:test` annotation for the same requirement (DO-178C §6.4.2).
+- **`sci/` package + `gofusa sci`** — Software Configuration Index (DO-178C §11.16).
+  Scans 26 standard lifecycle data items, computes SHA-256 checksums, outputs JSON or
+  Markdown.
+- **`coverage/` package + `gofusa coverage`** — structural coverage report from a Go
+  `coverage.out` profile. Reports statement coverage, estimated decision coverage (block-level
+  proxy), and MC/DC requirement flag per DAL. Maps to DO-178C §6.4.4 / Annex A Table A-7.
+- **`pr/` package + `gofusa pr init/add/list/close`** — problem report log (DO-178C §11.17).
+  JSON log stored in `.fusa-problems.json`. Engine rule PR001 reports missing log (INFO) or
+  open critical PRs (ERROR).
+- **`do178/` package + `gofusa do178`** — DO-178C Annex A gap report. Maps evidence files to
+  38 objectives across Tables A-1 through A-11; status is PASS/GAP/MANUAL/N/A. Exits 1 when
+  any GAPs remain.
+- **`sas/` package + `gofusa sas`** — Software Accomplishment Summary (DO-178C §11.20).
+  Checks 20 evidence items, generates Markdown or JSON; exits 1 when evidence is incomplete.
+- **DO-178C plan templates** (`gofusa template --type svp/scmp/sqap`) — SVP, SCMP, and SQAP
+  document templates added alongside the existing SDP; `--type all` now generates all four.
+
 ## [0.17.0] — 2026-06-08
 
 ### Added

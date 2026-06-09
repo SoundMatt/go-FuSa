@@ -29,6 +29,11 @@
 //	fix          Show auto-fixable findings with remediation guidance
 //	hooks        Install/remove git pre-commit hook
 //	sign         Sign or verify a file with HMAC-SHA256
+//	do178        Generate a DO-178C Annex A compliance gap report
+//	sas          Generate a Software Accomplishment Summary (DO-178C §11.20)
+//	sci          Generate a Software Configuration Index (DO-178C §11.16)
+//	coverage     Analyse structural coverage from a Go coverage profile
+//	pr           Manage software problem reports (DO-178C §11.17)
 //	version      Print the go-FuSa version
 //
 // Run 'gofusa <command> --help' for per-command flags.
@@ -43,10 +48,13 @@ import (
 	_ "github.com/SoundMatt/go-FuSa/analyze"   // v0.3 static-analysis rules
 	_ "github.com/SoundMatt/go-FuSa/auditpack" // v0.13 audit-pack rules
 	_ "github.com/SoundMatt/go-FuSa/boundary"  // v0.12 boundary-diagram rules
+	_ "github.com/SoundMatt/go-FuSa/comp"      // v0.18 cyclomatic complexity rule
+	_ "github.com/SoundMatt/go-FuSa/coupling"  // v0.18 data/control coupling rules
 	_ "github.com/SoundMatt/go-FuSa/cyber"     // v0.14–v0.15 cybersecurity analysis rules
 	_ "github.com/SoundMatt/go-FuSa/fmea"      // v0.12 dFMEA rules
 	_ "github.com/SoundMatt/go-FuSa/iec62443"  // v0.15 IEC 62443 evidence rules
 	_ "github.com/SoundMatt/go-FuSa/lint"      // v0.2 coding-standard rules
+	_ "github.com/SoundMatt/go-FuSa/pr"        // v0.18 problem report rule
 	_ "github.com/SoundMatt/go-FuSa/qualify"   // v0.9 tool qualification rules
 	_ "github.com/SoundMatt/go-FuSa/release"   // v0.6 release-evidence rules
 	_ "github.com/SoundMatt/go-FuSa/slsa"      // v0.15 SLSA supply-chain rules
@@ -114,6 +122,16 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runHooks(args[1:], stdout, stderr)
 	case "sign":
 		return runSign(args[1:], stdout, stderr)
+	case "do178":
+		return runDo178(args[1:], stdout, stderr)
+	case "sas":
+		return runSas(args[1:], stdout, stderr)
+	case "sci":
+		return runSci(args[1:], stdout, stderr)
+	case "coverage":
+		return runCoverage(args[1:], stdout, stderr)
+	case "pr":
+		return runPR(args[1:], stdout, stderr)
 	case "version":
 		//fusa:req REQ-CLI004
 		return runVersion(stdout)
@@ -157,6 +175,11 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  fix          Show auto-fixable findings with remediation guidance\n")
 	fmt.Fprintf(w, "  hooks        Install/remove git pre-commit hook\n")
 	fmt.Fprintf(w, "  sign         Sign or verify a file with HMAC-SHA256\n")
+	fmt.Fprintf(w, "  do178        Generate a DO-178C Annex A compliance gap report\n")
+	fmt.Fprintf(w, "  sas          Generate a Software Accomplishment Summary (DO-178C §11.20)\n")
+	fmt.Fprintf(w, "  sci          Generate a Software Configuration Index (DO-178C §11.16)\n")
+	fmt.Fprintf(w, "  coverage     Analyse structural coverage from a Go coverage profile\n")
+	fmt.Fprintf(w, "  pr           Manage software problem reports (DO-178C §11.17)\n")
 	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")
 	fmt.Fprintf(w, "\nRun 'gofusa <command> --help' for command-specific flags.\n")
 }

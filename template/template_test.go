@@ -32,12 +32,44 @@ func TestGenerate_HARA(t *testing.T) {
 	assertFile(t, filepath.Join(dir, "HARA.md"))
 }
 
+func TestGenerate_SDP(t *testing.T) {
+	dir := t.TempDir()
+	if err := template.Generate(dir, template.TypeSDP); err != nil {
+		t.Fatalf("Generate SDP: %v", err)
+	}
+	assertFile(t, filepath.Join(dir, "SAFETY_PLAN.md"))
+}
+
+func TestGenerate_SVP(t *testing.T) {
+	dir := t.TempDir()
+	if err := template.Generate(dir, template.TypeSVP); err != nil {
+		t.Fatalf("Generate SVP: %v", err)
+	}
+	assertFile(t, filepath.Join(dir, "SVP.md"))
+}
+
+func TestGenerate_SCMP(t *testing.T) {
+	dir := t.TempDir()
+	if err := template.Generate(dir, template.TypeSCMP); err != nil {
+		t.Fatalf("Generate SCMP: %v", err)
+	}
+	assertFile(t, filepath.Join(dir, "SCMP.md"))
+}
+
+func TestGenerate_SQAP(t *testing.T) {
+	dir := t.TempDir()
+	if err := template.Generate(dir, template.TypeSQAP); err != nil {
+		t.Fatalf("Generate SQAP: %v", err)
+	}
+	assertFile(t, filepath.Join(dir, "SQAP.md"))
+}
+
 func TestGenerate_All(t *testing.T) {
 	dir := t.TempDir()
 	if err := template.Generate(dir, template.TypeAll); err != nil {
 		t.Fatalf("Generate All: %v", err)
 	}
-	for _, name := range []string{"SAFETY_PLAN.md", "TEST_EVIDENCE.md", "HARA.md"} {
+	for _, name := range []string{"SAFETY_PLAN.md", "TEST_EVIDENCE.md", "HARA.md", "SVP.md", "SCMP.md", "SQAP.md"} {
 		assertFile(t, filepath.Join(dir, name))
 	}
 }

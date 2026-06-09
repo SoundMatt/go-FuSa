@@ -177,3 +177,15 @@ func TestReport_JSONRoundtrip(t *testing.T) {
 		t.Errorf("Results len = %d, want 1", len(got.Results))
 	}
 }
+
+func TestQUALIFY001_Description(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if r.ID() == "QUALIFY001" {
+			if r.Description() == "" {
+				t.Error("QUALIFY001 Description() is empty")
+			}
+			return
+		}
+	}
+	t.Error("QUALIFY001 not registered")
+}

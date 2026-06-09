@@ -371,6 +371,7 @@ func init() {
 	engine.Default.MustRegister(&ruleAllReqsTraced{})
 	engine.Default.MustRegister(&ruleUntestedReqs{})
 	engine.Default.MustRegister(&ruleReqMissingText{})
+	engine.Default.MustRegister(&ruleVerificationIndependence{})
 }
 
 // TRACE001 — .fusa-reqs.json should be present.
@@ -509,6 +510,68 @@ func (r *ruleReqMissingText) Run(_ context.Context, projectRoot string, _ *confi
 				Location:    fusa.Location{File: ReqsFile},
 				Remediation: "add a \"text\" field to " + req.ID + " with a complete requirement statement",
 			})
+		}
+	}
+	return findings, nil
+}
+
+// TRACE005 — verification independence: same file has both //fusa:req and //fusa:test
+// for the same requirement, suggesting the developer also wrote the test.
+// DO-178C §6.4.2 requires independence at DAL-A/B.
+type ruleVerificationIndependence struct{}
+
+func (r *ruleVerificationIndependence) ID() string { return "TRACE005" }
+func (r *ruleVerificationIndependence) Description() string {
+	return "Same file has both //fusa:req and //fusa:test for the same requirement — verification independence risk (DO-178C §6.4.2)."
+}
+
+//fusa:req REQ-TRACE005
+func (r *ruleVerificationIndependence) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	matrix, err := Build(projectRoot)
+	if err != nil {
+		return nil, err
+	}
+	if len(matrix.Requirements) == 0 {
+		return nil, nil
+	}
+
+	implFiles := make(map[string]map[string]bool)
+	testFiles := make(map[string]map[string]bool)
+	for _, t := range matrix.Tags {
+		switch t.Kind {
+		case KindImpl:
+			if implFiles[t.RequirementID] == nil {
+				implFiles[t.RequirementID] = make(map[string]bool)
+			}
+			implFiles[t.RequirementID][t.File] = true
+		case KindTest:
+			if testFiles[t.RequirementID] == nil {
+				testFiles[t.RequirementID] = make(map[string]bool)
+			}
+			testFiles[t.RequirementID][t.File] = true
+		}
+	}
+
+	var findings []fusa.Finding
+	for reqID, impls := range implFiles {
+		tests, ok := testFiles[reqID]
+		if !ok {
+			continue
+		}
+		for file := range impls {
+			if tests[file] {
+				findings = append(findings, fusa.Finding{
+					RuleID:   r.ID(),
+					Severity: fusa.SeverityInfo,
+					Message: fmt.Sprintf(
+						"requirement %s: file %q contains both //fusa:req and //fusa:test — consider independent verifier (DO-178C §6.4.2)",
+						reqID, file,
+					),
+					Location:    fusa.Location{File: file},
+					Remediation: "have a different engineer or file provide the //fusa:test annotation for independence evidence",
+				})
+				break
+			}
 		}
 	}
 	return findings, nil
