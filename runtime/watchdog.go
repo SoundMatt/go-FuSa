@@ -29,6 +29,8 @@ type Watchdog struct {
 
 // NewWatchdog creates a Watchdog that checks every interval and calls onExpiry
 // when more than timeout has elapsed since the last Kick.
+//
+//fusa:req REQ-RUNTIME001
 func NewWatchdog(interval, timeout time.Duration, onExpiry func()) *Watchdog {
 	return &Watchdog{
 		interval: interval,

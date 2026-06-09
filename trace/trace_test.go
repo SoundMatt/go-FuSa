@@ -372,3 +372,200 @@ func FuzzScanTags(f *testing.F) {
 		_, _ = trace.ScanTags(dir) // must not panic
 	})
 }
+
+// ─── ScanFuncCoverage ─────────────────────────────────────────────────────────
+
+func TestScanFuncCoverage_EmptyDir(t *testing.T) {
+	dir := t.TempDir()
+	fc, err := trace.ScanFuncCoverage(dir, nil)
+	if err != nil {
+		t.Fatalf("ScanFuncCoverage: %v", err)
+	}
+	if fc.Total != 0 || fc.Covered != 0 || fc.Pct != 0 {
+		t.Errorf("empty dir: got %+v, want all zeroes", fc)
+	}
+}
+
+func TestScanFuncCoverage_UnannotatedFuncs(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\nfunc DoWork() error { return nil }\nfunc Helper() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "work.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncCoverage(dir, nil) // no tags → no annotated files
+	if err != nil {
+		t.Fatalf("ScanFuncCoverage: %v", err)
+	}
+	if fc.Total != 2 {
+		t.Errorf("Total = %d, want 2", fc.Total)
+	}
+	if fc.Covered != 0 {
+		t.Errorf("Covered = %d, want 0", fc.Covered)
+	}
+	if fc.Pct != 0 {
+		t.Errorf("Pct = %f, want 0", fc.Pct)
+	}
+	if len(fc.Uncovered) != 2 {
+		t.Errorf("Uncovered = %v, want 2 entries", fc.Uncovered)
+	}
+}
+
+func TestScanFuncCoverage_AnnotatedFile(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\n//fusa:req REQ-001\nfunc DoWork() error { return nil }\nfunc Helper() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "work.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	tags, err := trace.ScanTags(dir)
+	if err != nil {
+		t.Fatalf("ScanTags: %v", err)
+	}
+	fc, err := trace.ScanFuncCoverage(dir, tags)
+	if err != nil {
+		t.Fatalf("ScanFuncCoverage: %v", err)
+	}
+	if fc.Total != 2 {
+		t.Errorf("Total = %d, want 2", fc.Total)
+	}
+	if fc.Covered != 2 {
+		t.Errorf("Covered = %d, want 2 (whole file is annotated)", fc.Covered)
+	}
+	if fc.Pct != 100 {
+		t.Errorf("Pct = %f, want 100", fc.Pct)
+	}
+}
+
+func TestScanFuncCoverage_SkipsTestFiles(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\nfunc DoWork() {}\n"
+	testSrc := "package mypkg\n\nfunc TestDoWork(t *testing.T) {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "work.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "work_test.go"), []byte(testSrc), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncCoverage(dir, nil)
+	if err != nil {
+		t.Fatalf("ScanFuncCoverage: %v", err)
+	}
+	// TestDoWork is in a _test.go file — should not be counted.
+	if fc.Total != 1 {
+		t.Errorf("Total = %d, want 1 (test file excluded)", fc.Total)
+	}
+}
+
+func TestScanFuncCoverage_SkipsUnexported(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\nfunc unexported() {}\nfunc Exported() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncCoverage(dir, nil)
+	if err != nil {
+		t.Fatalf("ScanFuncCoverage: %v", err)
+	}
+	if fc.Total != 1 {
+		t.Errorf("Total = %d, want 1 (unexported excluded)", fc.Total)
+	}
+}
+
+// ─── TRACE006 ─────────────────────────────────────────────────────────────────
+
+//fusa:test REQ-TRACE006
+func TestTRACE006_BelowThreshold(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	// 1 requirement, 0 impl tags → 0% coverage → fires WARNING
+	reqs := []trace.Requirement{
+		{ID: "REQ-A", Title: "Alpha"},
+		{ID: "REQ-B", Title: "Beta"},
+	}
+	writeReqs(t, dir, reqs)
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if !hasRule(result.Findings, "TRACE006") {
+		t.Error("TRACE006: expected WARNING when req coverage is 0%")
+	}
+	for _, f := range result.Findings {
+		if f.RuleID == "TRACE006" && f.Severity != "WARNING" {
+			t.Errorf("TRACE006: expected WARNING severity, got %s", f.Severity)
+		}
+	}
+}
+
+func TestTRACE006_AboveThreshold(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.GoSource("impl.go",
+		"package main\n\n//fusa:req REQ-A\n//fusa:req REQ-B\nfunc F() {}\n"))
+	reqs := []trace.Requirement{
+		{ID: "REQ-A", Title: "Alpha"},
+		{ID: "REQ-B", Title: "Beta"},
+	}
+	writeReqs(t, dir, reqs)
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if hasRule(result.Findings, "TRACE006") {
+		t.Error("TRACE006: unexpected finding when all requirements are traced")
+	}
+}
+
+func TestTRACE006_NoRequirements(t *testing.T) {
+	files := testutil.MinimalProject()
+	files[trace.ReqsFile] = `{"requirements":[]}`
+	findings := runTrace(t, files)
+	if hasRule(findings, "TRACE006") {
+		t.Error("TRACE006: unexpected finding when there are no requirements")
+	}
+}
+
+// ─── TRACE007 ─────────────────────────────────────────────────────────────────
+
+//fusa:test REQ-TRACE007
+func TestTRACE007_BelowThreshold(t *testing.T) {
+	// File with exported func but no //fusa:req → 0% density → fires INFO
+	dir := testutil.ProjectDir(t, testutil.GoSource("work.go",
+		"package main\n\nfunc DoWork() error { return nil }\n"))
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if !hasRule(result.Findings, "TRACE007") {
+		t.Error("TRACE007: expected INFO finding when no functions are annotated")
+	}
+	for _, f := range result.Findings {
+		if f.RuleID == "TRACE007" && f.Severity != "INFO" {
+			t.Errorf("TRACE007: expected INFO severity, got %s", f.Severity)
+		}
+	}
+}
+
+func TestTRACE007_AboveThreshold(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.GoSource("work.go",
+		"package main\n\n//fusa:req REQ-001\nfunc DoWork() error { return nil }\n"))
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if hasRule(result.Findings, "TRACE007") {
+		t.Error("TRACE007: unexpected finding when all functions are in annotated files")
+	}
+}
+
+func TestTRACE007_NoFunctions(t *testing.T) {
+	// MinimalProject has no .go source with exported funcs → Total=0 → silent
+	findings := runTrace(t, testutil.MinimalProject())
+	if hasRule(findings, "TRACE007") {
+		t.Error("TRACE007: unexpected finding when there are no exported functions")
+	}
+}

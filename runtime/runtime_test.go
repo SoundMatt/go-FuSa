@@ -10,6 +10,7 @@ import (
 
 // ─── Watchdog ─────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-RUNTIME001
 func TestWatchdog_ExpiryFires(t *testing.T) {
 	var fired atomic.Bool
 	wd := fusaruntime.NewWatchdog(5*time.Millisecond, 10*time.Millisecond, func() {
@@ -83,6 +84,7 @@ func TestWatchdog_IsRunning(t *testing.T) {
 
 // ─── Heartbeat ────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-RUNTIME002
 func TestHeartbeat_MissedCallbackFires(t *testing.T) {
 	var missed atomic.Int64
 	hb := fusaruntime.NewHeartbeat(20*time.Millisecond, func(n int) {
@@ -153,6 +155,7 @@ func TestHeartbeat_IsRunning(t *testing.T) {
 
 // ─── StateManager ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-RUNTIME003
 func TestStateManager_InitialState(t *testing.T) {
 	sm := fusaruntime.NewStateManager(nil)
 	if sm.State() != fusaruntime.StateOperational {
@@ -216,6 +219,7 @@ func TestStateString(t *testing.T) {
 
 // ─── DiagManager ──────────────────────────────────────────────────────────────
 
+//fusa:test REQ-RUNTIME004
 func TestDiagManager_RecordAndRetrieve(t *testing.T) {
 	dm := fusaruntime.NewDiagManager(10)
 	dm.Record("D001", fusaruntime.DiagWarning, "voltage low")
@@ -271,6 +275,7 @@ func TestDiagLevelString(t *testing.T) {
 
 // ─── FaultMonitor ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-RUNTIME005
 func TestFaultMonitor_ThresholdFires(t *testing.T) {
 	var firedID string
 	var firedCount int

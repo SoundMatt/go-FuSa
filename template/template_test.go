@@ -8,6 +8,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/template"
 )
 
+//fusa:test REQ-CLI010
 func TestGenerate_SafetyPlan(t *testing.T) {
 	dir := t.TempDir()
 	if err := template.Generate(dir, template.TypeSafetyPlan); err != nil {

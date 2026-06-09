@@ -118,6 +118,25 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.19 — Requirement Coverage Assessment ✅
+
+**Goal:** Quantify how well requirements are traced into source code and surface actionable
+metrics and CI gates for DO-178C §6.4.4 traceability objectives.
+
+Features:
+- **`ScanFuncCoverage`** — new exported function: walks non-test Go files, counts exported
+  functions, and reports what fraction live in files with `//fusa:req` annotations.
+- **TRACE006** — aggregate WARNING when fewer than 80% of requirements have `//fusa:req`
+  implementation annotations. Complements the per-requirement TRACE002.
+- **TRACE007** — aggregate INFO when exported-function annotation density falls below 80%.
+- **`gofusa trace --req-coverage N`** — CI gate reporting both metrics (requirement traceability
+  and function annotation density) and exiting 1 if either falls below N%.
+
+Deliverables: `trace.ScanFuncCoverage`, `trace.FuncCoverage`, TRACE006, TRACE007,
+`--req-coverage` flag, `DefaultReqCoverageThreshold`, `DefaultFuncAnnotationThreshold`
+
+---
+
 ## v0.18 — DO-178C Deep Coverage ✅
 
 **Goal:** Close the gap between go-FuSa's evidence pipeline and a complete DO-178C submission

@@ -7,6 +7,23 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.19.0] — 2026-06-09
+
+### Added
+- **`ScanFuncCoverage` + TRACE006 + TRACE007** — requirement coverage assessment (DO-178C §6.4.4).
+  - `trace.ScanFuncCoverage(root, tags)` walks non-test Go files and returns exported-function
+    annotation density: how many exported functions live in files with at least one `//fusa:req`
+    annotation.
+  - `TRACE006` — fires a WARNING when aggregate requirement-to-source traceability falls below
+    80% (i.e., fewer than 80% of requirements in `.fusa-reqs.json` have any `//fusa:req` tag).
+    Complements the per-requirement TRACE002.
+  - `TRACE007` — fires an INFO when exported-function annotation density falls below 80%
+    (i.e., fewer than 80% of exported functions are in files with `//fusa:req` annotations).
+  - `gofusa trace --req-coverage N` — CI gate reporting both metrics and exiting 1 if either
+    falls below N% when data exists. Mirrors the existing `--sec-tested` gate.
+- `DefaultReqCoverageThreshold = 80` and `DefaultFuncAnnotationThreshold = 80` constants
+  exported from the `trace` package.
+
 ## [0.18.0] — 2026-06-08
 
 ### Added

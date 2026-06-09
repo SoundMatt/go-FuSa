@@ -10,6 +10,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/testutil"
 )
 
+//fusa:test REQ-TESTUTIL001
 func TestProjectDir_CreatesFiles(t *testing.T) {
 	files := map[string]string{
 		"main.go":     "package main\n",

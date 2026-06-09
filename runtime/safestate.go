@@ -45,6 +45,8 @@ type StateManager struct {
 
 // NewStateManager creates a StateManager starting in StateOperational.
 // onChange is called after each successful state transition; it may be nil.
+//
+//fusa:req REQ-RUNTIME003
 func NewStateManager(onChange func(from, to State)) *StateManager {
 	return &StateManager{
 		state:    StateOperational,
