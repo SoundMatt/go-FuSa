@@ -7,6 +7,37 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.21.0] — 2026-06-09
+
+### Added
+- **`hara/` package + `gofusa hara show|init|asil`** — structured Hazard Analysis and Risk
+  Assessment backed by `.fusa-hara.json`. Types: `OperationalSituation`, `Hazard`, `RiskRating`,
+  `SafetyGoal`, `HARA`. `DetermineASIL(S, E, C)` implements the full ISO 26262-3:2018 Table 4
+  (48 combinations, S1–S3 × E1–E4 × C0–C3). `Validate` returns gap findings for incomplete risk
+  ratings, hazards without safety goals, unknown goal references, and goals missing ASIL.
+  `Render` produces text/markdown and JSON output including a Gaps section.
+- **Engine rules HARA001–HARA004** — HARA001 fires INFO when `.fusa-hara.json` is absent
+  (upgraded to WARNING for `ISO26262` or `IEC61508` projects). HARA002: hazard has incomplete
+  S/E/C. HARA003: hazard has no linked safety goal. HARA004: safety goal has no ASIL.
+- **`gofusa hara asil`** — derives ASIL from `-s`, `-e`, `-c` flags using Table 4.
+  Example: `gofusa hara asil -s S2 -e E4 -c C2` → `ASIL-C`.
+- **ISO 26262 safety-case clause mapping** — `safetycase.mappingsFor("iso26262")` expanded from
+  5 sparse entries to 15 entries covering: Part 4 §7/§8/§9 (system), Part 5 §7 (HW, informative
+  for SW-only), Part 6 §6/§7/§8/§9/§10/§11/§12 (software), Part 8 §7/§8/§11 (supporting
+  processes). Each entry references the evidence IDs that satisfy the clause.
+- **go-FuSa project safety files** — `.fusa.json` updated to `standard: "ISO26262"`,
+  `asil: "ASIL-B"`. New `.fusa-hara.json` documents five tool-failure hazards: H-001 false
+  negative (ASIL-C), H-002 wrong ASIL determination (ASIL-B), H-003 silent exit-0 failure
+  (ASIL-A), H-004 evidence integrity violation (ASIL-A), H-005 config suppresses checks (ASIL-B).
+- **Requirements coverage** — `//fusa:req` annotation added to every previously-unannotated
+  exported function across 14 packages (config, coupling, cyber, engine, iec62443, pr, qualify,
+  release, report, testutil, trace, verify, and hara).
+- **Test coverage** — total 80.8% → 81.8%. Key gains: `trace` 80.5% → 88.2%
+  (`renderText` all branches, TRACE005 same-file/different-file paths); `impact` 78.1% → 95.3%
+  (`appendUniq` 0%→100%, `Analyse` uncovered branches); `vuln` 65.4% → 75.5%
+  (`countModDeps` and `moduleFromRoot` 0%→100% via internal tests).
+- **Version bump** — `fusa.Version` → `"0.21.0"`.
+
 ## [0.20.0] — 2026-06-09
 
 ### Added
