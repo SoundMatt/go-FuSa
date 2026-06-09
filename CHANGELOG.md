@@ -7,6 +7,45 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.20.0] — 2026-06-09
+
+### Added
+- **`iso26262/` package + `gofusa iso26262`** — ISO 26262 Part 6/7/8/9/10/11 compliance gap
+  report. `Assess(projectRoot, project, asil)` maps 19 objectives across Parts 6-11 to evidence
+  files and returns PASS/GAP/MANUAL/N/A per objective. Supports ASIL-A through ASIL-D.
+  Engine rule `ISO26262001` fires INFO when `iso26262-gap-report.json` is absent.
+- **`iec61508/` package + `gofusa iec61508`** — IEC 61508 Parts 1-3 compliance gap report.
+  `Assess(projectRoot, project, sil)` maps 26 objectives to evidence files. Supports SIL-1
+  through SIL-4. Engine rule `IEC61508001` fires INFO when `iec61508-gap-report.json` is absent.
+- **`disposition/` package + `gofusa disposition add|list|show`** — finding disposition log
+  (`.fusa-dispositions.json`). Records accepted or scheduled-fix decisions for ERROR findings
+  with reviewer attribution. Engine rule `DISP001` fires WARNING for each undispositioned ERROR
+  finding in `check-report.json`.
+- **`impact/` package + `gofusa impact`** — change impact analysis. Runs `git diff` to discover
+  changed files, cross-references requirement annotations (`//fusa:req`) to find impacted
+  requirements, identifies test files that need re-running, and checks whether evidence
+  artefacts (`.fusa-evidence.json`, `coverage-report.json`, etc.) are stale relative to
+  changed source files.
+- **`metrics/` package + `gofusa metrics record|show`** — safety metrics time series stored in
+  `.fusa-metrics.json`. `Collect` reads `check-report.json`, `.fusa-reqs.json`, and
+  `coverage-report.json` to build a point-in-time snapshot. `Render` produces a text table
+  or JSON time series.
+- **`misra/` package + `gofusa misra`** — static MISRA C:2023 to Go / go-FuSa rule coverage
+  mapping. Provides 90+ rules mapped to `go vet / compiler`, go-FuSa rules (LINT001, LINT004,
+  ANA009, CYBER001-CYBER009, COMP001), `N/A — Go type system prevents this`, or `manual review`.
+- **`gofusa req import/export`** — CSV import/export for `.fusa-reqs.json`. `import` merges
+  new requirements from a CSV (columns: id, title, text, standard, level) skipping duplicates.
+  `export` writes all requirements to CSV (stdout or file). Uses only stdlib `encoding/csv`.
+- **`report.RenderEvidenceHTML`** — self-contained HTML evidence bundle generator. Reads up to
+  16 evidence files across 8 sections (Findings, Traceability, Coverage, SBOM, Vulnerability
+  Scan, SCI, Problem Reports, Qualification), shows PASS/WARN/FAIL badge based on
+  `check-report.json`, and includes key metrics per section. Generated automatically by
+  `gofusa release --full` as `evidence.html`.
+- **Template additions** — `gofusa template --type iec61508-fsp` generates an IEC 61508
+  Functional Safety Plan (`IEC61508-FSP.md`). `--type iso26262-fmea` generates an ISO 26262
+  FMEA worksheet (`ISO26262-FMEA.md`). Both are included in `--type all`.
+- **Version bump** — `fusa.Version` → `"0.20.0"`.
+
 ## [0.19.0] — 2026-06-09
 
 ### Added

@@ -16,6 +16,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/cyber"
 	"github.com/SoundMatt/go-FuSa/fmea"
 	"github.com/SoundMatt/go-FuSa/release"
+	"github.com/SoundMatt/go-FuSa/report"
 	"github.com/SoundMatt/go-FuSa/tara"
 	"github.com/SoundMatt/go-FuSa/vuln"
 )
@@ -227,6 +228,20 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 		return 1
 	}
 	fmt.Fprintf(stdout, "Audit pack written to %s (%d files)\n", auditPath, len(auditManifest.Files))
+
+	// HTML evidence bundle
+	htmlPath := filepath.Join(outDir, "evidence.html")
+	f, htmlErr := os.Create(htmlPath)
+	if htmlErr != nil {
+		fmt.Fprintf(stderr, "gofusa release --full: create evidence.html: %v\n", htmlErr)
+	} else {
+		if werr := report.RenderEvidenceHTML(f, projectRoot); werr != nil {
+			fmt.Fprintf(stderr, "gofusa release --full: render evidence.html: %v\n", werr)
+		} else {
+			fmt.Fprintf(stdout, "evidence.html written to %s\n", htmlPath)
+		}
+		_ = f.Close()
+	}
 
 	return 0
 }
