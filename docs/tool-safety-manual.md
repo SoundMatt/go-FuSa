@@ -1,6 +1,6 @@
 # go-FuSa Tool Safety Manual
 
-**Version:** 0.22.0  
+**Version:** 0.23.0  
 **Module:** `github.com/SoundMatt/go-FuSa`  
 **License:** Mozilla Public License 2.0  
 **Standards addressed:** ISO 26262, IEC 61508, ISO 21434, DO-178C
@@ -55,6 +55,8 @@ Capabilities:
 | Change impact analysis | — | `gofusa impact` |
 | Safety metrics trending | — | `gofusa metrics` |
 | MISRA C:2023 alignment report | — | `gofusa misra` |
+| ISO 21434 CAL-level gap report | ISO21434001 | `gofusa iso21434` |
+| UN R.155 Annex 5 threat-category coverage | UNECE001 | `gofusa unece` |
 
 ## 3. Tool Classification
 

@@ -46,7 +46,9 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `sci/` | Software Configuration Index — SHA-256 checksums of lifecycle data items (DO-178C §11.16) |
 | `do178/` | DO-178C Annex A gap report — 38 objectives across Tables A-1 through A-11 |
 | `sas/` | Software Accomplishment Summary — 20 evidence items (DO-178C §11.20) |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr`, `coupling` |
+| `iso21434/` | ISO 21434 cybersecurity engineering — CAL 1–4 gap assessment, TARA evidence checking |
+| `unece/` | UN R.155 Annex 5 — threat-category coverage assessment (TC-1 through TC-9) |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr`, `coupling`, `iso21434`, `unece` |
 
 ## Install
 
@@ -177,6 +179,12 @@ gofusa iso26262 --asil ASIL-B
 # IEC 61508 gap report (SIL-1 through SIL-4)
 gofusa iec61508 --sil SIL-2
 
+# ISO 21434 cybersecurity gap report (CAL-1 through CAL-4)
+gofusa iso21434 --cal CAL-3
+
+# UN R.155 Annex 5 threat-category coverage
+gofusa unece
+
 # Hazard Analysis and Risk Assessment (HARA)
 gofusa hara init                              # create .fusa-hara.json
 gofusa hara show                              # display as Markdown table
@@ -251,7 +259,7 @@ docker build -t go-fusa .
 docker run --rm -v "$(pwd)":/project go-fusa check
 ```
 
-Published tags: `latest`, `0.22`, `0.22.0` (and matching semver for every release).
+Published tags: `latest`, `0.23`, `0.23.0` (and matching semver for every release).
 
 ## Standards coverage
 

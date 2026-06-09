@@ -59,12 +59,14 @@ func TestDetermineASIL_Table4(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA006
 func TestDetermineASIL_EmptySeverity(t *testing.T) {
 	if got := hara.DetermineASIL("", hara.ExposureE4, hara.ControllabilityC3); got != hara.ASILQM {
 		t.Errorf("empty severity should be QM, got %s", got)
 	}
 }
 
+//fusa:test REQ-HARA006
 func TestDetermineASIL_EmptyExposure(t *testing.T) {
 	if got := hara.DetermineASIL(hara.SeverityS3, "", hara.ControllabilityC3); got != hara.ASILQM {
 		t.Errorf("empty exposure should be QM, got %s", got)
@@ -88,6 +90,7 @@ func TestLoad_Missing(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA007
 func TestLoad_InvalidJSON(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, hara.HARAFile), []byte("not json"), 0o644); err != nil {
@@ -177,6 +180,7 @@ func TestValidate_Complete(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA009
 func TestValidate_IncompleteRisk(t *testing.T) {
 	h := &hara.HARA{
 		Hazards: []hara.Hazard{
@@ -197,6 +201,7 @@ func TestValidate_IncompleteRisk(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA009
 func TestValidate_NoSafetyGoal(t *testing.T) {
 	h := &hara.HARA{
 		Hazards: []hara.Hazard{
@@ -216,6 +221,7 @@ func TestValidate_NoSafetyGoal(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA009
 func TestValidate_UnknownGoalRef(t *testing.T) {
 	h := &hara.HARA{
 		Hazards: []hara.Hazard{
@@ -236,6 +242,7 @@ func TestValidate_UnknownGoalRef(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA009
 func TestValidate_NoASIL(t *testing.T) {
 	h := &hara.HARA{
 		Hazards: []hara.Hazard{
@@ -274,6 +281,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA010
 func TestRender_EmptyFormat(t *testing.T) {
 	h := &hara.HARA{Project: "p"}
 	var buf bytes.Buffer
@@ -285,6 +293,7 @@ func TestRender_EmptyFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA010
 func TestRender_Text(t *testing.T) {
 	h := &hara.HARA{
 		Project:  "testproj",
@@ -321,6 +330,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA010
 func TestRender_Markdown(t *testing.T) {
 	h := &hara.HARA{Project: "p", Standard: "ISO 26262"}
 	var buf bytes.Buffer
@@ -332,6 +342,7 @@ func TestRender_Markdown(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA010
 func TestRender_Unknown(t *testing.T) {
 	h := &hara.HARA{}
 	var buf bytes.Buffer
@@ -340,6 +351,7 @@ func TestRender_Unknown(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA010
 func TestRender_WithGaps(t *testing.T) {
 	// Hazard with no safety goal → gap line in render output
 	h := &hara.HARA{
@@ -376,6 +388,7 @@ func findingsForRule(t *testing.T, dir string, ruleIDStr string) bool {
 	return false
 }
 
+//fusa:test REQ-HARA011
 func TestHARA001_NoFile(t *testing.T) {
 	dir := t.TempDir()
 	if !findingsForRule(t, dir, "HARA001") {
@@ -383,6 +396,7 @@ func TestHARA001_NoFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA011
 func TestHARA001_WithFile(t *testing.T) {
 	dir := t.TempDir()
 	h := &hara.HARA{Project: "p", Standard: "ISO 26262"}
@@ -394,6 +408,7 @@ func TestHARA001_WithFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA011
 func TestHARA001_ISO26262Config_Warning(t *testing.T) {
 	dir := t.TempDir()
 	cfg := config.Default("github.com/x/y", "y")
@@ -413,6 +428,7 @@ func TestHARA001_ISO26262Config_Warning(t *testing.T) {
 	t.Error("HARA001 should fire for ISO26262 project without HARA file")
 }
 
+//fusa:test REQ-HARA012
 func TestHARA002_IncompleteRisk(t *testing.T) {
 	dir := t.TempDir()
 	h := &hara.HARA{
@@ -430,6 +446,7 @@ func TestHARA002_IncompleteRisk(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA013
 func TestHARA003_NoSafetyGoal(t *testing.T) {
 	dir := t.TempDir()
 	h := &hara.HARA{
@@ -446,6 +463,7 @@ func TestHARA003_NoSafetyGoal(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA014
 func TestHARA004_NoASIL(t *testing.T) {
 	dir := t.TempDir()
 	h := &hara.HARA{
@@ -463,6 +481,7 @@ func TestHARA004_NoASIL(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA011
 func TestHARA_Descriptions(t *testing.T) {
 	ruleIDs := []string{"HARA001", "HARA002", "HARA003", "HARA004", "HARA005"}
 	for _, id := range ruleIDs {
@@ -524,6 +543,7 @@ func writeHARAWithASIL(t *testing.T, dir string, hazardASIL hara.ASIL) {
 	}
 }
 
+//fusa:test REQ-HARA015
 func TestHARA005_FiresWhenHazardASILExceedsProject(t *testing.T) {
 	dir := t.TempDir()
 	writeHARAWithASIL(t, dir, hara.ASILC)
@@ -534,6 +554,7 @@ func TestHARA005_FiresWhenHazardASILExceedsProject(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA015
 func TestHARA005_SilentWhenHazardASILMeetsProject(t *testing.T) {
 	dir := t.TempDir()
 	writeHARAWithASIL(t, dir, hara.ASILB)
@@ -544,6 +565,7 @@ func TestHARA005_SilentWhenHazardASILMeetsProject(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA015
 func TestHARA005_SilentWhenProjectASILHigher(t *testing.T) {
 	dir := t.TempDir()
 	writeHARAWithASIL(t, dir, hara.ASILA)
@@ -554,6 +576,7 @@ func TestHARA005_SilentWhenProjectASILHigher(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA015
 func TestHARA005_SilentWhenNoHARAFile(t *testing.T) {
 	dir := t.TempDir()
 	cfg := config.Default("github.com/x/y", "y")
@@ -563,6 +586,7 @@ func TestHARA005_SilentWhenNoHARAFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-HARA015
 func TestHARA005_SilentWhenNoProjectASIL(t *testing.T) {
 	dir := t.TempDir()
 	writeHARAWithASIL(t, dir, hara.ASILC)

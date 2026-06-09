@@ -11,6 +11,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/metrics"
 )
 
+//fusa:test REQ-METRICS003
 func TestLoad_MissingFile(t *testing.T) {
 	dir := t.TempDir()
 	ts, err := metrics.Load(dir)
@@ -25,6 +26,7 @@ func TestLoad_MissingFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS003
 func TestLoad_InvalidFile(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, metrics.MetricsFile), []byte("not json"), 0o644); err != nil {
@@ -36,6 +38,7 @@ func TestLoad_InvalidFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS004
 func TestSave_RoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, metrics.MetricsFile)
@@ -66,6 +69,7 @@ func TestSave_RoundTrip(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS005
 func TestAppend(t *testing.T) {
 	ts := &metrics.TimeSeries{}
 	s1 := metrics.Snapshot{Timestamp: time.Now(), ErrorCount: 1}
@@ -77,6 +81,7 @@ func TestAppend(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS006
 func TestCollect_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	snap, err := metrics.Collect(dir)
@@ -88,6 +93,7 @@ func TestCollect_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS006
 func TestCollect_WithCheckReport(t *testing.T) {
 	dir := t.TempDir()
 	report := `[{"ruleId":"FUSA001","severity":"ERROR"},{"ruleId":"FUSA002","severity":"WARNING"},{"ruleId":"FUSA003","severity":"INFO"}]`
@@ -109,6 +115,7 @@ func TestCollect_WithCheckReport(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS006
 func TestCollect_WithCoverageReport(t *testing.T) {
 	dir := t.TempDir()
 	coverage := `{"stmtPct": 87.5, "branchPct": 75.0}`
@@ -124,6 +131,7 @@ func TestCollect_WithCoverageReport(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS007
 func TestRender_Text(t *testing.T) {
 	ts := &metrics.TimeSeries{
 		Project: "myproject",
@@ -150,6 +158,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS007
 func TestRender_EmptySeries(t *testing.T) {
 	ts := &metrics.TimeSeries{Project: "empty"}
 	var buf bytes.Buffer
@@ -161,6 +170,7 @@ func TestRender_EmptySeries(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS007
 func TestRender_JSON(t *testing.T) {
 	ts := &metrics.TimeSeries{Project: "p"}
 	var buf bytes.Buffer
@@ -172,6 +182,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-METRICS007
 func TestRender_InvalidFormat(t *testing.T) {
 	ts := &metrics.TimeSeries{}
 	if err := metrics.Render(&bytes.Buffer{}, ts, "xml"); err == nil {

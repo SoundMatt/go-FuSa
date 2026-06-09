@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -26,6 +27,7 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 		dalFlag = fs.String("dal", "DAL-B", "design assurance level: DAL-A, DAL-B, DAL-C, DAL-D")
 		format  = fs.String("format", "text", "output format: text or json")
 		output  = fs.String("output", "", "write report to file (default: stdout)")
+		mutate  = fs.Bool("mutate", false, "run mutation testing via go-mutesting (MC/DC-equivalent evidence for DO-178C Level A)")
 	)
 	if err := fs.Parse(args); err != nil {
 		return 1
@@ -72,6 +74,40 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 	if err := coverage.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa coverage: render: %v\n", err)
 		return 1
+	}
+
+	if *mutate {
+		// Determine project root from the coverage file location or cwd.
+		projectRoot := filepath.Dir(profilePath)
+		if projectRoot == "." {
+			var cwdErr error
+			projectRoot, cwdErr = os.Getwd()
+			if cwdErr != nil {
+				projectRoot = "."
+			}
+		}
+		mRep, mErr := coverage.RunMutation(projectRoot, dal)
+		if mErr != nil {
+			fmt.Fprintf(stderr, "gofusa coverage: mutation: %v\n", mErr)
+			return 1
+		}
+		switch *format {
+		case "json":
+			enc := json.NewEncoder(w)
+			enc.SetIndent("", "  ")
+			if err := enc.Encode(mRep); err != nil {
+				fmt.Fprintf(stderr, "gofusa coverage: mutation json: %v\n", err)
+				return 1
+			}
+		default:
+			fmt.Fprintf(w, "\nMutation Testing\n")
+			fmt.Fprintf(w, "Mutants: %d  Killed: %d  Survived: %d  Score: %.1f%%\n",
+				mRep.Mutants, mRep.Killed, mRep.Survived, mRep.Score)
+			fmt.Fprintf(w, "MC/DC Evidence: %s\n", mRep.MCDCEvidence)
+			if mRep.Note != "" {
+				fmt.Fprintf(w, "Note: %s\n", mRep.Note)
+			}
+		}
 	}
 	return 0
 }

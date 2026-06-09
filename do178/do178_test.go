@@ -10,6 +10,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/do178"
 )
 
+//fusa:test REQ-DO178-001
 func TestAssess_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := do178.Assess(dir, "myproject", do178.DALB)
@@ -31,6 +32,7 @@ func TestAssess_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-001
 func TestAssess_WithEvidence(t *testing.T) {
 	dir := t.TempDir()
 	// Create evidence files to convert some GAPs to PASSes
@@ -48,6 +50,7 @@ func TestAssess_WithEvidence(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-001
 func TestAssess_DALE_AllNA(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := do178.Assess(dir, "proj", do178.DALE)
@@ -60,6 +63,7 @@ func TestAssess_DALE_AllNA(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-001
 func TestAssess_DALA_MCDCOBJ(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := do178.Assess(dir, "proj", do178.DALA)
@@ -81,6 +85,7 @@ func TestAssess_DALA_MCDCOBJ(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-001
 func TestObjectiveNotApply_DALE(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := do178.Assess(dir, "proj", do178.DALE)
@@ -94,6 +99,7 @@ func TestObjectiveNotApply_DALE(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-003
 func TestRender_Text(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := do178.Assess(dir, "proj", do178.DALB)
@@ -110,6 +116,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-003
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := do178.Assess(dir, "proj", do178.DALB)
@@ -122,6 +129,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-003
 func TestRender_InvalidFormat(t *testing.T) {
 	rep := &do178.Report{}
 	if err := do178.Render(&bytes.Buffer{}, rep, "html"); err == nil {
@@ -129,6 +137,7 @@ func TestRender_InvalidFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-002
 func TestDALConstants(t *testing.T) {
 	if do178.DALA != "DAL-A" {
 		t.Errorf("DALA = %q", do178.DALA)
@@ -138,6 +147,7 @@ func TestDALConstants(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-002
 func TestStatusConstants(t *testing.T) {
 	if do178.StatusPass != "PASS" {
 		t.Errorf("StatusPass = %q", do178.StatusPass)
@@ -153,6 +163,7 @@ func TestStatusConstants(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DO178-001
 func TestGapIncludes_SBOMFile(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := do178.Assess(dir, "proj", do178.DALB)
@@ -171,6 +182,7 @@ func TestGapIncludes_SBOMFile(t *testing.T) {
 	t.Error("A-10.1 not found in objectives")
 }
 
+//fusa:test REQ-DO178-001
 func TestNestedFile_CI(t *testing.T) {
 	dir := t.TempDir()
 	// Create nested .github/workflows/ci.yml

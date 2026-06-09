@@ -280,10 +280,22 @@ func mappingsFor(standard string) []ClauseMapping {
 		}
 	case "iso21434":
 		return []ClauseMapping{
-			{Standard: "ISO 21434", Clause: "§10", Title: "Cybersecurity requirements", EvidenceIDs: []string{"trace"}},
-			{Standard: "ISO 21434", Clause: "§14.3", Title: "Software development", EvidenceIDs: []string{"check"}},
-			{Standard: "ISO 21434", Clause: "§10.4.3", Title: "Verification and validation", EvidenceIDs: []string{"verify"}},
-			{Standard: "ISO 21434", Clause: "§11.4", Title: "Software release", EvidenceIDs: []string{"sbom", "provenance"}},
+			{Standard: "ISO 21434", Clause: "§9.1", Title: "TARA — threat analysis", EvidenceIDs: []string{"tara"}},
+			{Standard: "ISO 21434", Clause: "§9.3", Title: "TARA — threat scenarios", EvidenceIDs: []string{"tara"}},
+			{Standard: "ISO 21434", Clause: "§10.1", Title: "Cybersecurity requirements", EvidenceIDs: []string{"trace"}},
+			{Standard: "ISO 21434", Clause: "§10.4", Title: "Static cybersecurity analysis", EvidenceIDs: []string{"check"}},
+			{Standard: "ISO 21434", Clause: "§10", Title: "Verification and validation", EvidenceIDs: []string{"verify"}},
+			{Standard: "ISO 21434", Clause: "§A.1", Title: "SBOM (Annex A work product)", EvidenceIDs: []string{"sbom"}},
+			{Standard: "ISO 21434", Clause: "§A.2", Title: "Build provenance (Annex A)", EvidenceIDs: []string{"provenance"}},
+		}
+	case "unece155":
+		return []ClauseMapping{
+			{Standard: "UN R.155", Clause: "TC-1", Title: "Vehicle communication security", EvidenceIDs: []string{"tara"}},
+			{Standard: "UN R.155", Clause: "TC-2", Title: "Update mechanism security", EvidenceIDs: []string{"provenance"}},
+			{Standard: "UN R.155", Clause: "TC-3", Title: "Unintended physical access", EvidenceIDs: []string{"tara"}},
+			{Standard: "UN R.155", Clause: "TC-4", Title: "External connectivity threats", EvidenceIDs: []string{"check"}},
+			{Standard: "UN R.155", Clause: "TC-5", Title: "Supply chain integrity", EvidenceIDs: []string{"sbom"}},
+			{Standard: "UN R.155", Clause: "TC-6", Title: "Data storage security", EvidenceIDs: []string{"tara"}},
 		}
 	default: // "generic"
 		return []ClauseMapping{

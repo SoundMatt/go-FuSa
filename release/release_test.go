@@ -458,3 +458,24 @@ func TestToSPDX22_VsToSPDX23_SameStructureDifferentVersion(t *testing.T) {
 		t.Error("22 and 23 have the same SpdxVersion, expected different")
 	}
 }
+
+// ─── vcsInfo via BuildProvenance ─────────────────────────────────────────────
+
+func TestBuildProvenance_RepoRoot(t *testing.T) {
+	// Run inside the go-FuSa repo itself so that vcsInfo can attempt a git call.
+	dir := moduleDir(t, "module github.com/SoundMatt/go-FuSa\n\ngo 1.22\n", "")
+	ctx := context.Background()
+	prov, err := release.BuildProvenance(ctx, dir)
+	if err != nil {
+		t.Fatalf("BuildProvenance: %v", err)
+	}
+	if prov == nil {
+		t.Fatal("expected non-nil provenance")
+	}
+	if prov.Module == "" {
+		t.Error("expected non-empty Module field")
+	}
+	if prov.GoVersion == "" {
+		t.Error("expected non-empty GoVersion field")
+	}
+}

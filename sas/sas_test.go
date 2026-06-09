@@ -10,6 +10,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/sas"
 )
 
+//fusa:test REQ-SAS001
 func TestBuild_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	doc, err := sas.Build(dir, "myproject", "1.0.0", "DAL-B", "Test Team")
@@ -39,6 +40,7 @@ func TestBuild_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SAS001
 func TestBuild_AllPresent(t *testing.T) {
 	dir := t.TempDir()
 	// Write all evidence files the catalog expects
@@ -68,6 +70,7 @@ func TestBuild_AllPresent(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SAS003
 func TestRender_Markdown(t *testing.T) {
 	dir := t.TempDir()
 	doc, _ := sas.Build(dir, "proj", "1.0", "DAL-C", "Bob")
@@ -87,6 +90,7 @@ func TestRender_Markdown(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SAS003
 func TestRender_Text(t *testing.T) {
 	dir := t.TempDir()
 	doc, _ := sas.Build(dir, "proj", "1.0", "DAL-B", "")
@@ -99,6 +103,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SAS003
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	doc, _ := sas.Build(dir, "proj", "1.0", "DAL-B", "")
@@ -114,6 +119,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SAS003
 func TestRender_InvalidFormat(t *testing.T) {
 	doc := &sas.SAS{}
 	if err := sas.Render(&bytes.Buffer{}, doc, "html"); err == nil {
@@ -121,12 +127,14 @@ func TestRender_InvalidFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SAS001
 func TestSASFileConstant(t *testing.T) {
 	if sas.SASFile != "sas.md" {
 		t.Errorf("SASFile = %q", sas.SASFile)
 	}
 }
 
+//fusa:test REQ-SAS002
 func TestEvidenceCount(t *testing.T) {
 	dir := t.TempDir()
 	doc, _ := sas.Build(dir, "proj", "1.0", "DAL-B", "")
