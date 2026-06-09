@@ -2,6 +2,7 @@ package impact_test
 
 import (
 	"bytes"
+	"context"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -19,7 +20,7 @@ func initGitRepo(t *testing.T, dir string) {
 		{"git", "-C", dir, "config", "user.email", "test@example.com"},
 		{"git", "-C", dir, "config", "user.name", "Test"},
 	} {
-		if out, err := exec.Command(args[0], args[1:]...).CombinedOutput(); err != nil {
+		if out, err := exec.CommandContext(context.Background(), args[0], args[1:]...).CombinedOutput(); err != nil {
 			t.Fatalf("git init: %v\n%s", err, out)
 		}
 	}
@@ -31,7 +32,7 @@ func commitAll(t *testing.T, dir, msg string) {
 		{"git", "-C", dir, "add", "."},
 		{"git", "-C", dir, "commit", "--allow-empty", "-m", msg},
 	} {
-		if out, err := exec.Command(args[0], args[1:]...).CombinedOutput(); err != nil {
+		if out, err := exec.CommandContext(context.Background(), args[0], args[1:]...).CombinedOutput(); err != nil {
 			t.Fatalf("git commit: %v\n%s", err, out)
 		}
 	}
@@ -105,14 +106,14 @@ func TestAnalyse_FromRef(t *testing.T) {
 	commitAll(t, dir, "commit-a")
 
 	// Get commit hash
-	out, err := exec.Command("git", "-C", dir, "rev-parse", "HEAD").Output()
+	out, err := exec.CommandContext(context.Background(), "git", "-C", dir, "rev-parse", "HEAD").Output()
 	if err != nil {
 		t.Skip("git rev-parse failed:", err)
 	}
 	commitA := strings.TrimSpace(string(out))
 
-	if err := os.WriteFile(filepath.Join(dir, "b.go"), []byte("package p\n"), 0o644); err != nil {
-		t.Fatal(err)
+	if writeErr := os.WriteFile(filepath.Join(dir, "b.go"), []byte("package p\n"), 0o644); writeErr != nil {
+		t.Fatal(writeErr)
 	}
 	commitAll(t, dir, "commit-b")
 
@@ -167,5 +168,53 @@ func TestRender_InvalidFormat(t *testing.T) {
 	rep := &impact.Report{}
 	if err := impact.Render(&bytes.Buffer{}, rep, "xml"); err == nil {
 		t.Error("expected error for unsupported format")
+	}
+}
+
+func TestRenderText_StaleAndRerun(t *testing.T) {
+	rep := &impact.Report{
+		ChangedFiles: []impact.FileChange{
+			{Path: "pkg/foo.go", Status: "M"},
+		},
+		ImpactedReqs: []impact.RequirementImpact{
+			{
+				RequirementID: "REQ-STALE",
+				AffectedFiles: []string{"pkg/foo.go"},
+				TestsNeeded:   []string{"pkg/foo_test.go"},
+			},
+		},
+		StaleArtifacts: []impact.ArtifactStatus{
+			{File: "safety_plan.md", Stale: true, Reason: "source changed after artefact"},
+			{File: "test_evidence.md", Stale: false, Reason: ""},
+		},
+		RerunTests: []string{"pkg/foo_test.go", "pkg/bar_test.go"},
+	}
+	var buf bytes.Buffer
+	if err := impact.Render(&buf, rep, "text"); err != nil {
+		t.Fatalf("Render text: %v", err)
+	}
+	out := buf.String()
+	if !strings.Contains(out, "REQ-STALE") {
+		t.Error("missing REQ-STALE in output")
+	}
+	if !strings.Contains(out, "foo_test.go") {
+		t.Error("missing test file in output")
+	}
+	if !strings.Contains(out, "safety_plan.md") {
+		t.Error("missing stale artifact in output")
+	}
+	if !strings.Contains(out, "pkg/bar_test.go") {
+		t.Error("missing rerun test in output")
+	}
+}
+
+func TestRenderText_EmptyReport(t *testing.T) {
+	rep := &impact.Report{}
+	var buf bytes.Buffer
+	if err := impact.Render(&buf, rep, "text"); err != nil {
+		t.Fatalf("Render empty text: %v", err)
+	}
+	if !strings.Contains(buf.String(), "no changes detected") {
+		t.Error("missing empty-changes message")
 	}
 }

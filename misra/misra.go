@@ -37,8 +37,8 @@ const (
 //
 //fusa:req REQ-MISRA002
 type Rule struct {
-	ID         string   `json:"id"`               // e.g. "Dir 4.1"
-	Category   string   `json:"category"`          // "Required" / "Advisory"
+	ID         string   `json:"id"`       // e.g. "Dir 4.1"
+	Category   string   `json:"category"` // "Required" / "Advisory"
 	Title      string   `json:"title"`
 	Coverage   Coverage `json:"coverage"`
 	GoFuSaRule string   `json:"gofusaRule,omitempty"` // e.g. "LINT004"

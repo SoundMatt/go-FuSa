@@ -14,16 +14,16 @@ import (
 type Type string
 
 const (
-	TypeSafetyPlan     Type = "safety-plan"
-	TypeTestEvidence   Type = "test-evidence"
-	TypeHARA           Type = "hara"
-	TypeSDP            Type = "sdp"
-	TypeSVP            Type = "svp"
-	TypeSCMP           Type = "scmp"
-	TypeSQAP           Type = "sqap"
-	TypeIEC61508FSP    Type = "iec61508-fsp"
-	TypeISO26262FMEA   Type = "iso26262-fmea"
-	TypeAll            Type = "all"
+	TypeSafetyPlan   Type = "safety-plan"
+	TypeTestEvidence Type = "test-evidence"
+	TypeHARA         Type = "hara"
+	TypeSDP          Type = "sdp"
+	TypeSVP          Type = "svp"
+	TypeSCMP         Type = "scmp"
+	TypeSQAP         Type = "sqap"
+	TypeIEC61508FSP  Type = "iec61508-fsp"
+	TypeISO26262FMEA Type = "iso26262-fmea"
+	TypeAll          Type = "all"
 )
 
 // Generate writes the named template file(s) to dir.

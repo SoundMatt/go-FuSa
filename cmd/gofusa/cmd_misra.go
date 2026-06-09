@@ -30,7 +30,7 @@ func runMisra(args []string, stdout, stderr io.Writer) int {
 
 	rep := misra.Assess()
 
-	var w io.Writer = stdout
+	w := stdout
 	if *output != "" {
 		f, ferr := os.Create(*output)
 		if ferr != nil {

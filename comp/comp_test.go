@@ -2,9 +2,11 @@ package comp_test
 
 import (
 	"context"
+	"go/ast"
 	"testing"
 
 	fusa "github.com/SoundMatt/go-FuSa"
+	"github.com/SoundMatt/go-FuSa/comp"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/testutil"
@@ -135,4 +137,52 @@ func TestCOMP001_Description(t *testing.T) {
 		}
 	}
 	t.Error("COMP001 rule not registered")
+}
+
+func TestComplexity_NilBody(t *testing.T) {
+	fn := &ast.FuncDecl{Body: nil}
+	if got := comp.Complexity(fn); got != 0 {
+		t.Errorf("Complexity(nil body) = %d, want 0", got)
+	}
+}
+
+func TestCOMP001_SelectStatement(t *testing.T) {
+	// select with multiple non-default cases → coverage of *ast.CommClause
+	src := `package main
+
+import "time"
+
+func poll(ch <-chan int, done <-chan struct{}, extra <-chan bool, q <-chan byte, r <-chan rune, s <-chan string, u <-chan uint, v <-chan int64, w <-chan float64, x <-chan int32) int {
+	for {
+		select {
+		case v := <-ch:
+			if v > 0 { return v }
+		case <-done:
+			return -1
+		case <-extra:
+			return -2
+		case <-q:
+			return -3
+		case <-r:
+			return -4
+		case <-s:
+			return -5
+		case <-u:
+			return -6
+		case <-v:
+			return -7
+		case <-w:
+			return -8
+		case <-x:
+			return -9
+		case <-time.After(time.Second):
+			return 0
+		}
+	}
+}
+`
+	findings := runComp(t, testutil.GoSource("main.go", src))
+	if len(findings) == 0 {
+		t.Error("COMP001: expected finding for function with many select cases")
+	}
 }

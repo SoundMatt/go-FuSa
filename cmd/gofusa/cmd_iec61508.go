@@ -31,6 +31,12 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
+	validSILs := map[string]bool{"SIL-1": true, "SIL-2": true, "SIL-3": true, "SIL-4": true}
+	if !validSILs[*sil] {
+		fmt.Fprintf(stderr, "gofusa iec61508: unknown SIL level %q (must be SIL-1, SIL-2, SIL-3, or SIL-4)\n", *sil)
+		return 1
+	}
+
 	projectRoot := *dir
 	if projectRoot == "" {
 		var err error
@@ -49,7 +55,7 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
-	var w io.Writer = stdout
+	w := stdout
 	if *output != "" {
 		f, ferr := os.Create(*output)
 		if ferr != nil {

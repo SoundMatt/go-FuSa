@@ -1,12 +1,18 @@
 package disposition_test
 
 import (
+	"context"
+	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/disposition"
+	_ "github.com/SoundMatt/go-FuSa/disposition" // ensure rule is registered
+	"github.com/SoundMatt/go-FuSa/engine"
 )
 
 func TestLoad_MissingFile(t *testing.T) {
@@ -170,4 +176,127 @@ func TestRule_DispositionedError(t *testing.T) {
 	if !disposition.IsDispositioned(loaded, "FUSA001") {
 		t.Error("FUSA001 should be dispositioned")
 	}
+}
+
+// ─── DISP001 rule ─────────────────────────────────────────────────────────────
+
+func TestDISP001_NoCheckReport(t *testing.T) {
+	dir := t.TempDir()
+	cfg := config.Default("github.com/x/y", "y")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	found := false
+	for _, f := range result.Findings {
+		if f.RuleID == "DISP001" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("expected DISP001 finding when check-report.json absent")
+	}
+}
+
+func TestDISP001_WithErrorFinding_NoDisposition(t *testing.T) {
+	dir := t.TempDir()
+	// Write a minimal project config so FUSA001 doesn't fire
+	cfg := config.Default("github.com/x/y", "y")
+	// Write check-report.json with an ERROR finding
+	findings := []map[string]interface{}{
+		{"ruleID": "CYBER006", "severity": "ERROR", "message": "hardcoded credential"},
+	}
+	data, _ := json.Marshal(findings)
+	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), data, 0o640); err != nil {
+		t.Fatal(err)
+	}
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	found := false
+	for _, f := range result.Findings {
+		if f.RuleID == "DISP001" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("expected DISP001 WARNING for undispositioned ERROR finding")
+	}
+}
+
+func TestDISP001_WithErrorFinding_Dispositioned(t *testing.T) {
+	dir := t.TempDir()
+	cfg := config.Default("github.com/x/y", "y")
+	// Write check-report.json with ERROR finding
+	findings := []map[string]interface{}{
+		{"ruleID": "CYBER006", "severity": "ERROR", "message": "hardcoded credential"},
+	}
+	data, _ := json.Marshal(findings)
+	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), data, 0o640); err != nil {
+		t.Fatal(err)
+	}
+	// Write dispositions log accepting it
+	disp := `{"project":"y","entries":[{"ruleID":"CYBER006","rationale":"accepted","reviewer":"Alice","date":"2026-01-01T00:00:00Z","action":"accept"}]}`
+	if err := os.WriteFile(filepath.Join(dir, disposition.DispositionsFile), []byte(disp), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	for _, f := range result.Findings {
+		if f.RuleID == "DISP001" && f.Message != "" && strings.Contains(f.Message, "CYBER006") {
+			t.Errorf("DISP001 should not fire for dispositioned rule CYBER006; got: %s", f.Message)
+		}
+	}
+}
+
+func TestRenderEntries_WithEntries(t *testing.T) {
+	log := &disposition.Log{
+		Entries: []disposition.Entry{
+			{
+				RuleID:    "LINT001",
+				Action:    disposition.ActionAccept,
+				Reviewer:  "Alice",
+				Date:      time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+				Rationale: "justified",
+				Reference: "TICKET-123",
+			},
+			{
+				RuleID:    "CYBER006",
+				Action:    disposition.ActionFix,
+				Reviewer:  "Bob",
+				Date:      time.Date(2026, 2, 1, 0, 0, 0, 0, time.UTC),
+				Rationale: "will be fixed next sprint",
+			},
+		},
+	}
+	var buf strings.Builder
+	if err := disposition.RenderEntries(&buf, log); err != nil {
+		t.Fatalf("RenderEntries: %v", err)
+	}
+	out := buf.String()
+	if !strings.Contains(out, "LINT001") {
+		t.Errorf("missing LINT001 in output: %q", out)
+	}
+	if !strings.Contains(out, "TICKET-123") {
+		t.Errorf("missing Reference in output: %q", out)
+	}
+	if !strings.Contains(out, "CYBER006") {
+		t.Errorf("missing CYBER006 in output: %q", out)
+	}
+}
+
+func TestDISP001_Description(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if r.ID() == "DISP001" {
+			if r.Description() == "" {
+				t.Error("DISP001: Description() returned empty string")
+			}
+			return
+		}
+	}
+	t.Error("DISP001 rule not registered")
 }

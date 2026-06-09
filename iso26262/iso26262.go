@@ -69,14 +69,14 @@ type Objective struct {
 //
 //fusa:req REQ-ISO26262-003
 type Report struct {
-	Project   string      `json:"project"`
-	ASIL      ASIL        `json:"asil"`
-	Generated time.Time   `json:"generated"`
-	Pass      int         `json:"pass"`
-	Fail      int         `json:"fail"`
-	Gap       int         `json:"gap"`
-	Manual    int         `json:"manual"`
-	NA        int         `json:"na"`
+	Project    string      `json:"project"`
+	ASIL       ASIL        `json:"asil"`
+	Generated  time.Time   `json:"generated"`
+	Pass       int         `json:"pass"`
+	Fail       int         `json:"fail"`
+	Gap        int         `json:"gap"`
+	Manual     int         `json:"manual"`
+	NA         int         `json:"na"`
 	Objectives []Objective `json:"objectives"`
 }
 

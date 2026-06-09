@@ -31,6 +31,12 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
+	validASILs := map[string]bool{"ASIL-A": true, "ASIL-B": true, "ASIL-C": true, "ASIL-D": true}
+	if !validASILs[*asil] {
+		fmt.Fprintf(stderr, "gofusa iso26262: unknown ASIL level %q (must be ASIL-A, ASIL-B, ASIL-C, or ASIL-D)\n", *asil)
+		return 1
+	}
+
 	projectRoot := *dir
 	if projectRoot == "" {
 		var err error
@@ -49,7 +55,7 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
-	var w io.Writer = stdout
+	w := stdout
 	if *output != "" {
 		f, ferr := os.Create(*output)
 		if ferr != nil {

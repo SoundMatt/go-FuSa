@@ -14,6 +14,7 @@ package impact
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -42,7 +43,7 @@ type FileChange struct {
 type RequirementImpact struct {
 	RequirementID string   `json:"requirementID"`
 	AffectedFiles []string `json:"affectedFiles"`
-	TestsNeeded   []string `json:"testsNeeded"`  // test files that reference this req
+	TestsNeeded   []string `json:"testsNeeded"` // test files that reference this req
 	Stale         bool     `json:"stale"`
 }
 
@@ -59,11 +60,11 @@ type ArtifactStatus struct {
 //
 //fusa:req REQ-IMPACT004
 type Report struct {
-	Generated      time.Time            `json:"generated"`
-	ChangedFiles   []FileChange         `json:"changedFiles"`
-	ImpactedReqs   []RequirementImpact  `json:"impactedReqs"`
-	StaleArtifacts []ArtifactStatus     `json:"staleArtifacts"`
-	RerunTests     []string             `json:"rerunTests"`
+	Generated      time.Time           `json:"generated"`
+	ChangedFiles   []FileChange        `json:"changedFiles"`
+	ImpactedReqs   []RequirementImpact `json:"impactedReqs"`
+	StaleArtifacts []ArtifactStatus    `json:"staleArtifacts"`
+	RerunTests     []string            `json:"rerunTests"`
 }
 
 // evidenceArtefacts are the safety evidence files to check for staleness.
@@ -208,7 +209,7 @@ func changedFiles(projectRoot, fromRef, toRef string) ([]FileChange, error) {
 		args = []string{"diff", "--name-status", fromRef + ".." + toRef}
 	}
 
-	cmd := exec.Command("git", args...)
+	cmd := exec.CommandContext(context.Background(), "git", args...)
 	cmd.Dir = projectRoot
 	var out bytes.Buffer
 	var errBuf bytes.Buffer

@@ -163,7 +163,8 @@ func (r *ruleDISP001) Run(_ context.Context, projectRoot string, _ *config.Confi
 	// Parse findings array (the file may be a JSON object with a "findings" field
 	// or a flat array depending on format; handle both).
 	var findings []checkReportFinding
-	if err := json.Unmarshal(data, &findings); err != nil {
+	unmarshalErr := json.Unmarshal(data, &findings)
+	if unmarshalErr != nil {
 		// Try nested format: {"findings": [...]}
 		var obj struct {
 			Findings []checkReportFinding `json:"findings"`

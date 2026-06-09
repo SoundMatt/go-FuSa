@@ -26,8 +26,8 @@ func RenderEvidenceHTML(w io.Writer, projectRoot string) error {
 	}
 
 	type fileSpec struct {
-		path    string
-		label   string
+		path  string
+		label string
 	}
 
 	// Evidence file inventory grouped by section

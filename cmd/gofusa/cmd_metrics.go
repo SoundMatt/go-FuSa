@@ -102,7 +102,7 @@ func runMetricsShow(args []string, projectRoot string, stdout, stderr io.Writer)
 		return 1
 	}
 
-	var w io.Writer = stdout
+	w := stdout
 	if *output != "" {
 		f, ferr := os.Create(*output)
 		if ferr != nil {

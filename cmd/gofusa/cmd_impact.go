@@ -47,7 +47,7 @@ func runImpact(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
-	var w io.Writer = stdout
+	w := stdout
 	if *output != "" {
 		f, ferr := os.Create(*output)
 		if ferr != nil {

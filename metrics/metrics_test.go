@@ -43,10 +43,10 @@ func TestSave_RoundTrip(t *testing.T) {
 		Project: "test",
 		Snapshots: []metrics.Snapshot{
 			{
-				Timestamp:         time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
-				ErrorCount:        2,
-				WarningCount:      5,
-				TotalRequirements: 10,
+				Timestamp:          time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC),
+				ErrorCount:         2,
+				WarningCount:       5,
+				TotalRequirements:  10,
 				TracedRequirements: 8,
 			},
 		},
@@ -129,11 +129,11 @@ func TestRender_Text(t *testing.T) {
 		Project: "myproject",
 		Snapshots: []metrics.Snapshot{
 			{
-				Timestamp:         time.Date(2026, 1, 1, 12, 0, 0, 0, time.UTC),
-				ErrorCount:        0,
-				TotalRequirements: 5,
+				Timestamp:          time.Date(2026, 1, 1, 12, 0, 0, 0, time.UTC),
+				ErrorCount:         0,
+				TotalRequirements:  5,
 				TracedRequirements: 5,
-				CoveragePct:       92.0,
+				CoveragePct:        92.0,
 			},
 		},
 	}

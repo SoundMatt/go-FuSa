@@ -239,7 +239,7 @@ func runReqExport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		return 1
 	}
 
-	var w io.Writer = stdout
+	w := stdout
 	if *output != "" {
 		f, ferr := os.Create(filepath.Join(projectRoot, *output))
 		if ferr != nil {
