@@ -14,6 +14,8 @@ type FaultMonitor struct {
 // NewFaultMonitor creates a FaultMonitor. onFault is called (without holding
 // the internal lock) when a fault's count reaches or exceeds its threshold.
 // onFault may be nil.
+//
+//fusa:req REQ-RUNTIME005
 func NewFaultMonitor(onFault func(id string, count int)) *FaultMonitor {
 	return &FaultMonitor{
 		counts:     make(map[string]int),

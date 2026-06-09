@@ -26,6 +26,8 @@ const (
 
 // Generate writes the named template file(s) to dir.
 // It returns an error if a target file already exists or cannot be written.
+//
+//fusa:req REQ-CLI010
 func Generate(dir string, t Type) error {
 	switch t {
 	case TypeSafetyPlan:

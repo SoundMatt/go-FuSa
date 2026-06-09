@@ -54,6 +54,8 @@ type DiagManager struct {
 
 // NewDiagManager creates a DiagManager capped at maxEntries.
 // If maxEntries is <= 0, a default of 1000 is used.
+//
+//fusa:req REQ-RUNTIME004
 func NewDiagManager(maxEntries int) *DiagManager {
 	if maxEntries <= 0 {
 		maxEntries = 1000

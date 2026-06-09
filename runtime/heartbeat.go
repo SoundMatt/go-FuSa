@@ -21,6 +21,8 @@ type Heartbeat struct {
 
 // NewHeartbeat creates a Heartbeat that checks every interval and calls
 // onMissed when a beat is not received within that period.
+//
+//fusa:req REQ-RUNTIME002
 func NewHeartbeat(interval time.Duration, onMissed func(missed int)) *Heartbeat {
 	return &Heartbeat{
 		interval: interval,

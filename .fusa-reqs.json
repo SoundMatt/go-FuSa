@@ -948,7 +948,7 @@
     {
       "id": "REQ-IEC62443-002",
       "title": "IEC 62443 Security Level validity",
-      "text": "The tool shall emit a WARNING (IEC62443-002) when .fusa-iec62443.json exists but target_sl is not in the range 1–4.",
+      "text": "The tool shall emit a WARNING (IEC62443-002) when .fusa-iec62443.json exists but target_sl is not in the range 1\u20134.",
       "standard": "IEC 62443",
       "level": "CAL-2"
     },
@@ -1063,6 +1063,47 @@
       "text": "The 'fmea' subcommand shall accept a --cyber flag that enriches FMEA entries with CYBER findings cross-referenced by file path.",
       "standard": "ISO 21434",
       "level": "CAL-2"
+    },
+    {
+      "id": "REQ-RUNTIME001",
+      "title": "Watchdog timer monitors component liveness",
+      "text": "runtime.Watchdog shall call onExpiry each check interval when more than timeout has elapsed since the last Kick; it shall not call onExpiry if Kick is called before the timeout elapses.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME002",
+      "title": "Heartbeat monitor detects missed beats",
+      "text": "runtime.Heartbeat shall call onMissed with the running consecutive-miss count each interval when Beat is not called within that period; it shall reset the miss count when Beat is called.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME003",
+      "title": "Safe-state machine enforces terminal emergency stop",
+      "text": "runtime.StateManager shall return an error for any Transition call when the current state is StateEmergencyStop; all other valid state transitions shall succeed and invoke the onChange callback.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME004",
+      "title": "Diagnostic ring buffer records bounded event history",
+      "text": "runtime.DiagManager shall maintain a FIFO ring buffer of up to maxEntries Diagnostic events; when the buffer is full, the oldest entry shall be evicted to make room for the new entry.",
+      "standard": "IEC61508",
+      "level": "SIL-3"
+    },
+    {
+      "id": "REQ-RUNTIME005",
+      "title": "Fault threshold monitor fires callback at count threshold",
+      "text": "runtime.FaultMonitor shall call onFault(id, count) when the counter for faultID reaches or exceeds the configured threshold; it shall not fire when no threshold is configured for that fault.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-TESTUTIL001",
+      "title": "Test harness utilities create deterministic project fixtures",
+      "text": "testutil.ProjectDir shall create a temporary directory populated with all specified files; testutil.MinimalProject shall return a file map that satisfies all FUSA001-005 built-in rules; testutil.GoSource shall return MinimalProject extended with the given Go source file.",
+      "standard": "generic"
     }
   ]
 }

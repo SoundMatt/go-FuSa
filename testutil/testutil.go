@@ -11,6 +11,8 @@ import (
 
 // ProjectDir creates files under t.TempDir() and returns the directory path.
 // files maps relative path → content.
+//
+//fusa:req REQ-TESTUTIL001
 func ProjectDir(t *testing.T, files map[string]string) string {
 	t.Helper()
 	dir := t.TempDir()
