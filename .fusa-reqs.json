@@ -1100,6 +1100,48 @@
       "level": "ASIL-B"
     },
     {
+      "id": "REQ-ISO21434-001",
+      "title": "ISO 21434 TARA gap engine rule",
+      "text": "The engine shall emit an INFO finding (ISO21434001) when tara.json is absent for ISO 21434 projects.",
+      "standard": "ISO21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-ISO21434-002",
+      "title": "ISO 21434 gap assessment",
+      "text": "iso21434.Assess shall scan the project root and return a gap report for the given Cybersecurity Assurance Level, mapping evidence files to ISO 21434 objectives.",
+      "standard": "ISO21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-ISO21434-003",
+      "title": "ISO 21434 gap report rendering",
+      "text": "iso21434.Render shall write the gap report in text or JSON format, returning an error for unsupported formats.",
+      "standard": "ISO21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-UNECE-001",
+      "title": "UN R.155 TARA gap engine rule",
+      "text": "The engine shall emit a WARNING finding (UNECE001) when tara.json is absent for ISO 21434 / UN R.155 projects.",
+      "standard": "ISO21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-UNECE-002",
+      "title": "UN R.155 gap assessment",
+      "text": "unece.Assess shall scan the project root and return a UN R.155 Annex 5 gap report mapping evidence files to threat categories.",
+      "standard": "ISO21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-UNECE-003",
+      "title": "UN R.155 gap report rendering",
+      "text": "unece.Render shall write the gap report in text or JSON format, returning an error for unsupported formats.",
+      "standard": "ISO21434",
+      "level": "CAL-2"
+    },
+    {
       "id": "REQ-TESTUTIL001",
       "title": "Test harness utilities create deterministic project fixtures",
       "text": "testutil.ProjectDir shall create a temporary directory populated with all specified files; testutil.MinimalProject shall return a file map that satisfies all FUSA001-005 built-in rules; testutil.GoSource shall return MinimalProject extended with the given Go source file.",

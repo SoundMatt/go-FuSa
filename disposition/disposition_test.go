@@ -14,6 +14,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/engine"
 )
 
+//fusa:test REQ-DISP004
 func TestLoad_MissingFile(t *testing.T) {
 	dir := t.TempDir()
 	log, err := disposition.Load(dir)
@@ -28,6 +29,7 @@ func TestLoad_MissingFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP004
 func TestLoad_InvalidFile(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, disposition.DispositionsFile), []byte("not json"), 0o644); err != nil {
@@ -39,6 +41,7 @@ func TestLoad_InvalidFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP004
 func TestLoad_ValidFile(t *testing.T) {
 	dir := t.TempDir()
 	content := `{"project":"p","entries":[{"ruleID":"LINT001","rationale":"accepted","reviewer":"Alice","date":"2026-01-01T00:00:00Z","action":"accept"}]}`
@@ -57,6 +60,7 @@ func TestLoad_ValidFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP005
 func TestSave_RoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, disposition.DispositionsFile)
@@ -87,6 +91,7 @@ func TestSave_RoundTrip(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP006
 func TestAdd_Dedup(t *testing.T) {
 	log := &disposition.Log{}
 	e1 := disposition.Entry{RuleID: "LINT001", Action: disposition.ActionAccept, Rationale: "first"}
@@ -113,6 +118,7 @@ func TestAdd_Dedup(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP007
 func TestIsDispositioned(t *testing.T) {
 	log := &disposition.Log{
 		Entries: []disposition.Entry{
@@ -127,6 +133,7 @@ func TestIsDispositioned(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP008
 func TestRule_NoCheckReport(t *testing.T) {
 	// Rule fires INFO when check-report.json is absent
 	// We test this indirectly via the Load behaviour; the engine test verifies the rule
@@ -140,6 +147,7 @@ func TestRule_NoCheckReport(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP008
 func TestRule_UndispositionedError(t *testing.T) {
 	dir := t.TempDir()
 	// Write a check-report.json with an ERROR finding
@@ -158,6 +166,7 @@ func TestRule_UndispositionedError(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP008
 func TestRule_DispositionedError(t *testing.T) {
 	dir := t.TempDir()
 	report := `[{"ruleId":"FUSA001","severity":"ERROR","message":"test"}]`
@@ -179,6 +188,7 @@ func TestRule_DispositionedError(t *testing.T) {
 
 // ─── DISP001 rule ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-DISP008
 func TestDISP001_NoCheckReport(t *testing.T) {
 	dir := t.TempDir()
 	cfg := config.Default("github.com/x/y", "y")
@@ -197,6 +207,7 @@ func TestDISP001_NoCheckReport(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP008
 func TestDISP001_WithErrorFinding_NoDisposition(t *testing.T) {
 	dir := t.TempDir()
 	// Write a minimal project config so FUSA001 doesn't fire
@@ -225,6 +236,7 @@ func TestDISP001_WithErrorFinding_NoDisposition(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP008
 func TestDISP001_WithErrorFinding_Dispositioned(t *testing.T) {
 	dir := t.TempDir()
 	cfg := config.Default("github.com/x/y", "y")
@@ -252,6 +264,7 @@ func TestDISP001_WithErrorFinding_Dispositioned(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP009
 func TestRenderEntries_WithEntries(t *testing.T) {
 	log := &disposition.Log{
 		Entries: []disposition.Entry{
@@ -288,6 +301,7 @@ func TestRenderEntries_WithEntries(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-DISP008
 func TestDISP001_Description(t *testing.T) {
 	for _, r := range engine.Default.Rules() {
 		if r.ID() == "DISP001" {

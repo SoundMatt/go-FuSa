@@ -8,6 +8,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/misra"
 )
 
+//fusa:test REQ-MISRA003
 func TestAssess_NonEmpty(t *testing.T) {
 	rep := misra.Assess()
 	if rep == nil {
@@ -21,6 +22,7 @@ func TestAssess_NonEmpty(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-MISRA003
 func TestAssess_Counts(t *testing.T) {
 	rep := misra.Assess()
 	// Covered + NA + Manual should equal Total
@@ -31,6 +33,7 @@ func TestAssess_Counts(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-MISRA002
 func TestAssess_SpecificRules(t *testing.T) {
 	rep := misra.Assess()
 
@@ -69,6 +72,7 @@ func TestAssess_SpecificRules(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-MISRA004
 func TestRender_Text(t *testing.T) {
 	rep := misra.Assess()
 	var buf bytes.Buffer
@@ -87,6 +91,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-MISRA004
 func TestRender_JSON(t *testing.T) {
 	rep := misra.Assess()
 	var buf bytes.Buffer
@@ -101,6 +106,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-MISRA004
 func TestRender_InvalidFormat(t *testing.T) {
 	rep := misra.Assess()
 	if err := misra.Render(&bytes.Buffer{}, rep, "html"); err == nil {
@@ -108,6 +114,7 @@ func TestRender_InvalidFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-MISRA001
 func TestCoverageConstants(t *testing.T) {
 	if misra.CoverageGofusa != "go-FuSa rule" {
 		t.Errorf("CoverageGofusa = %q", misra.CoverageGofusa)

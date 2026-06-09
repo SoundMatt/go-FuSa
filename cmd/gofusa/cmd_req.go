@@ -123,7 +123,7 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 	fs := flag.NewFlagSet("gofusa req import", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	var (
-		format = fs.String("format", "csv", "import format: csv, doors, polarion")
+		format = fs.String("format", "csv", "import format: csv, doors, polarion, codebeamer, jama")
 		file   = fs.String("file", "", "input file path (required)")
 	)
 	if err := fs.Parse(args); err != nil {
@@ -148,17 +148,22 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 	var imported []trace.Requirement
 
 	switch *format {
-	case "doors", "polarion":
+	case "doors", "polarion", "codebeamer", "jama":
 		data, ferr := os.ReadFile(*file)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa req import: read %s: %v\n", *file, ferr)
 			return 1
 		}
 		var parseErr error
-		if *format == "doors" {
+		switch *format {
+		case "doors":
 			imported, parseErr = trace.ParseDOORS(data)
-		} else {
+		case "polarion":
 			imported, parseErr = trace.ParsePolarion(data)
+		case "codebeamer":
+			imported, parseErr = trace.ParseCodebeamer(data)
+		case "jama":
+			imported, parseErr = trace.ParseJama(data)
 		}
 		if parseErr != nil {
 			fmt.Fprintf(stderr, "gofusa req import: parse: %v\n", parseErr)
@@ -241,7 +246,7 @@ func runReqExport(args []string, projectRoot string, stdout, stderr io.Writer) i
 	fs := flag.NewFlagSet("gofusa req export", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	var (
-		format = fs.String("format", "csv", "export format: csv, doors, polarion")
+		format = fs.String("format", "csv", "export format: csv, doors, polarion, codebeamer, jama")
 		output = fs.String("output", "", "output file (default: stdout)")
 	)
 	if err := fs.Parse(args); err != nil {
@@ -271,13 +276,18 @@ func runReqExport(args []string, projectRoot string, stdout, stderr io.Writer) i
 	}
 
 	switch *format {
-	case "doors", "polarion":
+	case "doors", "polarion", "codebeamer", "jama":
 		var data []byte
 		var exportErr error
-		if *format == "doors" {
+		switch *format {
+		case "doors":
 			data, exportErr = trace.ExportDOORS(reqs)
-		} else {
+		case "polarion":
 			data, exportErr = trace.ExportPolarion(reqs)
+		case "codebeamer":
+			data, exportErr = trace.ExportCodebeamer(reqs)
+		case "jama":
+			data, exportErr = trace.ExportJama(reqs)
 		}
 		if exportErr != nil {
 			fmt.Fprintf(stderr, "gofusa req export: %v\n", exportErr)

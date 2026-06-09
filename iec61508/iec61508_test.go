@@ -12,6 +12,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/iec61508"
 )
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iec61508.Assess(dir, "myproject", iec61508.SIL2)
@@ -32,6 +33,7 @@ func TestAssess_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_WithEvidence(t *testing.T) {
 	dir := t.TempDir()
 	for _, f := range []string{"SAFETY_PLAN.md", ".fusa-reqs.json", ".fusa-evidence.json", "sbom.json"} {
@@ -48,6 +50,7 @@ func TestAssess_WithEvidence(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_SIL4_MCDC_Manual(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iec61508.Assess(dir, "proj", iec61508.SIL4)
@@ -69,6 +72,7 @@ func TestAssess_SIL4_MCDC_Manual(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_SIL1_MCDC_NA(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iec61508.Assess(dir, "proj", iec61508.SIL1)
@@ -86,6 +90,7 @@ func TestAssess_SIL1_MCDC_NA(t *testing.T) {
 	t.Error("3.5 not found")
 }
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_SIL3_SafetyCase(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iec61508.Assess(dir, "proj", iec61508.SIL3)
@@ -107,6 +112,7 @@ func TestAssess_SIL3_SafetyCase(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IEC61508-003
 func TestRender_Text(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := iec61508.Assess(dir, "proj", iec61508.SIL2)
@@ -123,6 +129,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IEC61508-003
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := iec61508.Assess(dir, "proj", iec61508.SIL2)
@@ -135,6 +142,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IEC61508-003
 func TestRender_InvalidFormat(t *testing.T) {
 	rep := &iec61508.Report{}
 	if err := iec61508.Render(&bytes.Buffer{}, rep, "html"); err == nil {
@@ -142,6 +150,7 @@ func TestRender_InvalidFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IEC61508-002
 func TestSILConstants(t *testing.T) {
 	if iec61508.SIL1 != "SIL-1" {
 		t.Errorf("SIL1 = %q", iec61508.SIL1)
@@ -151,12 +160,14 @@ func TestSILConstants(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IEC61508-003
 func TestReportFile(t *testing.T) {
 	if iec61508.ReportFile != "iec61508-gap-report.json" {
 		t.Errorf("ReportFile = %q", iec61508.ReportFile)
 	}
 }
 
+//fusa:test REQ-IEC61508-004
 func TestRuleAbsentWhenPresent(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, iec61508.ReportFile), []byte("{}"), 0o644); err != nil {
@@ -173,6 +184,7 @@ func TestRuleAbsentWhenPresent(t *testing.T) {
 
 // ─── v0.22 objective changes ──────────────────────────────────────────────────
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_1_3_UsesHARAJSON(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, ".fusa-hara.json"), []byte(`{}`), 0o644); err != nil {
@@ -193,6 +205,7 @@ func TestAssess_1_3_UsesHARAJSON(t *testing.T) {
 	t.Error("objective 1.3 not found")
 }
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_1_3_Gap_WhenNoHARAFile(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iec61508.Assess(dir, "proj", iec61508.SIL2)
@@ -210,6 +223,7 @@ func TestAssess_1_3_Gap_WhenNoHARAFile(t *testing.T) {
 	t.Error("objective 1.3 not found")
 }
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_5_4_SCIObjective(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iec61508.Assess(dir, "proj", iec61508.SIL2)
@@ -227,6 +241,7 @@ func TestAssess_5_4_SCIObjective(t *testing.T) {
 	t.Error("objective 5.4 (SCI) not found at SIL-2")
 }
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_5_4_SCI_NAAtSIL1(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iec61508.Assess(dir, "proj", iec61508.SIL1)
@@ -244,6 +259,7 @@ func TestAssess_5_4_SCI_NAAtSIL1(t *testing.T) {
 	t.Error("objective 5.4 not found at SIL-1")
 }
 
+//fusa:test REQ-IEC61508-004
 func TestIEC61508001_Description(t *testing.T) {
 	for _, r := range engine.Default.Rules() {
 		if r.ID() == "IEC61508001" {
@@ -256,6 +272,7 @@ func TestIEC61508001_Description(t *testing.T) {
 	t.Error("IEC61508001 not registered")
 }
 
+//fusa:test REQ-IEC61508-004
 func TestIEC61508001_Run_Gap(t *testing.T) {
 	dir := t.TempDir()
 	for _, r := range engine.Default.Rules() {
@@ -273,6 +290,7 @@ func TestIEC61508001_Run_Gap(t *testing.T) {
 	t.Error("IEC61508001 not registered")
 }
 
+//fusa:test REQ-IEC61508-004
 func TestIEC61508001_Run_Pass(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, iec61508.ReportFile), []byte("{}"), 0o644); err != nil {
@@ -293,6 +311,7 @@ func TestIEC61508001_Run_Pass(t *testing.T) {
 	t.Error("IEC61508001 not registered")
 }
 
+//fusa:test REQ-IEC61508-001
 func TestAssess_4_2_UseFMEA(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "fmea.json"), []byte(`{}`), 0o644); err != nil {

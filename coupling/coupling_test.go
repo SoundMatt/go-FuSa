@@ -41,6 +41,7 @@ func runRule(t *testing.T, rule engine.Rule, dir string) []string {
 	return ids
 }
 
+//fusa:test REQ-COUP001
 func TestCOUP001_ExportedVar(t *testing.T) {
 	dir := t.TempDir()
 	writeGoFile(t, dir, "main.go", `package main
@@ -69,6 +70,7 @@ var unexported = "private"
 	}
 }
 
+//fusa:test REQ-COUP001
 func TestCOUP001_NoExportedVars(t *testing.T) {
 	dir := t.TempDir()
 	writeGoFile(t, dir, "main.go", `package main
@@ -86,6 +88,7 @@ const PublicConst = "ok"
 	}
 }
 
+//fusa:test REQ-COUP002
 func TestCOUP002_FuncParam(t *testing.T) {
 	dir := t.TempDir()
 	writeGoFile(t, dir, "main.go", `package main
@@ -109,6 +112,7 @@ func helper(s string) {}
 	}
 }
 
+//fusa:test REQ-COUP002
 func TestCOUP002_InlineInterfaceParam(t *testing.T) {
 	dir := t.TempDir()
 	writeGoFile(t, dir, "main.go", `package main
@@ -125,6 +129,7 @@ func Execute(action interface{ Do() }) { action.Do() }
 	}
 }
 
+//fusa:test REQ-COUP002
 func TestCOUP002_UnexportedFunc(t *testing.T) {
 	dir := t.TempDir()
 	writeGoFile(t, dir, "main.go", `package main
@@ -141,6 +146,7 @@ func unexported(fn func()) { fn() }
 	}
 }
 
+//fusa:test REQ-COUPLING001
 func TestRuleIDs(t *testing.T) {
 	if id := coupling.NewDataCouplingRule().ID(); id != "COUP001" {
 		t.Errorf("ID = %q", id)
@@ -150,6 +156,7 @@ func TestRuleIDs(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COUPLING002
 func TestDescriptions(t *testing.T) {
 	if d := coupling.NewDataCouplingRule().Description(); d == "" {
 		t.Error("COUP001 Description should not be empty")
@@ -163,6 +170,7 @@ func TestDescriptions(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COUPLING001
 func TestTestFileSkipped(t *testing.T) {
 	dir := t.TempDir()
 	// _test.go files should be skipped
@@ -185,6 +193,7 @@ var _ = runRule
 
 // ─── CouplingReport / SaveReport ──────────────────────────────────────────────
 
+//fusa:test REQ-COUPLING003
 func TestSaveReport_WritesValidJSON(t *testing.T) {
 	dir := t.TempDir()
 	outPath := filepath.Join(dir, coupling.CouplingReportFile)
@@ -200,6 +209,7 @@ func TestSaveReport_WritesValidJSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COUPLING003
 func TestSaveReport_WithFindings(t *testing.T) {
 	dir := t.TempDir()
 	writeGoFile(t, dir, "a.go", `package pkg
@@ -246,6 +256,7 @@ func writeFusaJSON(t *testing.T, dir, standard string) {
 	}
 }
 
+//fusa:test REQ-COUPLING003
 func TestCOUP003_FiredWhenDO178CAndNoReport(t *testing.T) {
 	dir := t.TempDir()
 	writeFusaJSON(t, dir, "DO178C")
@@ -260,6 +271,7 @@ func TestCOUP003_FiredWhenDO178CAndNoReport(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COUPLING003
 func TestCOUP003_SilentWhenNonDO178C(t *testing.T) {
 	dir := t.TempDir()
 	rule := findRule(t, "COUP003")
@@ -272,6 +284,7 @@ func TestCOUP003_SilentWhenNonDO178C(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COUPLING003
 func TestCOUP003_SilentWhenReportPresent(t *testing.T) {
 	dir := t.TempDir()
 	writeFusaJSON(t, dir, "DO178C")

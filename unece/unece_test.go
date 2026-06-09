@@ -15,6 +15,8 @@ import (
 )
 
 // TestAssess_EmptyDir verifies TC-1 through TC-6 are GAP and TC-7 through TC-9 are MANUAL.
+//
+//fusa:test REQ-UNECE-001
 func TestAssess_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := unece.Assess(dir)
@@ -45,6 +47,8 @@ func TestAssess_EmptyDir(t *testing.T) {
 }
 
 // TestAssess_WithEvidence verifies that providing evidence files results in passes.
+//
+//fusa:test REQ-UNECE-001
 func TestAssess_WithEvidence(t *testing.T) {
 	dir := t.TempDir()
 	for _, f := range []string{"tara.json", "provenance.json", "check-report.json", "sbom.json"} {
@@ -71,6 +75,8 @@ func TestAssess_WithEvidence(t *testing.T) {
 }
 
 // TestUNECE001_Description verifies the rule has a non-empty description.
+//
+//fusa:test REQ-UNECE-001
 func TestUNECE001_Description(t *testing.T) {
 	for _, r := range engine.Default.Rules() {
 		if r.ID() == "UNECE001" {
@@ -84,6 +90,8 @@ func TestUNECE001_Description(t *testing.T) {
 }
 
 // TestUNECE001_Run verifies the rule fires for ISO21434 project without tara.json.
+//
+//fusa:test REQ-UNECE-001
 func TestUNECE001_Run(t *testing.T) {
 	dir := t.TempDir()
 	cfg := config.Default("github.com/example/test", "test")
@@ -116,6 +124,8 @@ func TestUNECE001_Run(t *testing.T) {
 }
 
 // TestUNECE001_Run_NilCfg verifies the rule is silent with nil config.
+//
+//fusa:test REQ-UNECE-001
 func TestUNECE001_Run_NilCfg(t *testing.T) {
 	dir := t.TempDir()
 	for _, r := range engine.Default.Rules() {
@@ -134,6 +144,8 @@ func TestUNECE001_Run_NilCfg(t *testing.T) {
 }
 
 // TestRender_Text verifies text rendering runs without error.
+//
+//fusa:test REQ-UNECE-001
 func TestRender_Text(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := unece.Assess(dir)
@@ -150,6 +162,8 @@ func TestRender_Text(t *testing.T) {
 }
 
 // TestRender_JSON verifies JSON rendering produces valid JSON.
+//
+//fusa:test REQ-UNECE-001
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := unece.Assess(dir)
@@ -170,6 +184,8 @@ func TestRender_JSON(t *testing.T) {
 }
 
 // TestRender_UnknownFormat verifies error on unknown format.
+//
+//fusa:test REQ-UNECE-001
 func TestRender_UnknownFormat(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := unece.Assess(dir)

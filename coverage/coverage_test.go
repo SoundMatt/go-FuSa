@@ -15,6 +15,7 @@ example.com/foo/bar.go:14.10,16.3 2 0
 example.com/foo/baz.go:5.10,7.3 3 3
 `
 
+//fusa:test REQ-COV001
 func TestParse(t *testing.T) {
 	blocks, err := coverage.Parse(strings.NewReader(sampleProfile))
 	if err != nil {
@@ -37,6 +38,7 @@ func TestParse(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV001
 func TestParse_Empty(t *testing.T) {
 	blocks, err := coverage.Parse(strings.NewReader("mode: set\n"))
 	if err != nil {
@@ -47,6 +49,7 @@ func TestParse_Empty(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV002
 func TestAnalyse_StatementCoverage(t *testing.T) {
 	blocks, _ := coverage.Parse(strings.NewReader(sampleProfile))
 	rep := coverage.Analyse(blocks, coverage.DALB)
@@ -66,6 +69,7 @@ func TestAnalyse_StatementCoverage(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV003
 func TestAnalyse_DALRequirements(t *testing.T) {
 	blocks := []coverage.Block{{File: "f.go", StartLine: 1, EndLine: 5, Stmts: 10, Count: 10}}
 
@@ -94,6 +98,7 @@ func TestAnalyse_DALRequirements(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV003
 func TestAnalyse_Gaps(t *testing.T) {
 	blocks, _ := coverage.Parse(strings.NewReader(sampleProfile))
 	rep := coverage.Analyse(blocks, coverage.DALB)
@@ -109,6 +114,7 @@ func TestAnalyse_Gaps(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV002
 func TestRender_Text(t *testing.T) {
 	blocks, _ := coverage.Parse(strings.NewReader(sampleProfile))
 	rep := coverage.Analyse(blocks, coverage.DALB)
@@ -125,6 +131,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV002
 func TestRender_JSON(t *testing.T) {
 	blocks, _ := coverage.Parse(strings.NewReader(sampleProfile))
 	rep := coverage.Analyse(blocks, coverage.DALA)
@@ -137,6 +144,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV002
 func TestRender_InvalidFormat(t *testing.T) {
 	rep := coverage.Analyse(nil, coverage.DALB)
 	if err := coverage.Render(&bytes.Buffer{}, rep, "csv"); err == nil {
@@ -144,6 +152,7 @@ func TestRender_InvalidFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV001
 func TestBuildFromFile_NotFound(t *testing.T) {
 	_, err := coverage.BuildFromFile("/does/not/exist/coverage.out", coverage.DALB)
 	if err == nil {
@@ -151,6 +160,7 @@ func TestBuildFromFile_NotFound(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV001
 func TestBuildFromFile_Valid(t *testing.T) {
 	content := "mode: set\ngithub.com/x/pkg/file.go:10.2,12.5 3 1\n"
 	f, err := os.CreateTemp("", "coverage*.out")
@@ -171,6 +181,7 @@ func TestBuildFromFile_Valid(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-COV003
 func TestRunMutation_NoTool(t *testing.T) {
 	// Without go-mutesting in PATH, should return a report with a note and no error.
 	dir := t.TempDir()

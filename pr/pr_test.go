@@ -11,6 +11,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/pr"
 )
 
+//fusa:test REQ-PR001
 func TestLoadSave_RoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "problems.json")
@@ -46,6 +47,7 @@ func TestLoadSave_RoundTrip(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR001
 func TestLoad_Missing(t *testing.T) {
 	log, err := pr.Load("/does/not/exist/.fusa-problems.json")
 	if err != nil {
@@ -56,6 +58,7 @@ func TestLoad_Missing(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR003
 func TestAdd(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "problems.json")
@@ -81,6 +84,7 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR004
 func TestClose(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "problems.json")
@@ -106,6 +110,7 @@ func TestClose(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR004
 func TestClose_NotFound(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "problems.json")
@@ -117,6 +122,7 @@ func TestClose_NotFound(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR002
 func TestRender_Text(t *testing.T) {
 	log := &pr.Log{
 		Project: "proj",
@@ -138,6 +144,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR002
 func TestRender_JSON(t *testing.T) {
 	log := &pr.Log{Project: "p"}
 	var buf bytes.Buffer
@@ -149,12 +156,14 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR002
 func TestRender_InvalidFormat(t *testing.T) {
 	if err := pr.Render(&bytes.Buffer{}, &pr.Log{}, "csv"); err == nil {
 		t.Error("expected error for unsupported format")
 	}
 }
 
+//fusa:test REQ-PR001
 func TestPR001_Rule_NoFile(t *testing.T) {
 	// Engine rule registered at init — just verify the file exists
 	// (rule is exercised via integration through the engine).
@@ -167,6 +176,7 @@ func TestPR001_Rule_NoFile(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR002
 func TestPhaseAndSeverityConstants(t *testing.T) {
 	if pr.PhasePlanning != "planning" {
 		t.Error("PhasePlanning")
@@ -179,6 +189,7 @@ func TestPhaseAndSeverityConstants(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-PR003
 func TestAdd_CreatesDefaultStatus(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "probs.json")

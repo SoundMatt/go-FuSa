@@ -133,6 +133,8 @@ func parseCAL(s string) CAL {
 }
 
 // Assess scans projectRoot and returns an ISO 21434 gap report for the given CAL.
+//
+//fusa:req REQ-ISO21434-002
 func Assess(projectRoot, calStr string) (*Report, error) {
 	cal := parseCAL(calStr)
 	project := filepath.Base(projectRoot)
@@ -201,6 +203,8 @@ func commandForFile(file string) string {
 }
 
 // Render writes the gap report to w in the requested format ("text" or "json").
+//
+//fusa:req REQ-ISO21434-003
 func Render(w io.Writer, rep *Report, format string) error {
 	switch format {
 	case "json", "":

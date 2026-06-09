@@ -108,6 +108,8 @@ var allCategories = []ThreatCategory{
 }
 
 // Assess scans projectRoot and returns a UN R.155 gap report.
+//
+//fusa:req REQ-UNECE-002
 func Assess(projectRoot string) (*Report, error) {
 	project := filepath.Base(projectRoot)
 	rep := &Report{
@@ -141,6 +143,8 @@ func Assess(projectRoot string) (*Report, error) {
 }
 
 // Render writes the report to w in the requested format ("text" or "json").
+//
+//fusa:req REQ-UNECE-003
 func Render(w io.Writer, rep *Report, format string) error {
 	switch format {
 	case "json", "":

@@ -10,6 +10,7 @@ import (
 
 // ─── Section 3a: runTraceSecTested ────────────────────────────────────────────
 
+//fusa:test REQ-CLI-TRACE003
 func TestRunTraceSecTested_Pass(t *testing.T) {
 	dir := t.TempDir()
 	// Write requirements file
@@ -42,6 +43,7 @@ func TestRunTraceSecTested_Pass(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-TRACE003
 func TestRunTraceSecTested_Fail(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[
@@ -68,6 +70,7 @@ func TestRunTraceSecTested_Fail(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-TRACE003
 func TestRunTraceSecTested_NoRequirements(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -79,6 +82,7 @@ func TestRunTraceSecTested_NoRequirements(t *testing.T) {
 
 // ─── Section 3c: BuildFromFile ────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-COV001
 func TestBuildFromFile_Valid(t *testing.T) {
 	// This is tested in coverage_test.go; here we drive runCoverage to exercise it
 	content := "mode: set\ngithub.com/x/pkg/file.go:10.2,12.5 3 1\n"
@@ -103,6 +107,7 @@ func TestBuildFromFile_Valid(t *testing.T) {
 
 // ─── Section 3d: BuildProvenance (tests release.vcsInfo) ─────────────────────
 
+//fusa:test REQ-CLI016
 func TestBuildProvenance_RepoRoot(t *testing.T) {
 	dir := t.TempDir()
 	// Minimal go.mod needed for BuildProvenance
@@ -120,6 +125,7 @@ func TestBuildProvenance_RepoRoot(t *testing.T) {
 
 // ─── Section 3f: runSas ───────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-SAS001
 func TestRunSas_BasicMarkdown(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
@@ -136,6 +142,7 @@ func TestRunSas_BasicMarkdown(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-SAS001
 func TestRunSas_JSONFormat(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
@@ -148,6 +155,7 @@ func TestRunSas_JSONFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-SAS001
 func TestRunSas_DALA_Flag(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -157,6 +165,7 @@ func TestRunSas_DALA_Flag(t *testing.T) {
 
 // ─── Section 3g: report moduleFromRoot and countRequirements ─────────────────
 
+//fusa:test REQ-CLI-MISRA001
 func TestRunReport_JSON(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
@@ -172,6 +181,7 @@ func TestRunReport_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-MISRA001
 func TestRunReport_HTML(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
@@ -197,6 +207,7 @@ func TestRunReport_HTML(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-MISRA001
 func TestRunReport_Output(t *testing.T) {
 	dir := t.TempDir()
 	outFile := filepath.Join(dir, "my-report.json")
@@ -212,6 +223,7 @@ func TestRunReport_Output(t *testing.T) {
 
 // ─── Section 3h: runReqShow and runReqExport ─────────────────────────────────
 
+//fusa:test REQ-CLI-REQ001
 func TestRunReqShow_FilterFound(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[
@@ -234,6 +246,7 @@ func TestRunReqShow_FilterFound(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-REQ001
 func TestRunReqShow_FilterNotFound(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[{"id":"REQ-001","title":"Auth"}]}`
@@ -247,6 +260,7 @@ func TestRunReqShow_FilterNotFound(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-REQ003
 func TestRunReqExport_DOORS(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[
@@ -270,6 +284,7 @@ func TestRunReqExport_DOORS(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-REQ003
 func TestRunReqExport_Polarion(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[
@@ -293,6 +308,7 @@ func TestRunReqExport_Polarion(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-REQ003
 func TestRunReqExport_Output(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[{"id":"REQ-001","title":"Auth"}]}`
@@ -312,6 +328,7 @@ func TestRunReqExport_Output(t *testing.T) {
 
 // ─── Section 3e/3b: cyber isNolinted / isRequestDerived / isTempPath ─────────
 
+//fusa:test REQ-CLI018
 func TestRunCyber_IsNolinted(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
@@ -330,6 +347,7 @@ func Run(cmd string) { exec.Command(cmd).Run() } //nolint:CYBER005
 	// The nolint comment should suppress CYBER005
 }
 
+//fusa:test REQ-CLI018
 func TestRunCyber_IsRequestDerived(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
@@ -357,6 +375,7 @@ func Serve(w http.ResponseWriter, r *http.Request) {
 	// Just ensure it runs without panicking
 }
 
+//fusa:test REQ-CLI018
 func TestRunCyber_IsTempPath(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
@@ -381,6 +400,7 @@ func MakeTempFile() (*os.File, error) {
 
 // ─── ISO 21434 CLI ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-ISO21434-001
 func TestRunISO21434_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -392,6 +412,7 @@ func TestRunISO21434_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-ISO21434-001
 func TestRunISO21434_JSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -401,6 +422,7 @@ func TestRunISO21434_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-ISO21434-001
 func TestRunISO21434_Output(t *testing.T) {
 	dir := t.TempDir()
 	outFile := filepath.Join(dir, "iso21434-report.json")
@@ -413,6 +435,7 @@ func TestRunISO21434_Output(t *testing.T) {
 
 // ─── UN R.155 CLI ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-UNECE-001
 func TestRunUNECE_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -423,11 +446,102 @@ func TestRunUNECE_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-UNECE-001
 func TestRunUNECE_JSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	runUNECE([]string{"--dir", dir, "--format", "json"}, &out, &errBuf)
 	if !strings.Contains(out.String(), `"categories"`) {
 		t.Errorf("expected categories in JSON, got: %s", out.String())
+	}
+}
+
+// ─── Codebeamer and Jama CLI ──────────────────────────────────────────────────
+
+//fusa:test REQ-CLI-REQ002
+func TestRunReqImport_Codebeamer(t *testing.T) {
+	dir := t.TempDir()
+	xmlData := `<?xml version="1.0"?>
+<tracker>
+  <item id="1001">
+    <name>REQ-001</name>
+    <summary>Auth requirement</summary>
+    <description>The system shall authenticate</description>
+  </item>
+</tracker>
+`
+	xmlFile := filepath.Join(dir, "input.xml")
+	if err := os.WriteFile(xmlFile, []byte(xmlData), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	var out, errBuf bytes.Buffer
+	code := runReq([]string{"--dir", dir, "import", "--format", "codebeamer", "--file", xmlFile}, &out, &errBuf)
+	if code != 0 {
+		t.Errorf("expected exit 0, got %d: %s", code, errBuf.String())
+	}
+	if !strings.Contains(out.String(), "Imported 1") {
+		t.Errorf("expected Imported 1 in output, got: %s", out.String())
+	}
+}
+
+//fusa:test REQ-CLI-REQ003
+func TestRunReqExport_Codebeamer(t *testing.T) {
+	dir := t.TempDir()
+	reqs := `{"requirements":[{"id":"REQ-001","title":"Auth","asil":"ASIL-B","level":"HLR"}]}`
+	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	var out, errBuf bytes.Buffer
+	code := runReq([]string{"--dir", dir, "export", "--format", "codebeamer"}, &out, &errBuf)
+	if code != 0 {
+		t.Errorf("expected exit 0, got %d: %s", code, errBuf.String())
+	}
+	if !strings.Contains(out.String(), "tracker") {
+		t.Errorf("expected tracker element in output, got: %s", out.String())
+	}
+}
+
+//fusa:test REQ-CLI-REQ002
+func TestRunReqImport_Jama(t *testing.T) {
+	dir := t.TempDir()
+	xmlData := `<?xml version="1.0"?>
+<items>
+  <item id="REQ-001" itemType="TEXT">
+    <name>Safety requirement</name>
+    <description>The system shall be safe</description>
+    <fields>
+      <field id="asil" value="ASIL-B"/>
+    </fields>
+  </item>
+</items>
+`
+	xmlFile := filepath.Join(dir, "input.xml")
+	if err := os.WriteFile(xmlFile, []byte(xmlData), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	var out, errBuf bytes.Buffer
+	code := runReq([]string{"--dir", dir, "import", "--format", "jama", "--file", xmlFile}, &out, &errBuf)
+	if code != 0 {
+		t.Errorf("expected exit 0, got %d: %s", code, errBuf.String())
+	}
+	if !strings.Contains(out.String(), "Imported 1") {
+		t.Errorf("expected Imported 1 in output, got: %s", out.String())
+	}
+}
+
+//fusa:test REQ-CLI-REQ003
+func TestRunReqExport_Jama(t *testing.T) {
+	dir := t.TempDir()
+	reqs := `{"requirements":[{"id":"REQ-001","title":"Safety req","asil":"ASIL-B"}]}`
+	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	var out, errBuf bytes.Buffer
+	code := runReq([]string{"--dir", dir, "export", "--format", "jama"}, &out, &errBuf)
+	if code != 0 {
+		t.Errorf("expected exit 0, got %d: %s", code, errBuf.String())
+	}
+	if !strings.Contains(out.String(), "items") {
+		t.Errorf("expected items element in output, got: %s", out.String())
 	}
 }

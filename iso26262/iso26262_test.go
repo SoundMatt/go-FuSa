@@ -13,6 +13,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/iso26262"
 )
 
+//fusa:test REQ-ISO26262-001
 func TestAssess_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso26262.Assess(dir, "myproject", iso26262.ASILB)
@@ -33,6 +34,7 @@ func TestAssess_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-001
 func TestAssess_WithEvidence(t *testing.T) {
 	dir := t.TempDir()
 	for _, f := range []string{"SAFETY_PLAN.md", ".fusa-reqs.json", ".fusa-evidence.json", "boundary.mermaid"} {
@@ -49,6 +51,7 @@ func TestAssess_WithEvidence(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-001
 func TestAssess_ASILC_SafetyCase(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILC)
@@ -71,6 +74,7 @@ func TestAssess_ASILC_SafetyCase(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-001
 func TestAssess_ASILA_SafetyCaseNA(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILA)
@@ -88,6 +92,7 @@ func TestAssess_ASILA_SafetyCaseNA(t *testing.T) {
 	t.Error("6.7 not found")
 }
 
+//fusa:test REQ-ISO26262-001
 func TestAssess_ASILC_ManualReview(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILC)
@@ -106,6 +111,7 @@ func TestAssess_ASILC_ManualReview(t *testing.T) {
 	t.Error("11.1 not found at ASIL-C")
 }
 
+//fusa:test REQ-ISO26262-003
 func TestRender_Text(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := iso26262.Assess(dir, "proj", iso26262.ASILB)
@@ -122,6 +128,7 @@ func TestRender_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-003
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := iso26262.Assess(dir, "proj", iso26262.ASILB)
@@ -134,6 +141,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-003
 func TestRender_InvalidFormat(t *testing.T) {
 	rep := &iso26262.Report{}
 	if err := iso26262.Render(&bytes.Buffer{}, rep, "html"); err == nil {
@@ -141,6 +149,7 @@ func TestRender_InvalidFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-002
 func TestASILConstants(t *testing.T) {
 	if iso26262.ASILA != "ASIL-A" {
 		t.Errorf("ASILA = %q", iso26262.ASILA)
@@ -150,6 +159,7 @@ func TestASILConstants(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-004
 func TestRuleFiresWhenReportAbsent(t *testing.T) {
 	// The rule is registered via init(); we just verify Assess works in an empty dir
 	// and the report file constant is correct.
@@ -158,6 +168,7 @@ func TestRuleFiresWhenReportAbsent(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-004
 func TestRuleAbsentWhenPresent(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, iso26262.ReportFile), []byte("{}"), 0o644); err != nil {
@@ -174,6 +185,7 @@ func TestRuleAbsentWhenPresent(t *testing.T) {
 
 // ─── New v0.22 objectives ─────────────────────────────────────────────────────
 
+//fusa:test REQ-ISO26262-001
 func TestAssess_7_3_UsesHARAJSON(t *testing.T) {
 	dir := t.TempDir()
 	// .fusa-hara.json present → obj 7.3 should PASS
@@ -195,6 +207,7 @@ func TestAssess_7_3_UsesHARAJSON(t *testing.T) {
 	t.Error("objective 7.3 not found")
 }
 
+//fusa:test REQ-ISO26262-001
 func TestAssess_10_4_SCI(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILB)
@@ -212,6 +225,7 @@ func TestAssess_10_4_SCI(t *testing.T) {
 	t.Error("objective 10.4 not found")
 }
 
+//fusa:test REQ-ISO26262-001
 func TestAssess_10_4_SCI_Pass(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "sci.json"), []byte(`{}`), 0o644); err != nil {
@@ -232,6 +246,7 @@ func TestAssess_10_4_SCI_Pass(t *testing.T) {
 	t.Error("objective 10.4 not found")
 }
 
+//fusa:test REQ-ISO26262-005
 func TestISO26262002_FiresForISO26262ProjectWithUnannotatedReqs(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[{"id":"REQ-001","title":"req without ASIL"}]}`
@@ -256,6 +271,7 @@ func TestISO26262002_FiresForISO26262ProjectWithUnannotatedReqs(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-005
 func TestISO26262002_SilentForNonISO26262(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[{"id":"REQ-001","title":"no asil"}]}`
@@ -275,6 +291,7 @@ func TestISO26262002_SilentForNonISO26262(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-006
 func TestISO26262003_SilentWhenNoFailures(t *testing.T) {
 	dir := t.TempDir()
 	qualify := `{"pass":44,"fail":0,"total":44}`
@@ -294,6 +311,7 @@ func TestISO26262003_SilentWhenNoFailures(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ISO26262-006
 func TestISO26262003_FiresWhenFailures(t *testing.T) {
 	dir := t.TempDir()
 	qualify := `{"pass":42,"fail":2,"total":44}`
@@ -315,6 +333,7 @@ func TestISO26262003_FiresWhenFailures(t *testing.T) {
 
 // ─── Description coverage ─────────────────────────────────────────────────────
 
+//fusa:test REQ-ISO26262-004
 func TestISO26262_Descriptions(t *testing.T) {
 	ids := []string{"ISO26262001", "ISO26262002", "ISO26262003"}
 	for _, id := range ids {

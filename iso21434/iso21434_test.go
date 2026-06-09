@@ -16,6 +16,8 @@ import (
 
 // TestAssess_EmptyDir expects gaps for all automatable objectives that apply
 // at CAL-1, and MANUAL for manual objectives.
+//
+//fusa:test REQ-ISO21434-001
 func TestAssess_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso21434.Assess(dir, "CAL-1")
@@ -31,6 +33,8 @@ func TestAssess_EmptyDir(t *testing.T) {
 }
 
 // TestAssess_WithEvidence checks that providing evidence files results in passes.
+//
+//fusa:test REQ-ISO21434-001
 func TestAssess_WithEvidence(t *testing.T) {
 	dir := t.TempDir()
 	for _, f := range []string{"tara.json", "vuln.json", "sbom.json", "provenance.json",
@@ -49,6 +53,8 @@ func TestAssess_WithEvidence(t *testing.T) {
 }
 
 // TestAssess_CAL4_HigherMinCAL verifies CAL-4 objectives with MinCAL:2 apply.
+//
+//fusa:test REQ-ISO21434-001
 func TestAssess_CAL4_HigherMinCAL(t *testing.T) {
 	dir := t.TempDir()
 	// Write tara.json so objectives that reference it pass
@@ -70,6 +76,8 @@ func TestAssess_CAL4_HigherMinCAL(t *testing.T) {
 }
 
 // TestAssess_CAL1_NA verifies objectives with MinCAL:2 are N/A at CAL-1.
+//
+//fusa:test REQ-ISO21434-001
 func TestAssess_CAL1_NA(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso21434.Assess(dir, "CAL-1")
@@ -89,6 +97,8 @@ func TestAssess_CAL1_NA(t *testing.T) {
 }
 
 // TestISO21434001_Description checks the rule description is non-empty.
+//
+//fusa:test REQ-ISO21434-001
 func TestISO21434001_Description(t *testing.T) {
 	for _, r := range engine.Default.Rules() {
 		if r.ID() == "ISO21434001" {
@@ -102,6 +112,8 @@ func TestISO21434001_Description(t *testing.T) {
 }
 
 // TestISO21434001_Run verifies rule fires for ISO21434 project without tara.json.
+//
+//fusa:test REQ-ISO21434-001
 func TestISO21434001_Run(t *testing.T) {
 	dir := t.TempDir()
 	cfg := config.Default("github.com/example/test", "test")
@@ -135,6 +147,8 @@ func TestISO21434001_Run(t *testing.T) {
 }
 
 // TestISO21434001_Run_NonISO21434 verifies rule is silent for non-ISO21434 projects.
+//
+//fusa:test REQ-ISO21434-001
 func TestISO21434001_Run_NonISO21434(t *testing.T) {
 	dir := t.TempDir()
 	for _, r := range engine.Default.Rules() {
@@ -155,6 +169,8 @@ func TestISO21434001_Run_NonISO21434(t *testing.T) {
 }
 
 // TestISO21434001_Run_NilCfg verifies rule is silent with nil config.
+//
+//fusa:test REQ-ISO21434-001
 func TestISO21434001_Run_NilCfg(t *testing.T) {
 	dir := t.TempDir()
 	for _, r := range engine.Default.Rules() {
@@ -173,6 +189,8 @@ func TestISO21434001_Run_NilCfg(t *testing.T) {
 }
 
 // TestRender_Text verifies text rendering runs without error.
+//
+//fusa:test REQ-ISO21434-001
 func TestRender_Text(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso21434.Assess(dir, "CAL-1")
@@ -189,6 +207,8 @@ func TestRender_Text(t *testing.T) {
 }
 
 // TestRender_JSON verifies JSON rendering produces valid JSON.
+//
+//fusa:test REQ-ISO21434-001
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso21434.Assess(dir, "CAL-2")
@@ -209,6 +229,8 @@ func TestRender_JSON(t *testing.T) {
 }
 
 // TestRender_UnknownFormat verifies error on unknown format.
+//
+//fusa:test REQ-ISO21434-001
 func TestRender_UnknownFormat(t *testing.T) {
 	dir := t.TempDir()
 	rep, _ := iso21434.Assess(dir, "CAL-1")
@@ -219,6 +241,8 @@ func TestRender_UnknownFormat(t *testing.T) {
 }
 
 // TestEngineRun_ISO21434001 verifies the engine fires ISO21434001 for ISO21434 projects.
+//
+//fusa:test REQ-ISO21434-001
 func TestEngineRun_ISO21434001(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {

@@ -10,6 +10,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/sci"
 )
 
+//fusa:test REQ-SCI001
 func TestBuild_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	index, err := sci.Build(dir, "test-project", "1.0.0")
@@ -33,6 +34,7 @@ func TestBuild_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SCI001
 func TestBuild_WithSomeFiles(t *testing.T) {
 	dir := t.TempDir()
 	// Create a few catalog files
@@ -60,6 +62,7 @@ func TestBuild_WithSomeFiles(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SCI001
 func TestBuild_SHA256Stable(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "sbom.json"), []byte("hello"), 0o644); err != nil {
@@ -83,6 +86,7 @@ func TestBuild_SHA256Stable(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SCI002
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	index, _ := sci.Build(dir, "proj", "1.0")
@@ -96,6 +100,7 @@ func TestRender_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SCI002
 func TestRender_Markdown(t *testing.T) {
 	dir := t.TempDir()
 	index, _ := sci.Build(dir, "proj", "1.0")
@@ -112,6 +117,7 @@ func TestRender_Markdown(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SCI002
 func TestRender_InvalidFormat(t *testing.T) {
 	index := &sci.SCI{}
 	if err := sci.Render(&bytes.Buffer{}, index, "csv"); err == nil {
@@ -119,6 +125,7 @@ func TestRender_InvalidFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SCI003
 func TestSaveJSON(t *testing.T) {
 	dir := t.TempDir()
 	index, _ := sci.Build(dir, "proj", "1.0")
@@ -135,6 +142,7 @@ func TestSaveJSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-SCI001
 func TestDataClassConstants(t *testing.T) {
 	if sci.ClassPlan != "Plan" {
 		t.Errorf("ClassPlan = %q", sci.ClassPlan)
