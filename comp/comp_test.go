@@ -10,8 +10,6 @@ import (
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/testutil"
-
-	_ "github.com/SoundMatt/go-FuSa/comp"
 )
 
 func runComp(t *testing.T, files map[string]string) []fusa.Finding {

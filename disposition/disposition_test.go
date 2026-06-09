@@ -11,7 +11,6 @@ import (
 
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/disposition"
-	_ "github.com/SoundMatt/go-FuSa/disposition" // ensure rule is registered
 	"github.com/SoundMatt/go-FuSa/engine"
 )
 
