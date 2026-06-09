@@ -46,7 +46,7 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `sci/` | Software Configuration Index — SHA-256 checksums of lifecycle data items (DO-178C §11.16) |
 | `do178/` | DO-178C Annex A gap report — 38 objectives across Tables A-1 through A-11 |
 | `sas/` | Software Accomplishment Summary — 20 evidence items (DO-178C §11.20) |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr` |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr`, `coupling` |
 
 ## Install
 
@@ -89,8 +89,10 @@ gofusa trace
 # Run tests and save a test evidence bundle
 gofusa verify
 
-# Generate SBOM (SPDX 3.0.1), build provenance, and artifact manifest
-gofusa release
+# Generate SBOM (SPDX 2.2/2.3/3.0.1), build provenance, and artifact manifest
+gofusa release                          # SPDX 3.0.1 (default)
+gofusa release --spdx-version 2.3      # SPDX 2.3 JSON
+gofusa release --spdx-version 2.2      # SPDX 2.2 JSON
 
 # Run the tool qualification suite
 gofusa qualify
@@ -150,6 +152,10 @@ gofusa badge report.json --output badge.svg
 
 # Output SARIF 2.1.0 for GitHub Advanced Security / Code Scanning
 gofusa check --format sarif --output results.sarif
+
+# Generate data/control coupling report (DO-178C §6.4.4.3 — writes coupling-report.json)
+gofusa coupling
+gofusa coupling --dir ./mypackage --output coupling-report.json
 
 # DO-178C compliance: gap report, SAS, SCI, structural coverage, problem reports
 gofusa do178 --dal DAL-B                          # Annex A objectives gap report

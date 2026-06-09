@@ -52,7 +52,8 @@ type Requirement struct {
 	Title    string `json:"title"`
 	Text     string `json:"text,omitempty"`
 	Standard string `json:"standard,omitempty"`
-	Level    string `json:"level,omitempty"`
+	Level    string `json:"level,omitempty"` // HLR or LLR
+	ASIL     string `json:"asil,omitempty"`  // e.g. ASIL-B, SIL-2
 }
 
 // Tag links a source location to a requirement.

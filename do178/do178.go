@@ -19,6 +19,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/SoundMatt/go-FuSa/trace"
 )
 
 // ReportFile is the default output filename.
@@ -125,9 +127,9 @@ var allObjectives = []struct {
 	},
 	{
 		"A-2.2", "A-2", "§5.2",
-		"Low-level requirements derived from HLR and software architecture",
+		"Low-level requirements derived from HLR (Level=LLR in .fusa-reqs.json)",
 		[]DAL{DALA, DALB},
-		"", nil, // manual — go-FuSa can check reqs file has LLR-tagged items
+		".fusa-reqs.json", checkLLRItems,
 	},
 	{
 		"A-2.3", "A-2", "§5.3",
@@ -195,15 +197,15 @@ var allObjectives = []struct {
 	},
 	{
 		"A-6.2", "A-6", "§6.4.4.2",
-		"No dead code exists in the software",
+		"No dead code exists in the software (check-report.json from gofusa check)",
 		[]DAL{DALA, DALB},
-		"", nil, // assessed via ANA009
+		"check-report.json", nil,
 	},
 	{
 		"A-6.3", "A-6", "§6.4.4.3",
-		"Data coupling and control coupling are characterised",
+		"Data coupling and control coupling are characterised (coupling-report.json)",
 		[]DAL{DALA, DALB, DALC},
-		"", nil, // assessed via COUP001/COUP002
+		"coupling-report.json", nil,
 	},
 	// Table A-7: Verification of Source Code
 	{
@@ -232,9 +234,9 @@ var allObjectives = []struct {
 	},
 	{
 		"A-7.5", "A-7", "§6.4.4.3",
-		"MC/DC coverage achieved by tests (DAL-A only)",
+		"MC/DC coverage achieved by tests (DAL-A only; use decision coverage from coverage-report.json as partial evidence)",
 		[]DAL{DALA},
-		"", nil, // manual — cannot automate
+		"", nil, // manual — Go toolchain does not report MC/DC; decision coverage (A-7.4) is the strongest automated substitute
 	},
 	// Table A-8: Testing of Integration Process
 	{
@@ -353,6 +355,24 @@ func Assess(projectRoot, project string, dal DAL) (*Report, error) {
 			continue
 		}
 
+		// Custom check function takes precedence over file check.
+		if o.check != nil {
+			status, evidence, gap := o.check(projectRoot)
+			obj.Status = status
+			obj.Evidence = evidence
+			obj.Gap = gap
+			switch status {
+			case StatusPass:
+				rep.Pass++
+			case StatusGap:
+				rep.Gap++
+			default:
+				rep.Manual++
+			}
+			rep.Objectives = append(rep.Objectives, obj)
+			continue
+		}
+
 		// Manually assessed objectives
 		if o.file == "" {
 			obj.Status = StatusManual
@@ -431,6 +451,24 @@ func checkSourceCode(projectRoot string, rep *Report) {
 	}
 }
 
+// checkLLRItems returns PASS if .fusa-reqs.json contains at least one
+// requirement with Level == "LLR", GAP otherwise (DO-178C §5.2).
+func checkLLRItems(projectRoot string) (ObjectiveStatus, string, string) {
+	reqs, err := trace.LoadRequirements(projectRoot)
+	if err != nil {
+		return StatusGap, "", ".fusa-reqs.json not found — run 'gofusa trace' to create requirements file"
+	}
+	for _, r := range reqs {
+		if strings.EqualFold(r.Level, "LLR") {
+			return StatusPass, ".fusa-reqs.json contains LLR-tagged requirements", ""
+		}
+	}
+	if len(reqs) == 0 {
+		return StatusGap, "", "no requirements in .fusa-reqs.json — run 'gofusa trace' to populate"
+	}
+	return StatusGap, "", `no requirements tagged with level "LLR" in .fusa-reqs.json — add "level":"LLR" to low-level requirements`
+}
+
 func commandForFile(file string) string {
 	m := map[string]string{
 		".fusa-reqs.json":          "trace",
@@ -445,6 +483,8 @@ func commandForFile(file string) string {
 		"sci.json":                 "sci",
 		".fusa-problems.json":      "pr init",
 		"coverage-report.json":     "coverage",
+		"coupling-report.json":     "coupling",
+		"check-report.json":        "check --format json",
 		"SAFETY_PLAN.md":           "template --type sdp",
 		"SVP.md":                   "template --type svp",
 		"SCMP.md":                  "template --type scmp",

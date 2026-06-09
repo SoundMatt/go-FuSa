@@ -12,6 +12,7 @@ package coupling
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -19,15 +20,51 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
 )
 
+// CouplingReportFile is the default output filename for coupling analysis.
+const CouplingReportFile = "coupling-report.json"
+
+// CouplingReport is the persisted coupling analysis evidence artifact.
+// It satisfies DO-178C §6.4.4.3 (data and control coupling characterisation).
+//
+//fusa:req REQ-COUPLING003
+type CouplingReport struct {
+	GeneratedAt     time.Time      `json:"generatedAt"`
+	ProjectRoot     string         `json:"projectRoot"`
+	DataCoupling    []fusa.Finding `json:"dataCoupling"`
+	ControlCoupling []fusa.Finding `json:"controlCoupling"`
+}
+
+// SaveReport writes a CouplingReport as indented JSON to path.
+//
+//fusa:req REQ-COUPLING003
+func SaveReport(path string, data, ctrl []fusa.Finding, projectRoot string) error {
+	rep := &CouplingReport{
+		GeneratedAt:     time.Now().UTC(),
+		ProjectRoot:     projectRoot,
+		DataCoupling:    data,
+		ControlCoupling: ctrl,
+	}
+	b, err := json.MarshalIndent(rep, "", "  ")
+	if err != nil {
+		return fmt.Errorf("coupling: marshal report: %w", err)
+	}
+	if err := os.WriteFile(path, append(b, '\n'), 0o640); err != nil {
+		return fmt.Errorf("coupling: write %s: %w", path, err)
+	}
+	return nil
+}
+
 func init() {
 	engine.Default.MustRegister(&ruleDataCoupling{})
 	engine.Default.MustRegister(&ruleControlCoupling{})
+	engine.Default.MustRegister(&ruleCouplingReportPresent{})
 }
 
 // NewDataCouplingRule returns a COUP001 rule instance for testing.
@@ -185,4 +222,30 @@ func parseModuleFiles(projectRoot string) ([]parsedFile, error) {
 		return nil
 	})
 	return results, err
+}
+
+// COUP003 — coupling-report.json not present.
+type ruleCouplingReportPresent struct{}
+
+func (r *ruleCouplingReportPresent) ID() string { return "COUP003" }
+func (r *ruleCouplingReportPresent) Description() string {
+	return "coupling-report.json not found — coupling characterisation evidence required by DO-178C §6.4.4.3."
+}
+
+//fusa:req REQ-COUPLING003
+func (r *ruleCouplingReportPresent) Run(_ context.Context, projectRoot string, cfg *config.Config) ([]fusa.Finding, error) {
+	path := filepath.Join(projectRoot, CouplingReportFile)
+	if _, err := os.Stat(path); err == nil {
+		return nil, nil
+	}
+	if cfg == nil || cfg.Project.Standard != "DO178C" {
+		return nil, nil // only surface when project is explicitly DO-178C
+	}
+	return []fusa.Finding{{
+		RuleID:      r.ID(),
+		Severity:    fusa.SeverityInfo,
+		Message:     CouplingReportFile + " not found — coupling characterisation evidence absent",
+		Location:    fusa.Location{File: CouplingReportFile},
+		Remediation: "run 'gofusa coupling' to generate the coupling evidence report",
+	}}, nil
 }

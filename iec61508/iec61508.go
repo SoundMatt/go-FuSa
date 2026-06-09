@@ -102,9 +102,9 @@ var allObjectives = []struct {
 	},
 	{
 		"1.3", "Part 1", "§7.4",
-		"Risk assessment and SIL determination documented",
+		"Risk assessment and SIL determination documented (.fusa-hara.json)",
 		[]SIL{SIL1, SIL2, SIL3, SIL4},
-		"", // MANUAL
+		".fusa-hara.json",
 	},
 	// Part 2 — Requirements for electrical / electronic / programmable electronic safety-related systems
 	{
@@ -171,9 +171,9 @@ var allObjectives = []struct {
 	},
 	{
 		"4.2", "Part 4", "§B.2",
-		"HAZOP or equivalent analysis",
+		"HAZOP or equivalent analysis (fmea.json satisfies for SIL-3; SIL-4 requires independent HAZOP)",
 		[]SIL{SIL3, SIL4},
-		"", // MANUAL
+		"fmea.json",
 	},
 	// Part 5 — Configuration management
 	{
@@ -193,6 +193,12 @@ var allObjectives = []struct {
 		"Software change management (provenance.json)",
 		[]SIL{SIL1, SIL2, SIL3, SIL4},
 		"provenance.json",
+	},
+	{
+		"5.4", "Part 5", "§7.7",
+		"Software Configuration Index (sci.json)",
+		[]SIL{SIL2, SIL3, SIL4},
+		"sci.json",
 	},
 	// Part 6 — Verification
 	{
@@ -324,9 +330,11 @@ func commandForFile(file string) string {
 		"SVP.md":               "template --type svp",
 		"cyber-report.json":    "cyber",
 		".fusa-problems.json":  "pr init",
+		".fusa-hara.json":      "hara init",
 		"vuln.json":            "vuln",
 		"check-report.json":    "check",
 		"coverage-report.json": "coverage",
+		"sci.json":             "sci",
 	}
 	if cmd, ok := m[file]; ok {
 		return cmd

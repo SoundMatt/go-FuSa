@@ -247,6 +247,108 @@ func ToSPDX31(sbom *SBOM) *SPDX31Document {
 	}
 }
 
+// ─── SPDX 2.x types ───────────────────────────────────────────────────────────
+
+// SPDX2xDocument is a Software Bill of Materials in SPDX 2.2 or 2.3 JSON format.
+// Produced by ToSPDX22 and ToSPDX23; this format is more widely supported by
+// older toolchains than SPDX 3.0.1 JSON-LD.
+//
+//fusa:req REQ-RELEASE009
+type SPDX2xDocument struct {
+	SPDXID            string          `json:"SPDXID"`
+	SpdxVersion       string          `json:"spdxVersion"`
+	CreationInfo      SPDX2xCreation  `json:"creationInfo"`
+	Name              string          `json:"name"`
+	DataLicense       string          `json:"dataLicense"`
+	DocumentNamespace string          `json:"documentNamespace"`
+	Packages          []SPDX2xPackage `json:"packages"`
+	Relationships     []SPDX2xRel     `json:"relationships"`
+}
+
+// SPDX2xCreation holds provenance metadata for an SPDX 2.x document.
+type SPDX2xCreation struct {
+	Created  string   `json:"created"`
+	Creators []string `json:"creators"`
+}
+
+// SPDX2xPackage represents a single dependency package in an SPDX 2.x SBOM.
+type SPDX2xPackage struct {
+	SPDXID           string       `json:"SPDXID"`
+	Name             string       `json:"name"`
+	VersionInfo      string       `json:"versionInfo"`
+	DownloadLocation string       `json:"downloadLocation"`
+	FilesAnalyzed    bool         `json:"filesAnalyzed"`
+	Checksums        []SPDX2xHash `json:"checksums,omitempty"`
+}
+
+// SPDX2xHash is a checksum entry in an SPDX 2.x package.
+type SPDX2xHash struct {
+	Algorithm     string `json:"algorithm"`
+	ChecksumValue string `json:"checksumValue"`
+}
+
+// SPDX2xRel is a relationship entry in an SPDX 2.x document.
+type SPDX2xRel struct {
+	SpdxElementID      string `json:"spdxElementId"`
+	RelationshipType   string `json:"relationshipType"`
+	RelatedSpdxElement string `json:"relatedSpdxElement"`
+}
+
+// ToSPDX22 converts a go-FuSa SBOM into an SPDX 2.2 JSON document.
+//
+//fusa:req REQ-RELEASE009
+func ToSPDX22(sbom *SBOM) *SPDX2xDocument { return toSPDX2x(sbom, "SPDX-2.2") }
+
+// ToSPDX23 converts a go-FuSa SBOM into an SPDX 2.3 JSON document.
+//
+//fusa:req REQ-RELEASE009
+func ToSPDX23(sbom *SBOM) *SPDX2xDocument { return toSPDX2x(sbom, "SPDX-2.3") }
+
+func toSPDX2x(sbom *SBOM, version string) *SPDX2xDocument {
+	created := sbom.GeneratedAt.UTC().Format(time.RFC3339)
+	ns := "https://spdx.org/spdxdocs/" + strings.ReplaceAll(sbom.Module, "/", "-") + "-" + created
+
+	pkgs := make([]SPDX2xPackage, 0, len(sbom.Components))
+	rels := make([]SPDX2xRel, 0, len(sbom.Components))
+
+	for _, c := range sbom.Components {
+		spdxID := "SPDXRef-" + spdx2xID(c.Name, c.Version)
+		pkg := SPDX2xPackage{
+			SPDXID:           spdxID,
+			Name:             c.Name,
+			VersionInfo:      c.Version,
+			DownloadLocation: "https://pkg.go.dev/" + c.Name,
+			FilesAnalyzed:    false,
+		}
+		if h := h1ToHex(c.Hash); h != "" {
+			pkg.Checksums = []SPDX2xHash{{Algorithm: "SHA256", ChecksumValue: h}}
+		}
+		pkgs = append(pkgs, pkg)
+		rels = append(rels, SPDX2xRel{
+			SpdxElementID:      "SPDXRef-DOCUMENT",
+			RelationshipType:   "DESCRIBES",
+			RelatedSpdxElement: spdxID,
+		})
+	}
+
+	return &SPDX2xDocument{
+		SPDXID:            "SPDXRef-DOCUMENT",
+		SpdxVersion:       version,
+		CreationInfo:      SPDX2xCreation{Created: created, Creators: []string{"Tool: go-FuSa-" + fusa.Version}},
+		Name:              sbom.Module,
+		DataLicense:       "CC0-1.0",
+		DocumentNamespace: ns,
+		Packages:          pkgs,
+		Relationships:     rels,
+	}
+}
+
+// spdx2xID produces a safe SPDX element ID suffix from a module path and version.
+func spdx2xID(name, version string) string {
+	r := strings.NewReplacer("/", "-", ".", "-", "@", "-")
+	return r.Replace(name) + "-" + r.Replace(version)
+}
+
 // h1ToHex converts a go.sum h1: hash (base64-encoded SHA-256) to lowercase hex.
 // Returns the original string unchanged if it is not a valid h1: value.
 func h1ToHex(h1 string) string {

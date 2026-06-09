@@ -7,9 +7,19 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/coupling"
 	"github.com/SoundMatt/go-FuSa/engine"
 )
+
+func loadConfig(t *testing.T, path string) *config.Config {
+	t.Helper()
+	cfg, err := config.Load(path)
+	if err != nil {
+		t.Fatalf("config.Load: %v", err)
+	}
+	return cfg
+}
 
 func writeGoFile(t *testing.T, dir, name, content string) {
 	t.Helper()
@@ -168,3 +178,109 @@ var ExportedInTest = "hi"
 
 // Ensure the runRule helper compiles (used in other test functions if needed).
 var _ = runRule
+
+// ─── CouplingReport / SaveReport ──────────────────────────────────────────────
+
+func TestSaveReport_WritesValidJSON(t *testing.T) {
+	dir := t.TempDir()
+	outPath := filepath.Join(dir, coupling.CouplingReportFile)
+	if err := coupling.SaveReport(outPath, nil, nil, dir); err != nil {
+		t.Fatalf("SaveReport: %v", err)
+	}
+	data, err := os.ReadFile(outPath)
+	if err != nil {
+		t.Fatalf("ReadFile: %v", err)
+	}
+	if !strings.Contains(string(data), `"generatedAt"`) {
+		t.Error("output does not contain generatedAt")
+	}
+}
+
+func TestSaveReport_WithFindings(t *testing.T) {
+	dir := t.TempDir()
+	writeGoFile(t, dir, "a.go", `package pkg
+import "fmt"
+var Exported int = 0
+func Fn(cb func()) { fmt.Println(cb) }
+`)
+	dataRule := coupling.NewDataCouplingRule()
+	ctrlRule := coupling.NewControlCouplingRule()
+	data, _ := dataRule.Run(context.Background(), dir, nil)
+	ctrl, _ := ctrlRule.Run(context.Background(), dir, nil)
+
+	outPath := filepath.Join(dir, coupling.CouplingReportFile)
+	if err := coupling.SaveReport(outPath, data, ctrl, dir); err != nil {
+		t.Fatalf("SaveReport: %v", err)
+	}
+	raw, _ := os.ReadFile(outPath)
+	if !strings.Contains(string(raw), `"dataCoupling"`) {
+		t.Error("report missing dataCoupling field")
+	}
+	if !strings.Contains(string(raw), `"controlCoupling"`) {
+		t.Error("report missing controlCoupling field")
+	}
+}
+
+// ─── COUP003 ──────────────────────────────────────────────────────────────────
+
+func findRule(t *testing.T, id string) engine.Rule {
+	t.Helper()
+	for _, r := range engine.Default.Rules() {
+		if r.ID() == id {
+			return r
+		}
+	}
+	t.Fatalf("%s not registered in engine", id)
+	return nil
+}
+
+func writeFusaJSON(t *testing.T, dir, standard string) {
+	t.Helper()
+	content := `{"version":"1","project":{"name":"t","module":"t","standard":"` + standard + `"},"rules":{},"report":{"format":"text"}}`
+	if err := os.WriteFile(filepath.Join(dir, ".fusa.json"), []byte(content), 0o640); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCOUP003_FiredWhenDO178CAndNoReport(t *testing.T) {
+	dir := t.TempDir()
+	writeFusaJSON(t, dir, "DO178C")
+	cfg := loadConfig(t, filepath.Join(dir, ".fusa.json"))
+	rule := findRule(t, "COUP003")
+	findings, err := rule.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if len(findings) == 0 {
+		t.Error("expected COUP003 finding for DO178C project without coupling-report.json")
+	}
+}
+
+func TestCOUP003_SilentWhenNonDO178C(t *testing.T) {
+	dir := t.TempDir()
+	rule := findRule(t, "COUP003")
+	findings, err := rule.Run(context.Background(), dir, nil)
+	if err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if len(findings) != 0 {
+		t.Errorf("COUP003 should not fire for non-DO178C project, got %d findings", len(findings))
+	}
+}
+
+func TestCOUP003_SilentWhenReportPresent(t *testing.T) {
+	dir := t.TempDir()
+	writeFusaJSON(t, dir, "DO178C")
+	if err := os.WriteFile(filepath.Join(dir, coupling.CouplingReportFile), []byte(`{}`), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	cfg := loadConfig(t, filepath.Join(dir, ".fusa.json"))
+	rule := findRule(t, "COUP003")
+	findings, err := rule.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if len(findings) != 0 {
+		t.Errorf("COUP003 should not fire when report present, got %d findings", len(findings))
+	}
+}

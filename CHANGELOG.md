@@ -7,6 +7,42 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.22.0] — 2026-06-09
+
+### Added
+- **SPDX 2.2 and 2.3 SBOM support** — `release.ToSPDX22` and `release.ToSPDX23` produce
+  JSON-format SBOM documents with standard `SPDXID`/`spdxVersion`/`creationInfo`/`packages`/
+  `relationships` fields. `gofusa release --spdx-version 2.2|2.3|3.0.1` selects the format;
+  default remains 3.0.1.
+- **`gofusa coupling` command** — generates `coupling-report.json` from live data/control
+  coupling analysis of the project source tree. Useful for DO-178C §6.4.4.3 evidence.
+- **`coupling.SaveReport`** — serialises coupling findings to a versioned JSON report with
+  `generatedAt`, `projectRoot`, `dataCoupling`, and `controlCoupling` fields.
+- **COUP003 engine rule** — fires INFO when a DO-178C project lacks `coupling-report.json`,
+  prompting teams to run `gofusa coupling` before the evidence bundle is assembled.
+- **`trace.Requirement.ASIL` field** — requirements in `.fusa-reqs.json` now accept an
+  optional `asil` field (e.g. `"ASIL-B"`, `"SIL-2"`) for ASIL-tagged requirement tracking.
+- **HARA005 engine rule** — fires WARNING when the highest hazard ASIL in `.fusa-hara.json`
+  exceeds the project ASIL declared in `.fusa.json`, preventing accidental ASIL under-allocation.
+- **ISO 26262 gap-assessment improvements:**
+  - Obj 7.3 now checks `.fusa-hara.json` (structured HARA) instead of `HARA.md`.
+  - New obj 10.4 — SCI (`sci.json`) evidence check, required for ASIL-B/C/D.
+  - New obj 11.3 — coupling evidence (`coupling-report.json`) check, required for ASIL-C/D.
+  - **ISO26262002 engine rule** — fires INFO when an ISO 26262 project has requirements
+    without an `asil` field in `.fusa-reqs.json`.
+  - **ISO26262003 engine rule** — fires WARNING when `qualify-report.json` has failures,
+    indicating the tool qualification depth is insufficient.
+- **IEC 61508 gap-assessment improvements:**
+  - Obj 1.3 now resolves via `.fusa-hara.json` (was MANUAL).
+  - Obj 4.2 now resolves via `fmea.json` (was MANUAL).
+  - New obj 5.4 — SCI (`sci.json`) evidence check, required for SIL-2/3/4.
+- **DO-178C gap-assessment improvements:**
+  - A-2.2 LLR detection — checks `.fusa-reqs.json` for requirements tagged `level: LLR`
+    (was always MANUAL).
+  - A-6.2 now maps to `check-report.json` (was MANUAL).
+  - A-6.3 now maps to `coupling-report.json` (was MANUAL).
+  - The `check` function field in `allObjectives` is now invoked during `Assess()`.
+
 ## [0.21.0] — 2026-06-09
 
 ### Added
