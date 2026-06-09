@@ -18,11 +18,13 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/trace"
 )
 
 // ReportFile is the default output filename.
@@ -146,9 +148,9 @@ var allObjectives = []struct {
 	},
 	{
 		"7.3", "Part 7", "§7.4.2",
-		"Hazard and Risk Analysis (HARA) document (HARA.md)",
+		"Hazard and Risk Analysis (HARA) structured data (.fusa-hara.json)",
 		[]ASIL{ASILA, ASILB, ASILC, ASILD},
-		"HARA.md",
+		".fusa-hara.json",
 	},
 	{
 		"7.4", "Part 7", "§7.5",
@@ -195,6 +197,13 @@ var allObjectives = []struct {
 		[]ASIL{ASILC, ASILD},
 		"qualify-report.json",
 	},
+	// Part 10 continued — Software Configuration Index
+	{
+		"10.4", "Part 10", "§10.4.4",
+		"Software Configuration Index (sci.json)",
+		[]ASIL{ASILB, ASILC, ASILD},
+		"sci.json",
+	},
 	// Part 11 — Guidelines on application of ISO 26262
 	{
 		"11.1", "Part 11", "§11.3",
@@ -207,6 +216,12 @@ var allObjectives = []struct {
 		"Cybersecurity integration (cyber-report.json)",
 		[]ASIL{ASILA, ASILB, ASILC, ASILD},
 		"cyber-report.json",
+	},
+	{
+		"11.3", "Part 11", "§11.5",
+		"Coupling characterisation evidence (coupling-report.json)",
+		[]ASIL{ASILC, ASILD},
+		"coupling-report.json",
 	},
 }
 
@@ -274,19 +289,22 @@ func asilApplies(asil ASIL, asils []ASIL) bool {
 
 func commandForFile(file string) string {
 	m := map[string]string{
-		".fusa-reqs.json":     "trace",
-		".fusa-evidence.json": "verify",
-		".fusa.json":          "init",
-		"sbom.json":           "release",
-		"provenance.json":     "release",
-		"fmea.json":           "fmea",
-		"boundary.mermaid":    "boundary",
-		"qualify-report.json": "qualify",
-		"safety-case.json":    "safety-case",
-		"SAFETY_PLAN.md":      "template --type safety-plan",
-		"HARA.md":             "template --type hara",
-		"cyber-report.json":   "cyber",
-		".fusa-problems.json": "pr init",
+		".fusa-reqs.json":      "trace",
+		".fusa-evidence.json":  "verify",
+		".fusa.json":           "init",
+		"sbom.json":            "release",
+		"provenance.json":      "release",
+		"fmea.json":            "fmea",
+		"boundary.mermaid":     "boundary",
+		"qualify-report.json":  "qualify",
+		"safety-case.json":     "safety-case",
+		"SAFETY_PLAN.md":       "template --type safety-plan",
+		"HARA.md":              "template --type hara",
+		".fusa-hara.json":      "hara init",
+		"cyber-report.json":    "cyber",
+		".fusa-problems.json":  "pr init",
+		"sci.json":             "sci",
+		"coupling-report.json": "coupling",
 	}
 	if cmd, ok := m[file]; ok {
 		return cmd
@@ -378,6 +396,8 @@ func evidenceFile(obj Objective) string {
 
 func init() {
 	engine.Default.MustRegister(&ruleISO26262ReportPresent{})
+	engine.Default.MustRegister(&ruleISO26262ASILReqs{})
+	engine.Default.MustRegister(&ruleISO26262QualDepth{})
 }
 
 // ISO26262001 — iso26262-gap-report.json should be present.
@@ -400,5 +420,84 @@ func (r *ruleISO26262ReportPresent) Run(_ context.Context, projectRoot string, _
 		Message:     ReportFile + " not found — ISO 26262 gap assessment not yet run",
 		Location:    fusa.Location{File: ReportFile},
 		Remediation: "run 'gofusa iso26262' to generate the gap report",
+	}}, nil
+}
+
+// ISO26262002 — requirements in .fusa-reqs.json lack ASIL annotations.
+// ISO 26262-6 §6.4.2 requires that software safety requirements carry ASIL
+// designations derived from the safety goal ASIL.
+type ruleISO26262ASILReqs struct{}
+
+func (r *ruleISO26262ASILReqs) ID() string { return "ISO26262002" }
+func (r *ruleISO26262ASILReqs) Description() string {
+	return "Requirements in .fusa-reqs.json lack ASIL annotations — ISO 26262-6 §6.4.2 requires ASIL on safety requirements."
+}
+
+//fusa:req REQ-ISO26262-005
+func (r *ruleISO26262ASILReqs) Run(_ context.Context, projectRoot string, cfg *config.Config) ([]fusa.Finding, error) {
+	if cfg == nil || !strings.EqualFold(string(cfg.Project.Standard), "ISO26262") {
+		return nil, nil
+	}
+	reqs, err := trace.LoadRequirements(projectRoot)
+	if err != nil {
+		return nil, nil // TRACE001 covers missing file
+	}
+	if len(reqs) == 0 {
+		return nil, nil
+	}
+	var untagged int
+	for _, r := range reqs {
+		if r.ASIL == "" {
+			untagged++
+		}
+	}
+	if untagged == 0 {
+		return nil, nil
+	}
+	return []fusa.Finding{{
+		RuleID:   r.ID(),
+		Severity: fusa.SeverityInfo,
+		Message: fmt.Sprintf(
+			"%d of %d requirements in .fusa-reqs.json have no ASIL annotation",
+			untagged, len(reqs),
+		),
+		Location:    fusa.Location{File: trace.ReqsFile},
+		Remediation: `add "asil": "ASIL-B" (or appropriate level) to each requirement in .fusa-reqs.json`,
+	}}, nil
+}
+
+// ISO26262003 — tool qualification report has failures.
+// ISO 26262-8 §11 requires that tool qualification evidence demonstrates the
+// tool is fit for purpose. A non-zero fail count undermines this evidence.
+type ruleISO26262QualDepth struct{}
+
+func (r *ruleISO26262QualDepth) ID() string { return "ISO26262003" }
+func (r *ruleISO26262QualDepth) Description() string {
+	return "Tool qualification report (qualify-report.json) has failed test cases — evidence is incomplete."
+}
+
+//fusa:req REQ-ISO26262-006
+func (r *ruleISO26262QualDepth) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	path := filepath.Join(projectRoot, "qualify-report.json")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, nil // ISO26262001 / objective 10.3 cover absence
+	}
+	var rep struct {
+		Fail int `json:"fail"`
+		Pass int `json:"pass"`
+	}
+	if err := json.Unmarshal(data, &rep); err != nil {
+		return nil, nil
+	}
+	if rep.Fail == 0 {
+		return nil, nil // no failures — qualification evidence is clean
+	}
+	return []fusa.Finding{{
+		RuleID:      r.ID(),
+		Severity:    fusa.SeverityWarning,
+		Message:     fmt.Sprintf("qualify-report.json has %d failed test case(s) — tool qualification evidence is incomplete", rep.Fail),
+		Location:    fusa.Location{File: "qualify-report.json"},
+		Remediation: "run 'gofusa qualify' to regenerate tool qualification evidence",
 	}}, nil
 }

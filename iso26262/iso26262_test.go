@@ -2,11 +2,14 @@ package iso26262_test
 
 import (
 	"bytes"
+	"context"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/SoundMatt/go-FuSa/config"
+	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/iso26262"
 )
 
@@ -157,12 +160,9 @@ func TestRuleFiresWhenReportAbsent(t *testing.T) {
 
 func TestRuleAbsentWhenPresent(t *testing.T) {
 	dir := t.TempDir()
-	// Write a fake report file
 	if err := os.WriteFile(filepath.Join(dir, iso26262.ReportFile), []byte("{}"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	// Verify Assess still runs (rule absence is tested via engine; here we just
-	// confirm the file check logic in Assess is unaffected)
 	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILD)
 	if err != nil {
 		t.Fatalf("Assess: %v", err)
@@ -170,4 +170,145 @@ func TestRuleAbsentWhenPresent(t *testing.T) {
 	if rep == nil {
 		t.Error("expected report")
 	}
+}
+
+// ─── New v0.22 objectives ─────────────────────────────────────────────────────
+
+func TestAssess_7_3_UsesHARAJSON(t *testing.T) {
+	dir := t.TempDir()
+	// .fusa-hara.json present → obj 7.3 should PASS
+	if err := os.WriteFile(filepath.Join(dir, ".fusa-hara.json"), []byte(`{}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILB)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	for _, obj := range rep.Objectives {
+		if obj.ID == "7.3" {
+			if obj.Status != iso26262.StatusPass {
+				t.Errorf("7.3 with .fusa-hara.json should PASS, got %v", obj.Status)
+			}
+			return
+		}
+	}
+	t.Error("objective 7.3 not found")
+}
+
+func TestAssess_10_4_SCI(t *testing.T) {
+	dir := t.TempDir()
+	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILB)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	for _, obj := range rep.Objectives {
+		if obj.ID == "10.4" {
+			if obj.Status != iso26262.StatusGap {
+				t.Errorf("10.4 without sci.json should be GAP, got %v", obj.Status)
+			}
+			return
+		}
+	}
+	t.Error("objective 10.4 not found")
+}
+
+func TestAssess_10_4_SCI_Pass(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "sci.json"), []byte(`{}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILB)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	for _, obj := range rep.Objectives {
+		if obj.ID == "10.4" {
+			if obj.Status != iso26262.StatusPass {
+				t.Errorf("10.4 with sci.json should PASS, got %v", obj.Status)
+			}
+			return
+		}
+	}
+	t.Error("objective 10.4 not found")
+}
+
+func TestISO26262002_FiresForISO26262ProjectWithUnannotatedReqs(t *testing.T) {
+	dir := t.TempDir()
+	reqs := `{"requirements":[{"id":"REQ-001","title":"req without ASIL"}]}`
+	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cfg := config.Default("m", "p")
+	cfg.Project.Standard = "ISO26262"
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	found := false
+	for _, f := range result.Findings {
+		if f.RuleID == "ISO26262002" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("ISO26262002 should fire when ISO26262 project has requirements without ASIL")
+	}
+}
+
+func TestISO26262002_SilentForNonISO26262(t *testing.T) {
+	dir := t.TempDir()
+	reqs := `{"requirements":[{"id":"REQ-001","title":"no asil"}]}`
+	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cfg := config.Default("m", "p") // standard is "generic"
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	for _, f := range result.Findings {
+		if f.RuleID == "ISO26262002" {
+			t.Error("ISO26262002 should not fire for non-ISO26262 project")
+			return
+		}
+	}
+}
+
+func TestISO26262003_SilentWhenNoFailures(t *testing.T) {
+	dir := t.TempDir()
+	qualify := `{"pass":44,"fail":0,"total":44}`
+	if err := os.WriteFile(filepath.Join(dir, "qualify-report.json"), []byte(qualify), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cfg := config.Default("m", "p")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	for _, f := range result.Findings {
+		if f.RuleID == "ISO26262003" {
+			t.Errorf("ISO26262003 should not fire when qualify has 0 failures, got: %s", f.Message)
+			return
+		}
+	}
+}
+
+func TestISO26262003_FiresWhenFailures(t *testing.T) {
+	dir := t.TempDir()
+	qualify := `{"pass":42,"fail":2,"total":44}`
+	if err := os.WriteFile(filepath.Join(dir, "qualify-report.json"), []byte(qualify), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cfg := config.Default("m", "p")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	for _, f := range result.Findings {
+		if f.RuleID == "ISO26262003" {
+			return // found — expected
+		}
+	}
+	t.Error("ISO26262003 should fire when qualify-report.json has failures")
 }

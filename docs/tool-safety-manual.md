@@ -1,6 +1,6 @@
 # go-FuSa Tool Safety Manual
 
-**Version:** 0.21.0  
+**Version:** 0.22.0  
 **Module:** `github.com/SoundMatt/go-FuSa`  
 **License:** Mozilla Public License 2.0  
 **Standards addressed:** ISO 26262, IEC 61508, ISO 21434, DO-178C
@@ -30,7 +30,7 @@ Capabilities:
 | Static analysis (goroutines, context, error chains) | ANA001–009 | `gofusa analyze` |
 | Requirements traceability and coverage | TRACE001–007 | `gofusa trace` |
 | Test evidence collection | VERIFY001–002 | `gofusa verify` |
-| Release artifact generation (SBOM, provenance, signing) | RELEASE001–002 | `gofusa release` |
+| Release artifact generation (SBOM SPDX 2.2/2.3/3.0.1, provenance, signing) | RELEASE001–002 | `gofusa release` |
 | Tool qualification suite | QUALIFY001 | `gofusa qualify` |
 | Safety case assembly (GSN, compliance mapping) | SAFETYCASE001 | `gofusa safety-case` |
 | dFMEA generation from source | FMEA001 | `gofusa fmea` |
@@ -47,10 +47,10 @@ Capabilities:
 | Structural coverage report (DO-178C §6.4.4) | — | `gofusa coverage` |
 | Problem report log (DO-178C §11.17) | PR001 | `gofusa pr` |
 | Cyclomatic complexity (DO-178C §6.3.4) | COMP001 | `gofusa check` |
-| Data/control coupling (DO-178C §6.4.4.3) | COUP001–002 | `gofusa check` |
+| Data/control coupling report generation | COUP001–003 | `gofusa coupling` |
 | ISO 26262 Part 6 compliance gap report | ISO26262001 | `gofusa iso26262` |
 | IEC 61508 Parts 1-3 compliance gap report | IEC61508001 | `gofusa iec61508` |
-| Hazard Analysis and Risk Assessment (HARA) | HARA001–004 | `gofusa hara` |
+| Hazard Analysis and Risk Assessment (HARA) | HARA001–005 | `gofusa hara` |
 | Finding disposition log | DISP001 | `gofusa disposition` |
 | Change impact analysis | — | `gofusa impact` |
 | Safety metrics trending | — | `gofusa metrics` |

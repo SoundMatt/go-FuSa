@@ -344,3 +344,117 @@ func TestReleaseRules_Description(t *testing.T) {
 		}
 	}
 }
+
+// ─── SPDX 2.x ─────────────────────────────────────────────────────────────────
+
+func buildSBOMForSPDX(t *testing.T) *release.SBOM {
+	t.Helper()
+	const gomod = "module github.com/example/proj\n\ngo 1.22\n\nrequire (\n\tgithub.com/example/dep v1.2.3\n)\n"
+	const gosum = "github.com/example/dep v1.2.3 h1:abc123==\n" +
+		"github.com/example/dep v1.2.3/go.mod h1:def456==\n"
+	dir := moduleDir(t, gomod, gosum)
+	sbom, err := release.BuildSBOM(dir)
+	if err != nil {
+		t.Fatalf("BuildSBOM: %v", err)
+	}
+	return sbom
+}
+
+func TestToSPDX22_VersionString(t *testing.T) {
+	sbom := buildSBOMForSPDX(t)
+	doc := release.ToSPDX22(sbom)
+	if doc.SpdxVersion != "SPDX-2.2" {
+		t.Errorf("SpdxVersion = %q, want %q", doc.SpdxVersion, "SPDX-2.2")
+	}
+}
+
+func TestToSPDX23_VersionString(t *testing.T) {
+	sbom := buildSBOMForSPDX(t)
+	doc := release.ToSPDX23(sbom)
+	if doc.SpdxVersion != "SPDX-2.3" {
+		t.Errorf("SpdxVersion = %q, want %q", doc.SpdxVersion, "SPDX-2.3")
+	}
+}
+
+func TestToSPDX22_RequiredFields(t *testing.T) {
+	sbom := buildSBOMForSPDX(t)
+	doc := release.ToSPDX22(sbom)
+	if doc.SPDXID != "SPDXRef-DOCUMENT" {
+		t.Errorf("SPDXID = %q, want %q", doc.SPDXID, "SPDXRef-DOCUMENT")
+	}
+	if doc.DataLicense != "CC0-1.0" {
+		t.Errorf("DataLicense = %q, want %q", doc.DataLicense, "CC0-1.0")
+	}
+	if doc.Name != "github.com/example/proj" {
+		t.Errorf("Name = %q, want %q", doc.Name, "github.com/example/proj")
+	}
+	if doc.DocumentNamespace == "" {
+		t.Error("DocumentNamespace is empty")
+	}
+	if doc.CreationInfo.Created == "" {
+		t.Error("CreationInfo.Created is empty")
+	}
+	if len(doc.CreationInfo.Creators) == 0 {
+		t.Error("CreationInfo.Creators is empty")
+	}
+}
+
+func TestToSPDX22_Packages(t *testing.T) {
+	sbom := buildSBOMForSPDX(t)
+	doc := release.ToSPDX22(sbom)
+	if len(doc.Packages) != 1 {
+		t.Fatalf("len(Packages) = %d, want 1", len(doc.Packages))
+	}
+	pkg := doc.Packages[0]
+	if pkg.Name != "github.com/example/dep" {
+		t.Errorf("pkg.Name = %q, want %q", pkg.Name, "github.com/example/dep")
+	}
+	if pkg.VersionInfo != "v1.2.3" {
+		t.Errorf("pkg.VersionInfo = %q, want %q", pkg.VersionInfo, "v1.2.3")
+	}
+	if pkg.FilesAnalyzed {
+		t.Error("pkg.FilesAnalyzed should be false")
+	}
+}
+
+func TestToSPDX22_Relationships(t *testing.T) {
+	sbom := buildSBOMForSPDX(t)
+	doc := release.ToSPDX22(sbom)
+	if len(doc.Relationships) != 1 {
+		t.Fatalf("len(Relationships) = %d, want 1", len(doc.Relationships))
+	}
+	rel := doc.Relationships[0]
+	if rel.SpdxElementID != "SPDXRef-DOCUMENT" {
+		t.Errorf("rel.SpdxElementID = %q, want %q", rel.SpdxElementID, "SPDXRef-DOCUMENT")
+	}
+	if rel.RelationshipType != "DESCRIBES" {
+		t.Errorf("rel.RelationshipType = %q, want %q", rel.RelationshipType, "DESCRIBES")
+	}
+}
+
+func TestToSPDX22_SerializesAsJSON(t *testing.T) {
+	sbom := buildSBOMForSPDX(t)
+	doc := release.ToSPDX22(sbom)
+	data, err := json.MarshalIndent(doc, "", "  ")
+	if err != nil {
+		t.Fatalf("json.MarshalIndent: %v", err)
+	}
+	if !strings.Contains(string(data), `"SPDX-2.2"`) {
+		t.Error("JSON output does not contain SPDX-2.2 version string")
+	}
+}
+
+func TestToSPDX22_VsToSPDX23_SameStructureDifferentVersion(t *testing.T) {
+	sbom := buildSBOMForSPDX(t)
+	doc22 := release.ToSPDX22(sbom)
+	doc23 := release.ToSPDX23(sbom)
+	if doc22.SPDXID != doc23.SPDXID {
+		t.Errorf("SPDXID differs: %q vs %q", doc22.SPDXID, doc23.SPDXID)
+	}
+	if len(doc22.Packages) != len(doc23.Packages) {
+		t.Errorf("package count differs: %d vs %d", len(doc22.Packages), len(doc23.Packages))
+	}
+	if doc22.SpdxVersion == doc23.SpdxVersion {
+		t.Error("22 and 23 have the same SpdxVersion, expected different")
+	}
+}

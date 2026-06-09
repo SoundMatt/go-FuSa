@@ -464,7 +464,7 @@ func TestHARA004_NoASIL(t *testing.T) {
 }
 
 func TestHARA_Descriptions(t *testing.T) {
-	ruleIDs := []string{"HARA001", "HARA002", "HARA003", "HARA004"}
+	ruleIDs := []string{"HARA001", "HARA002", "HARA003", "HARA004", "HARA005"}
 	for _, id := range ruleIDs {
 		found := false
 		for _, r := range engine.Default.Rules() {
@@ -478,5 +478,97 @@ func TestHARA_Descriptions(t *testing.T) {
 		if !found {
 			t.Errorf("%s not registered in engine", id)
 		}
+	}
+}
+
+// ─── HARA005 — ASIL consistency ───────────────────────────────────────────────
+
+func findingsForRuleWithCfg(t *testing.T, dir string, ruleIDStr string, cfg *config.Config) bool {
+	t.Helper()
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	for _, f := range result.Findings {
+		if f.RuleID == ruleIDStr {
+			return true
+		}
+	}
+	return false
+}
+
+func writeHARAWithASIL(t *testing.T, dir string, hazardASIL hara.ASIL) {
+	t.Helper()
+	h := &hara.HARA{
+		Project:  "test",
+		Standard: "ISO 26262",
+		Hazards: []hara.Hazard{{
+			ID:          "H-001",
+			Description: "test hazard",
+			Risk: hara.RiskRating{
+				Severity:        hara.SeverityS2,
+				Exposure:        hara.ExposureE4,
+				Controllability: hara.ControllabilityC2,
+				ASIL:            hazardASIL,
+			},
+			SafetyGoals: []string{"SG-001"},
+		}},
+		SafetyGoals: []hara.SafetyGoal{{
+			ID:          "SG-001",
+			Description: "safety goal",
+			ASIL:        hazardASIL,
+		}},
+	}
+	if err := hara.Save(filepath.Join(dir, hara.HARAFile), h); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestHARA005_FiresWhenHazardASILExceedsProject(t *testing.T) {
+	dir := t.TempDir()
+	writeHARAWithASIL(t, dir, hara.ASILC)
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Project.ASIL = "ASIL-A" // project declares ASIL-A but hazard is ASIL-C
+	if !findingsForRuleWithCfg(t, dir, "HARA005", cfg) {
+		t.Error("HARA005 should fire when hazard ASIL-C > project ASIL-A")
+	}
+}
+
+func TestHARA005_SilentWhenHazardASILMeetsProject(t *testing.T) {
+	dir := t.TempDir()
+	writeHARAWithASIL(t, dir, hara.ASILB)
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Project.ASIL = "ASIL-B" // project matches highest hazard
+	if findingsForRuleWithCfg(t, dir, "HARA005", cfg) {
+		t.Error("HARA005 should not fire when project ASIL >= hazard ASIL")
+	}
+}
+
+func TestHARA005_SilentWhenProjectASILHigher(t *testing.T) {
+	dir := t.TempDir()
+	writeHARAWithASIL(t, dir, hara.ASILA)
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Project.ASIL = "ASIL-D"
+	if findingsForRuleWithCfg(t, dir, "HARA005", cfg) {
+		t.Error("HARA005 should not fire when project ASIL-D >= hazard ASIL-A")
+	}
+}
+
+func TestHARA005_SilentWhenNoHARAFile(t *testing.T) {
+	dir := t.TempDir()
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Project.ASIL = "ASIL-A"
+	if findingsForRuleWithCfg(t, dir, "HARA005", cfg) {
+		t.Error("HARA005 should not fire when no HARA file present")
+	}
+}
+
+func TestHARA005_SilentWhenNoProjectASIL(t *testing.T) {
+	dir := t.TempDir()
+	writeHARAWithASIL(t, dir, hara.ASILC)
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Project.ASIL = "" // no ASIL declared
+	if findingsForRuleWithCfg(t, dir, "HARA005", cfg) {
+		t.Error("HARA005 should not fire when project has no ASIL declared")
 	}
 }

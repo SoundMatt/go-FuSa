@@ -192,3 +192,108 @@ func TestNestedFile_CI(t *testing.T) {
 	}
 	t.Error("A-9.2 not found")
 }
+
+// ─── v0.22 objective changes ──────────────────────────────────────────────────
+
+func writeReqsJSON(t *testing.T, dir, content string) {
+	t.Helper()
+	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(content), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func objectiveStatus(t *testing.T, rep *do178.Report, id string) do178.ObjectiveStatus {
+	t.Helper()
+	for _, obj := range rep.Objectives {
+		if obj.ID == id {
+			return obj.Status
+		}
+	}
+	t.Fatalf("objective %s not found", id)
+	return ""
+}
+
+func TestA22_GAP_WhenNoReqsFile(t *testing.T) {
+	dir := t.TempDir()
+	rep, err := do178.Assess(dir, "proj", do178.DALB)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	if s := objectiveStatus(t, rep, "A-2.2"); s != do178.StatusGap {
+		t.Errorf("A-2.2 without reqs file should be GAP, got %v", s)
+	}
+}
+
+func TestA22_GAP_WhenNoLLRItems(t *testing.T) {
+	dir := t.TempDir()
+	writeReqsJSON(t, dir, `{"requirements":[{"id":"REQ-001","title":"HLR only","level":"HLR"}]}`)
+	rep, err := do178.Assess(dir, "proj", do178.DALB)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	if s := objectiveStatus(t, rep, "A-2.2"); s != do178.StatusGap {
+		t.Errorf("A-2.2 with no LLR items should be GAP, got %v", s)
+	}
+}
+
+func TestA22_PASS_WhenLLRItemPresent(t *testing.T) {
+	dir := t.TempDir()
+	writeReqsJSON(t, dir, `{"requirements":[{"id":"REQ-001","title":"LLR req","level":"LLR"}]}`)
+	rep, err := do178.Assess(dir, "proj", do178.DALA)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	if s := objectiveStatus(t, rep, "A-2.2"); s != do178.StatusPass {
+		t.Errorf("A-2.2 with LLR item should PASS, got %v", s)
+	}
+}
+
+func TestA63_GAP_WhenNoCouplingReport(t *testing.T) {
+	dir := t.TempDir()
+	rep, err := do178.Assess(dir, "proj", do178.DALA)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	if s := objectiveStatus(t, rep, "A-6.3"); s != do178.StatusGap {
+		t.Errorf("A-6.3 without coupling-report.json should be GAP, got %v", s)
+	}
+}
+
+func TestA63_PASS_WhenCouplingReportPresent(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "coupling-report.json"), []byte(`{}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	rep, err := do178.Assess(dir, "proj", do178.DALA)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	if s := objectiveStatus(t, rep, "A-6.3"); s != do178.StatusPass {
+		t.Errorf("A-6.3 with coupling-report.json should PASS, got %v", s)
+	}
+}
+
+func TestA62_GAP_WhenNoCheckReport(t *testing.T) {
+	dir := t.TempDir()
+	rep, err := do178.Assess(dir, "proj", do178.DALA)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	if s := objectiveStatus(t, rep, "A-6.2"); s != do178.StatusGap {
+		t.Errorf("A-6.2 without check-report.json should be GAP, got %v", s)
+	}
+}
+
+func TestA62_PASS_WhenCheckReportPresent(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), []byte(`{}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	rep, err := do178.Assess(dir, "proj", do178.DALA)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	if s := objectiveStatus(t, rep, "A-6.2"); s != do178.StatusPass {
+		t.Errorf("A-6.2 with check-report.json should PASS, got %v", s)
+	}
+}

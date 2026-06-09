@@ -118,6 +118,64 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.22 — SPDX 2.x Support, Evidence Gap Coverage & ASIL Integrity Checks ✅
+
+**Goal:** Broaden SBOM output to cover SPDX 2.2 and 2.3 alongside the existing 3.0.1 support;
+close evidence gaps across ISO 26262, IEC 61508, and DO-178C gap reports by mapping previously
+MANUAL objectives to machine-checkable evidence files; and add engine rules that detect ASIL
+inconsistencies and qualification depth issues at `gofusa check` time.
+
+Features:
+
+### SBOM / SPDX
+
+- **SPDX 2.2 and 2.3** — `release.ToSPDX22` / `release.ToSPDX23` produce standard JSON SBOMs
+  with `SPDXID`, `spdxVersion`, `creationInfo`, `packages`, and `relationships`.
+- **`gofusa release --spdx-version`** flag — selects `2.2`, `2.3`, or `3.0.1` (default: `3.0.1`).
+
+### Coupling report
+
+- **`gofusa coupling`** command — analyses the project tree and writes `coupling-report.json`
+  containing dated data-coupling and control-coupling findings.
+- **`coupling.SaveReport`** — serialisation helper for programmatic report generation.
+- **COUP003** engine rule — INFO when DO-178C project lacks `coupling-report.json`.
+
+### Traceability
+
+- **`trace.Requirement.ASIL`** field — optional `asil` tag on `.fusa-reqs.json` requirements.
+
+### HARA integrity
+
+- **HARA005** engine rule — WARNING when the highest hazard ASIL in `.fusa-hara.json` exceeds
+  the project ASIL in `.fusa.json`.
+
+### ISO 26262 gap-report
+
+- Obj 7.3 → `.fusa-hara.json` (was `HARA.md`).
+- New obj 10.4 — SCI (`sci.json`), ASIL-B/C/D.
+- New obj 11.3 — coupling evidence (`coupling-report.json`), ASIL-C/D.
+- **ISO26262002** — INFO when ISO 26262 requirements lack `asil` tags.
+- **ISO26262003** — WARNING when `qualify-report.json` contains failures.
+
+### IEC 61508 gap-report
+
+- Obj 1.3 → `.fusa-hara.json` (was MANUAL).
+- Obj 4.2 → `fmea.json` (was MANUAL).
+- New obj 5.4 — SCI (`sci.json`), SIL-2/3/4.
+
+### DO-178C gap-report
+
+- A-2.2 — LLR detection from `.fusa-reqs.json` (was MANUAL).
+- A-6.2 → `check-report.json` (was MANUAL).
+- A-6.3 → `coupling-report.json` (was MANUAL).
+- `check` function field in `allObjectives` is now invoked during `Assess()`.
+
+Deliverables: `release.ToSPDX22/ToSPDX23`; `cmd_coupling.go`; `coupling.SaveReport`;
+COUP003, HARA005, ISO26262002, ISO26262003; updated iso26262/iec61508/do178 objectives;
+version bump to 0.22.0
+
+---
+
 ## v0.21 — HARA Package, ISO 26262 Clause Mapping & Project Safety Case ✅
 
 **Goal:** Elevate go-FuSa's ISO 26262 support from gap-assessment to full HARA-backed hazard

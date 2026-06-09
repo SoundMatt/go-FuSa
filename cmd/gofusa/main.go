@@ -15,11 +15,12 @@
 //	template     Generate safety documentation templates
 //	trace        Show requirements traceability matrix
 //	verify       Run tests and save a test evidence bundle
-//	release      Generate SBOM (SPDX 3.0.1), provenance, and artifact manifest
+//	release      Generate SBOM (SPDX 2.2/2.3/3.0.1), provenance, and artifact manifest
 //	qualify      Run the tool qualification suite
 //	safety-case  Assemble a structured safety case from evidence
 //	fmea         Generate a dFMEA table from exported functions
 //	boundary     Generate a component boundary diagram
+//	coupling     Analyse data/control coupling and write coupling-report.json
 //	tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)
 //	hara         Manage the Hazard Analysis and Risk Assessment (.fusa-hara.json)
 //	vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)
@@ -115,6 +116,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runFmea(args[1:], stdout, stderr)
 	case "boundary":
 		return runBoundary(args[1:], stdout, stderr)
+	case "coupling":
+		return runCoupling(args[1:], stdout, stderr)
 	case "tara":
 		return runTara(args[1:], stdout, stderr)
 	case "hara":
@@ -186,11 +189,12 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  template     Generate safety documentation templates\n")
 	fmt.Fprintf(w, "  trace        Show requirements traceability matrix\n")
 	fmt.Fprintf(w, "  verify       Run tests and save a test evidence bundle\n")
-	fmt.Fprintf(w, "  release      Generate SBOM (SPDX 3.0.1), provenance, and artifact manifest\n")
+	fmt.Fprintf(w, "  release      Generate SBOM (SPDX 2.2/2.3/3.0.1), provenance, and artifact manifest\n")
 	fmt.Fprintf(w, "  qualify      Run the tool qualification suite\n")
 	fmt.Fprintf(w, "  safety-case  Assemble a structured safety case from evidence\n")
 	fmt.Fprintf(w, "  fmea         Generate a dFMEA table from exported functions\n")
 	fmt.Fprintf(w, "  boundary     Generate a component boundary diagram\n")
+	fmt.Fprintf(w, "  coupling     Analyse data/control coupling and write coupling-report.json\n")
 	fmt.Fprintf(w, "  tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)\n")
 	fmt.Fprintf(w, "  hara         Manage the Hazard Analysis and Risk Assessment (.fusa-hara.json)\n")
 	fmt.Fprintf(w, "  vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)\n")

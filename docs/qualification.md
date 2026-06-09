@@ -127,6 +127,10 @@ The suite covers the core engine rules spanning all packages:
 | HARA002 | hara | Hazard has incomplete risk rating (S/E/C not all set) |
 | HARA003 | hara | Hazard has no linked safety goal |
 | HARA004 | hara | Safety goal has no ASIL assigned |
+| HARA005 | hara | Highest hazard ASIL exceeds project ASIL in `.fusa.json` |
+| COUP003 | coupling | DO-178C project lacks `coupling-report.json` |
+| ISO26262002 | iso26262 | ISO 26262 project has requirements without `asil` tag in `.fusa-reqs.json` |
+| ISO26262003 | iso26262 | `qualify-report.json` contains failures (tool qualification depth insufficient) |
 
 ## Tool Confidence Level
 

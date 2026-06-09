@@ -11,6 +11,7 @@
 //   - HARA002: hazard with incomplete risk rating (S/E/C not all set)
 //   - HARA003: hazard with no linked safety goal
 //   - HARA004: safety goal with ASIL not determined
+//   - HARA005: max hazard ASIL exceeds project ASIL from .fusa.json
 //
 // Usage:
 //
@@ -383,6 +384,7 @@ func init() {
 	engine.Default.MustRegister(&ruleHARA002{})
 	engine.Default.MustRegister(&ruleHARA003{})
 	engine.Default.MustRegister(&ruleHARA004{})
+	engine.Default.MustRegister(&ruleHARA005{})
 }
 
 // HARA001 — no HARA file present.
@@ -497,4 +499,68 @@ func (r *ruleHARA004) Run(_ context.Context, projectRoot string, _ *config.Confi
 		}
 	}
 	return out, nil
+}
+
+// HARA005 — max hazard ASIL exceeds project ASIL in .fusa.json.
+type ruleHARA005 struct{}
+
+func (r *ruleHARA005) ID() string { return "HARA005" }
+func (r *ruleHARA005) Description() string {
+	return "Highest hazard ASIL exceeds project ASIL declared in .fusa.json — project configuration understates risk."
+}
+
+//fusa:req REQ-HARA015
+func (r *ruleHARA005) Run(_ context.Context, projectRoot string, cfg *config.Config) ([]fusa.Finding, error) {
+	if cfg == nil || cfg.Project.ASIL == "" {
+		return nil, nil
+	}
+	h, err := Load(projectRoot)
+	if err != nil || len(h.Hazards) == 0 {
+		return nil, nil
+	}
+	maxHazard := maxHazardASIL(h.Hazards)
+	if maxHazard == "" || maxHazard == string(ASILQM) {
+		return nil, nil
+	}
+	if asilRank(ASIL(maxHazard)) <= asilRank(ASIL(cfg.Project.ASIL)) {
+		return nil, nil
+	}
+	return []fusa.Finding{{
+		RuleID:   r.ID(),
+		Severity: fusa.SeverityWarning,
+		Message: fmt.Sprintf(
+			"highest hazard ASIL is %s but project ASIL is %s — update .fusa.json asil field to match or exceed %s",
+			maxHazard, cfg.Project.ASIL, maxHazard,
+		),
+		Location:    fusa.Location{File: HARAFile},
+		Remediation: "set project.asil in .fusa.json to " + maxHazard + " or higher",
+	}}, nil
+}
+
+func maxHazardASIL(hazards []Hazard) string {
+	best := ""
+	for _, hz := range hazards {
+		a := string(hz.Risk.ASIL)
+		if asilRank(ASIL(a)) > asilRank(ASIL(best)) {
+			best = a
+		}
+	}
+	return best
+}
+
+// asilRank maps ASIL to a comparable integer (QM=0, A=1, B=2, C=3, D=4).
+func asilRank(a ASIL) int {
+	switch a {
+	case ASILQM:
+		return 0
+	case ASILA:
+		return 1
+	case ASILB:
+		return 2
+	case ASILC:
+		return 3
+	case ASILD:
+		return 4
+	}
+	return -1
 }

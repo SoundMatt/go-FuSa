@@ -26,16 +26,17 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 	fs.SetOutput(stderr)
 	fs.Usage = func() {
 		fmt.Fprintf(stderr, "Usage: gofusa release [flags]\n\n")
-		fmt.Fprintf(stderr, "Generate SBOM (SPDX 3.0.1), build provenance, and artifact manifest.\n")
+		fmt.Fprintf(stderr, "Generate SBOM, build provenance, and artifact manifest.\n")
 		fmt.Fprintf(stderr, "With --full, also runs fmea, boundary, vuln, and audit-pack.\n\n")
 		fmt.Fprintf(stderr, "Flags:\n")
 		fs.PrintDefaults()
 	}
 
 	var (
-		dir       = fs.String("dir", "", "project root directory (default: current directory)")
-		outputDir = fs.String("output-dir", "", "directory for generated files (default: project root)")
-		full      = fs.Bool("full", false, "also run fmea, boundary, vuln scan, and audit-pack")
+		dir         = fs.String("dir", "", "project root directory (default: current directory)")
+		outputDir   = fs.String("output-dir", "", "directory for generated files (default: project root)")
+		full        = fs.Bool("full", false, "also run fmea, boundary, vuln scan, and audit-pack")
+		spdxVersion = fs.String("spdx-version", "3.0.1", "SPDX version for SBOM output: 2.2, 2.3, or 3.0.1")
 	)
 	if err := fs.Parse(args); err != nil {
 		return 1
@@ -68,11 +69,25 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 	}
 	sbomPath := filepath.Join(outDir, release.SBOMFile)
 	//fusa:req REQ-RELEASE007
-	if err = release.SaveJSON(sbomPath, release.ToSPDX31(sbom)); err != nil {
+	var sbomDoc any
+	sbomVersionLabel := *spdxVersion
+	switch *spdxVersion {
+	case "2.2":
+		sbomDoc = release.ToSPDX22(sbom)
+	case "2.3":
+		sbomDoc = release.ToSPDX23(sbom)
+	case "", "3.0.1":
+		sbomDoc = release.ToSPDX31(sbom)
+		sbomVersionLabel = "3.0.1"
+	default:
+		fmt.Fprintf(stderr, "gofusa release: unsupported --spdx-version %q (use 2.2, 2.3, or 3.0.1)\n", *spdxVersion)
+		return 1
+	}
+	if err = release.SaveJSON(sbomPath, sbomDoc); err != nil {
 		fmt.Fprintf(stderr, "gofusa release: save SBOM: %v\n", err)
 		return 1
 	}
-	fmt.Fprintf(stdout, "SBOM written to %s (%d components, SPDX 3.0.1)\n", sbomPath, len(sbom.Components))
+	fmt.Fprintf(stdout, "SBOM written to %s (%d components, SPDX %s)\n", sbomPath, len(sbom.Components), sbomVersionLabel)
 
 	prov, err := release.BuildProvenance(context.Background(), projectRoot)
 	if err != nil {
