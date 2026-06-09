@@ -116,6 +116,9 @@ gofusa trace --gaps
 # Enforce ≥80% of requirements have //fusa:test tags (CI gate)
 gofusa trace --sec-tested 80
 
+# Assess requirement-to-source coverage and function annotation density (DO-178C §6.4.4)
+gofusa trace --req-coverage 80   # exits 1 if either metric is below 80%
+
 # Show a specific requirement and its annotation locations
 gofusa req REQ-CYBER001
 

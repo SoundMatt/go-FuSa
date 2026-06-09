@@ -16,6 +16,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"io"
 	"os"
 	"path/filepath"
@@ -67,6 +70,21 @@ type Coverage struct {
 	TestedRequirements    int `json:"testedRequirements"`
 	SecTestedRequirements int `json:"secTestedRequirements"` // //fusa:sec-test tags
 }
+
+// FuncCoverage reports exported-function annotation density.
+type FuncCoverage struct {
+	Total     int      `json:"total"`
+	Covered   int      `json:"covered"`
+	Pct       float64  `json:"pct"`
+	Uncovered []string `json:"uncovered,omitempty"`
+}
+
+const (
+	// DefaultReqCoverageThreshold is the minimum requirement-to-source coverage % for TRACE006.
+	DefaultReqCoverageThreshold = 80
+	// DefaultFuncAnnotationThreshold is the minimum exported-function annotation density % for TRACE007.
+	DefaultFuncAnnotationThreshold = 80
+)
 
 // Matrix is the full traceability matrix for a project.
 type Matrix struct {
@@ -259,6 +277,69 @@ func Build(root string) (*Matrix, error) {
 	}, nil
 }
 
+// ScanFuncCoverage counts exported functions and how many live in files that
+// contain at least one //fusa:req annotation. tags must be the ScanTags result
+// for the same root. Test files (_test.go) are excluded.
+func ScanFuncCoverage(root string, tags []Tag) (*FuncCoverage, error) {
+	annotated := make(map[string]bool)
+	for _, t := range tags {
+		if t.Kind == KindImpl {
+			annotated[t.File] = true
+		}
+	}
+
+	fset := token.NewFileSet()
+	fc := &FuncCoverage{}
+
+	err := filepath.WalkDir(root, func(path string, d os.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if d.IsDir() {
+			if path == root {
+				return nil
+			}
+			name := d.Name()
+			if name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".") {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		name := d.Name()
+		if !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") {
+			return nil
+		}
+		rel, err := filepath.Rel(root, path)
+		if err != nil {
+			return err
+		}
+		f, err := parser.ParseFile(fset, path, nil, 0)
+		if err != nil {
+			return nil // skip unparseable files
+		}
+		for _, decl := range f.Decls {
+			fn, ok := decl.(*ast.FuncDecl)
+			if !ok || fn.Name == nil || !ast.IsExported(fn.Name.Name) {
+				continue
+			}
+			fc.Total++
+			if annotated[rel] {
+				fc.Covered++
+			} else {
+				fc.Uncovered = append(fc.Uncovered, rel+":"+fn.Name.Name)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("trace: scan func coverage: %w", err)
+	}
+	if fc.Total > 0 {
+		fc.Pct = float64(fc.Covered) * 100 / float64(fc.Total)
+	}
+	return fc, nil
+}
+
 // Render writes the traceability matrix to w in the given format.
 // Supported formats: "text" (default), "json".
 //
@@ -372,6 +453,8 @@ func init() {
 	engine.Default.MustRegister(&ruleUntestedReqs{})
 	engine.Default.MustRegister(&ruleReqMissingText{})
 	engine.Default.MustRegister(&ruleVerificationIndependence{})
+	engine.Default.MustRegister(&ruleReqCoverage{})
+	engine.Default.MustRegister(&ruleFuncAnnotationDensity{})
 }
 
 // TRACE001 — .fusa-reqs.json should be present.
@@ -575,4 +658,77 @@ func (r *ruleVerificationIndependence) Run(_ context.Context, projectRoot string
 		}
 	}
 	return findings, nil
+}
+
+// TRACE006 — aggregate requirement-to-source traceability below threshold.
+// Fires when fewer than DefaultReqCoverageThreshold% of requirements have a
+// //fusa:req implementation annotation (DO-178C §6.4.4).
+type ruleReqCoverage struct{}
+
+func (r *ruleReqCoverage) ID() string { return "TRACE006" }
+func (r *ruleReqCoverage) Description() string {
+	return "Aggregate requirement-to-source traceability below threshold (DO-178C §6.4.4)."
+}
+
+//fusa:req REQ-TRACE006
+func (r *ruleReqCoverage) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	matrix, err := Build(projectRoot)
+	if err != nil {
+		return nil, err
+	}
+	if matrix.Coverage.TotalRequirements == 0 {
+		return nil, nil
+	}
+	pct := matrix.Coverage.TracedRequirements * 100 / matrix.Coverage.TotalRequirements
+	if pct >= DefaultReqCoverageThreshold {
+		return nil, nil
+	}
+	return []fusa.Finding{{
+		RuleID:   r.ID(),
+		Severity: fusa.SeverityWarning,
+		Message: fmt.Sprintf(
+			"requirement coverage %d%% (%d/%d requirements have //fusa:req annotations) is below the %d%% threshold",
+			pct, matrix.Coverage.TracedRequirements, matrix.Coverage.TotalRequirements, DefaultReqCoverageThreshold,
+		),
+		Location:    fusa.Location{File: ReqsFile},
+		Remediation: "add //fusa:req <ID> annotations to source files implementing each untraced requirement",
+	}}, nil
+}
+
+// TRACE007 — exported-function annotation density below threshold.
+// Fires when fewer than DefaultFuncAnnotationThreshold% of exported functions
+// are in files with //fusa:req annotations.
+type ruleFuncAnnotationDensity struct{}
+
+func (r *ruleFuncAnnotationDensity) ID() string { return "TRACE007" }
+func (r *ruleFuncAnnotationDensity) Description() string {
+	return "Exported function annotation density below threshold — many functions lack //fusa:req traceability."
+}
+
+//fusa:req REQ-TRACE007
+func (r *ruleFuncAnnotationDensity) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	tags, err := ScanTags(projectRoot)
+	if err != nil {
+		return nil, err
+	}
+	fc, err := ScanFuncCoverage(projectRoot, tags)
+	if err != nil {
+		return nil, err
+	}
+	if fc.Total == 0 {
+		return nil, nil
+	}
+	if fc.Pct >= float64(DefaultFuncAnnotationThreshold) {
+		return nil, nil
+	}
+	return []fusa.Finding{{
+		RuleID:   r.ID(),
+		Severity: fusa.SeverityInfo,
+		Message: fmt.Sprintf(
+			"function annotation density %.0f%% (%d/%d exported functions in annotated files) is below the %d%% threshold",
+			fc.Pct, fc.Covered, fc.Total, DefaultFuncAnnotationThreshold,
+		),
+		Location:    fusa.Location{File: "."},
+		Remediation: "add //fusa:req annotations to source files containing exported functions",
+	}}, nil
 }
