@@ -39,7 +39,14 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `sarif/` | SARIF 2.1.0 renderer — produces GitHub Code Scanning compatible output |
 | `badge/` | SVG badge generator — Shields.io-style status badge from check results |
 | `diff/` | Report diff engine — compares two JSON reports (introduced/resolved/unchanged) |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign` |
+| `comp/` | Cyclomatic complexity analysis — COMP001 (DO-178C §6.3.4) |
+| `coupling/` | Data/control coupling detection — COUP001/COUP002 (DO-178C §6.4.4.3) |
+| `coverage/` | Structural coverage report from `coverage.out` — statement, decision, MC/DC (DO-178C §6.4.4) |
+| `pr/` | Problem report log — CRUD log + PR001 engine rule (DO-178C §11.17) |
+| `sci/` | Software Configuration Index — SHA-256 checksums of lifecycle data items (DO-178C §11.16) |
+| `do178/` | DO-178C Annex A gap report — 38 objectives across Tables A-1 through A-11 |
+| `sas/` | Software Accomplishment Summary — 20 evidence items (DO-178C §11.20) |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr` |
 
 ## Install
 
@@ -213,7 +220,7 @@ docker build -t go-fusa .
 docker run --rm -v "$(pwd)":/project go-fusa check
 ```
 
-Published tags: `latest`, `0.16`, `0.16.0` (and matching semver for every release).
+Published tags: `latest`, `0.19`, `0.19.0` (and matching semver for every release).
 
 ## Standards coverage
 

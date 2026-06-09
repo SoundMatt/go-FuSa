@@ -71,7 +71,7 @@ The output should match the `hash` field in the report.
 
 ## What is tested
 
-The suite covers all 22 engine rules:
+The suite covers the core engine rules spanning all packages:
 
 | Rule | Package | What is tested |
 |---|---|---|
@@ -90,13 +90,36 @@ The suite covers all 22 engine rules:
 | ANA002 | analyze | Goroutine spawned in loop |
 | ANA003 | analyze | `time.Sleep` in goroutine |
 | ANA004 | analyze | `defer` inside loop |
+| ANA005 | analyze | `context.Background()` inside function with context param |
+| ANA006 | analyze | `fmt.Errorf` without `%w` — error chain lost |
+| ANA007 | analyze | Two-result function used without nil check |
+| ANA008 | analyze | Goroutine accessing package-level var without sync |
+| ANA009 | analyze | Dead code after unconditional transfer |
 | TRACE001 | trace | `.fusa-reqs.json` present / absent |
 | TRACE002 | trace | Untraced requirement detected |
+| TRACE003 | trace | Requirement with no `//fusa:test` annotation |
+| TRACE004 | trace | Requirement missing `text` field |
+| TRACE005 | trace | Verification independence (same file has req + test) |
+| TRACE006 | trace | Aggregate req-to-source traceability below threshold |
+| TRACE007 | trace | Exported-function annotation density below threshold |
 | VERIFY001 | verify | Test evidence bundle present / absent |
 | VERIFY002 | verify | Failed tests in bundle detected |
 | RELEASE001 | release | `sbom.json` present / absent |
 | RELEASE002 | release | `provenance.json` present / absent |
 | QUALIFY001 | qualify | `qualify-report.json` present / absent |
+| SAFETYCASE001 | safetycase | `safety-case.json` present / absent |
+| FMEA001 | fmea | `fmea.json` present / absent |
+| BOUNDARY001 | boundary | `boundary.mermaid` present / absent |
+| AUDITPACK001 | auditpack | `audit-pack.zip` present / absent |
+| VULN001 | vuln | `vuln.json` present / absent |
+| TARA001 | tara | `tara.json` present / absent |
+| PR001 | pr | Problem report log present / open critical PRs |
+| COMP001 | comp | Cyclomatic complexity exceeds threshold |
+| COUP001 | coupling | Exported mutable package-level variable |
+| COUP002 | coupling | Exported function with func/interface parameter |
+| SLSA001–003 | slsa | SLSA L2/L3 provenance and CODEOWNERS checks |
+| IEC62443-001–004 | iec62443 | IEC 62443 Security Level configuration checks |
+| CYBER001–020 | cyber | CWE-mapped cybersecurity static analysis rules |
 
 ## Tool Confidence Level
 

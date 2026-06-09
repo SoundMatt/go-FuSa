@@ -61,17 +61,36 @@ have the right to contribute under the existing license.
 | `.` | `fusa` package — core types, sentinel errors, `Version` constant |
 | `config/` | Project configuration load/save/validate |
 | `engine/` | Rule interface, registry, FUSA001–005 built-in rules |
-| `report/` | Text and JSON compliance report renderers |
-| `template/` | Safety plan, test evidence, and HARA document generators |
-| `cmd/gofusa` | CLI (`init`, `check`, `report`, `trace`, `verify`, `release`, `qualify`) |
+| `report/` | Text, JSON, and HTML compliance report renderers |
+| `template/` | Safety plan, test evidence, HARA, SVP, SCMP, SQAP document generators |
 | `lint/` | Safety-oriented coding rules (error handling, panic, unsafe, globals) |
-| `analyze/` | Static analysis passes (goroutine leaks, races, blocking calls) |
-| `trace/` | Requirements traceability engine |
-| `verify/` | Test evidence collection and bundle generation |
-| `release/` | SBOM, build provenance, artifact signing |
+| `analyze/` | Static analysis passes (goroutine leaks, races, blocking calls, ANA001–009) |
+| `trace/` | Requirements traceability engine and coverage mapping |
+| `verify/` | Test evidence collection and verification bundle generation |
+| `release/` | SBOM (SPDX 3.0.1), build provenance, artifact signing |
 | `qualify/` | Tool qualification suite and evidence report |
-| `runtime/` | Runtime safety patterns (watchdog, heartbeat, safe-state) |
+| `runtime/` | Runtime safety patterns (watchdog, heartbeat, safe-state, diagnostic manager) |
+| `safetycase/` | Safety case assembly — evidence collection, GSN diagram, compliance mapping |
+| `fmea/` | dFMEA generation from exported functions (JSON + CSV) |
+| `boundary/` | Component boundary diagram generation (Mermaid + DOT) |
+| `auditpack/` | Evidence bundle ZIP with SHA-256 manifest for auditor submission |
+| `cyber/` | Cybersecurity static analysis — 20 CWE-mapped rules (CYBER001–020) |
+| `iec62443/` | IEC 62443 industrial cybersecurity compliance checks |
+| `slsa/` | SLSA L2/L3 supply-chain checks |
+| `tara/` | Threat Analysis and Risk Assessment — ISO 21434 Ch. 9, STRIDE/CWE mapping |
+| `vuln/` | Dependency vulnerability scanner — OSV API + govulncheck |
+| `sarif/` | SARIF 2.1.0 renderer for GitHub Code Scanning |
+| `badge/` | SVG status badge generator |
+| `diff/` | Report diff engine — introduced/resolved/unchanged findings |
+| `comp/` | Cyclomatic complexity analysis — COMP001 (DO-178C §6.3.4) |
+| `coupling/` | Data/control coupling detection — COUP001/COUP002 (DO-178C §6.4.4.3) |
+| `coverage/` | Structural coverage from `coverage.out` — statement, decision, MC/DC |
+| `pr/` | Problem report log — CRUD + PR001 rule (DO-178C §11.17) |
+| `sci/` | Software Configuration Index with SHA-256 (DO-178C §11.16) |
+| `do178/` | DO-178C Annex A 38-objective gap assessment |
+| `sas/` | Software Accomplishment Summary (DO-178C §11.20) |
 | `testutil/` | Test harness helpers |
+| `cmd/gofusa` | CLI entry point — all subcommands |
 
 ## Running tests
 

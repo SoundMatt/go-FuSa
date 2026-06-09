@@ -104,7 +104,7 @@ jobs:
       - name: gofusa verify (run tests, collect evidence)
         run: ./gofusa verify
 
-      - name: gofusa qualify (44/44 must pass)
+      - name: gofusa qualify
         run: ./gofusa qualify
 
       - name: Upload safety evidence bundle
@@ -137,6 +137,29 @@ jobs:
             fi
           done
           echo "DCO check passed"
+
+  # ── Doc version consistency check ────────────────────────────────────────
+  docs:
+    name: Doc version check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Version consistency
+        shell: bash
+        run: |
+          VER=$(grep -oE 'Version = "[0-9]+\.[0-9]+\.[0-9]+"' fusa.go | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "Checking docs reference version: $VER"
+          FAIL=0
+          if ! grep -q "$VER" README.md; then
+            echo "FAIL: README.md does not reference version $VER (Docker published-tags line)"
+            FAIL=1
+          fi
+          if ! grep -q "$VER" docs/tool-safety-manual.md; then
+            echo "FAIL: docs/tool-safety-manual.md version header does not reference $VER"
+            FAIL=1
+          fi
+          [ $FAIL -eq 0 ] && echo "PASS: all docs reference $VER"
+          exit $FAIL
 
   # ── Lint ──────────────────────────────────────────────────────────────────
   lint:

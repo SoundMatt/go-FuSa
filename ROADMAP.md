@@ -118,6 +118,36 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.20 — Multi-Standard Depth & Evidence Quality
+
+**Goal:** Bring ISO 26262 and IEC 61508 to feature parity with the DO-178C evidence pipeline
+introduced in v0.18, upgrade the evidence bundle to a human-readable HTML format suitable
+for direct auditor review, and close the MC/DC verification gap for DO-178C Level A.
+
+Features:
+- **`gofusa iso26262`** — ISO 26262 gap assessment covering ASIL decomposition evidence,
+  FMEA-to-hazard linkage checks, and safety plan completeness (analogous to `gofusa do178`).
+  Includes an ASIL allocation table derived from `.fusa.json` and engine rules flagging
+  missing safety goals, unlinked hazards, and absent confirmation measures (Part 2 §6).
+- **`gofusa iec61508`** — IEC 61508 gap assessment: SIL allocation verification, functional
+  safety assessment checklist (Parts 1–3), and evidence index for the Safety Requirements
+  Specification and Software Safety Requirements. Mirrors the 38-objective structure of
+  `gofusa do178`.
+- **Safety plan templates** — ISO 26262 FMEA worksheet, Hazard and Risk Analysis (HARA)
+  template, and IEC 61508 Functional Safety Plan added to `gofusa template`.
+- **HTML evidence bundle** — `gofusa release --full` produces a self-contained `evidence.html`
+  with navigable sections for each evidence type (findings, traceability, coverage, SBOM,
+  vulnerability scan, SCI). Suitable for direct auditor submission without tooling.
+- **`gofusa coverage --mutate`** — mutation testing integration via `go-mutesting` (or
+  equivalent) to produce MC/DC-equivalent kill-rate evidence for DO-178C Level A. Reports
+  mutation score per function alongside the structural coverage report.
+
+Deliverables: `iso26262/`, `iec61508/` packages; `cmd_iso26262`, `cmd_iec61508`; ISO 26262 +
+IEC 61508 plan templates; `evidence.html` in `gofusa release --full`; `--mutate` flag on
+`gofusa coverage`
+
+---
+
 ## v0.19 — Requirement Coverage Assessment ✅
 
 **Goal:** Quantify how well requirements are traced into source code and surface actionable

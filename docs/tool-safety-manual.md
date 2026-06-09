@@ -1,6 +1,6 @@
 # go-FuSa Tool Safety Manual
 
-**Version:** 0.9.0  
+**Version:** 0.19.0  
 **Module:** `github.com/SoundMatt/go-FuSa`  
 **License:** Mozilla Public License 2.0  
 **Standards addressed:** ISO 26262, IEC 61508, ISO 21434, DO-178C
@@ -26,12 +26,28 @@ Capabilities:
 | Capability | Rules | Command |
 |---|---|---|
 | Project structure checks | FUSA001–005 | `gofusa check` |
-| Safety coding standard analysis | LINT001–006 | `gofusa check` |
-| Goroutine / concurrency analysis | ANA001–004 | `gofusa check` |
-| Requirements traceability | TRACE001–002 | `gofusa trace` |
+| Safety coding standard analysis | LINT001–006 | `gofusa lint` |
+| Static analysis (goroutines, context, error chains) | ANA001–009 | `gofusa analyze` |
+| Requirements traceability and coverage | TRACE001–007 | `gofusa trace` |
 | Test evidence collection | VERIFY001–002 | `gofusa verify` |
-| Release artifact generation | RELEASE001–002 | `gofusa release` |
+| Release artifact generation (SBOM, provenance, signing) | RELEASE001–002 | `gofusa release` |
 | Tool qualification suite | QUALIFY001 | `gofusa qualify` |
+| Safety case assembly (GSN, compliance mapping) | SAFETYCASE001 | `gofusa safety-case` |
+| dFMEA generation from source | FMEA001 | `gofusa fmea` |
+| Component boundary diagrams | BOUNDARY001 | `gofusa boundary` |
+| Dependency vulnerability scan (OSV / govulncheck) | VULN001 | `gofusa vuln` |
+| Evidence bundle for auditors | AUDITPACK001 | `gofusa audit-pack` |
+| Cybersecurity static analysis (CWE-mapped) | CYBER001–020 | `gofusa cyber` |
+| Threat Analysis and Risk Assessment (ISO 21434) | TARA001 | `gofusa tara` |
+| IEC 62443 Security Level compliance | IEC62443-001–004 | `gofusa check` |
+| SLSA L2/L3 supply-chain checks | SLSA001–003 | `gofusa check` |
+| DO-178C Annex A gap report | — | `gofusa do178` |
+| Software Accomplishment Summary (DO-178C §11.20) | — | `gofusa sas` |
+| Software Configuration Index (DO-178C §11.16) | — | `gofusa sci` |
+| Structural coverage report (DO-178C §6.4.4) | — | `gofusa coverage` |
+| Problem report log (DO-178C §11.17) | PR001 | `gofusa pr` |
+| Cyclomatic complexity (DO-178C §6.3.4) | COMP001 | `gofusa check` |
+| Data/control coupling (DO-178C §6.4.4.3) | COUP001–002 | `gofusa check` |
 
 ## 3. Tool Classification
 
@@ -79,7 +95,7 @@ gofusa version
 ### Docker (zero-install)
 
 ```
-docker run --rm -v "$(pwd):/workspace" ghcr.io/soundmatt/go-fusa:0.9.0 check
+docker run --rm -v "$(pwd)":/project ghcr.io/soundmatt/go-fusa:latest check
 ```
 
 ## 5. Configuration Reference
@@ -170,7 +186,7 @@ Generates `sbom.json` (parsed from `go.mod`/`go.sum`) and `provenance.json`
 gofusa qualify [--output <file>]
 ```
 
-Runs the 44-case built-in qualification suite (positive and negative per rule)
+Runs the built-in qualification suite (positive and negative per rule)
 and writes an integrity-hashed report to `qualify-report.json`.
 
 ### `gofusa version`
@@ -221,6 +237,11 @@ AST-level analysis. False positives may occur with concurrency frameworks
 | `ANA002` | WARNING | Goroutine launched inside a `for`/`range` loop | Move launch outside the loop or use a worker pool |
 | `ANA003` | WARNING | `time.Sleep` inside a goroutine | Replace with `time.After` / `select` with cancellation |
 | `ANA004` | WARNING | `defer` inside a `for`/`range` loop | Move `defer` outside the loop or use an explicit cleanup closure |
+| `ANA005` | WARNING | `context.Background()`/`context.TODO()` used inside a function that already accepts `context.Context` | Propagate the received context |
+| `ANA006` | WARNING | `fmt.Errorf` without `%w` — error chain lost | Use `%w` to wrap the underlying error |
+| `ANA007` | WARNING | Two-result function result used without a prior `err != nil` check | Check the error before using the value |
+| `ANA008` | WARNING | Goroutine literal accesses a package-level variable without synchronisation | Use a mutex, channel, or `sync/atomic` |
+| `ANA009` | WARNING | Unreachable code after unconditional `return`/`break`/`continue`/`panic` | Remove the dead code (DO-178C §6.4.4.2) |
 
 ### TRACE — Traceability Rules
 
@@ -228,6 +249,11 @@ AST-level analysis. False positives may occur with concurrency frameworks
 |---|---|---|---|
 | `TRACE001` | INFO | `.fusa-reqs.json` not found | Create it manually or via `gofusa trace` |
 | `TRACE002` | WARNING | Requirement has no `//fusa:req` annotation in source | Add `//fusa:req <ID>` in the implementing file |
+| `TRACE003` | INFO | Requirement has no `//fusa:test` annotation | Add `//fusa:test <ID>` in the test file |
+| `TRACE004` | WARNING | Requirement missing `text` field in `.fusa-reqs.json` | Add a `text` description to the requirement |
+| `TRACE005` | WARNING | Same file has both `//fusa:req` and `//fusa:test` for the same req (verification independence) | Separate impl and test annotations across files |
+| `TRACE006` | WARNING | Fewer than 80% of requirements have `//fusa:req` annotations in source | Add implementation annotations or lower threshold |
+| `TRACE007` | INFO | Exported-function annotation density below 80% | Add `//fusa:req` annotations to more files |
 
 ### VERIFY — Test Evidence Rules
 
@@ -373,7 +399,7 @@ safety argument:
 
 ### Assembling a qualification package
 
-1. Run `gofusa qualify` — verify 44/44 pass
+1. Run `gofusa qualify` — verify all cases pass
 2. Run `gofusa verify` — verify all tests pass
 3. Run `gofusa release` — generate SBOM and provenance
 4. Archive: this document, `qualify-report.json`, `.fusa-evidence.json`,
