@@ -120,6 +120,13 @@ The suite covers the core engine rules spanning all packages:
 | SLSA001–003 | slsa | SLSA L2/L3 provenance and CODEOWNERS checks |
 | IEC62443-001–004 | iec62443 | IEC 62443 Security Level configuration checks |
 | CYBER001–020 | cyber | CWE-mapped cybersecurity static analysis rules |
+| DISP001 | disposition | Undispositioned ERROR findings in check-report.json |
+| ISO26262-001 | iso26262 | ISO 26262 Part 6 ASIL compliance gap assessment |
+| IEC61508-001 | iec61508 | IEC 61508 SIL compliance gap assessment |
+| HARA001 | hara | `.fusa-hara.json` absent (WARNING for ISO 26262 / IEC 61508 projects) |
+| HARA002 | hara | Hazard has incomplete risk rating (S/E/C not all set) |
+| HARA003 | hara | Hazard has no linked safety goal |
+| HARA004 | hara | Safety goal has no ASIL assigned |
 
 ## Tool Confidence Level
 
