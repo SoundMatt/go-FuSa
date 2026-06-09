@@ -7,6 +7,35 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.23.0] — 2026-06-09
+
+### Added
+- **`iso21434/` package + `gofusa iso21434`** — ISO 21434:2021 cybersecurity gap assessment for
+  CAL 1–4. Evaluates 14 automatable objectives (§6.1, §8.3, §9.1–9.6, §10.1, §10.3, §10.4, §11.1,
+  Annex A.1/A.2) plus 7 manual items. Exits 1 when gaps exist. Rule `ISO21434001` fires INFO when
+  `tara.json` is absent from an ISO 21434 project.
+- **`unece/` package + `gofusa unece`** — UN R.155 Annex 5 threat-category coverage assessment.
+  Evaluates TC-1 through TC-9 evidence files; TC-7 to TC-9 are MANUAL. Rule `UNECE001` fires
+  WARNING when `tara.json` is absent from an ISO 21434 project.
+- **`coverage.RunMutation` + `gofusa coverage --mutate`** — mutation testing via `go-mutesting`
+  (optional binary). Returns a `MutationReport` with mutant/killed/survived counts and score.
+  A score ≥ 80% sets `MCDCEvidence` to the DO-178C AC §2.3.1(b) justification string.
+- **DOORS/Polarion XML import/export** — `trace.ParseDOORS`, `trace.ExportDOORS`,
+  `trace.ParsePolarion`, `trace.ExportPolarion` add ReqIF and Polarion work-item XML support to
+  `gofusa trace import/export`.
+- **`safetycase` ISO 21434 + UN R.155 mappings** — `iso21434` and `unece155` evidence entries added
+  to the safety case compliance map.
+- **CI: CodeQL workflow** — `.github/workflows/codeql.yml` runs on push/PR to main and weekly,
+  using `security-extended+security-and-quality` query suite.
+- **CI: SARIF upload job** — `sarif:` job in `ci.yml` builds gofusa, runs `check --format sarif`,
+  and uploads to GitHub Code Scanning via `codeql-action/upload-sarif@v3`.
+- **CI: Release workflow** — `.github/workflows/release.yml` builds cross-platform binaries
+  (linux/amd64, darwin/arm64, windows/amd64) and publishes a GitHub Release on `v*` tags.
+- **CI: Concurrency cancel** — `ci.yml` now cancels in-progress runs for the same branch.
+- **Documentation** — `docs/commands/check.md`, `lint.md`, `analyze.md`, `trace.md`, `release.md`
+  and `docs/standards/iso26262.md`, `iec61508.md`, `do178c.md`, `iso21434.md`, `iec62443.md`,
+  `misra-c.md` added.
+
 ## [0.22.0] — 2026-06-09
 
 ### Added

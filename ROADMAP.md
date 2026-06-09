@@ -61,7 +61,7 @@ Deliverables: `gofusa analyze`
 
 ---
 
-## v0.4 — Traceability
+## v0.4 ✅ — Traceability
 
 **Goal:** Requirements → Code → Tests
 
@@ -75,7 +75,7 @@ Deliverables: `gofusa trace`
 
 ---
 
-## v0.5 — Test Evidence
+## v0.5 ✅ — Test Evidence
 
 **Goal:** Verification evidence generation.
 
@@ -89,7 +89,7 @@ Deliverables: `gofusa verify`
 
 ---
 
-## v0.6 — Release Evidence
+## v0.6 ✅ — Release Evidence
 
 **Goal:** Audit-ready releases.
 
@@ -103,7 +103,7 @@ Deliverables: `gofusa release`
 
 ---
 
-## v0.7 — Safety Patterns
+## v0.7 ✅ — Safety Patterns
 
 **Goal:** Reusable runtime safety mechanisms.
 
@@ -115,6 +115,57 @@ Features:
 - Fault monitor
 
 Deliverables: `go-fusa/runtime`
+
+---
+
+## v0.23 — Gap Fill: Mutation Testing, DOORS/Polarion Import/Export, ISO 21434, UN R.155, Workflow CI & Docs ✅
+
+**Goal:** Close remaining evidence gaps by adding mutation-testing MC/DC evidence, DOORS and Polarion
+requirements exchange, ISO 21434 and UN R.155 compliance gap reports, three new CI workflow files,
+comprehensive command and standard reference documentation, and a full test-coverage pass lifting
+overall coverage above 80 %.
+
+Features:
+
+### Evidence quality
+- **`gofusa coverage --mutate`** — mutation testing via `go-mutesting`; produces `MutationReport`
+  with per-package killed/survived/score; sets `MCDCEvidence` string when score ≥ 80 % (DO-178C Level A).
+
+### Requirements exchange
+- **`trace.ParseDOORS` / `ExportDOORS`** — ReqIF XML round-trip for IBM DOORS / DOORS Next.
+- **`trace.ParsePolarion` / `ExportPolarion`** — Polarion XML round-trip.
+- **`gofusa req import/export --format doors|polarion`** — CLI wiring for both formats.
+
+### ISO 21434 & UN R.155
+- **`iso21434/` package** — `Assess(root, calStr)` with 14 automatable + 7 MANUAL objectives,
+  CAL 1–4 levels, engine rule ISO21434001.
+- **`unece/` package** — UN R.155 Annex 5 threat categories (6 automatable, 3 MANUAL), engine rule
+  UNECE001, `gofusa unece` command.
+- **`gofusa iso21434`** command — writes `iso21434-gap-report.json`.
+- **`safetycase` iso21434 mappings** — 10 clause entries added.
+
+### CI workflows
+- **`.github/workflows/codeql.yml`** — weekly CodeQL analysis on Go source (security-extended queries).
+- **`.github/workflows/ci.yml`** — `sarif:` job added; `concurrency:` cancel-in-progress block added.
+- **`.github/workflows/release.yml`** — cross-platform binary build (linux/darwin/windows) + GitHub
+  Release creation on `v*` tags.
+
+### Documentation
+- **`docs/commands/`** — check, lint, analyze, trace, release reference pages.
+- **`docs/standards/`** — iso26262, iec61508, do178c, iso21434, iec62443, misra-c reference pages.
+
+### Coverage improvements
+- Targeted tests for COUP003, IEC61508001, ISO26262001–003, `runCoupling`, `runGovulncheck`,
+  `runTraceSecTested`, `isNolinted`, `BuildFromFile`, `vcsInfo`, `isRequestDerived`, `isTempPath`,
+  `runSas`, `moduleFromRoot`, `countRequirements`, `runReqShow/Export`, `runReport`.
+- Overall coverage raised to ≥ 80 %.
+
+### Version bump
+- `fusa.Version` → `"0.23.0"`.
+
+Deliverables: `coverage.RunMutation`; `trace/reqxml.go`; `iso21434/` package; `unece/` package;
+`cmd_iso21434.go`; `cmd_unece.go`; `.github/workflows/codeql.yml`; `.github/workflows/release.yml`;
+`docs/commands/` (5 files); `docs/standards/` (6 files); version bump to 0.23.0
 
 ---
 
@@ -233,7 +284,7 @@ Deliverables: `hara/` package; `cmd_hara.go`; expanded `safetycase/mappingsFor`;
 
 ---
 
-## v0.20 — Multi-Standard Depth, Evidence Quality & Developer Workflow
+## v0.20 ✅ — Multi-Standard Depth, Evidence Quality & Developer Workflow
 
 **Goal:** Bring ISO 26262 and IEC 61508 to feature parity with the DO-178C evidence pipeline;
 upgrade the evidence bundle to auditor-ready HTML; close the MC/DC verification gap for

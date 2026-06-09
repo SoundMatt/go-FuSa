@@ -312,3 +312,24 @@ func TestISO26262003_FiresWhenFailures(t *testing.T) {
 	}
 	t.Error("ISO26262003 should fire when qualify-report.json has failures")
 }
+
+// ─── Description coverage ─────────────────────────────────────────────────────
+
+func TestISO26262_Descriptions(t *testing.T) {
+	ids := []string{"ISO26262001", "ISO26262002", "ISO26262003"}
+	for _, id := range ids {
+		found := false
+		for _, r := range engine.Default.Rules() {
+			if r.ID() == id {
+				if r.Description() == "" {
+					t.Errorf("%s Description empty", id)
+				}
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Errorf("%s not registered", id)
+		}
+	}
+}

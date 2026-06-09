@@ -2,11 +2,13 @@ package iec61508_test
 
 import (
 	"bytes"
+	"context"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/iec61508"
 )
 
@@ -240,6 +242,55 @@ func TestAssess_5_4_SCI_NAAtSIL1(t *testing.T) {
 		}
 	}
 	t.Error("objective 5.4 not found at SIL-1")
+}
+
+func TestIEC61508001_Description(t *testing.T) {
+	for _, r := range engine.Default.Rules() {
+		if r.ID() == "IEC61508001" {
+			if r.Description() == "" {
+				t.Error("IEC61508001 Description empty")
+			}
+			return
+		}
+	}
+	t.Error("IEC61508001 not registered")
+}
+
+func TestIEC61508001_Run_Gap(t *testing.T) {
+	dir := t.TempDir()
+	for _, r := range engine.Default.Rules() {
+		if r.ID() == "IEC61508001" {
+			findings, err := r.Run(context.Background(), dir, nil)
+			if err != nil {
+				t.Fatalf("Run: %v", err)
+			}
+			if len(findings) == 0 {
+				t.Error("expected IEC61508001 finding when report absent")
+			}
+			return
+		}
+	}
+	t.Error("IEC61508001 not registered")
+}
+
+func TestIEC61508001_Run_Pass(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, iec61508.ReportFile), []byte("{}"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range engine.Default.Rules() {
+		if r.ID() == "IEC61508001" {
+			findings, err := r.Run(context.Background(), dir, nil)
+			if err != nil {
+				t.Fatalf("Run: %v", err)
+			}
+			if len(findings) != 0 {
+				t.Errorf("expected no findings when report present, got %d", len(findings))
+			}
+			return
+		}
+	}
+	t.Error("IEC61508001 not registered")
 }
 
 func TestAssess_4_2_UseFMEA(t *testing.T) {

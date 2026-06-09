@@ -32,8 +32,10 @@
 //	hooks        Install/remove git pre-commit hook
 //	sign         Sign or verify a file with HMAC-SHA256
 //	do178        Generate a DO-178C Annex A compliance gap report
+//	iso21434     Generate an ISO 21434 cybersecurity compliance gap report
 //	iso26262     Generate an ISO 26262 Part 6 compliance gap report
 //	iec61508     Generate an IEC 61508 Parts 1-3 compliance gap report
+//	unece        Generate a UN R.155 cybersecurity compliance gap report
 //	sas          Generate a Software Accomplishment Summary (DO-178C §11.20)
 //	sci          Generate a Software Configuration Index (DO-178C §11.16)
 //	coverage     Analyse structural coverage from a Go coverage profile
@@ -64,6 +66,7 @@ import (
 	_ "github.com/SoundMatt/go-FuSa/hara"        // v0.21 HARA rules
 	_ "github.com/SoundMatt/go-FuSa/iec61508"    // v0.20 IEC 61508 gap report rules
 	_ "github.com/SoundMatt/go-FuSa/iec62443"    // v0.15 IEC 62443 evidence rules
+	_ "github.com/SoundMatt/go-FuSa/iso21434"    // v0.23 ISO 21434 gap report rules
 	_ "github.com/SoundMatt/go-FuSa/iso26262"    // v0.20 ISO 26262 gap report rules
 	_ "github.com/SoundMatt/go-FuSa/lint"        // v0.2 coding-standard rules
 	_ "github.com/SoundMatt/go-FuSa/pr"          // v0.18 problem report rule
@@ -72,6 +75,7 @@ import (
 	_ "github.com/SoundMatt/go-FuSa/slsa"        // v0.15 SLSA supply-chain rules
 	_ "github.com/SoundMatt/go-FuSa/tara"        // v0.15 TARA engine rule
 	_ "github.com/SoundMatt/go-FuSa/trace"       // v0.4 traceability rules
+	_ "github.com/SoundMatt/go-FuSa/unece"       // v0.23 UN R.155 gap report rules
 	_ "github.com/SoundMatt/go-FuSa/verify"      // v0.5 test-evidence rules
 	_ "github.com/SoundMatt/go-FuSa/vuln"        // v0.13–v0.15 vulnerability rules
 )
@@ -140,10 +144,14 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runSign(args[1:], stdout, stderr)
 	case "do178":
 		return runDo178(args[1:], stdout, stderr)
+	case "iso21434":
+		return runISO21434(args[1:], stdout, stderr)
 	case "iso26262":
 		return runISO26262(args[1:], stdout, stderr)
 	case "iec61508":
 		return runIEC61508(args[1:], stdout, stderr)
+	case "unece":
+		return runUNECE(args[1:], stdout, stderr)
 	case "sas":
 		return runSas(args[1:], stdout, stderr)
 	case "sci":
@@ -206,8 +214,10 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  hooks        Install/remove git pre-commit hook\n")
 	fmt.Fprintf(w, "  sign         Sign or verify a file with HMAC-SHA256\n")
 	fmt.Fprintf(w, "  do178        Generate a DO-178C Annex A compliance gap report\n")
+	fmt.Fprintf(w, "  iso21434     Generate an ISO 21434 cybersecurity compliance gap report\n")
 	fmt.Fprintf(w, "  iso26262     Generate an ISO 26262 Part 6 compliance gap report\n")
 	fmt.Fprintf(w, "  iec61508     Generate an IEC 61508 Parts 1-3 compliance gap report\n")
+	fmt.Fprintf(w, "  unece        Generate a UN R.155 cybersecurity compliance gap report\n")
 	fmt.Fprintf(w, "  sas          Generate a Software Accomplishment Summary (DO-178C §11.20)\n")
 	fmt.Fprintf(w, "  sci          Generate a Software Configuration Index (DO-178C §11.16)\n")
 	fmt.Fprintf(w, "  coverage     Analyse structural coverage from a Go coverage profile\n")

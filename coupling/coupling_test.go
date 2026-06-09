@@ -157,6 +157,10 @@ func TestDescriptions(t *testing.T) {
 	if d := coupling.NewControlCouplingRule().Description(); d == "" {
 		t.Error("COUP002 Description should not be empty")
 	}
+	coup003 := findRule(t, "COUP003")
+	if d := coup003.Description(); d == "" {
+		t.Error("COUP003 Description should not be empty")
+	}
 }
 
 func TestTestFileSkipped(t *testing.T) {

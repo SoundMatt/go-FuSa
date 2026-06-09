@@ -2,6 +2,7 @@ package coverage_test
 
 import (
 	"bytes"
+	"os"
 	"strings"
 	"testing"
 
@@ -147,5 +148,44 @@ func TestBuildFromFile_NotFound(t *testing.T) {
 	_, err := coverage.BuildFromFile("/does/not/exist/coverage.out", coverage.DALB)
 	if err == nil {
 		t.Error("expected error for missing file")
+	}
+}
+
+func TestBuildFromFile_Valid(t *testing.T) {
+	content := "mode: set\ngithub.com/x/pkg/file.go:10.2,12.5 3 1\n"
+	f, err := os.CreateTemp("", "coverage*.out")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(f.Name())
+	if _, werr := f.WriteString(content); werr != nil {
+		t.Fatal(werr)
+	}
+	f.Close()
+	rep, err := coverage.BuildFromFile(f.Name(), coverage.DALB)
+	if err != nil {
+		t.Fatalf("BuildFromFile: %v", err)
+	}
+	if rep.StmtTotal == 0 {
+		t.Error("expected stmts")
+	}
+}
+
+func TestRunMutation_NoTool(t *testing.T) {
+	// Without go-mutesting in PATH, should return a report with a note and no error.
+	dir := t.TempDir()
+	rep, err := coverage.RunMutation(dir, coverage.DALA)
+	if err != nil {
+		t.Fatalf("RunMutation: %v", err)
+	}
+	if rep == nil {
+		t.Fatal("expected non-nil report")
+	}
+	// Either go-mutesting is not installed (most likely in CI) → Note set
+	// or it is installed → results returned; either way no panic.
+	if rep.Note != "" {
+		if !strings.Contains(rep.Note, "go-mutesting") {
+			t.Errorf("unexpected note: %s", rep.Note)
+		}
 	}
 }

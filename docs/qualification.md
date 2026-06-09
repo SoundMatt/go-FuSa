@@ -131,6 +131,8 @@ The suite covers the core engine rules spanning all packages:
 | COUP003 | coupling | DO-178C project lacks `coupling-report.json` |
 | ISO26262002 | iso26262 | ISO 26262 project has requirements without `asil` tag in `.fusa-reqs.json` |
 | ISO26262003 | iso26262 | `qualify-report.json` contains failures (tool qualification depth insufficient) |
+| ISO21434001 | iso21434 | ISO 21434 project lacks `tara.json` (TARA evidence absent) |
+| UNECE001 | unece | ISO 21434 / UN R.155 project lacks `tara.json` |
 
 ## Tool Confidence Level
 

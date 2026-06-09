@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -433,4 +434,37 @@ func FuzzParseGoMod(f *testing.F) {
 		_ = os.WriteFile(path, []byte(content), 0o640)
 		_, _ = vuln.ParseGoMod(path) // must not panic
 	})
+}
+
+// ─── runGovulncheck via fake binary ──────────────────────────────────────────
+
+func TestRunGovulncheck_FakeBinary(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("fake shell binary not supported on Windows")
+	}
+	// Create a fake govulncheck that emits one finding
+	binDir := t.TempDir()
+	script := `#!/bin/sh
+echo '{"finding":{"osv":"GO-2024-0001","trace":[{"module":"github.com/example/dep","version":"v1.0.0","function":"main.Run"}],"fixed_version":"v1.0.1"}}'
+`
+	binPath := filepath.Join(binDir, "govulncheck")
+	if err := os.WriteFile(binPath, []byte(script), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	// Prepend to PATH
+	origPath := os.Getenv("PATH")
+	t.Setenv("PATH", binDir+string(os.PathListSeparator)+origPath)
+
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	rep, err := vuln.ScanWithGovulncheck(dir)
+	if err != nil {
+		t.Fatalf("ScanWithGovulncheck: %v", err)
+	}
+	if len(rep.Findings) == 0 {
+		t.Error("expected at least one finding from fake govulncheck")
+	}
 }

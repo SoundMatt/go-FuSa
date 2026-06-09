@@ -123,7 +123,7 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 	fs := flag.NewFlagSet("gofusa req import", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	var (
-		format = fs.String("format", "csv", "import format: csv")
+		format = fs.String("format", "csv", "import format: csv, doors, polarion")
 		file   = fs.String("file", "", "input file path (required)")
 	)
 	if err := fs.Parse(args); err != nil {
@@ -131,10 +131,6 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 	}
 	if *file == "" {
 		fmt.Fprintf(stderr, "gofusa req import: --file is required\n")
-		return 1
-	}
-	if *format != "csv" {
-		fmt.Fprintf(stderr, "gofusa req import: unsupported format %q (only csv is supported)\n", *format)
 		return 1
 	}
 
@@ -149,63 +145,86 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		existingIDs[r.ID] = true
 	}
 
-	// Read CSV
-	f, err := os.Open(*file)
-	if err != nil {
-		fmt.Fprintf(stderr, "gofusa req import: open %s: %v\n", *file, err)
-		return 1
-	}
-	defer func() { _ = f.Close() }()
+	var imported []trace.Requirement
 
-	r := csv.NewReader(f)
-	records, err := r.ReadAll()
-	if err != nil {
-		fmt.Fprintf(stderr, "gofusa req import: read csv: %v\n", err)
-		return 1
+	switch *format {
+	case "doors", "polarion":
+		data, ferr := os.ReadFile(*file)
+		if ferr != nil {
+			fmt.Fprintf(stderr, "gofusa req import: read %s: %v\n", *file, ferr)
+			return 1
+		}
+		var parseErr error
+		if *format == "doors" {
+			imported, parseErr = trace.ParseDOORS(data)
+		} else {
+			imported, parseErr = trace.ParsePolarion(data)
+		}
+		if parseErr != nil {
+			fmt.Fprintf(stderr, "gofusa req import: parse: %v\n", parseErr)
+			return 1
+		}
+	default: // csv
+		f, ferr := os.Open(*file)
+		if ferr != nil {
+			fmt.Fprintf(stderr, "gofusa req import: open %s: %v\n", *file, ferr)
+			return 1
+		}
+		defer func() { _ = f.Close() }()
+
+		r := csv.NewReader(f)
+		records, rerr := r.ReadAll()
+		if rerr != nil {
+			fmt.Fprintf(stderr, "gofusa req import: read csv: %v\n", rerr)
+			return 1
+		}
+
+		if len(records) == 0 {
+			fmt.Fprintf(stderr, "gofusa req import: CSV file is empty\n")
+			return 1
+		}
+
+		header := records[0]
+		if len(header) < 2 || strings.ToLower(header[0]) != "id" {
+			fmt.Fprintf(stderr, "gofusa req import: CSV must have header row starting with: id,title,text,standard,level\n")
+			return 1
+		}
+
+		for _, row := range records[1:] {
+			if len(row) == 0 {
+				continue
+			}
+			id := strings.TrimSpace(row[0])
+			if id == "" {
+				continue
+			}
+			req := trace.Requirement{ID: id}
+			if len(row) > 1 {
+				req.Title = strings.TrimSpace(row[1])
+			}
+			if len(row) > 2 {
+				req.Text = strings.TrimSpace(row[2])
+			}
+			if len(row) > 3 {
+				req.Standard = strings.TrimSpace(row[3])
+			}
+			if len(row) > 4 {
+				req.Level = strings.TrimSpace(row[4])
+			}
+			imported = append(imported, req)
+		}
 	}
 
-	if len(records) == 0 {
-		fmt.Fprintf(stderr, "gofusa req import: CSV file is empty\n")
-		return 1
-	}
-
-	// Validate header row
-	header := records[0]
-	if len(header) < 2 || strings.ToLower(header[0]) != "id" {
-		fmt.Fprintf(stderr, "gofusa req import: CSV must have header row starting with: id,title,text,standard,level\n")
-		return 1
-	}
-
-	imported := 0
+	added := 0
 	skipped := 0
-	for _, row := range records[1:] {
-		if len(row) == 0 {
-			continue
-		}
-		id := strings.TrimSpace(row[0])
-		if id == "" {
-			continue
-		}
-		if existingIDs[id] {
+	for _, req := range imported {
+		if existingIDs[req.ID] {
 			skipped++
 			continue
 		}
-		req := trace.Requirement{ID: id}
-		if len(row) > 1 {
-			req.Title = strings.TrimSpace(row[1])
-		}
-		if len(row) > 2 {
-			req.Text = strings.TrimSpace(row[2])
-		}
-		if len(row) > 3 {
-			req.Standard = strings.TrimSpace(row[3])
-		}
-		if len(row) > 4 {
-			req.Level = strings.TrimSpace(row[4])
-		}
 		existing = append(existing, req)
-		existingIDs[id] = true
-		imported++
+		existingIDs[req.ID] = true
+		added++
 	}
 
 	if err := trace.SaveRequirements(projectRoot, existing); err != nil {
@@ -213,7 +232,7 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		return 1
 	}
 
-	fmt.Fprintf(stdout, "Imported %d requirements (%d skipped as duplicates)\n", imported, skipped)
+	fmt.Fprintf(stdout, "Imported %d requirements (%d skipped as duplicates)\n", added, skipped)
 	return 0
 }
 
@@ -222,14 +241,10 @@ func runReqExport(args []string, projectRoot string, stdout, stderr io.Writer) i
 	fs := flag.NewFlagSet("gofusa req export", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	var (
-		format = fs.String("format", "csv", "export format: csv")
+		format = fs.String("format", "csv", "export format: csv, doors, polarion")
 		output = fs.String("output", "", "output file (default: stdout)")
 	)
 	if err := fs.Parse(args); err != nil {
-		return 1
-	}
-	if *format != "csv" {
-		fmt.Fprintf(stderr, "gofusa req export: unsupported format %q (only csv is supported)\n", *format)
 		return 1
 	}
 
@@ -239,36 +254,68 @@ func runReqExport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		return 1
 	}
 
-	w := stdout
-	if *output != "" {
-		f, ferr := os.Create(filepath.Join(projectRoot, *output))
+	openOutput := func() (io.Writer, func(), error) {
+		if *output == "" {
+			return stdout, func() {}, nil
+		}
+		// Try relative to projectRoot first, then as absolute path.
+		path := filepath.Join(projectRoot, *output)
+		f, ferr := os.Create(path)
 		if ferr != nil {
-			// try as absolute path
 			f, ferr = os.Create(*output)
 			if ferr != nil {
-				fmt.Fprintf(stderr, "gofusa req export: create %s: %v\n", *output, ferr)
+				return nil, nil, ferr
+			}
+		}
+		return f, func() { _ = f.Close() }, nil
+	}
+
+	switch *format {
+	case "doors", "polarion":
+		var data []byte
+		var exportErr error
+		if *format == "doors" {
+			data, exportErr = trace.ExportDOORS(reqs)
+		} else {
+			data, exportErr = trace.ExportPolarion(reqs)
+		}
+		if exportErr != nil {
+			fmt.Fprintf(stderr, "gofusa req export: %v\n", exportErr)
+			return 1
+		}
+		w, closeFn, openErr := openOutput()
+		if openErr != nil {
+			fmt.Fprintf(stderr, "gofusa req export: create %s: %v\n", *output, openErr)
+			return 1
+		}
+		defer closeFn()
+		if _, werr := w.Write(data); werr != nil {
+			fmt.Fprintf(stderr, "gofusa req export: write: %v\n", werr)
+			return 1
+		}
+	default: // csv
+		w, closeFn, openErr := openOutput()
+		if openErr != nil {
+			fmt.Fprintf(stderr, "gofusa req export: create %s: %v\n", *output, openErr)
+			return 1
+		}
+		defer closeFn()
+		cw := csv.NewWriter(w)
+		if err := cw.Write([]string{"id", "title", "text", "standard", "level"}); err != nil {
+			fmt.Fprintf(stderr, "gofusa req export: write header: %v\n", err)
+			return 1
+		}
+		for _, req := range reqs {
+			if err := cw.Write([]string{req.ID, req.Title, req.Text, req.Standard, req.Level}); err != nil {
+				fmt.Fprintf(stderr, "gofusa req export: write row: %v\n", err)
 				return 1
 			}
 		}
-		defer func() { _ = f.Close() }()
-		w = f
-	}
-
-	cw := csv.NewWriter(w)
-	if err := cw.Write([]string{"id", "title", "text", "standard", "level"}); err != nil {
-		fmt.Fprintf(stderr, "gofusa req export: write header: %v\n", err)
-		return 1
-	}
-	for _, req := range reqs {
-		if err := cw.Write([]string{req.ID, req.Title, req.Text, req.Standard, req.Level}); err != nil {
-			fmt.Fprintf(stderr, "gofusa req export: write row: %v\n", err)
+		cw.Flush()
+		if err := cw.Error(); err != nil {
+			fmt.Fprintf(stderr, "gofusa req export: flush: %v\n", err)
 			return 1
 		}
-	}
-	cw.Flush()
-	if err := cw.Error(); err != nil {
-		fmt.Fprintf(stderr, "gofusa req export: flush: %v\n", err)
-		return 1
 	}
 	return 0
 }
