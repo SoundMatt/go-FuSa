@@ -61,7 +61,7 @@ func runSas(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 
-	var w io.Writer = stdout
+	w := stdout
 	if *output != "" && *output != "-" {
 		outPath := *output
 		if !filepath.IsAbs(outPath) {
