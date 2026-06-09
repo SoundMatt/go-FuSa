@@ -118,13 +118,18 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
-## v0.20 — Multi-Standard Depth & Evidence Quality
+## v0.20 — Multi-Standard Depth, Evidence Quality & Developer Workflow
 
-**Goal:** Bring ISO 26262 and IEC 61508 to feature parity with the DO-178C evidence pipeline
-introduced in v0.18, upgrade the evidence bundle to a human-readable HTML format suitable
-for direct auditor review, and close the MC/DC verification gap for DO-178C Level A.
+**Goal:** Bring ISO 26262 and IEC 61508 to feature parity with the DO-178C evidence pipeline;
+upgrade the evidence bundle to auditor-ready HTML; close the MC/DC verification gap for
+DO-178C Level A; and deliver the three most-requested developer workflow features: finding
+disposition tracking, change impact analysis, requirements import/export, safety metrics
+trending, and MISRA C:2023 alignment reporting.
 
 Features:
+
+### Standard parity
+
 - **`gofusa iso26262`** — ISO 26262 gap assessment covering ASIL decomposition evidence,
   FMEA-to-hazard linkage checks, and safety plan completeness (analogous to `gofusa do178`).
   Includes an ASIL allocation table derived from `.fusa.json` and engine rules flagging
@@ -135,16 +140,45 @@ Features:
   `gofusa do178`.
 - **Safety plan templates** — ISO 26262 FMEA worksheet, Hazard and Risk Analysis (HARA)
   template, and IEC 61508 Functional Safety Plan added to `gofusa template`.
+
+### Evidence quality
+
 - **HTML evidence bundle** — `gofusa release --full` produces a self-contained `evidence.html`
   with navigable sections for each evidence type (findings, traceability, coverage, SBOM,
-  vulnerability scan, SCI). Suitable for direct auditor submission without tooling.
+  vulnerability scan, SCI). Suitable for direct auditor submission without additional tooling.
 - **`gofusa coverage --mutate`** — mutation testing integration via `go-mutesting` (or
   equivalent) to produce MC/DC-equivalent kill-rate evidence for DO-178C Level A. Reports
   mutation score per function alongside the structural coverage report.
 
-Deliverables: `iso26262/`, `iec61508/` packages; `cmd_iso26262`, `cmd_iec61508`; ISO 26262 +
-IEC 61508 plan templates; `evidence.html` in `gofusa release --full`; `--mutate` flag on
-`gofusa coverage`
+### Developer workflow
+
+- **`gofusa disposition`** — finding disposition log (`.fusa-dispositions.json`). Record
+  accepted findings with rationale, reviewer, and date; `gofusa check` cross-references
+  open findings against the log and marks each as `fixed`, `accepted`, or `open`. Engine
+  rule DISP001 fires when ERROR-severity findings have no disposition entry. Closes the most
+  common audit gap: evidence that every finding was reviewed before release.
+- **`gofusa impact`** — change impact analysis. Given a git diff or two commit SHAs, reports
+  which requirements are affected by changed files, which tests should be re-run, and which
+  evidence artefacts are stale. Maps to DO-178C §7.2 (regression analysis) and ISO 26262-8
+  §7 (configuration management). Unique to go-FuSa — no other open-source Go tool provides
+  this.
+- **`gofusa req import/export`** — requirements round-trip for CSV, DOORS XML, and Polarion
+  XML. `gofusa req import --format csv requirements.csv` populates `.fusa-reqs.json`;
+  `gofusa req export --format csv` produces a spreadsheet-ready file. Removes the primary
+  onboarding friction for teams migrating from document-centric toolchains.
+- **`gofusa metrics`** — safety metrics trending. Appends a timestamped snapshot (finding
+  counts by severity, coverage %, requirement density, untraced count, annotation density)
+  to `.fusa-metrics.json`. `gofusa metrics --format text` renders a trend table. Gives
+  auditors the "show me the trend" evidence without external tooling.
+- **`gofusa misra`** — MISRA C:2023 alignment report. Maps each MISRA C rule to its Go-
+  language equivalent (existing go-FuSa rule, built-in `go vet` check, or documented
+  inapplicable/N/A), and generates a gap report. Addresses the single most-asked question
+  from automotive teams migrating codebases from C/C++.
+
+Deliverables: `iso26262/`, `iec61508/`, `disposition/`, `impact/`, `metrics/`, `misra/`
+packages; `cmd_iso26262`, `cmd_iec61508`, `cmd_disposition`, `cmd_impact`, `cmd_metrics`,
+`cmd_misra`; `req import/export` subcommands; `evidence.html` in `gofusa release --full`;
+`--mutate` flag on `gofusa coverage`; ISO 26262 + IEC 61508 plan templates; DISP001 engine rule
 
 ---
 
