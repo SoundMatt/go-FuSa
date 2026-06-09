@@ -21,6 +21,7 @@
 //	fmea         Generate a dFMEA table from exported functions
 //	boundary     Generate a component boundary diagram
 //	tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)
+//	hara         Manage the Hazard Analysis and Risk Assessment (.fusa-hara.json)
 //	vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)
 //	audit-pack   Bundle all evidence artifacts into a single ZIP for auditors
 //	diff         Compare two check report JSON files (introduced/resolved/unchanged)
@@ -59,6 +60,7 @@ import (
 	_ "github.com/SoundMatt/go-FuSa/cyber"       // v0.14–v0.15 cybersecurity analysis rules
 	_ "github.com/SoundMatt/go-FuSa/disposition" // v0.20 disposition rules
 	_ "github.com/SoundMatt/go-FuSa/fmea"        // v0.12 dFMEA rules
+	_ "github.com/SoundMatt/go-FuSa/hara"        // v0.21 HARA rules
 	_ "github.com/SoundMatt/go-FuSa/iec61508"    // v0.20 IEC 61508 gap report rules
 	_ "github.com/SoundMatt/go-FuSa/iec62443"    // v0.15 IEC 62443 evidence rules
 	_ "github.com/SoundMatt/go-FuSa/iso26262"    // v0.20 ISO 26262 gap report rules
@@ -115,6 +117,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runBoundary(args[1:], stdout, stderr)
 	case "tara":
 		return runTara(args[1:], stdout, stderr)
+	case "hara":
+		return runHara(args[1:], stdout, stderr)
 	case "vuln":
 		return runVuln(args[1:], stdout, stderr)
 	case "audit-pack":
@@ -188,6 +192,7 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  fmea         Generate a dFMEA table from exported functions\n")
 	fmt.Fprintf(w, "  boundary     Generate a component boundary diagram\n")
 	fmt.Fprintf(w, "  tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)\n")
+	fmt.Fprintf(w, "  hara         Manage the Hazard Analysis and Risk Assessment (.fusa-hara.json)\n")
 	fmt.Fprintf(w, "  vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)\n")
 	fmt.Fprintf(w, "  audit-pack   Bundle all evidence artifacts into a single ZIP for auditors\n")
 	fmt.Fprintf(w, "  diff         Compare two check report JSON files (introduced/resolved/unchanged)\n")

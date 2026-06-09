@@ -1,0 +1,128 @@
+{
+  "project": "go-FuSa",
+  "standard": "ISO 26262",
+  "createdAt": "2026-06-09T00:00:00Z",
+  "operationalSituations": [
+    {
+      "id": "OS-001",
+      "description": "Developer runs gofusa check during active development — tool findings inform safety-critical code changes"
+    },
+    {
+      "id": "OS-002",
+      "description": "CI/CD pipeline runs gofusa as a gating check before release — tool exit code determines whether a build proceeds"
+    },
+    {
+      "id": "OS-003",
+      "description": "Auditor reviews gofusa-generated evidence bundles to make certification decisions"
+    }
+  ],
+  "hazards": [
+    {
+      "id": "H-001",
+      "description": "False negative — gofusa fails to report a genuine safety rule violation",
+      "source": "Incomplete rule coverage, rule logic error, or silent analysis failure",
+      "situations": ["OS-001", "OS-002"],
+      "risk": {
+        "severity": "S2",
+        "exposure": "E4",
+        "controllability": "C2",
+        "asil": "ASIL-C"
+      },
+      "safetyGoals": ["SG-001"]
+    },
+    {
+      "id": "H-002",
+      "description": "Wrong ASIL determination — gofusa computes an incorrect ASIL level from S/E/C inputs",
+      "source": "ASIL lookup table error or off-by-one in DetermineASIL",
+      "situations": ["OS-001", "OS-002"],
+      "risk": {
+        "severity": "S2",
+        "exposure": "E3",
+        "controllability": "C2",
+        "asil": "ASIL-B"
+      },
+      "safetyGoals": ["SG-002"]
+    },
+    {
+      "id": "H-003",
+      "description": "Silent failure — gofusa exits 0 when analysis encountered errors",
+      "source": "Unhandled error paths in CLI or engine returning nil instead of error",
+      "situations": ["OS-002"],
+      "risk": {
+        "severity": "S2",
+        "exposure": "E3",
+        "controllability": "C1",
+        "asil": "ASIL-A"
+      },
+      "safetyGoals": ["SG-003"]
+    },
+    {
+      "id": "H-004",
+      "description": "Evidence integrity violation — generated evidence bundles lack integrity verification, enabling undetected tampering",
+      "source": "Missing SHA-256 hash in provenance or evidence bundle",
+      "situations": ["OS-003"],
+      "risk": {
+        "severity": "S1",
+        "exposure": "E4",
+        "controllability": "C2",
+        "asil": "ASIL-A"
+      },
+      "safetyGoals": ["SG-004"]
+    },
+    {
+      "id": "H-005",
+      "description": "Config silently disables safety checks — .fusa.json rule suppression masks active violations",
+      "source": "Overly permissive rule disable without warning",
+      "situations": ["OS-001", "OS-002"],
+      "risk": {
+        "severity": "S2",
+        "exposure": "E3",
+        "controllability": "C2",
+        "asil": "ASIL-B"
+      },
+      "safetyGoals": ["SG-005"]
+    }
+  ],
+  "safetyGoals": [
+    {
+      "id": "SG-001",
+      "description": "gofusa shall report every violation of activated safety rules with no false negatives",
+      "hazards": ["H-001"],
+      "asil": "ASIL-C",
+      "safeState": "Halt analysis and exit non-zero if rule engine cannot complete",
+      "fssrRef": "REQ-LINT001 REQ-ANA001 REQ-COMP001 REQ-COUPLING001"
+    },
+    {
+      "id": "SG-002",
+      "description": "gofusa ASIL allocation shall match the standard's classification table exactly as configured",
+      "hazards": ["H-002"],
+      "asil": "ASIL-B",
+      "safeState": "Report configuration mismatch as ERROR finding",
+      "fssrRef": "REQ-HARA006"
+    },
+    {
+      "id": "SG-003",
+      "description": "gofusa shall exit non-zero when any ERROR-severity finding is generated or when analysis fails",
+      "hazards": ["H-003"],
+      "asil": "ASIL-A",
+      "safeState": "Exit code 1",
+      "fssrRef": "REQ-CLI001 REQ-E2E001"
+    },
+    {
+      "id": "SG-004",
+      "description": "gofusa evidence bundles shall include SHA-256 hashes for all generated artifacts",
+      "hazards": ["H-004"],
+      "asil": "ASIL-A",
+      "safeState": "Reject bundle if hash missing or mismatched",
+      "fssrRef": "REQ-RELEASE001 REQ-SIGN001"
+    },
+    {
+      "id": "SG-005",
+      "description": "gofusa shall emit a WARNING finding when a rule from a critical category is disabled in configuration",
+      "hazards": ["H-005"],
+      "asil": "ASIL-B",
+      "safeState": "Emit WARNING and continue",
+      "fssrRef": "REQ-CONFIG001"
+    }
+  ]
+}

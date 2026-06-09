@@ -118,6 +118,63 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.21 — HARA Package, ISO 26262 Clause Mapping & Project Safety Case ✅
+
+**Goal:** Elevate go-FuSa's ISO 26262 support from gap-assessment to full HARA-backed hazard
+management; expand the safety-case compliance mapping to cover Parts 4, 5, 6, and 8 in detail;
+and apply go-FuSa to its own development by adding `.fusa.json` (ISO26262, ASIL-B) and
+`.fusa-hara.json` documenting tool-failure hazards.
+
+Features:
+
+### `hara/` package
+
+- **Structured HARA data model** (`.fusa-hara.json`) — `OperationalSituation`, `Hazard`,
+  `RiskRating`, `SafetyGoal`, and `HARA` types with full JSON round-trip.
+- **`DetermineASIL`** — complete ISO 26262-3:2018 Table 4 lookup covering all 48 S×E×C
+  combinations for S1–S3 and E1–E4 (S0 and E0 always return QM).
+- **`Load` / `Save`** — read/write `.fusa-hara.json` with graceful missing-file handling.
+- **`Validate`** — returns `ValidationFinding` list for incomplete risk ratings (HARA002),
+  hazards without safety goals (HARA003), unknown goal references, and goals missing ASIL
+  (HARA004).
+- **`Render`** — text/markdown and JSON output including a Gaps section when `Validate`
+  returns findings.
+- **Engine rules:** HARA001 (no HARA file — INFO normally, WARNING for ISO26262/IEC61508
+  projects), HARA002 (incomplete S/E/C), HARA003 (hazard has no safety goal), HARA004
+  (safety goal has no ASIL).
+
+### `gofusa hara` CLI
+
+- **`gofusa hara show`** — render `.fusa-hara.json` as text, markdown, or JSON; exits 0 even
+  with gaps (gaps appear in the output).
+- **`gofusa hara init`** — create a starter `.fusa-hara.json` with one example hazard/goal;
+  refuses to overwrite an existing file.
+- **`gofusa hara asil`** — derive ASIL from `-s`, `-e`, `-c` flags using Table 4.
+
+### ISO 26262 safety-case clause mapping
+
+`safetycase.mappingsFor("iso26262")` expanded from 5 sparse entries to 15 entries covering:
+- Part 4 §7 (technical safety requirements), §8 (system design / safety mechanisms), §9
+  (system integration and testing)
+- Part 5 §7 (hardware design — informative for SW-only projects)
+- Part 6 §6 (SW safety requirements), §7 (SW architectural design), §8 (SW unit design/
+  implementation), §9 (SW unit verification), §10 (SW integration and testing), §11 (SW
+  functional safety testing), §12 (coding guidelines / dependent failure analysis)
+- Part 8 §7 (configuration management), §8 (change management), §11 (tool qualification)
+
+### go-FuSa project files
+
+- **`.fusa.json`** — updated to `standard: "ISO26262"`, `asil: "ASIL-B"` (go-FuSa itself is
+  a safety-tool and is treated as ASIL-B per its own HARA).
+- **`.fusa-hara.json`** — five tool-failure hazards documented: H-001 false negative (ASIL-C),
+  H-002 wrong ASIL determination (ASIL-B), H-003 silent failure exit 0 (ASIL-A), H-004
+  evidence integrity violation (ASIL-A), H-005 config silently disables checks (ASIL-B).
+
+Deliverables: `hara/` package; `cmd_hara.go`; expanded `safetycase/mappingsFor`; `.fusa.json`;
+`.fusa-hara.json`; version bump to 0.21.0
+
+---
+
 ## v0.20 — Multi-Standard Depth, Evidence Quality & Developer Workflow
 
 **Goal:** Bring ISO 26262 and IEC 61508 to feature parity with the DO-178C evidence pipeline;

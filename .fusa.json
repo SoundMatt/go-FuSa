@@ -3,7 +3,8 @@
   "project": {
     "name": "go-FuSa",
     "module": "github.com/SoundMatt/go-FuSa",
-    "standard": "generic"
+    "standard": "ISO26262",
+    "asil": "ASIL-B"
   },
   "rules": {},
   "report": {
