@@ -102,6 +102,8 @@ func Parse(r io.Reader) ([]TestResult, error) {
 }
 
 // Summarise computes aggregate counts from a slice of TestResults.
+//
+//fusa:req REQ-VERIFY004
 func Summarise(results []TestResult) Summary {
 	s := Summary{Total: len(results)}
 	for _, r := range results {
@@ -150,6 +152,8 @@ func Run(ctx context.Context, dir string) ([]TestResult, error) {
 }
 
 // Save writes the evidence bundle to path as indented JSON.
+//
+//fusa:req REQ-VERIFY006
 func Save(path string, b *Bundle) error {
 	data, err := json.MarshalIndent(b, "", "  ")
 	if err != nil {
@@ -162,6 +166,8 @@ func Save(path string, b *Bundle) error {
 }
 
 // Load reads an evidence bundle from path.
+//
+//fusa:req REQ-VERIFY007
 func Load(path string) (*Bundle, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {

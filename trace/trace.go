@@ -95,6 +95,8 @@ type Matrix struct {
 
 // LoadRequirements reads requirements from .fusa-reqs.json in dir.
 // Returns fusa.ErrNoConfig if the file is absent.
+//
+//fusa:req REQ-TRACE001
 func LoadRequirements(dir string) ([]Requirement, error) {
 	path := filepath.Join(dir, ReqsFile)
 	data, err := os.ReadFile(path)
@@ -114,6 +116,8 @@ func LoadRequirements(dir string) ([]Requirement, error) {
 }
 
 // SaveRequirements writes reqs as .fusa-reqs.json in dir.
+//
+//fusa:req REQ-TRACE001
 func SaveRequirements(dir string, reqs []Requirement) error {
 	payload := struct {
 		Requirements []Requirement `json:"requirements"`
@@ -218,6 +222,8 @@ func scanFile(path string) ([]Tag, error) {
 // Build constructs the full traceability Matrix for the project at root.
 // If no .fusa-reqs.json exists, the matrix will have an empty requirements list
 // but will still include any tags found in source files.
+//
+//fusa:req REQ-TRACE002
 func Build(root string) (*Matrix, error) {
 	reqs, err := LoadRequirements(root)
 	if err != nil && !errors.Is(err, fusa.ErrNoConfig) {
@@ -280,6 +286,8 @@ func Build(root string) (*Matrix, error) {
 // ScanFuncCoverage counts exported functions and how many live in files that
 // contain at least one //fusa:req annotation. tags must be the ScanTags result
 // for the same root. Test files (_test.go) are excluded.
+//
+//fusa:req REQ-TRACE007
 func ScanFuncCoverage(root string, tags []Tag) (*FuncCoverage, error) {
 	annotated := make(map[string]bool)
 	for _, t := range tags {

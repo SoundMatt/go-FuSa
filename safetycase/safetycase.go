@@ -251,11 +251,24 @@ func mappingsFor(standard string) []ClauseMapping {
 	switch strings.ToLower(standard) {
 	case "iso26262":
 		return []ClauseMapping{
-			{Standard: "ISO 26262", Clause: "Part 6 §6.4", Title: "Software requirements specification", EvidenceIDs: []string{"trace"}},
-			{Standard: "ISO 26262", Clause: "Part 6 §6.6–6.7", Title: "Software unit design and implementation", EvidenceIDs: []string{"check"}},
-			{Standard: "ISO 26262", Clause: "Part 6 §6.8", Title: "Software unit verification", EvidenceIDs: []string{"verify"}},
-			{Standard: "ISO 26262", Clause: "Part 8 §8.4.5", Title: "Tool qualification", EvidenceIDs: []string{"qualify"}},
-			{Standard: "ISO 26262", Clause: "Part 8 §8.3", Title: "Release management", EvidenceIDs: []string{"sbom", "provenance"}},
+			// Part 4 — Product development at the system level
+			{Standard: "ISO 26262-4", Clause: "§7", Title: "Technical safety requirements", EvidenceIDs: []string{"trace"}},
+			{Standard: "ISO 26262-4", Clause: "§8", Title: "System design (safety mechanisms)", EvidenceIDs: []string{"check", "trace"}},
+			{Standard: "ISO 26262-4", Clause: "§9", Title: "Integration and testing — system level", EvidenceIDs: []string{"verify"}},
+			// Part 5 — HW (informative for SW-only projects; mark N/A if no HW component)
+			{Standard: "ISO 26262-5", Clause: "§7", Title: "Hardware design (N/A for SW-only projects)", EvidenceIDs: []string{}},
+			// Part 6 — Product development at the software level
+			{Standard: "ISO 26262-6", Clause: "§6", Title: "Software safety requirements specification", EvidenceIDs: []string{"trace"}},
+			{Standard: "ISO 26262-6", Clause: "§7", Title: "Software architectural design", EvidenceIDs: []string{"check"}},
+			{Standard: "ISO 26262-6", Clause: "§8", Title: "Software unit design and implementation", EvidenceIDs: []string{"check"}},
+			{Standard: "ISO 26262-6", Clause: "§9", Title: "Software unit verification", EvidenceIDs: []string{"verify"}},
+			{Standard: "ISO 26262-6", Clause: "§10", Title: "Software integration and integration testing", EvidenceIDs: []string{"verify"}},
+			{Standard: "ISO 26262-6", Clause: "§11", Title: "Software testing (functional safety)", EvidenceIDs: []string{"verify"}},
+			{Standard: "ISO 26262-6", Clause: "§12", Title: "Dependent failure analysis / coding guidelines", EvidenceIDs: []string{"check"}},
+			// Part 8 — Supporting processes
+			{Standard: "ISO 26262-8", Clause: "§7", Title: "Configuration management", EvidenceIDs: []string{"sbom", "provenance"}},
+			{Standard: "ISO 26262-8", Clause: "§8", Title: "Change management", EvidenceIDs: []string{"provenance"}},
+			{Standard: "ISO 26262-8", Clause: "§11", Title: "Tool qualification", EvidenceIDs: []string{"qualify"}},
 		}
 	case "iec61508":
 		return []ClauseMapping{

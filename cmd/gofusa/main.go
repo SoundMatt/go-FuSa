@@ -21,19 +21,26 @@
 //	fmea         Generate a dFMEA table from exported functions
 //	boundary     Generate a component boundary diagram
 //	tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)
+//	hara         Manage the Hazard Analysis and Risk Assessment (.fusa-hara.json)
 //	vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)
 //	audit-pack   Bundle all evidence artifacts into a single ZIP for auditors
 //	diff         Compare two check report JSON files (introduced/resolved/unchanged)
 //	badge        Generate an SVG status badge from a check report
-//	req          Show requirements and their source/test locations
+//	req          Show, import, or export requirements (CSV import/export)
 //	fix          Show auto-fixable findings with remediation guidance
 //	hooks        Install/remove git pre-commit hook
 //	sign         Sign or verify a file with HMAC-SHA256
 //	do178        Generate a DO-178C Annex A compliance gap report
+//	iso26262     Generate an ISO 26262 Part 6 compliance gap report
+//	iec61508     Generate an IEC 61508 Parts 1-3 compliance gap report
 //	sas          Generate a Software Accomplishment Summary (DO-178C §11.20)
 //	sci          Generate a Software Configuration Index (DO-178C §11.16)
 //	coverage     Analyse structural coverage from a Go coverage profile
 //	pr           Manage software problem reports (DO-178C §11.17)
+//	disposition  Manage finding disposition entries
+//	impact       Analyse change impact on requirements and safety artefacts
+//	metrics      Track safety metrics over time
+//	misra        Show MISRA C:2023 to Go / go-FuSa rule coverage mapping
 //	version      Print the go-FuSa version
 //
 // Run 'gofusa <command> --help' for per-command flags.
@@ -45,23 +52,27 @@ import (
 	"os"
 
 	// Blank imports activate built-in rule sets registered via init().
-	_ "github.com/SoundMatt/go-FuSa/analyze"   // v0.3 static-analysis rules
-	_ "github.com/SoundMatt/go-FuSa/auditpack" // v0.13 audit-pack rules
-	_ "github.com/SoundMatt/go-FuSa/boundary"  // v0.12 boundary-diagram rules
-	_ "github.com/SoundMatt/go-FuSa/comp"      // v0.18 cyclomatic complexity rule
-	_ "github.com/SoundMatt/go-FuSa/coupling"  // v0.18 data/control coupling rules
-	_ "github.com/SoundMatt/go-FuSa/cyber"     // v0.14–v0.15 cybersecurity analysis rules
-	_ "github.com/SoundMatt/go-FuSa/fmea"      // v0.12 dFMEA rules
-	_ "github.com/SoundMatt/go-FuSa/iec62443"  // v0.15 IEC 62443 evidence rules
-	_ "github.com/SoundMatt/go-FuSa/lint"      // v0.2 coding-standard rules
-	_ "github.com/SoundMatt/go-FuSa/pr"        // v0.18 problem report rule
-	_ "github.com/SoundMatt/go-FuSa/qualify"   // v0.9 tool qualification rules
-	_ "github.com/SoundMatt/go-FuSa/release"   // v0.6 release-evidence rules
-	_ "github.com/SoundMatt/go-FuSa/slsa"      // v0.15 SLSA supply-chain rules
-	_ "github.com/SoundMatt/go-FuSa/tara"      // v0.15 TARA engine rule
-	_ "github.com/SoundMatt/go-FuSa/trace"     // v0.4 traceability rules
-	_ "github.com/SoundMatt/go-FuSa/verify"    // v0.5 test-evidence rules
-	_ "github.com/SoundMatt/go-FuSa/vuln"      // v0.13–v0.15 vulnerability rules
+	_ "github.com/SoundMatt/go-FuSa/analyze"     // v0.3 static-analysis rules
+	_ "github.com/SoundMatt/go-FuSa/auditpack"   // v0.13 audit-pack rules
+	_ "github.com/SoundMatt/go-FuSa/boundary"    // v0.12 boundary-diagram rules
+	_ "github.com/SoundMatt/go-FuSa/comp"        // v0.18 cyclomatic complexity rule
+	_ "github.com/SoundMatt/go-FuSa/coupling"    // v0.18 data/control coupling rules
+	_ "github.com/SoundMatt/go-FuSa/cyber"       // v0.14–v0.15 cybersecurity analysis rules
+	_ "github.com/SoundMatt/go-FuSa/disposition" // v0.20 disposition rules
+	_ "github.com/SoundMatt/go-FuSa/fmea"        // v0.12 dFMEA rules
+	_ "github.com/SoundMatt/go-FuSa/hara"        // v0.21 HARA rules
+	_ "github.com/SoundMatt/go-FuSa/iec61508"    // v0.20 IEC 61508 gap report rules
+	_ "github.com/SoundMatt/go-FuSa/iec62443"    // v0.15 IEC 62443 evidence rules
+	_ "github.com/SoundMatt/go-FuSa/iso26262"    // v0.20 ISO 26262 gap report rules
+	_ "github.com/SoundMatt/go-FuSa/lint"        // v0.2 coding-standard rules
+	_ "github.com/SoundMatt/go-FuSa/pr"          // v0.18 problem report rule
+	_ "github.com/SoundMatt/go-FuSa/qualify"     // v0.9 tool qualification rules
+	_ "github.com/SoundMatt/go-FuSa/release"     // v0.6 release-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/slsa"        // v0.15 SLSA supply-chain rules
+	_ "github.com/SoundMatt/go-FuSa/tara"        // v0.15 TARA engine rule
+	_ "github.com/SoundMatt/go-FuSa/trace"       // v0.4 traceability rules
+	_ "github.com/SoundMatt/go-FuSa/verify"      // v0.5 test-evidence rules
+	_ "github.com/SoundMatt/go-FuSa/vuln"        // v0.13–v0.15 vulnerability rules
 )
 
 func main() {
@@ -106,6 +117,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runBoundary(args[1:], stdout, stderr)
 	case "tara":
 		return runTara(args[1:], stdout, stderr)
+	case "hara":
+		return runHara(args[1:], stdout, stderr)
 	case "vuln":
 		return runVuln(args[1:], stdout, stderr)
 	case "audit-pack":
@@ -124,6 +137,10 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runSign(args[1:], stdout, stderr)
 	case "do178":
 		return runDo178(args[1:], stdout, stderr)
+	case "iso26262":
+		return runISO26262(args[1:], stdout, stderr)
+	case "iec61508":
+		return runIEC61508(args[1:], stdout, stderr)
 	case "sas":
 		return runSas(args[1:], stdout, stderr)
 	case "sci":
@@ -132,6 +149,14 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runCoverage(args[1:], stdout, stderr)
 	case "pr":
 		return runPR(args[1:], stdout, stderr)
+	case "disposition":
+		return runDisposition(args[1:], stdout, stderr)
+	case "impact":
+		return runImpact(args[1:], stdout, stderr)
+	case "metrics":
+		return runMetrics(args[1:], stdout, stderr)
+	case "misra":
+		return runMisra(args[1:], stdout, stderr)
 	case "version":
 		//fusa:req REQ-CLI004
 		return runVersion(stdout)
@@ -167,19 +192,26 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  fmea         Generate a dFMEA table from exported functions\n")
 	fmt.Fprintf(w, "  boundary     Generate a component boundary diagram\n")
 	fmt.Fprintf(w, "  tara         Generate a Threat Analysis and Risk Assessment (ISO 21434)\n")
+	fmt.Fprintf(w, "  hara         Manage the Hazard Analysis and Risk Assessment (.fusa-hara.json)\n")
 	fmt.Fprintf(w, "  vuln         Scan dependencies for known vulnerabilities (OSV / ISO 21434)\n")
 	fmt.Fprintf(w, "  audit-pack   Bundle all evidence artifacts into a single ZIP for auditors\n")
 	fmt.Fprintf(w, "  diff         Compare two check report JSON files (introduced/resolved/unchanged)\n")
 	fmt.Fprintf(w, "  badge        Generate an SVG status badge from a check report\n")
-	fmt.Fprintf(w, "  req          Show requirements and their source/test locations\n")
+	fmt.Fprintf(w, "  req          Show, import, or export requirements (CSV import/export)\n")
 	fmt.Fprintf(w, "  fix          Show auto-fixable findings with remediation guidance\n")
 	fmt.Fprintf(w, "  hooks        Install/remove git pre-commit hook\n")
 	fmt.Fprintf(w, "  sign         Sign or verify a file with HMAC-SHA256\n")
 	fmt.Fprintf(w, "  do178        Generate a DO-178C Annex A compliance gap report\n")
+	fmt.Fprintf(w, "  iso26262     Generate an ISO 26262 Part 6 compliance gap report\n")
+	fmt.Fprintf(w, "  iec61508     Generate an IEC 61508 Parts 1-3 compliance gap report\n")
 	fmt.Fprintf(w, "  sas          Generate a Software Accomplishment Summary (DO-178C §11.20)\n")
 	fmt.Fprintf(w, "  sci          Generate a Software Configuration Index (DO-178C §11.16)\n")
 	fmt.Fprintf(w, "  coverage     Analyse structural coverage from a Go coverage profile\n")
 	fmt.Fprintf(w, "  pr           Manage software problem reports (DO-178C §11.17)\n")
+	fmt.Fprintf(w, "  disposition  Manage finding disposition entries\n")
+	fmt.Fprintf(w, "  impact       Analyse change impact on requirements and safety artefacts\n")
+	fmt.Fprintf(w, "  metrics      Track safety metrics over time\n")
+	fmt.Fprintf(w, "  misra        Show MISRA C:2023 to Go / go-FuSa rule coverage mapping\n")
 	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")
 	fmt.Fprintf(w, "\nRun 'gofusa <command> --help' for command-specific flags.\n")
 }

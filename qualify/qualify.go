@@ -76,6 +76,8 @@ func (r *Report) HasFailures() bool { return r.Failed > 0 }
 // Run executes cases against reg and returns a Report.
 // Each case runs in its own isolated temporary directory and is cleaned up on completion.
 // The returned Report includes a SHA-256 integrity hash.
+//
+//fusa:req REQ-QUALIFY001
 func Run(ctx context.Context, reg *engine.Registry, cases []Case) (*Report, error) {
 	report := &Report{
 		GeneratedAt: time.Now().UTC(),
@@ -104,6 +106,8 @@ func Run(ctx context.Context, reg *engine.Registry, cases []Case) (*Report, erro
 }
 
 // Save writes the report as indented JSON to path.
+//
+//fusa:req REQ-QUALIFY004
 func Save(path string, r *Report) error {
 	data, err := json.MarshalIndent(r, "", "  ")
 	if err != nil {
@@ -114,6 +118,8 @@ func Save(path string, r *Report) error {
 
 // Load reads a qualification report from path.
 // Returns [fusa.ErrNoConfig] if path does not exist.
+//
+//fusa:req REQ-QUALIFY005
 func Load(path string) (*Report, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -132,6 +138,8 @@ func Load(path string) (*Report, error) {
 // BuiltinCases returns the built-in qualification test cases, covering all
 // engine rules with one positive case (expects finding) and one negative case
 // (expects no finding) each.
+//
+//fusa:req REQ-QUALIFY006
 func BuiltinCases() []Case { return builtinCases }
 
 // runCase executes a single qualification test case.

@@ -673,6 +673,8 @@ func (r *ruleStringConcatInAPI) Run(_ context.Context, projectRoot string, _ *co
 // Scan runs all CYBER rules against projectRoot and returns the findings.
 // Other packages (fmea, tara) call this to obtain cyber findings without
 // importing the engine directly.
+//
+//fusa:req REQ-CYBER001
 func Scan(ctx context.Context, projectRoot string, cfg *config.Config) ([]fusa.Finding, error) {
 	result, err := engine.Default.RunFilter(ctx, projectRoot, cfg, func(r engine.Rule) bool {
 		return strings.HasPrefix(r.ID(), "CYBER")

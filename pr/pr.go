@@ -110,6 +110,8 @@ func Save(path string, log *Log) error {
 }
 
 // Add appends a new problem report to the log and saves it.
+//
+//fusa:req REQ-PR003
 func Add(path string, report ProblemReport) error {
 	log, err := Load(path)
 	if err != nil {
@@ -126,6 +128,8 @@ func Add(path string, report ProblemReport) error {
 }
 
 // Close marks a problem report as closed and saves it.
+//
+//fusa:req REQ-PR004
 func Close(path, id, resolution string) error {
 	log, err := Load(path)
 	if err != nil {

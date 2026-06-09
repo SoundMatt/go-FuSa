@@ -44,6 +44,8 @@ type ProjectConfig struct {
 }
 
 // LoadConfig reads .fusa-iec62443.json from root.
+//
+//fusa:req REQ-IEC62443-001
 func LoadConfig(root string) (*ProjectConfig, error) {
 	path := filepath.Join(root, ConfigFile)
 	data, err := os.ReadFile(path)

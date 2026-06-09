@@ -56,6 +56,8 @@ func New(projectRoot string, findings []fusa.Finding) *Report {
 }
 
 // Render writes r to w in the requested format ("text", "json", "html", or "sarif").
+//
+//fusa:req REQ-REPORT001
 func Render(w io.Writer, r *Report, format string) error {
 	switch format {
 	case "", "text":
@@ -73,6 +75,8 @@ func Render(w io.Writer, r *Report, format string) error {
 
 // RenderToFile writes the report to path in format.
 // If path is empty the report is written to stdout.
+//
+//fusa:req REQ-REPORT002
 func RenderToFile(r *Report, format, path string) error {
 	if path == "" {
 		return Render(os.Stdout, r, format)

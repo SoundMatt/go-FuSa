@@ -221,3 +221,55 @@ func TestRender_SARIF_Valid(t *testing.T) {
 		t.Error("sarif output missing 'sarif' keyword")
 	}
 }
+
+// ─── html_bundle ──────────────────────────────────────────────────────────────
+
+func TestRenderEvidenceHTML_EmptyDir(t *testing.T) {
+	dir := t.TempDir()
+	var buf bytes.Buffer
+	if err := report.RenderEvidenceHTML(&buf, dir); err != nil {
+		t.Fatalf("RenderEvidenceHTML empty dir: %v", err)
+	}
+	out := buf.String()
+	if !strings.Contains(out, "<html") {
+		t.Error("output missing <html tag")
+	}
+	if !strings.Contains(out, "Evidence") {
+		t.Error("output missing 'Evidence'")
+	}
+}
+
+func TestRenderEvidenceHTML_WithFindings(t *testing.T) {
+	dir := t.TempDir()
+	// Write a check-report.json with findings
+	findings := []map[string]interface{}{
+		{"ruleID": "LINT001", "severity": "WARNING", "message": "test finding"},
+	}
+	data, _ := json.Marshal(findings)
+	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), data, 0o640); err != nil {
+		t.Fatal(err)
+	}
+	var buf bytes.Buffer
+	if err := report.RenderEvidenceHTML(&buf, dir); err != nil {
+		t.Fatalf("RenderEvidenceHTML with findings: %v", err)
+	}
+	out := buf.String()
+	if !strings.Contains(out, "<html") {
+		t.Error("output missing <html tag")
+	}
+}
+
+func TestRenderEvidenceHTML_WithReqs(t *testing.T) {
+	dir := t.TempDir()
+	reqs := `[{"id":"REQ-001","title":"First"},{"id":"REQ-002","title":"Second"}]`
+	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	var buf bytes.Buffer
+	if err := report.RenderEvidenceHTML(&buf, dir); err != nil {
+		t.Fatalf("RenderEvidenceHTML with reqs: %v", err)
+	}
+	if !strings.Contains(buf.String(), "<html") {
+		t.Error("output missing <html tag")
+	}
+}

@@ -37,6 +37,8 @@ type Registry struct {
 }
 
 // NewRegistry returns an empty Registry.
+//
+//fusa:req REQ-ENG001
 func NewRegistry() *Registry {
 	return &Registry{index: make(map[string]struct{})}
 }

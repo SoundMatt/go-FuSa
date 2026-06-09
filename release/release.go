@@ -161,6 +161,8 @@ func BuildProvenance(ctx context.Context, projectRoot string) (*Provenance, erro
 }
 
 // HashFiles computes SHA-256 checksums for each path in paths.
+//
+//fusa:req REQ-RELEASE007
 func HashFiles(paths []string) ([]Artifact, error) {
 	artifacts := make([]Artifact, 0, len(paths))
 	for _, p := range paths {
@@ -189,6 +191,8 @@ func SaveJSON(path string, v any) error {
 
 // ToSPDX31 converts a go-FuSa SBOM into an SPDX 3.0.1 JSON-LD document
 // suitable for writing to sbom.json.
+//
+//fusa:req REQ-RELEASE008
 func ToSPDX31(sbom *SBOM) *SPDX31Document {
 	ciID := "_:creationInfo0"
 	toolID := "_:tool0"
