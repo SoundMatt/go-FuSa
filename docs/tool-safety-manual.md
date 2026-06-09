@@ -48,6 +48,13 @@ Capabilities:
 | Problem report log (DO-178C §11.17) | PR001 | `gofusa pr` |
 | Cyclomatic complexity (DO-178C §6.3.4) | COMP001 | `gofusa check` |
 | Data/control coupling (DO-178C §6.4.4.3) | COUP001–002 | `gofusa check` |
+| ISO 26262 Part 6 compliance gap report | ISO26262001 | `gofusa iso26262` |
+| IEC 61508 Parts 1-3 compliance gap report | IEC61508001 | `gofusa iec61508` |
+| Hazard Analysis and Risk Assessment (HARA) | HARA001–004 | `gofusa hara` |
+| Finding disposition log | DISP001 | `gofusa disposition` |
+| Change impact analysis | — | `gofusa impact` |
+| Safety metrics trending | — | `gofusa metrics` |
+| MISRA C:2023 alignment report | — | `gofusa misra` |
 
 ## 3. Tool Classification
 
@@ -188,6 +195,75 @@ gofusa qualify [--output <file>]
 
 Runs the built-in qualification suite (positive and negative per rule)
 and writes an integrity-hashed report to `qualify-report.json`.
+
+### `gofusa iso26262`
+
+```
+gofusa iso26262 [--dir <path>] [--asil ASIL-A|ASIL-B|ASIL-C|ASIL-D] [--format text|json] [--output <file>]
+```
+
+Runs a 19-objective ISO 26262 Part 6–11 compliance gap assessment against evidence files in
+the project root. Each objective is rated PASS / GAP / MANUAL / N/A.
+
+### `gofusa iec61508`
+
+```
+gofusa iec61508 [--dir <path>] [--sil SIL-1|SIL-2|SIL-3|SIL-4] [--format text|json] [--output <file>]
+```
+
+Runs a 26-objective IEC 61508 Parts 1-3 compliance gap assessment.
+
+### `gofusa hara`
+
+```
+gofusa hara [--dir <path>] <show|init|asil>
+gofusa hara show [--format text|json|markdown] [--output <file>]
+gofusa hara init [--project <name>] [--standard <std>]
+gofusa hara asil -s <S0-S3> -e <E0-E4> -c <C0-C3>
+```
+
+Manages `.fusa-hara.json`. `init` creates a starter file; `show` renders the HARA with gap
+analysis; `asil` derives ASIL from ISO 26262-3:2018 Table 4 (e.g. `S2 E4 C2 → ASIL-C`).
+
+### `gofusa disposition`
+
+```
+gofusa disposition [--dir <path>] <add|list|show>
+gofusa disposition add --rule <ID> --action accept|fix --rationale "<text>" [--reviewer <name>]
+gofusa disposition list [--format text|json]
+gofusa disposition show --rule <ID>
+```
+
+Maintains `.fusa-dispositions.json`. Documents decisions for ERROR findings so `gofusa check`
+can suppress DISP001 for findings that have been reviewed and accepted.
+
+### `gofusa impact`
+
+```
+gofusa impact [--dir <path>] [--from <ref>] [--to <ref>] [--format text|json] [--output <file>]
+```
+
+Runs a change impact analysis. Reports which requirements and tests are affected by changed
+files, and which evidence artefacts are stale relative to source changes.
+
+### `gofusa metrics`
+
+```
+gofusa metrics [--dir <path>] <record|show>
+gofusa metrics record
+gofusa metrics show [--format text|json]
+```
+
+Appends a timestamped snapshot to `.fusa-metrics.json` and renders a trend table.
+
+### `gofusa misra`
+
+```
+gofusa misra [--format text|json] [--output <file>]
+```
+
+Generates a static MISRA C:2023 to Go / go-FuSa rule alignment report mapping 90+ rules to
+`go vet / compiler`, go-FuSa rule IDs, `N/A — Go type system prevents this`, or `manual review`.
 
 ### `gofusa version`
 

@@ -165,6 +165,31 @@ gofusa pr close --id PR-001 --resolution "Fixed"
 gofusa template --type svp
 gofusa template --type all   # generates SAFETY_PLAN.md, SVP.md, SCMP.md, SQAP.md
 
+# ISO 26262 gap report (ASIL-A through ASIL-D)
+gofusa iso26262 --asil ASIL-B
+
+# IEC 61508 gap report (SIL-1 through SIL-4)
+gofusa iec61508 --sil SIL-2
+
+# Hazard Analysis and Risk Assessment (HARA)
+gofusa hara init                              # create .fusa-hara.json
+gofusa hara show                              # display as Markdown table
+gofusa hara asil -s S2 -e E4 -c C2           # derive ASIL from S/E/C → ASIL-C
+
+# Finding disposition log (accept or schedule-fix for ERROR findings)
+gofusa disposition add --rule LINT001 --action accept --rationale "false positive"
+gofusa disposition list
+
+# Change impact analysis (what requirements/tests are affected by changed files)
+gofusa impact
+
+# Safety metrics trending (finding counts, coverage %, requirement density)
+gofusa metrics record
+gofusa metrics show
+
+# MISRA C:2023 to Go/go-FuSa alignment report
+gofusa misra
+
 # Generate everything in one command (SBOM, provenance, fmea, boundary, vuln, cyber, tara, audit-pack)
 gofusa release --full
 ```
