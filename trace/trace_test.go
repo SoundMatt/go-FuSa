@@ -569,3 +569,211 @@ func TestTRACE007_NoFunctions(t *testing.T) {
 		t.Error("TRACE007: unexpected finding when there are no exported functions")
 	}
 }
+
+// ─── renderText branch coverage ───────────────────────────────────────────────
+
+// TestRenderText_TracedAndTested verifies the "[traced+tested]" status line.
+func TestRenderText_TracedAndTested(t *testing.T) {
+	dir := t.TempDir()
+	reqs := []trace.Requirement{
+		{ID: "REQ-001", Title: "Error handling"},
+	}
+	writeReqs(t, dir, reqs)
+
+	// impl tag in one file, test tag in another
+	implSrc := "package main\n\n//fusa:req REQ-001\nfunc Foo() {}\n"
+	testSrc := "package main\n\n//fusa:test REQ-001\nfunc TestFoo() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "foo.go"), []byte(implSrc), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "foo_test.go"), []byte(testSrc), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	m, err := trace.Build(dir)
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	out := sb.String()
+	if !strings.Contains(out, "[traced+tested]") {
+		t.Errorf("renderText: expected '[traced+tested]' status, got:\n%s", out)
+	}
+}
+
+// TestRenderText_TracedOnly verifies the "[traced]" status line (impl but no test).
+func TestRenderText_TracedOnly(t *testing.T) {
+	dir := t.TempDir()
+	reqs := []trace.Requirement{
+		{ID: "REQ-002", Title: "No panics"},
+	}
+	writeReqs(t, dir, reqs)
+
+	// impl tag only, no test tag
+	implSrc := "package main\n\n//fusa:req REQ-002\nfunc Bar() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "bar.go"), []byte(implSrc), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	m, err := trace.Build(dir)
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	out := sb.String()
+	if !strings.Contains(out, "[traced]") {
+		t.Errorf("renderText: expected '[traced]' status, got:\n%s", out)
+	}
+}
+
+// TestRenderText_Untraced verifies the "[untraced]" status line (no impl, no test).
+func TestRenderText_Untraced(t *testing.T) {
+	dir := t.TempDir()
+	reqs := []trace.Requirement{
+		{ID: "REQ-003", Title: "Watchdog"},
+	}
+	writeReqs(t, dir, reqs)
+	// No source files with annotations → untraced
+
+	m, err := trace.Build(dir)
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	out := sb.String()
+	if !strings.Contains(out, "[untraced]") {
+		t.Errorf("renderText: expected '[untraced]' status, got:\n%s", out)
+	}
+}
+
+// TestRenderText_OrphanTags verifies the orphan-tag section when a tag references
+// a requirement ID that does not exist in the requirements list.
+func TestRenderText_OrphanTags(t *testing.T) {
+	dir := t.TempDir()
+	// Requirements list is empty, but source has a tag for REQ-ORPHAN
+	reqs := []trace.Requirement{}
+	writeReqs(t, dir, reqs)
+
+	src := "package main\n\n//fusa:req REQ-ORPHAN\nfunc Orphan() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "orphan.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	m, err := trace.Build(dir)
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	out := sb.String()
+	if !strings.Contains(out, "Orphan tags") {
+		t.Errorf("renderText: expected orphan tags section, got:\n%s", out)
+	}
+	if !strings.Contains(out, "REQ-ORPHAN") {
+		t.Errorf("renderText: expected REQ-ORPHAN in orphan section, got:\n%s", out)
+	}
+}
+
+// TestRenderText_NoRequirements verifies the "No requirements defined" branch when
+// the matrix has 0 requirements but some tags exist.
+func TestRenderText_NoRequirements(t *testing.T) {
+	dir := t.TempDir()
+	// Write an empty requirements list
+	reqs := []trace.Requirement{}
+	writeReqs(t, dir, reqs)
+
+	// Add a tag — it will appear as an orphan but the "No requirements defined" line
+	// should also be printed.
+	src := "package main\n\n//fusa:req REQ-X\nfunc X() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "x.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	m, err := trace.Build(dir)
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	out := sb.String()
+	if !strings.Contains(out, "No requirements defined") {
+		t.Errorf("renderText: expected 'No requirements defined' line, got:\n%s", out)
+	}
+}
+
+// ─── TRACE005 branch coverage ─────────────────────────────────────────────────
+
+// TestTRACE005_SameFileFinding verifies that TRACE005 fires when the same file
+// contains both //fusa:req and //fusa:test for the same requirement.
+//
+//fusa:test REQ-TRACE005
+func TestTRACE005_SameFileFinding(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	reqs := []trace.Requirement{{ID: "REQ-IND", Title: "Independence check"}}
+	writeReqs(t, dir, reqs)
+
+	// Both impl and test annotations in the same file.
+	combined := "package main\n\n//fusa:req REQ-IND\n//fusa:test REQ-IND\nfunc DoThing() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "combined.go"), []byte(combined), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if !hasRule(result.Findings, "TRACE005") {
+		t.Error("TRACE005: expected finding when impl and test are in the same file")
+	}
+}
+
+// TestTRACE005_DifferentFilesNoFinding verifies that TRACE005 does NOT fire when
+// impl and test annotations for the same requirement are in different files.
+func TestTRACE005_DifferentFilesNoFinding(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	reqs := []trace.Requirement{{ID: "REQ-IND2", Title: "Independence OK"}}
+	writeReqs(t, dir, reqs)
+
+	implSrc := "package main\n\n//fusa:req REQ-IND2\nfunc DoThing2() {}\n"
+	testSrc := "package main\n\n//fusa:test REQ-IND2\nfunc TestDoThing2() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "impl.go"), []byte(implSrc), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "impl_test.go"), []byte(testSrc), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if hasRule(result.Findings, "TRACE005") {
+		t.Error("TRACE005: unexpected finding when impl and test are in different files")
+	}
+}
+
+// TestTRACE005_NoRequirements verifies that TRACE005 exits early (no findings)
+// when the requirements list is empty.
+func TestTRACE005_NoRequirements(t *testing.T) {
+	files := testutil.MinimalProject()
+	files[trace.ReqsFile] = `{"requirements":[]}`
+	findings := runTrace(t, files)
+	if hasRule(findings, "TRACE005") {
+		t.Error("TRACE005: unexpected finding when there are no requirements")
+	}
+}

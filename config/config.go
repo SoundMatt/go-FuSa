@@ -80,6 +80,8 @@ func Default(module, name string) *Config {
 }
 
 // Load reads and validates a Config from the JSON file at path.
+//
+//fusa:req REQ-CFG001
 func Load(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -116,6 +118,8 @@ func Save(path string, cfg *Config) error {
 }
 
 // Validate returns an error if cfg contains inconsistencies.
+//
+//fusa:req REQ-CFG003
 func Validate(cfg *Config) error {
 	if cfg == nil {
 		return fmt.Errorf("%w: nil config", fusa.ErrInvalidConfig)

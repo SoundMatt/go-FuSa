@@ -361,8 +361,6 @@ func TestRender_WithGaps(t *testing.T) {
 
 // ─── Engine rules ─────────────────────────────────────────────────────────────
 
-func ruleID(findings interface{ RuleID() string }) string { return "" }
-
 func findingsForRule(t *testing.T, dir string, ruleIDStr string) bool {
 	t.Helper()
 	cfg := config.Default("github.com/x/y", "y")

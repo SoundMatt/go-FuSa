@@ -29,6 +29,8 @@ func ProjectDir(t *testing.T, files map[string]string) string {
 }
 
 // MinimalProject returns a file map that satisfies all built-in FUSA rules.
+//
+//fusa:req REQ-TESTUTIL002
 func MinimalProject() map[string]string {
 	cfg := `{
   "version": "1",
@@ -53,6 +55,8 @@ func MinimalProject() map[string]string {
 }
 
 // GoSource returns a map with a single Go source file at the given path.
+//
+//fusa:req REQ-TESTUTIL003
 func GoSource(relPath, content string) map[string]string {
 	files := MinimalProject()
 	files[relPath] = content

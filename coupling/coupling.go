@@ -31,9 +31,13 @@ func init() {
 }
 
 // NewDataCouplingRule returns a COUP001 rule instance for testing.
+//
+//fusa:req REQ-COUPLING001
 func NewDataCouplingRule() engine.Rule { return &ruleDataCoupling{} }
 
 // NewControlCouplingRule returns a COUP002 rule instance for testing.
+//
+//fusa:req REQ-COUPLING002
 func NewControlCouplingRule() engine.Rule { return &ruleControlCoupling{} }
 
 // ─── COUP001: exported mutable package-level variables ────────────────────────
