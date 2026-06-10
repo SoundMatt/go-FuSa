@@ -24,6 +24,7 @@ type capabilities struct {
 	Standards     []string            `json:"standards"`
 }
 
+//fusa:req REQ-CLI-CAP001
 func runCapabilities(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("gofusa capabilities", flag.ContinueOnError)
 	fs.SetOutput(stderr)

@@ -56,6 +56,8 @@ type Report struct {
 }
 
 // New builds a canonical Report with header fields pre-populated.
+//
+//fusa:req REQ-GAPREPORT003
 func New(projectRoot, standard string) *Report {
 	return &Report{
 		SchemaVersion: fusa.SpecVersion,
@@ -70,6 +72,8 @@ func New(projectRoot, standard string) *Report {
 }
 
 // AddObjective appends an objective and updates the summary counts.
+//
+//fusa:req REQ-GAPREPORT004
 func (r *Report) AddObjective(obj Objective) {
 	r.Objectives = append(r.Objectives, obj)
 	r.Summary.Total++
@@ -99,6 +103,7 @@ func Render(w io.Writer, r *Report, format string) error {
 	}
 }
 
+//fusa:req REQ-GAPREPORT005
 func renderText(w io.Writer, r *Report) error {
 	fmt.Fprintf(w, "%s Gap Report\n", r.Standard)
 	fmt.Fprintf(w, "Generated: %s   Project: %s\n\n",
@@ -115,6 +120,7 @@ func renderText(w io.Writer, r *Report) error {
 	return nil
 }
 
+//fusa:req REQ-GAPREPORT006
 func statusIcon(s string) string {
 	switch s {
 	case StatusSatisfied:

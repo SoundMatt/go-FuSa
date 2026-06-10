@@ -2,12 +2,57 @@ package coverage_test
 
 import (
 	"bytes"
+	"context"
+	"fmt"
 	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
 	"github.com/SoundMatt/go-FuSa/coverage"
 )
+
+// writeFakeGoMutesting writes a helper binary that prints canned go-mutesting
+// output to stdout. It compiles a tiny Go program so the output is byte-exact
+// on all platforms. Returns the directory containing the binary; the caller
+// should restore PATH after use.
+func writeFakeGoMutesting(t *testing.T, stdout string) string {
+	t.Helper()
+	dir := t.TempDir()
+	srcDir := filepath.Join(dir, "src")
+	if err := os.MkdirAll(srcDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	// Write a tiny main.go that just prints the canned output.
+	mainSrc := fmt.Sprintf(`package main
+
+import "fmt"
+
+func main() {
+	fmt.Print(%q)
+}
+`, stdout)
+	if err := os.WriteFile(filepath.Join(srcDir, "main.go"), []byte(mainSrc), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(srcDir, "go.mod"), []byte("module fakemutesting\n\ngo 1.22\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	// Determine binary name
+	binName := "go-mutesting"
+	if runtime.GOOS == "windows" {
+		binName = "go-mutesting.exe"
+	}
+	outBin := filepath.Join(dir, binName)
+	cmd := exec.CommandContext(context.Background(), "go", "build", "-o", outBin, ".")
+	cmd.Dir = srcDir
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("failed to compile fake go-mutesting: %v\n%s", err, out)
+	}
+	return dir
+}
 
 const sampleProfile = `mode: atomic
 example.com/foo/bar.go:10.15,12.3 1 5
@@ -198,5 +243,149 @@ func TestRunMutation_NoTool(t *testing.T) {
 		if !strings.Contains(rep.Note, "go-mutesting") {
 			t.Errorf("unexpected note: %s", rep.Note)
 		}
+	}
+}
+
+// ─── runGoMutesting / pkgPath / getOrCreate via fake binary ──────────────────
+
+// fakeMutestingOutput is what a real go-mutesting produces when it kills all
+// mutants plus a score summary line.
+const fakeMutestingOutput = `PASS "pkg/foo/bar.go" with mutation "..."
+PASS "pkg/foo/bar.go" with mutation "another"
+FAIL "pkg/baz/baz.go" with mutation "..."
+The mutation score is 0.67 (2/3)
+`
+
+//fusa:test REQ-COV003
+func TestRunMutation_WithFakeBinary_ScoreParsed(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("shell-script fake binary not supported on Windows")
+	}
+	binDir := writeFakeGoMutesting(t, fakeMutestingOutput)
+	// Prepend our fake binary dir to PATH
+	origPath := os.Getenv("PATH")
+	t.Cleanup(func() { _ = os.Setenv("PATH", origPath) })
+	if err := os.Setenv("PATH", binDir+string(os.PathListSeparator)+origPath); err != nil {
+		t.Fatal(err)
+	}
+
+	dir := t.TempDir()
+	rep, err := coverage.RunMutation(dir, coverage.DALB)
+	if err != nil {
+		t.Fatalf("RunMutation: %v", err)
+	}
+	if rep == nil {
+		t.Fatal("expected non-nil report")
+	}
+	// Score line says 0.67 → 67%
+	if rep.Score < 60 || rep.Score > 70 {
+		t.Errorf("Score = %.1f, want ~67", rep.Score)
+	}
+	// 2 killed, 1 survived
+	if rep.Killed != 2 {
+		t.Errorf("Killed = %d, want 2", rep.Killed)
+	}
+	if rep.Mutants != 3 {
+		t.Errorf("Mutants = %d, want 3", rep.Mutants)
+	}
+	if rep.Survived != 1 {
+		t.Errorf("Survived = %d, want 1", rep.Survived)
+	}
+}
+
+//fusa:test REQ-COV003
+func TestRunMutation_WithFakeBinary_PerPackageResults(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("shell-script fake binary not supported on Windows")
+	}
+	binDir := writeFakeGoMutesting(t, fakeMutestingOutput)
+	origPath := os.Getenv("PATH")
+	t.Cleanup(func() { _ = os.Setenv("PATH", origPath) })
+	if err := os.Setenv("PATH", binDir+string(os.PathListSeparator)+origPath); err != nil {
+		t.Fatal(err)
+	}
+
+	dir := t.TempDir()
+	rep, err := coverage.RunMutation(dir, coverage.DALC)
+	if err != nil {
+		t.Fatalf("RunMutation: %v", err)
+	}
+	// Should have 2 per-package results: pkg/foo and pkg/baz
+	if len(rep.Results) == 0 {
+		t.Fatalf("expected per-package results, got none")
+	}
+	foundFoo := false
+	foundBaz := false
+	for _, r := range rep.Results {
+		if strings.Contains(r.Package, "foo") {
+			foundFoo = true
+			if r.Killed != 2 {
+				t.Errorf("pkg/foo Killed = %d, want 2", r.Killed)
+			}
+		}
+		if strings.Contains(r.Package, "baz") {
+			foundBaz = true
+			if r.Killed != 0 {
+				t.Errorf("pkg/baz Killed = %d, want 0", r.Killed)
+			}
+		}
+	}
+	if !foundFoo {
+		t.Error("expected pkg/foo in results")
+	}
+	if !foundBaz {
+		t.Error("expected pkg/baz in results")
+	}
+}
+
+//fusa:test REQ-COV003
+func TestRunMutation_WithFakeBinary_HighScore_MCDCEvidence(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("shell-script fake binary not supported on Windows")
+	}
+	// Score > 80% → MCDCEvidence should say it's sufficient
+	highScoreOutput := `PASS "pkg/a/a.go" with mutation "m1"
+PASS "pkg/a/a.go" with mutation "m2"
+PASS "pkg/a/a.go" with mutation "m3"
+PASS "pkg/a/a.go" with mutation "m4"
+PASS "pkg/a/a.go" with mutation "m5"
+The mutation score is 0.83 (5/6)
+`
+	binDir := writeFakeGoMutesting(t, highScoreOutput)
+	origPath := os.Getenv("PATH")
+	t.Cleanup(func() { _ = os.Setenv("PATH", origPath) })
+	if err := os.Setenv("PATH", binDir+string(os.PathListSeparator)+origPath); err != nil {
+		t.Fatal(err)
+	}
+
+	dir := t.TempDir()
+	rep, err := coverage.RunMutation(dir, coverage.DALA)
+	if err != nil {
+		t.Fatalf("RunMutation: %v", err)
+	}
+	if !strings.Contains(rep.MCDCEvidence, "80%") {
+		t.Errorf("expected MC/DC evidence message for high score; got: %s", rep.MCDCEvidence)
+	}
+}
+
+//fusa:test REQ-COV003
+func TestRunMutation_WithFakeBinary_EmptyOutput(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("shell-script fake binary not supported on Windows")
+	}
+	binDir := writeFakeGoMutesting(t, "")
+	origPath := os.Getenv("PATH")
+	t.Cleanup(func() { _ = os.Setenv("PATH", origPath) })
+	if err := os.Setenv("PATH", binDir+string(os.PathListSeparator)+origPath); err != nil {
+		t.Fatal(err)
+	}
+
+	dir := t.TempDir()
+	rep, err := coverage.RunMutation(dir, coverage.DALB)
+	if err != nil {
+		t.Fatalf("RunMutation: %v", err)
+	}
+	if rep.Mutants != 0 {
+		t.Errorf("empty output: Mutants = %d, want 0", rep.Mutants)
 	}
 }

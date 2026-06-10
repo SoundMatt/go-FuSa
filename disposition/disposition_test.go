@@ -313,3 +313,114 @@ func TestDISP001_Description(t *testing.T) {
 	}
 	t.Error("DISP001 rule not registered")
 }
+
+// ─── Save error paths ──────────────────────────────────────────────────────────
+
+//fusa:test REQ-DISP005
+func TestSave_InvalidPath(t *testing.T) {
+	log := &disposition.Log{Project: "test"}
+	err := disposition.Save("/does/not/exist/dispositions.json", log)
+	if err == nil {
+		t.Error("expected error writing to non-existent directory")
+	}
+}
+
+//fusa:test REQ-DISP005
+func TestSave_ZeroValue(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, disposition.DispositionsFile)
+	log := &disposition.Log{}
+	if err := disposition.Save(path, log); err != nil {
+		t.Fatalf("Save zero-value: %v", err)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("ReadFile: %v", err)
+	}
+	if len(data) == 0 {
+		t.Error("expected non-empty file")
+	}
+}
+
+// ─── DISP001 rule: nested check-report format ──────────────────────────────────
+
+//fusa:test REQ-DISP008
+func TestDISP001_NestedCheckReport(t *testing.T) {
+	dir := t.TempDir()
+	cfg := config.Default("github.com/x/y", "y")
+	// Nested {"findings": [...]} format
+	report := `{"findings":[{"ruleId":"FUSA007","severity":"ERROR"}]}`
+	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), []byte(report), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	found := false
+	for _, f := range result.Findings {
+		if f.RuleID == "DISP001" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("expected DISP001 for undispositioned error in nested format")
+	}
+}
+
+//fusa:test REQ-DISP008
+func TestDISP001_InvalidCheckReport(t *testing.T) {
+	dir := t.TempDir()
+	cfg := config.Default("github.com/x/y", "y")
+	// Non-parseable JSON — rule should silently return nil
+	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), []byte("{not json"), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	// Rule returns nil findings for unparseable files — verify no panic
+	_ = result
+}
+
+//fusa:test REQ-DISP008
+func TestDISP001_DuplicateErrorFindings(t *testing.T) {
+	dir := t.TempDir()
+	cfg := config.Default("github.com/x/y", "y")
+	// Two findings with same ruleID — should produce only one DISP001 warning
+	findings := []map[string]interface{}{
+		{"ruleId": "FUSA001", "severity": "ERROR", "message": "first"},
+		{"ruleId": "FUSA001", "severity": "ERROR", "message": "second"},
+	}
+	data, _ := json.Marshal(findings)
+	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), data, 0o640); err != nil {
+		t.Fatal(err)
+	}
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	count := 0
+	for _, f := range result.Findings {
+		if f.RuleID == "DISP001" && strings.Contains(f.Message, "FUSA001") {
+			count++
+		}
+	}
+	if count != 1 {
+		t.Errorf("expected 1 DISP001 for duplicate ruleID, got %d", count)
+	}
+}
+
+//fusa:test REQ-DISP009
+func TestRenderEntries_Empty(t *testing.T) {
+	log := &disposition.Log{}
+	var buf strings.Builder
+	if err := disposition.RenderEntries(&buf, log); err != nil {
+		t.Fatalf("RenderEntries empty: %v", err)
+	}
+	if !strings.Contains(buf.String(), "No disposition entries") {
+		t.Errorf("expected 'No disposition entries'; got: %s", buf.String())
+	}
+}
