@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -294,6 +295,9 @@ func TestRunHaraShow_RenderError(t *testing.T) {
 //fusa:test REQ-CLI-HARA001
 func TestRunHaraInit_SaveError(t *testing.T) {
 	// Save error: write to a non-writable path
+	if runtime.GOOS == "windows" {
+		t.Skip("chmod read-only not enforced on Windows")
+	}
 	if os.Getuid() == 0 {
 		t.Skip("root can write anywhere")
 	}
@@ -315,6 +319,9 @@ func TestRunHaraInit_SaveError(t *testing.T) {
 
 //fusa:test REQ-CLI-PR001
 func TestPrInit_SaveError(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("chmod read-only not enforced on Windows")
+	}
 	if os.Getuid() == 0 {
 		t.Skip("root can write anywhere")
 	}
@@ -969,10 +976,15 @@ func TestRunSci_JSONFormat(t *testing.T) {
 
 //fusa:test REQ-CLI019
 func TestWriteFile_BadPath(t *testing.T) {
-	err := writeFile("/nonexistent/path/file.json", func(w io.Writer) error {
-		return nil
-	})
-	if err == nil {
+	// Use a regular file as the "directory" — os.Create inside a file always fails.
+	tmp, err := os.CreateTemp("", "notadir")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tmp.Close()
+	defer os.Remove(tmp.Name())
+	badPath := filepath.Join(tmp.Name(), "child.json")
+	if werr := writeFile(badPath, func(w io.Writer) error { return nil }); werr == nil {
 		t.Error("expected error for bad path")
 	}
 }

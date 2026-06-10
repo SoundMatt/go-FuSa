@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	_ "github.com/SoundMatt/go-FuSa/analyze"
@@ -81,6 +82,9 @@ func TestSave_BadPath(t *testing.T) {
 
 // TestLoad_PermissionDenied exercises the Load non-NotExist error path.
 func TestLoad_PermissionDenied(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("chmod 000 not enforced on Windows")
+	}
 	if os.Getuid() == 0 {
 		t.Skip("root can read any file")
 	}
