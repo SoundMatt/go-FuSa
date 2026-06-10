@@ -27,11 +27,11 @@ type Report struct {
 	GeneratedAt   time.Time `json:"generatedAt"`
 
 	// §3.2 report-extension fields
-	ProjectRoot string      `json:"projectRoot"`
-	Project     string      `json:"project,omitempty"`
-	Standard    string      `json:"standard,omitempty"`
-	ASIL        string      `json:"asil,omitempty"`
-	Error       *ErrorDoc   `json:"error,omitempty"`
+	ProjectRoot string    `json:"projectRoot"`
+	Project     string    `json:"project,omitempty"`
+	Standard    string    `json:"standard,omitempty"`
+	ASIL        string    `json:"asil,omitempty"`
+	Error       *ErrorDoc `json:"error,omitempty"`
 
 	Findings     []fusa.Finding `json:"findings"`
 	Summary      Summary        `json:"summary"`
@@ -44,7 +44,7 @@ type Report struct {
 
 // ErrorDoc is the structured error field emitted on exit 3 (§3.2).
 type ErrorDoc struct {
-	Code    string `json:"code"`    // no-config | invalid-config | unsupported | internal
+	Code    string `json:"code"` // no-config | invalid-config | unsupported | internal
 	Message string `json:"message"`
 }
 

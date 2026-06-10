@@ -8,7 +8,6 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 )
 
-
 // CategoryRow holds aggregate finding counts for one rule-ID prefix category.
 type CategoryRow struct {
 	Category string `json:"category"`

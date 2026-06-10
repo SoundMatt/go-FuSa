@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"os"
 
 	fusa "github.com/SoundMatt/go-FuSa"
 )
@@ -28,10 +27,4 @@ func usageErrorf(stderr io.Writer, cmd, format string, a ...any) int {
 func runtimeErrorf(stderr io.Writer, cmd, format string, a ...any) int {
 	fmt.Fprintf(stderr, "gofusa %s: %s\n", cmd, fmt.Sprintf(format, a...))
 	return fusa.ExitRuntime
-}
-
-// noColor reports whether colour output should be suppressed (§2.6).
-// True when stdout is not a TTY, or --no-color was given, or NO_COLOR is set.
-func noColor() bool {
-	return os.Getenv("NO_COLOR") != ""
 }
