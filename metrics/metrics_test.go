@@ -189,3 +189,96 @@ func TestRender_InvalidFormat(t *testing.T) {
 		t.Error("expected error for unsupported format")
 	}
 }
+
+// ─── Save error paths ─────────────────────────────────────────────────────────
+
+//fusa:test REQ-METRICS004
+func TestSave_InvalidPath(t *testing.T) {
+	ts := &metrics.TimeSeries{Project: "test"}
+	// Write to a non-existent directory → should return an error.
+	err := metrics.Save("/does/not/exist/metrics.json", ts)
+	if err == nil {
+		t.Error("expected error writing to non-existent directory")
+	}
+}
+
+//fusa:test REQ-METRICS004
+func TestSave_ZeroValue(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, metrics.MetricsFile)
+	// A zero-value TimeSeries should marshal and save without error.
+	ts := &metrics.TimeSeries{}
+	if err := metrics.Save(path, ts); err != nil {
+		t.Fatalf("Save zero-value: %v", err)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("ReadFile: %v", err)
+	}
+	if len(data) == 0 {
+		t.Error("expected non-empty file")
+	}
+}
+
+// ─── Collect additional paths ─────────────────────────────────────────────────
+
+//fusa:test REQ-METRICS006
+func TestCollect_NestedCheckReport(t *testing.T) {
+	dir := t.TempDir()
+	// Nested format {"findings": [...]}
+	report := `{"findings":[{"ruleId":"FUSA001","severity":"ERROR"},{"ruleId":"FUSA002","severity":"WARNING"}]}`
+	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), []byte(report), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	snap, err := metrics.Collect(dir)
+	if err != nil {
+		t.Fatalf("Collect: %v", err)
+	}
+	if snap.ErrorCount != 1 {
+		t.Errorf("ErrorCount = %d, want 1", snap.ErrorCount)
+	}
+	if snap.WarningCount != 1 {
+		t.Errorf("WarningCount = %d, want 1", snap.WarningCount)
+	}
+}
+
+//fusa:test REQ-METRICS006
+func TestCollect_WithRequirementsFile(t *testing.T) {
+	dir := t.TempDir()
+	reqs := `{"requirements":[
+		{"id":"REQ-001","title":"First"},
+		{"id":"REQ-002","title":"Second"}
+	]}`
+	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	snap, err := metrics.Collect(dir)
+	if err != nil {
+		t.Fatalf("Collect: %v", err)
+	}
+	if snap.TotalRequirements != 2 {
+		t.Errorf("TotalRequirements = %d, want 2", snap.TotalRequirements)
+	}
+}
+
+//fusa:test REQ-METRICS007
+func TestRender_Text_TracedPct(t *testing.T) {
+	ts := &metrics.TimeSeries{
+		Project: "pct-test",
+		Snapshots: []metrics.Snapshot{
+			{
+				Timestamp:          time.Date(2026, 3, 1, 0, 0, 0, 0, time.UTC),
+				TotalRequirements:  4,
+				TracedRequirements: 3,
+				CoveragePct:        75.0,
+			},
+		},
+	}
+	var buf bytes.Buffer
+	if err := metrics.Render(&buf, ts, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(buf.String(), "2026-03-01") {
+		t.Errorf("missing date in output: %s", buf.String())
+	}
+}
