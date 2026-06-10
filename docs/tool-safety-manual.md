@@ -1,6 +1,6 @@
 # go-FuSa Tool Safety Manual
 
-**Version:** 0.23.0  
+**Version:** 0.24.0  
 **Module:** `github.com/SoundMatt/go-FuSa`  
 **License:** Mozilla Public License 2.0  
 **Standards addressed:** ISO 26262, IEC 61508, ISO 21434, DO-178C

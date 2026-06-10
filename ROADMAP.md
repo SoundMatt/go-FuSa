@@ -118,6 +118,41 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.24 — x-FuSa Spec v1.8: Exit Codes & Canonical Gap-Report JSON ✅
+
+**Goal:** Implement x-FuSa spec v1.8 compliance across the CLI and all gap-report packages,
+making gofusa pipelines machine-readable by downstream tooling.
+
+Features:
+
+### Spec-correct exit codes (§2.3)
+- `fusa.ExitOK` (0), `ExitGateFail` (1), `ExitUsage` (2), `ExitRuntime` (3) constants in `fusa.go`.
+- All ~40 `cmd_*.go` files updated; a new `parseFlags()` helper centralises flag-parse error handling.
+- Previously every failure returned bare `1`, preventing CI pipelines from distinguishing gate failures
+  from bad arguments.
+
+### Canonical §9.3 gap-report JSON
+- New `gapreport/` package emits the shared schema:
+  `{schemaVersion, kind, tool, toolVersion, language, generatedAt, projectRoot, standard, objectives[], summary}`.
+- Status vocabulary: `satisfied` / `partial` / `gap` / `skip`.
+- `iso26262`, `iec61508`, `do178`, `iso21434`, and `unece` `Render()` functions delegate to `gapreport`
+  instead of encoding their private structs; all JSON output now shares one parseable shape regardless
+  of the standard assessed.
+
+### New files
+- `gapreport/gapreport.go` — canonical report builder and renderer.
+- `cmd/gofusa/helpers.go` — `parseFlags()`, `usageErrorf()`, `runtimeErrorf()`.
+- `cmd/gofusa/cmd_capabilities.go` — `gofusa capabilities` command.
+- `report/summary.go` — shared summary-rendering helpers.
+
+### Version bump
+- `fusa.Version` → `"0.24.0"`.
+
+Deliverables: `gapreport/` package; `cmd/gofusa/helpers.go`; `cmd/gofusa/cmd_capabilities.go`;
+`report/summary.go`; exit-code constants in `fusa.go`; version bump to 0.24.0
+
+---
+
 ## v0.23 — Gap Fill: Mutation Testing, DOORS/Polarion Import/Export, ISO 21434, UN R.155, Workflow CI & Docs ✅
 
 **Goal:** Close remaining evidence gaps by adding mutation-testing MC/DC evidence, DOORS and Polarion
