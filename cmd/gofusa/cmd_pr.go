@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/pr"
 )
 
@@ -28,12 +29,12 @@ func runPR(args []string, stdout, stderr io.Writer) int {
 	}
 
 	dir := fs.String("dir", "", "project root directory (default: current directory)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 	if fs.NArg() == 0 {
 		fs.Usage()
-		return 1
+		return fusa.ExitUsage
 	}
 
 	projectRoot := *dir
@@ -42,7 +43,7 @@ func runPR(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa pr: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -60,22 +61,22 @@ func runPR(args []string, stdout, stderr io.Writer) int {
 	default:
 		fmt.Fprintf(stderr, "gofusa pr: unknown subcommand %q\n", fs.Arg(0))
 		fs.Usage()
-		return 1
+		return fusa.ExitUsage
 	}
 }
 
 func prInit(logPath string, stdout, stderr io.Writer) int {
 	if _, err := os.Stat(logPath); err == nil {
 		fmt.Fprintf(stderr, "gofusa pr: %s already exists\n", logPath)
-		return 1
+		return fusa.ExitUsage
 	}
 	log := &pr.Log{Project: filepath.Base(filepath.Dir(logPath))}
 	if err := pr.Save(logPath, log); err != nil {
 		fmt.Fprintf(stderr, "gofusa pr: init: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Problem report log created: %s\n", logPath)
-	return 0
+	return fusa.ExitOK
 }
 
 func prAdd(logPath string, args []string, stdout, stderr io.Writer) int {
@@ -86,12 +87,12 @@ func prAdd(logPath string, args []string, stdout, stderr io.Writer) int {
 	desc := fs.String("desc", "", "detailed description")
 	phase := fs.String("phase", string(pr.PhaseDevelopment), "phase found: planning/development/verification/integration/operation")
 	severity := fs.String("severity", string(pr.PRSeverityMinor), "severity: critical/major/minor")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 	if *id == "" || *title == "" {
 		fmt.Fprintf(stderr, "gofusa pr add: --id and --title are required\n")
-		return 1
+		return fusa.ExitUsage
 	}
 	report := pr.ProblemReport{
 		ID:          *id,
@@ -105,23 +106,23 @@ func prAdd(logPath string, args []string, stdout, stderr io.Writer) int {
 	}
 	if err := pr.Add(logPath, report); err != nil {
 		fmt.Fprintf(stderr, "gofusa pr add: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Problem report %s added to %s\n", *id, logPath)
-	return 0
+	return fusa.ExitOK
 }
 
 func prList(logPath string, stdout, stderr io.Writer) int {
 	log, err := pr.Load(logPath)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa pr list: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if err := pr.Render(stdout, log, "text"); err != nil {
 		fmt.Fprintf(stderr, "gofusa pr list: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 func prClose(logPath string, args []string, stdout, stderr io.Writer) int {
@@ -129,17 +130,17 @@ func prClose(logPath string, args []string, stdout, stderr io.Writer) int {
 	fs.SetOutput(stderr)
 	id := fs.String("id", "", "problem report ID to close (required)")
 	resolution := fs.String("resolution", "", "resolution description")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 	if *id == "" {
 		fmt.Fprintf(stderr, "gofusa pr close: --id is required\n")
-		return 1
+		return fusa.ExitUsage
 	}
 	if err := pr.Close(logPath, *id, *resolution); err != nil {
 		fmt.Fprintf(stderr, "gofusa pr close: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Problem report %s closed\n", *id)
-	return 0
+	return fusa.ExitOK
 }

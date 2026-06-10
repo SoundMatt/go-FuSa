@@ -12,7 +12,6 @@ package iec61508
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -22,6 +21,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/gapreport"
 )
 
 // ReportFile is the default output filename.
@@ -348,13 +348,45 @@ func commandForFile(file string) string {
 func Render(w io.Writer, rep *Report, format string) error {
 	switch format {
 	case "json", "":
-		enc := json.NewEncoder(w)
-		enc.SetIndent("", "  ")
-		return enc.Encode(rep)
+		return gapreport.Render(w, toGapReport(rep), "json")
 	case "text":
 		return renderText(w, rep)
 	default:
 		return fmt.Errorf("iec61508: unsupported format %q", format)
+	}
+}
+
+func toGapReport(rep *Report) *gapreport.Report {
+	gr := gapreport.New(rep.Project, "IEC 61508 "+string(rep.SIL))
+	for _, obj := range rep.Objectives {
+		if obj.Status == StatusNA {
+			continue
+		}
+		gobj := gapreport.Objective{
+			ID:     obj.ID,
+			Title:  obj.Description,
+			Clause: obj.Clause,
+			Status: mapToCanonical(obj.Status),
+		}
+		if obj.Evidence != "" {
+			gobj.Evidence = []string{obj.Evidence}
+		}
+		if obj.Gap != "" {
+			gobj.Findings = []string{obj.Gap}
+		}
+		gr.AddObjective(gobj)
+	}
+	return gr
+}
+
+func mapToCanonical(s ObjectiveStatus) string {
+	switch s {
+	case StatusPass:
+		return gapreport.StatusSatisfied
+	case StatusManual:
+		return gapreport.StatusPartial
+	default:
+		return gapreport.StatusGap
 	}
 }
 

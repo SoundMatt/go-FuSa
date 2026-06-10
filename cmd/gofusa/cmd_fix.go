@@ -32,8 +32,8 @@ func runFix(args []string, stdout, stderr io.Writer) int {
 		dir    = fs.String("dir", "", "project root directory (default: current directory)")
 		output = fs.String("report", "", "write full JSON report to file")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -42,7 +42,7 @@ func runFix(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa fix: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -52,14 +52,14 @@ func runFix(args []string, stdout, stderr io.Writer) int {
 			cfg = config.Default("", filepath.Base(projectRoot))
 		} else {
 			fmt.Fprintf(stderr, "gofusa fix: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
 	result, err := engine.Default.Run(context.Background(), projectRoot, cfg)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa fix: engine error: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fixable := filterFixable(result.Findings)
@@ -80,19 +80,19 @@ func runFix(args []string, stdout, stderr io.Writer) int {
 		data, err := json.MarshalIndent(rep, "", "  ")
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa fix: marshal report: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		if err := os.WriteFile(*output, data, 0o640); err != nil {
 			fmt.Fprintf(stderr, "gofusa fix: write report: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		fmt.Fprintf(stdout, "Report written to %s\n", *output)
 	}
 
 	if result.HasErrors() {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 // filterFixable returns findings that have a non-empty Remediation field,

@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/hara"
 )
 
@@ -26,8 +27,8 @@ func runHara(args []string, stdout, stderr io.Writer) int {
 		fs.PrintDefaults()
 	}
 	dir := fs.String("dir", "", "project root directory (default: current directory)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -36,7 +37,7 @@ func runHara(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa hara: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -56,7 +57,7 @@ func runHara(args []string, stdout, stderr io.Writer) int {
 	default:
 		fmt.Fprintf(stderr, "gofusa hara: unknown subcommand %q\n", sub)
 		fmt.Fprintf(stderr, "Run 'gofusa hara --help' for usage.\n")
-		return 1
+		return fusa.ExitUsage
 	}
 }
 
@@ -65,14 +66,14 @@ func runHaraShow(args []string, projectRoot string, stdout, stderr io.Writer) in
 	fs.SetOutput(stderr)
 	format := fs.String("format", "text", "output format: text, json, markdown")
 	output := fs.String("output", "", "write output to file (default: stdout)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	h, err := hara.Load(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa hara show: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -80,7 +81,7 @@ func runHaraShow(args []string, projectRoot string, stdout, stderr io.Writer) in
 		f, ferr := os.Create(*output)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa hara show: create %s: %v\n", *output, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -88,14 +89,14 @@ func runHaraShow(args []string, projectRoot string, stdout, stderr io.Writer) in
 
 	if err := hara.Render(w, h, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa hara show: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	findings := hara.Validate(h)
 	if len(findings) > 0 && *output != "" {
 		fmt.Fprintf(stderr, "gofusa hara: %d gap(s) found — run 'gofusa hara show' for details\n", len(findings))
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 func runHaraInit(args []string, projectRoot string, stdout, stderr io.Writer) int {
@@ -103,14 +104,14 @@ func runHaraInit(args []string, projectRoot string, stdout, stderr io.Writer) in
 	fs.SetOutput(stderr)
 	project := fs.String("project", "", "project name (default: directory name)")
 	standard := fs.String("standard", "ISO 26262", "safety standard (e.g. 'ISO 26262', 'IEC 61508')")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	path := filepath.Join(projectRoot, hara.HARAFile)
 	if _, err := os.Stat(path); err == nil {
 		fmt.Fprintf(stderr, "gofusa hara init: %s already exists — delete it first to reinitialise\n", hara.HARAFile)
-		return 1
+		return fusa.ExitUsage
 	}
 
 	name := *project
@@ -152,12 +153,12 @@ func runHaraInit(args []string, projectRoot string, stdout, stderr io.Writer) in
 
 	if err := hara.Save(path, h); err != nil {
 		fmt.Fprintf(stderr, "gofusa hara init: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fmt.Fprintf(stdout, "Created %s (project=%s standard=%q)\n", path, name, *standard)
 	fmt.Fprintf(stdout, "Edit %s to document project hazards and safety goals.\n", hara.HARAFile)
-	return 0
+	return fusa.ExitOK
 }
 
 func runHaraASIL(args []string, stdout, stderr io.Writer) int {
@@ -173,17 +174,17 @@ func runHaraASIL(args []string, stdout, stderr io.Writer) int {
 	s := fs.String("s", "", "Severity: S0, S1, S2, S3 (required)")
 	e := fs.String("e", "", "Exposure: E0, E1, E2, E3, E4 (required)")
 	c := fs.String("c", "", "Controllability: C0, C1, C2, C3 (required)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	if *s == "" || *e == "" || *c == "" {
 		fmt.Fprintf(stderr, "gofusa hara asil: -s, -e, and -c are required\n")
 		fs.Usage()
-		return 1
+		return fusa.ExitUsage
 	}
 
 	asil := hara.DetermineASIL(hara.Severity(*s), hara.Exposure(*e), hara.Controllability(*c))
 	fmt.Fprintf(stdout, "S=%s  E=%s  C=%s  →  %s\n", *s, *e, *c, asil)
-	return 0
+	return fusa.ExitOK
 }

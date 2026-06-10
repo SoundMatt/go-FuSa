@@ -54,6 +54,8 @@ import (
 	"io"
 	"os"
 
+	fusa "github.com/SoundMatt/go-FuSa"
+
 	// Blank imports activate built-in rule sets registered via init().
 	_ "github.com/SoundMatt/go-FuSa/analyze"     // v0.3 static-analysis rules
 	_ "github.com/SoundMatt/go-FuSa/auditpack"   // v0.13 audit-pack rules
@@ -85,10 +87,13 @@ func main() {
 }
 
 func run(args []string, stdout, stderr io.Writer) int {
+	// Strip --no-color before dispatch; renderers check os.Getenv("NO_COLOR").
+	args = stripNoColor(args)
+
 	//fusa:req REQ-CLI001
 	if len(args) == 0 {
 		usage(stdout)
-		return 1
+		return fusa.ExitUsage
 	}
 	//fusa:req REQ-E2E001
 	switch args[0] {
@@ -168,19 +173,34 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runMetrics(args[1:], stdout, stderr)
 	case "misra":
 		return runMisra(args[1:], stdout, stderr)
+	case "capabilities":
+		return runCapabilities(args[1:], stdout, stderr)
 	case "version":
 		//fusa:req REQ-CLI004
-		return runVersion(stdout)
+		return runVersion(args[1:], stdout, stderr)
 	case "help", "--help", "-h":
 		//fusa:req REQ-CLI003
 		usage(stdout)
-		return 0
+		return fusa.ExitOK
 	default:
 		//fusa:req REQ-CLI002
 		fmt.Fprintf(stderr, "gofusa: unknown command %q\n", args[0])
 		fmt.Fprintf(stderr, "Run 'gofusa help' for usage.\n")
-		return 1
+		return fusa.ExitUsage
 	}
+}
+
+// stripNoColor removes --no-color from args and sets NO_COLOR env var (§2.6).
+func stripNoColor(args []string) []string {
+	out := args[:0:len(args)]
+	for _, a := range args {
+		if a == "--no-color" || a == "-no-color" {
+			_ = os.Setenv("NO_COLOR", "1")
+		} else {
+			out = append(out, a)
+		}
+	}
+	return out
 }
 
 func usage(w io.Writer) {
@@ -226,6 +246,7 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  impact       Analyse change impact on requirements and safety artefacts\n")
 	fmt.Fprintf(w, "  metrics      Track safety metrics over time\n")
 	fmt.Fprintf(w, "  misra        Show MISRA C:2023 to Go / go-FuSa rule coverage mapping\n")
+	fmt.Fprintf(w, "  capabilities Report tool capabilities (commands, formats, standards)\n")
 	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")
 	fmt.Fprintf(w, "\nRun 'gofusa <command> --help' for command-specific flags.\n")
 }

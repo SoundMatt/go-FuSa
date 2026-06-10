@@ -36,8 +36,8 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 		//fusa:req REQ-CLI020
 		withCyber = fs.Bool("cyber", false, "enrich FMEA entries with CYBER findings (adds CyberRisks column)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -46,7 +46,7 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa fmea: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -58,14 +58,14 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 	report, err := fmea.Scan(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa fmea: scan: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *withCyber {
 		cfg, cfgErr := config.Load(filepath.Join(projectRoot, ".fusa.json"))
 		if cfgErr != nil && !errors.Is(cfgErr, fusa.ErrNoConfig) {
 			fmt.Fprintf(stderr, "gofusa fmea: load config: %v\n", cfgErr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		if cfg == nil {
 			cfg = config.Default("", filepath.Base(projectRoot))
@@ -73,21 +73,21 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 		cyberFindings, cyberErr := cyber.Scan(context.Background(), projectRoot, cfg)
 		if cyberErr != nil {
 			fmt.Fprintf(stderr, "gofusa fmea: cyber scan: %v\n", cyberErr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		fmea.EnrichWithCyber(report, cyberFindings)
 	}
 
 	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa fmea: mkdir: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	// Write fmea.json
 	jsonPath := filepath.Join(outDir, fmea.FMEAFile)
 	if err := writeFmea(jsonPath, report, "json"); err != nil {
 		fmt.Fprintf(stderr, "gofusa fmea: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "FMEA report written to %s\n", jsonPath)
 
@@ -95,7 +95,7 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 	csvPath := filepath.Join(outDir, fmea.FMEACSVFile)
 	if err := writeFmea(csvPath, report, "csv"); err != nil {
 		fmt.Fprintf(stderr, "gofusa fmea: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "FMEA report written to %s\n", csvPath)
 
@@ -104,7 +104,7 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 	fmt.Fprintf(stdout, "\nEntries: %d  (high: %d  medium: %d  low: %d)\n",
 		len(report.Entries), high, med, low)
 
-	return 0
+	return fusa.ExitOK
 }
 
 func writeFmea(path string, r *fmea.Report, format string) error {

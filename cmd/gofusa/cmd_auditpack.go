@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/auditpack"
 )
 
@@ -32,8 +33,8 @@ func runAuditPack(args []string, stdout, stderr io.Writer) int {
 		dir    = fs.String("dir", "", "project root directory (default: current directory)")
 		output = fs.String("output", "", "output path for audit-pack.zip (default: <project-root>/audit-pack.zip)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -42,7 +43,7 @@ func runAuditPack(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa audit-pack: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -54,13 +55,13 @@ func runAuditPack(args []string, stdout, stderr io.Writer) int {
 	outDir := filepath.Dir(outPath)
 	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa audit-pack: mkdir: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	manifest, err := auditpack.Pack(projectRoot, outPath)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa audit-pack: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fmt.Fprintf(stdout, "Audit pack written to %s\n", outPath)
@@ -69,5 +70,5 @@ func runAuditPack(args []string, stdout, stderr io.Writer) int {
 	for _, entry := range manifest.Files {
 		fmt.Fprintf(stdout, "  %-40s  %s\n", entry.Path, entry.SHA256[:16]+"…")
 	}
-	return 0
+	return fusa.ExitOK
 }

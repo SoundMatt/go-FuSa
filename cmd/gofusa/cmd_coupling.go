@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/coupling"
 )
@@ -27,8 +28,8 @@ func runCoupling(args []string, stdout, stderr io.Writer) int {
 		dir    = fs.String("dir", "", "project root directory (default: current directory)")
 		output = fs.String("output", "", "output file (default: <dir>/coupling-report.json)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -37,7 +38,7 @@ func runCoupling(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa coupling: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -54,20 +55,20 @@ func runCoupling(args []string, stdout, stderr io.Writer) int {
 	dataFindings, err := dataRule.Run(context.Background(), projectRoot, cfg)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa coupling: data coupling scan: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	ctrlFindings, err := ctrlRule.Run(context.Background(), projectRoot, cfg)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa coupling: control coupling scan: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if err := coupling.SaveReport(outPath, dataFindings, ctrlFindings, projectRoot); err != nil {
 		fmt.Fprintf(stderr, "gofusa coupling: save report: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fmt.Fprintf(stdout, "Coupling report written to %s (%d data, %d control)\n",
 		outPath, len(dataFindings), len(ctrlFindings))
-	return 0
+	return fusa.ExitOK
 }

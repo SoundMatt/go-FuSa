@@ -28,8 +28,8 @@ func runAnalyze(args []string, stdout, stderr io.Writer) int {
 		output = fs.String("output", "", "write report to file (default: stdout)")
 		strict = fs.Bool("strict", false, "exit 1 on any WARNING or ERROR finding")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	return runFiltered(args[:0], stdout, stderr, "gofusa analyze", *dir, *format, *output, *strict,

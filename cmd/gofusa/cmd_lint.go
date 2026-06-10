@@ -35,8 +35,8 @@ func runLint(args []string, stdout, stderr io.Writer) int {
 		output = fs.String("output", "", "write report to file (default: stdout)")
 		strict = fs.Bool("strict", false, "exit 1 on any WARNING or ERROR finding")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	return runFiltered(args[:0], stdout, stderr, "gofusa lint", *dir, *format, *output, *strict,
@@ -57,7 +57,7 @@ func runFiltered(
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "%s: get working directory: %v\n", cmdName, err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -67,7 +67,7 @@ func runFiltered(
 			cfg = config.Default("", filepath.Base(projectRoot))
 		} else {
 			fmt.Fprintf(stderr, "%s: %v\n", cmdName, err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -81,7 +81,7 @@ func runFiltered(
 	result, err := engine.Default.RunFilter(context.Background(), projectRoot, cfg, keep)
 	if err != nil {
 		fmt.Fprintf(stderr, "%s: engine error: %v\n", cmdName, err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	for _, runErr := range result.Errors {
 		fmt.Fprintf(stderr, "%s: warning: %v\n", cmdName, runErr)
@@ -93,21 +93,21 @@ func runFiltered(
 		f, err := os.Create(cfg.Report.Output)
 		if err != nil {
 			fmt.Fprintf(stderr, "%s: create output: %v\n", cmdName, err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
 	}
 	if err := report.Render(w, rep, cfg.Report.Format); err != nil {
 		fmt.Fprintf(stderr, "%s: render: %v\n", cmdName, err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if result.HasErrors() {
-		return 1
+		return fusa.ExitGateFail
 	}
 	if strict && result.HasWarnings() {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }

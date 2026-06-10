@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/boundary"
 )
 
@@ -29,8 +30,8 @@ func runBoundary(args []string, stdout, stderr io.Writer) int {
 		dir       = fs.String("dir", "", "project root directory (default: current directory)")
 		outputDir = fs.String("output-dir", "", "output directory (default: project root)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -39,7 +40,7 @@ func runBoundary(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa boundary: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -51,19 +52,19 @@ func runBoundary(args []string, stdout, stderr io.Writer) int {
 	diagram, err := boundary.Scan(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa boundary: scan: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa boundary: mkdir: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	// Write boundary.mermaid
 	mermaidPath := filepath.Join(outDir, boundary.BoundaryFile)
 	if err := writeBoundary(mermaidPath, diagram, "mermaid"); err != nil {
 		fmt.Fprintf(stderr, "gofusa boundary: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Boundary diagram written to %s\n", mermaidPath)
 
@@ -71,14 +72,14 @@ func runBoundary(args []string, stdout, stderr io.Writer) int {
 	dotPath := filepath.Join(outDir, boundary.BoundaryDOTFile)
 	if err := writeBoundary(dotPath, diagram, "dot"); err != nil {
 		fmt.Fprintf(stderr, "gofusa boundary: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Boundary diagram written to %s\n", dotPath)
 
 	fmt.Fprintf(stdout, "\nPackages: %d  Edges: %d\n",
 		len(diagram.Nodes), len(diagram.Edges))
 
-	return 0
+	return fusa.ExitOK
 }
 
 func writeBoundary(path string, d *boundary.Diagram, format string) error {

@@ -43,8 +43,8 @@ func TestRunHara_InitAlreadyExists(t *testing.T) {
 	}
 	var stdout, stderr bytes.Buffer
 	code := run([]string{"hara", "--dir", dir, "init"}, &stdout, &stderr)
-	if code != 1 {
-		t.Errorf("hara init existing file: expected exit 1, got %d", code)
+	if code != 2 {
+		t.Errorf("hara init existing file: expected exit 2 (usage), got %d", code)
 	}
 	if !strings.Contains(stderr.String(), "already exists") {
 		t.Errorf("expected 'already exists' in stderr, got: %s", stderr.String())
@@ -121,8 +121,8 @@ func TestRunHara_ShowNoSubcommand(t *testing.T) {
 func TestRunHara_UnknownSubcommand(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 	code := run([]string{"hara", "nope"}, &stdout, &stderr)
-	if code != 1 {
-		t.Errorf("hara nope: expected exit 1, got %d", code)
+	if code != 2 {
+		t.Errorf("hara nope: expected exit 2 (usage), got %d", code)
 	}
 }
 
@@ -152,8 +152,8 @@ func TestRunHara_ASIL_QM(t *testing.T) {
 func TestRunHara_ASIL_MissingFlags(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 	code := run([]string{"hara", "asil", "-s", "S2"}, &stdout, &stderr)
-	if code != 1 {
-		t.Errorf("hara asil missing flags: expected exit 1, got %d", code)
+	if code != 2 {
+		t.Errorf("hara asil missing flags: expected exit 2 (usage), got %d", code)
 	}
 }
 

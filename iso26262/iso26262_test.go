@@ -136,8 +136,8 @@ func TestRender_JSON(t *testing.T) {
 	if err := iso26262.Render(&buf, rep, "json"); err != nil {
 		t.Fatalf("Render json: %v", err)
 	}
-	if !strings.Contains(buf.String(), `"asil"`) {
-		t.Error("missing asil field in JSON")
+	if !strings.Contains(buf.String(), `"standard"`) {
+		t.Error("missing standard field in JSON")
 	}
 }
 

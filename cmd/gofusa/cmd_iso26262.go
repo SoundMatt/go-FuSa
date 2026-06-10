@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/iso26262"
 )
 
@@ -27,14 +28,14 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 		format = fs.String("format", "text", "output format: text, json")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	validASILs := map[string]bool{"ASIL-A": true, "ASIL-B": true, "ASIL-C": true, "ASIL-D": true}
 	if !validASILs[*asil] {
 		fmt.Fprintf(stderr, "gofusa iso26262: unknown ASIL level %q (must be ASIL-A, ASIL-B, ASIL-C, or ASIL-D)\n", *asil)
-		return 1
+		return fusa.ExitUsage
 	}
 
 	projectRoot := *dir
@@ -43,7 +44,7 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa iso26262: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -52,7 +53,7 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 	rep, err := iso26262.Assess(projectRoot, project, iso26262.ASIL(*asil))
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa iso26262: assess: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -60,7 +61,7 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 		f, ferr := os.Create(*output)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa iso26262: create %s: %v\n", *output, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -68,7 +69,7 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 
 	if err := iso26262.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa iso26262: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *output == "" && *format == "text" {
@@ -78,7 +79,7 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if rep.Gap > 0 {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }

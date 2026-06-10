@@ -38,8 +38,8 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 		full        = fs.Bool("full", false, "also run fmea, boundary, vuln scan, and audit-pack")
 		spdxVersion = fs.String("spdx-version", "3.0.1", "SPDX version for SBOM output: 2.2, 2.3, or 3.0.1")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -48,7 +48,7 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa release: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -59,13 +59,13 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 
 	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa release: create output directory: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	sbom, err := release.BuildSBOM(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa release: build SBOM: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	sbomPath := filepath.Join(outDir, release.SBOMFile)
 	//fusa:req REQ-RELEASE007
@@ -81,23 +81,23 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 		sbomVersionLabel = "3.0.1"
 	default:
 		fmt.Fprintf(stderr, "gofusa release: unsupported --spdx-version %q (use 2.2, 2.3, or 3.0.1)\n", *spdxVersion)
-		return 1
+		return fusa.ExitUsage
 	}
 	if err = release.SaveJSON(sbomPath, sbomDoc); err != nil {
 		fmt.Fprintf(stderr, "gofusa release: save SBOM: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "SBOM written to %s (%d components, SPDX %s)\n", sbomPath, len(sbom.Components), sbomVersionLabel)
 
 	prov, err := release.BuildProvenance(context.Background(), projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa release: build provenance: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	provPath := filepath.Join(outDir, release.ProvenanceFile)
 	if err = release.SaveJSON(provPath, prov); err != nil {
 		fmt.Fprintf(stderr, "gofusa release: save provenance: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Provenance written to %s\n", provPath)
 
@@ -105,19 +105,19 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 	manifest, err := release.BuildManifest([]string{sbomPath, provPath})
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa release: build manifest: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	manifestPath := filepath.Join(outDir, release.ManifestFile)
 	if err = release.SaveJSON(manifestPath, manifest); err != nil {
 		fmt.Fprintf(stderr, "gofusa release: save manifest: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Artifact manifest written to %s (%d artifacts)\n", manifestPath, len(manifest.Artifacts))
 
 	if *full {
 		return runReleaseFullBundle(projectRoot, outDir, stdout, stderr)
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 // runReleaseFullBundle generates the additional safety evidence artifacts.
@@ -128,7 +128,7 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 	fmeaReport, err := fmea.Scan(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa release --full: fmea scan: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	for _, pair := range []struct{ path, format string }{
 		{filepath.Join(outDir, fmea.FMEAFile), "json"},
@@ -137,12 +137,12 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 		f, ferr := os.Create(pair.path)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa release --full: create %s: %v\n", pair.path, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		if werr := fmea.Render(f, fmeaReport, pair.format); werr != nil {
 			_ = f.Close()
 			fmt.Fprintf(stderr, "gofusa release --full: render fmea %s: %v\n", pair.format, werr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		_ = f.Close()
 		fmt.Fprintf(stdout, "FMEA written to %s\n", pair.path)
@@ -152,7 +152,7 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 	boundaryDiagram, err := boundary.Scan(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa release --full: boundary scan: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	for _, pair := range []struct{ path, format string }{
 		{filepath.Join(outDir, boundary.BoundaryFile), "mermaid"},
@@ -161,12 +161,12 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 		f, ferr := os.Create(pair.path)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa release --full: create %s: %v\n", pair.path, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		if werr := boundary.Render(f, boundaryDiagram, pair.format); werr != nil {
 			_ = f.Close()
 			fmt.Fprintf(stderr, "gofusa release --full: render boundary %s: %v\n", pair.format, werr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		_ = f.Close()
 		fmt.Fprintf(stdout, "Boundary diagram written to %s\n", pair.path)
@@ -181,12 +181,12 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 		f, ferr := os.Create(vulnPath)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa release --full: create %s: %v\n", vulnPath, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		if werr := vuln.Render(f, vulnReport, "json"); werr != nil {
 			_ = f.Close()
 			fmt.Fprintf(stderr, "gofusa release --full: write vuln.json: %v\n", werr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		_ = f.Close()
 		fmt.Fprintf(stdout, "Vulnerability report written to %s (%d findings)\n", vulnPath, len(vulnReport.Findings))
@@ -196,7 +196,7 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 	cfg, cfgErr := config.Load(filepath.Join(projectRoot, ".fusa.json"))
 	if cfgErr != nil && !errors.Is(cfgErr, fusa.ErrNoConfig) {
 		fmt.Fprintf(stderr, "gofusa release --full: load config: %v\n", cfgErr)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if cfg == nil {
 		cfg = config.Default("", filepath.Base(projectRoot))
@@ -240,7 +240,7 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 	auditManifest, err := auditpack.Pack(projectRoot, auditPath)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa release --full: audit-pack: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Audit pack written to %s (%d files)\n", auditPath, len(auditManifest.Files))
 
@@ -258,5 +258,5 @@ func runReleaseFullBundle(projectRoot, outDir string, stdout, stderr io.Writer) 
 		_ = f.Close()
 	}
 
-	return 0
+	return fusa.ExitOK
 }

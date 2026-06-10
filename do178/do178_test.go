@@ -124,8 +124,8 @@ func TestRender_JSON(t *testing.T) {
 	if err := do178.Render(&buf, rep, "json"); err != nil {
 		t.Fatalf("Render json: %v", err)
 	}
-	if !strings.Contains(buf.String(), `"dal"`) {
-		t.Error("missing dal field in JSON")
+	if !strings.Contains(buf.String(), `"standard"`) {
+		t.Error("missing standard field in JSON")
 	}
 }
 

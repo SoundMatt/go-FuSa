@@ -273,3 +273,111 @@ func TestRenderEvidenceHTML_WithReqs(t *testing.T) {
 		t.Error("output missing <html tag")
 	}
 }
+
+// ─── SummaryTable ─────────────────────────────────────────────────────────────
+
+var multiFindings = []fusa.Finding{
+	{RuleID: "LINT001", Severity: fusa.SeverityWarning, Message: "a", Location: fusa.Location{File: "a.go"}},
+	{RuleID: "LINT001", Severity: fusa.SeverityWarning, Message: "b", Location: fusa.Location{File: "a.go"}},
+	{RuleID: "LINT002", Severity: fusa.SeverityWarning, Message: "c", Location: fusa.Location{File: "b.go"}},
+	{RuleID: "CYBER001", Severity: fusa.SeverityError, Message: "d", Location: fusa.Location{File: "c.go"}},
+	{RuleID: "CYBER001", Severity: fusa.SeverityError, Message: "e", Location: fusa.Location{File: "c.go"}},
+	{RuleID: "ANA001", Severity: fusa.SeverityInfo, Message: "f", Location: fusa.Location{File: "d.go"}},
+}
+
+//fusa:test REQ-RPT006
+func TestSummaryTable_Categories(t *testing.T) {
+	r := report.New("/proj", multiFindings)
+	cats := map[string]report.CategoryRow{}
+	for _, c := range r.SummaryTable.ByCategory {
+		cats[c.Category] = c
+	}
+	if cats["LINT"].Total != 3 {
+		t.Errorf("LINT total = %d, want 3", cats["LINT"].Total)
+	}
+	if cats["LINT"].Warnings != 3 {
+		t.Errorf("LINT warnings = %d, want 3", cats["LINT"].Warnings)
+	}
+	if cats["CYBER"].Errors != 2 {
+		t.Errorf("CYBER errors = %d, want 2", cats["CYBER"].Errors)
+	}
+	if cats["ANA"].Infos != 1 {
+		t.Errorf("ANA infos = %d, want 1", cats["ANA"].Infos)
+	}
+}
+
+//fusa:test REQ-RPT006
+func TestSummaryTable_ByRuleOrder(t *testing.T) {
+	r := report.New("/proj", multiFindings)
+	if len(r.SummaryTable.ByRule) == 0 {
+		t.Fatal("ByRule empty")
+	}
+	// LINT001 has 2, CYBER001 has 2, LINT002 has 1, ANA001 has 1 — top two should be tied at 2
+	if r.SummaryTable.ByRule[0].Count < r.SummaryTable.ByRule[len(r.SummaryTable.ByRule)-1].Count {
+		t.Error("ByRule not sorted descending by count")
+	}
+}
+
+//fusa:test REQ-RPT006
+func TestSummaryTable_FileCount(t *testing.T) {
+	r := report.New("/proj", multiFindings)
+	if r.SummaryTable.FileCount != 4 {
+		t.Errorf("FileCount = %d, want 4", r.SummaryTable.FileCount)
+	}
+}
+
+//fusa:test REQ-RPT006
+func TestSummaryTable_EmptyFindings(t *testing.T) {
+	r := report.New("/proj", nil)
+	if len(r.SummaryTable.ByCategory) != 0 {
+		t.Error("expected empty ByCategory for no findings")
+	}
+}
+
+//fusa:test REQ-RPT006
+func TestRender_Text_SummaryBlock(t *testing.T) {
+	r := report.New("/proj", multiFindings)
+	var buf bytes.Buffer
+	if err := report.Render(&buf, r, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	out := buf.String()
+	for _, want := range []string{"SUMMARY", "TOP RULES", "Files with findings", "LINT", "CYBER"} {
+		if !strings.Contains(out, want) {
+			t.Errorf("text output missing %q", want)
+		}
+	}
+}
+
+//fusa:test REQ-RPT006
+func TestRender_Text_NoSummaryFlag(t *testing.T) {
+	r := report.New("/proj", multiFindings)
+	r.NoSummary = true
+	var buf bytes.Buffer
+	if err := report.Render(&buf, r, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	out := buf.String()
+	if strings.Contains(out, "SUMMARY") {
+		t.Error("expected SUMMARY block suppressed with NoSummary=true")
+	}
+}
+
+//fusa:test REQ-RPT006
+func TestRender_JSON_SummaryTable(t *testing.T) {
+	r := report.New("/proj", multiFindings)
+	var buf bytes.Buffer
+	if err := report.Render(&buf, r, "json"); err != nil {
+		t.Fatalf("Render json: %v", err)
+	}
+	var decoded report.Report
+	if err := json.Unmarshal(buf.Bytes(), &decoded); err != nil {
+		t.Fatalf("JSON decode: %v", err)
+	}
+	if len(decoded.SummaryTable.ByCategory) == 0 {
+		t.Error("JSON summaryTable.by_category missing")
+	}
+	if len(decoded.SummaryTable.ByRule) == 0 {
+		t.Error("JSON summaryTable.by_rule missing")
+	}
+}

@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/metrics"
 )
 
@@ -24,8 +25,8 @@ func runMetrics(args []string, stdout, stderr io.Writer) int {
 		fs.PrintDefaults()
 	}
 	dir := fs.String("dir", "", "project root directory (default: current directory)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -34,14 +35,14 @@ func runMetrics(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa metrics: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
 	sub := fs.Args()
 	if len(sub) == 0 {
 		fs.Usage()
-		return 1
+		return fusa.ExitUsage
 	}
 
 	switch sub[0] {
@@ -51,7 +52,7 @@ func runMetrics(args []string, stdout, stderr io.Writer) int {
 		return runMetricsShow(sub[1:], projectRoot, stdout, stderr)
 	default:
 		fmt.Fprintf(stderr, "gofusa metrics: unknown subcommand %q\n", sub[0])
-		return 1
+		return fusa.ExitUsage
 	}
 }
 
@@ -59,13 +60,13 @@ func runMetricsRecord(projectRoot string, stdout, stderr io.Writer) int {
 	ts, err := metrics.Load(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa metrics record: load: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	snap, err := metrics.Collect(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa metrics record: collect: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	ts = metrics.Append(ts, snap)
@@ -73,7 +74,7 @@ func runMetricsRecord(projectRoot string, stdout, stderr io.Writer) int {
 	path := filepath.Join(projectRoot, metrics.MetricsFile)
 	if err := metrics.Save(path, ts); err != nil {
 		fmt.Fprintf(stderr, "gofusa metrics record: save: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fmt.Fprintf(stdout, "Metrics recorded: errors=%d warnings=%d infos=%d reqs=%d traced=%d coverage=%.1f%%\n",
@@ -82,7 +83,7 @@ func runMetricsRecord(projectRoot string, stdout, stderr io.Writer) int {
 		snap.CoveragePct,
 	)
 	fmt.Fprintf(stdout, "Time series saved to %s (%d snapshots)\n", path, len(ts.Snapshots))
-	return 0
+	return fusa.ExitOK
 }
 
 func runMetricsShow(args []string, projectRoot string, stdout, stderr io.Writer) int {
@@ -92,14 +93,14 @@ func runMetricsShow(args []string, projectRoot string, stdout, stderr io.Writer)
 		format = fs.String("format", "text", "output format: text, json")
 		output = fs.String("output", "", "write to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	ts, err := metrics.Load(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa metrics show: load: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -107,7 +108,7 @@ func runMetricsShow(args []string, projectRoot string, stdout, stderr io.Writer)
 		f, ferr := os.Create(*output)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa metrics show: create %s: %v\n", *output, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -115,7 +116,7 @@ func runMetricsShow(args []string, projectRoot string, stdout, stderr io.Writer)
 
 	if err := metrics.Render(w, ts, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa metrics show: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
-	return 0
+	return fusa.ExitOK
 }

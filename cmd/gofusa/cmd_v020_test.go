@@ -11,6 +11,7 @@ import (
 
 // ─── iso26262 ─────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-ISO26262-001
 func TestRunISO26262_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -23,23 +24,26 @@ func TestRunISO26262_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-ISO26262-001
 func TestRunISO26262_JSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	runISO26262([]string{"--dir", dir, "--asil", "ASIL-B", "--format", "json"}, &out, &errBuf)
-	if !strings.Contains(out.String(), `"asil"`) {
-		t.Errorf("missing asil field in JSON; got: %q", out.String())
+	if !strings.Contains(out.String(), `"standard"`) {
+		t.Errorf("missing standard field in JSON; got: %q", out.String())
 	}
 }
 
+//fusa:test REQ-CLI-ISO26262-001
 func TestRunISO26262_InvalidASIL(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runISO26262([]string{"--asil", "INVALID"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for invalid ASIL, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for invalid ASIL, got %d", code)
 	}
 }
 
+//fusa:test REQ-CLI-ISO26262-001
 func TestRunISO26262_Output(t *testing.T) {
 	dir := t.TempDir()
 	outFile := filepath.Join(dir, "report.json")
@@ -49,11 +53,12 @@ func TestRunISO26262_Output(t *testing.T) {
 	if err != nil {
 		t.Fatalf("output file not created: %v", err)
 	}
-	if !strings.Contains(string(data), "asil") {
-		t.Errorf("output file missing asil field")
+	if !strings.Contains(string(data), "standard") {
+		t.Errorf("output file missing standard field")
 	}
 }
 
+//fusa:test REQ-CLI-ISO26262-001
 func TestRunISO26262_AllASILs(t *testing.T) {
 	for _, asil := range []string{"ASIL-A", "ASIL-B", "ASIL-C", "ASIL-D"} {
 		dir := t.TempDir()
@@ -67,6 +72,7 @@ func TestRunISO26262_AllASILs(t *testing.T) {
 
 // ─── iec61508 ─────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-IEC61508-001
 func TestRunIEC61508_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -79,23 +85,26 @@ func TestRunIEC61508_EmptyDir(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-IEC61508-001
 func TestRunIEC61508_JSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	runIEC61508([]string{"--dir", dir, "--sil", "SIL-2", "--format", "json"}, &out, &errBuf)
-	if !strings.Contains(out.String(), `"sil"`) {
-		t.Errorf("missing sil field in JSON; got: %q", out.String())
+	if !strings.Contains(out.String(), `"standard"`) {
+		t.Errorf("missing standard field in JSON; got: %q", out.String())
 	}
 }
 
+//fusa:test REQ-CLI-IEC61508-001
 func TestRunIEC61508_InvalidSIL(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runIEC61508([]string{"--sil", "INVALID"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for invalid SIL, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for invalid SIL, got %d", code)
 	}
 }
 
+//fusa:test REQ-CLI-IEC61508-001
 func TestRunIEC61508_Output(t *testing.T) {
 	dir := t.TempDir()
 	outFile := filepath.Join(dir, "report.json")
@@ -105,11 +114,12 @@ func TestRunIEC61508_Output(t *testing.T) {
 	if err != nil {
 		t.Fatalf("output file not created: %v", err)
 	}
-	if !strings.Contains(string(data), "sil") {
-		t.Errorf("output file missing sil field")
+	if !strings.Contains(string(data), "standard") {
+		t.Errorf("output file missing standard field")
 	}
 }
 
+//fusa:test REQ-CLI-IEC61508-001
 func TestRunIEC61508_AllSILs(t *testing.T) {
 	for _, sil := range []string{"SIL-1", "SIL-2", "SIL-3", "SIL-4"} {
 		dir := t.TempDir()
@@ -123,6 +133,7 @@ func TestRunIEC61508_AllSILs(t *testing.T) {
 
 // ─── disposition ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-DISP001
 func TestRunDisposition_ListEmpty(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -135,6 +146,7 @@ func TestRunDisposition_ListEmpty(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-DISP001
 func TestRunDisposition_AddAndList(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -158,6 +170,7 @@ func TestRunDisposition_AddAndList(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-DISP001
 func TestRunDisposition_Show(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -178,34 +191,38 @@ func TestRunDisposition_Show(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-DISP001
 func TestRunDisposition_ShowMissing(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	code := runDisposition([]string{"--dir", dir, "show", "--rule", "NOSUCHRULE"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("show missing: expected exit 1, got %d", code)
+	if code != 2 {
+		t.Errorf("show missing: expected exit 2 (usage), got %d", code)
 	}
 }
 
+//fusa:test REQ-CLI-DISP001
 func TestRunDisposition_NoSubcommand(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runDisposition([]string{}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("no subcommand: expected exit 1, got %d", code)
+	if code != 2 {
+		t.Errorf("no subcommand: expected exit 2 (usage), got %d", code)
 	}
 }
 
+//fusa:test REQ-CLI-DISP001
 func TestRunDisposition_AddMissingFlags(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	code := runDisposition([]string{"--dir", dir, "add", "--rule", "LINT001"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("add missing flags: expected exit 1, got %d", code)
+	if code != 2 {
+		t.Errorf("add missing flags: expected exit 2 (usage), got %d", code)
 	}
 }
 
 // ─── impact ──────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-IMPACT001
 func TestRunImpact_NotGitRepo(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -214,12 +231,14 @@ func TestRunImpact_NotGitRepo(t *testing.T) {
 	// either exit 0 (empty report) or 1 (error) — just must not panic
 }
 
+//fusa:test REQ-CLI-IMPACT001
 func TestRunImpact_JSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	runImpact([]string{"--dir", dir, "--format", "json"}, &out, &errBuf)
 }
 
+//fusa:test REQ-CLI-IMPACT001
 func TestRunImpact_Output(t *testing.T) {
 	dir := t.TempDir()
 	outFile := filepath.Join(dir, "impact.json")
@@ -230,6 +249,7 @@ func TestRunImpact_Output(t *testing.T) {
 
 // ─── metrics ─────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-METRICS001
 func TestRunMetrics_RecordAndShow(t *testing.T) {
 	dir := t.TempDir()
 	// Write a minimal check-report.json so Collect has something to parse.
@@ -257,6 +277,7 @@ func TestRunMetrics_RecordAndShow(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-METRICS001
 func TestRunMetrics_ShowJSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
@@ -271,14 +292,16 @@ func TestRunMetrics_ShowJSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-METRICS001
 func TestRunMetrics_NoSubcommand(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runMetrics([]string{}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("no subcommand: expected exit 1, got %d", code)
+	if code != 2 {
+		t.Errorf("no subcommand: expected exit 2 (usage), got %d", code)
 	}
 }
 
+//fusa:test REQ-CLI-METRICS001
 func TestRunMetrics_ShowOutput(t *testing.T) {
 	dir := t.TempDir()
 	outFile := filepath.Join(dir, "metrics.json")
@@ -295,6 +318,7 @@ func TestRunMetrics_ShowOutput(t *testing.T) {
 
 // ─── misra ────────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-MISRA001
 func TestRunMisra_Text(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runMisra([]string{"--format", "text"}, &out, &errBuf)
@@ -306,6 +330,7 @@ func TestRunMisra_Text(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-MISRA001
 func TestRunMisra_JSON(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runMisra([]string{"--format", "json"}, &out, &errBuf)
@@ -317,6 +342,7 @@ func TestRunMisra_JSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-MISRA001
 func TestRunMisra_Output(t *testing.T) {
 	dir := t.TempDir()
 	outFile := filepath.Join(dir, "misra.json")
@@ -332,6 +358,7 @@ func TestRunMisra_Output(t *testing.T) {
 
 // ─── release --full ───────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI016
 func TestRunRelease_Full(t *testing.T) {
 	dir := t.TempDir()
 	// Provide a minimal Go module so release.BuildSBOM can proceed.
@@ -359,6 +386,7 @@ func TestRunRelease_Full(t *testing.T) {
 
 // ─── req import/export ────────────────────────────────────────────────────────
 
+//fusa:test REQ-CLI-REQ002
 func TestRunReqImport_CSV(t *testing.T) {
 	dir := t.TempDir()
 	csvFile := filepath.Join(dir, "reqs.csv")
@@ -380,6 +408,7 @@ func TestRunReqImport_CSV(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-REQ003
 func TestRunReqExport_CSV(t *testing.T) {
 	dir := t.TempDir()
 	// create a reqs file first (wrapped object format that trace.LoadRequirements expects)
@@ -397,6 +426,7 @@ func TestRunReqExport_CSV(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CLI-REQ002
 func TestRunReqImport_InvalidCSV(t *testing.T) {
 	dir := t.TempDir()
 	csvFile := filepath.Join(dir, "bad.csv")
@@ -405,7 +435,7 @@ func TestRunReqImport_InvalidCSV(t *testing.T) {
 	}
 	var out, errBuf bytes.Buffer
 	code := run([]string{"req", "--dir", dir, "import", "--format", "csv", "--file", csvFile}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("bad CSV: expected exit 1, got %d", code)
+	if code != 2 {
+		t.Errorf("bad CSV: expected exit 2 (usage), got %d", code)
 	}
 }

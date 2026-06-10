@@ -34,8 +34,8 @@ func runCyber(args []string, stdout, stderr io.Writer) int {
 		output = fs.String("output", "", "write JSON report to file (default: cyber-report.json in project root)")
 		strict = fs.Bool("strict", false, "exit 1 on any WARNING or ERROR finding")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -44,14 +44,14 @@ func runCyber(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa cyber: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
 	cfg, err := config.Load(filepath.Join(projectRoot, ".fusa.json"))
 	if err != nil && !errors.Is(err, fusa.ErrNoConfig) {
 		fmt.Fprintf(stderr, "gofusa cyber: load config: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if cfg == nil {
 		cfg = config.Default("", filepath.Base(projectRoot))
@@ -60,7 +60,7 @@ func runCyber(args []string, stdout, stderr io.Writer) int {
 	findings, err := cyber.Scan(context.Background(), projectRoot, cfg)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa cyber: scan: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	// Print summary.
@@ -85,17 +85,17 @@ func runCyber(args []string, stdout, stderr io.Writer) int {
 	}
 	if err := writeCyberReport(outPath, findings, projectRoot); err != nil {
 		fmt.Fprintf(stderr, "gofusa cyber: write report: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Cyber report written to %s\n", outPath)
 
 	if errors_ > 0 {
-		return 1
+		return fusa.ExitGateFail
 	}
 	if *strict && (warnings > 0 || errors_ > 0) {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 type cyberReport struct {

@@ -24,8 +24,8 @@ func runBadge(args []string, stdout, stderr io.Writer) int {
 		fs.PrintDefaults()
 	}
 	output := fs.String("output", "", "write SVG to file (default: stdout)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	var r report.Report
@@ -33,21 +33,21 @@ func runBadge(args []string, stdout, stderr io.Writer) int {
 	case 0:
 		if err := json.NewDecoder(os.Stdin).Decode(&r); err != nil {
 			fmt.Fprintf(stderr, "gofusa badge: read stdin: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	case 1:
 		data, err := os.ReadFile(fs.Arg(0))
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa badge: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		if err := json.Unmarshal(data, &r); err != nil {
 			fmt.Fprintf(stderr, "gofusa badge: parse report: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	default:
 		fs.Usage()
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	errors, warnings := 0, 0
@@ -66,14 +66,14 @@ func runBadge(args []string, stdout, stderr io.Writer) int {
 		f, err := os.Create(*output)
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa badge: create output: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
 	}
 	if err := badge.Render(w, b); err != nil {
 		fmt.Fprintf(stderr, "gofusa badge: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
-	return 0
+	return fusa.ExitOK
 }

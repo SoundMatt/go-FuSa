@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/trace"
 )
 
@@ -30,8 +31,8 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 		//fusa:req REQ-CLI-TRACE003
 		reqCoverage = fs.Int("req-coverage", 0, "exit 1 if requirement coverage or function annotation density is below N%% (0 = disabled)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -40,14 +41,14 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa trace: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
 	matrix, err := trace.Build(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa trace: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *gaps {
@@ -67,7 +68,7 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 		f, err := os.Create(*output)
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa trace: create output: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -75,9 +76,9 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 
 	if err := trace.Render(w, matrix, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa trace: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 // runTraceSecTested exits 1 if test coverage is below threshold percent.
@@ -86,7 +87,7 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 func runTraceSecTested(matrix *trace.Matrix, threshold int, stdout, stderr io.Writer) int {
 	if len(matrix.Requirements) == 0 {
 		fmt.Fprintf(stdout, "sec-tested: no requirements found\n")
-		return 0
+		return fusa.ExitOK
 	}
 	tested := make(map[string]bool)
 	for _, t := range matrix.Tags {
@@ -99,9 +100,9 @@ func runTraceSecTested(matrix *trace.Matrix, threshold int, stdout, stderr io.Wr
 		pct, len(tested), len(matrix.Requirements))
 	if pct < threshold {
 		fmt.Fprintf(stderr, "gofusa trace: sec-tested gate failed: %d%% < required %d%%\n", pct, threshold)
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 // runTraceReqCoverage reports requirement-to-source coverage (metric 1) and
@@ -113,7 +114,7 @@ func runTraceReqCoverage(root string, matrix *trace.Matrix, threshold int, stdou
 	fc, err := trace.ScanFuncCoverage(root, matrix.Tags)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa trace: scan func coverage: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fmt.Fprintf(stdout, "Requirement Coverage Report\n\n")
@@ -167,9 +168,9 @@ func runTraceReqCoverage(root string, matrix *trace.Matrix, threshold int, stdou
 		failed = true
 	}
 	if failed {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 // runTraceGaps prints requirements that have no //fusa:test tag.
@@ -196,7 +197,7 @@ func runTraceGaps(matrix *trace.Matrix, stdout, _ io.Writer) int {
 		fmt.Fprintf(stdout, "  %-20s  %s\n", req.ID, req.Title)
 	}
 	if len(gaps) > 0 {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }

@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/trace"
 )
 
@@ -28,8 +29,8 @@ func runReq(args []string, stdout, stderr io.Writer) int {
 	}
 
 	dir := fs.String("dir", "", "project root directory (default: current directory)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -38,7 +39,7 @@ func runReq(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa req: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -60,7 +61,7 @@ func runReqShow(ids []string, projectRoot string, stdout, stderr io.Writer) int 
 	matrix, err := trace.Build(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa req: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	// Index tags by requirement ID.
@@ -113,9 +114,9 @@ func runReqShow(ids []string, projectRoot string, stdout, stderr io.Writer) int 
 		for id := range filter {
 			fmt.Fprintf(stderr, "gofusa req: requirement %q not found\n", id)
 		}
-		return 1
+		return fusa.ExitUsage
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 //fusa:req REQ-CLI-REQ002
@@ -126,12 +127,12 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		format = fs.String("format", "csv", "import format: csv, doors, polarion, codebeamer, jama")
 		file   = fs.String("file", "", "input file path (required)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 	if *file == "" {
 		fmt.Fprintf(stderr, "gofusa req import: --file is required\n")
-		return 1
+		return fusa.ExitUsage
 	}
 
 	// Load existing requirements
@@ -152,7 +153,7 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		data, ferr := os.ReadFile(*file)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa req import: read %s: %v\n", *file, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		var parseErr error
 		switch *format {
@@ -167,13 +168,13 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		}
 		if parseErr != nil {
 			fmt.Fprintf(stderr, "gofusa req import: parse: %v\n", parseErr)
-			return 1
+			return fusa.ExitRuntime
 		}
 	default: // csv
 		f, ferr := os.Open(*file)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa req import: open %s: %v\n", *file, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 
@@ -181,18 +182,18 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		records, rerr := r.ReadAll()
 		if rerr != nil {
 			fmt.Fprintf(stderr, "gofusa req import: read csv: %v\n", rerr)
-			return 1
+			return fusa.ExitRuntime
 		}
 
 		if len(records) == 0 {
 			fmt.Fprintf(stderr, "gofusa req import: CSV file is empty\n")
-			return 1
+			return fusa.ExitUsage
 		}
 
 		header := records[0]
 		if len(header) < 2 || strings.ToLower(header[0]) != "id" {
 			fmt.Fprintf(stderr, "gofusa req import: CSV must have header row starting with: id,title,text,standard,level\n")
-			return 1
+			return fusa.ExitUsage
 		}
 
 		for _, row := range records[1:] {
@@ -234,11 +235,11 @@ func runReqImport(args []string, projectRoot string, stdout, stderr io.Writer) i
 
 	if err := trace.SaveRequirements(projectRoot, existing); err != nil {
 		fmt.Fprintf(stderr, "gofusa req import: save: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fmt.Fprintf(stdout, "Imported %d requirements (%d skipped as duplicates)\n", added, skipped)
-	return 0
+	return fusa.ExitOK
 }
 
 //fusa:req REQ-CLI-REQ003
@@ -249,14 +250,14 @@ func runReqExport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		format = fs.String("format", "csv", "export format: csv, doors, polarion, codebeamer, jama")
 		output = fs.String("output", "", "output file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	reqs, err := trace.LoadRequirements(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa req export: load requirements: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	openOutput := func() (io.Writer, func(), error) {
@@ -291,41 +292,41 @@ func runReqExport(args []string, projectRoot string, stdout, stderr io.Writer) i
 		}
 		if exportErr != nil {
 			fmt.Fprintf(stderr, "gofusa req export: %v\n", exportErr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		w, closeFn, openErr := openOutput()
 		if openErr != nil {
 			fmt.Fprintf(stderr, "gofusa req export: create %s: %v\n", *output, openErr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer closeFn()
 		if _, werr := w.Write(data); werr != nil {
 			fmt.Fprintf(stderr, "gofusa req export: write: %v\n", werr)
-			return 1
+			return fusa.ExitRuntime
 		}
 	default: // csv
 		w, closeFn, openErr := openOutput()
 		if openErr != nil {
 			fmt.Fprintf(stderr, "gofusa req export: create %s: %v\n", *output, openErr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer closeFn()
 		cw := csv.NewWriter(w)
 		if err := cw.Write([]string{"id", "title", "text", "standard", "level"}); err != nil {
 			fmt.Fprintf(stderr, "gofusa req export: write header: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		for _, req := range reqs {
 			if err := cw.Write([]string{req.ID, req.Title, req.Text, req.Standard, req.Level}); err != nil {
 				fmt.Fprintf(stderr, "gofusa req export: write row: %v\n", err)
-				return 1
+				return fusa.ExitRuntime
 			}
 		}
 		cw.Flush()
 		if err := cw.Error(); err != nil {
 			fmt.Fprintf(stderr, "gofusa req export: flush: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
-	return 0
+	return fusa.ExitOK
 }

@@ -24,6 +24,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/gapreport"
 	"github.com/SoundMatt/go-FuSa/trace"
 )
 
@@ -318,13 +319,46 @@ func commandForFile(file string) string {
 func Render(w io.Writer, rep *Report, format string) error {
 	switch format {
 	case "json", "":
-		enc := json.NewEncoder(w)
-		enc.SetIndent("", "  ")
-		return enc.Encode(rep)
+		return gapreport.Render(w, toGapReport(rep), "json")
 	case "text":
 		return renderText(w, rep)
 	default:
 		return fmt.Errorf("iso26262: unsupported format %q", format)
+	}
+}
+
+// toGapReport converts the internal Report to the canonical §9.3 gap-report shape.
+func toGapReport(rep *Report) *gapreport.Report {
+	gr := gapreport.New(rep.Project, "ISO 26262 "+string(rep.ASIL))
+	for _, obj := range rep.Objectives {
+		if obj.Status == StatusNA {
+			continue
+		}
+		gobj := gapreport.Objective{
+			ID:     obj.ID,
+			Title:  obj.Description,
+			Clause: obj.Clause,
+			Status: mapToCanonical(obj.Status),
+		}
+		if obj.Evidence != "" {
+			gobj.Evidence = []string{obj.Evidence}
+		}
+		if obj.Gap != "" {
+			gobj.Findings = []string{obj.Gap}
+		}
+		gr.AddObjective(gobj)
+	}
+	return gr
+}
+
+func mapToCanonical(s ObjectiveStatus) string {
+	switch s {
+	case StatusPass:
+		return gapreport.StatusSatisfied
+	case StatusManual:
+		return gapreport.StatusPartial
+	default:
+		return gapreport.StatusGap
 	}
 }
 
