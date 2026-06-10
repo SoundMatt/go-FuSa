@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/impact"
 )
 
@@ -27,8 +28,8 @@ func runImpact(args []string, stdout, stderr io.Writer) int {
 		format = fs.String("format", "text", "output format: text, json")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -37,14 +38,14 @@ func runImpact(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa impact: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
 	rep, err := impact.Analyse(projectRoot, *from, *to)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa impact: analyse: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -52,7 +53,7 @@ func runImpact(args []string, stdout, stderr io.Writer) int {
 		f, ferr := os.Create(*output)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa impact: create %s: %v\n", *output, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -60,7 +61,7 @@ func runImpact(args []string, stdout, stderr io.Writer) int {
 
 	if err := impact.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa impact: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *output != "" {
@@ -74,5 +75,5 @@ func runImpact(args []string, stdout, stderr io.Writer) int {
 			*output, len(rep.ChangedFiles), len(rep.ImpactedReqs), stale)
 	}
 
-	return 0
+	return fusa.ExitOK
 }

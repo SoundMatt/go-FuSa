@@ -12,7 +12,6 @@ package unece
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -23,6 +22,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/gapreport"
 )
 
 // ReportFile is the default output filename.
@@ -148,13 +148,38 @@ func Assess(projectRoot string) (*Report, error) {
 func Render(w io.Writer, rep *Report, format string) error {
 	switch format {
 	case "json", "":
-		enc := json.NewEncoder(w)
-		enc.SetIndent("", "  ")
-		return enc.Encode(rep)
+		return gapreport.Render(w, toGapReport(rep), "json")
 	case "text":
 		return renderText(w, rep)
 	default:
 		return fmt.Errorf("unece: unsupported format %q", format)
+	}
+}
+
+func toGapReport(rep *Report) *gapreport.Report {
+	gr := gapreport.New(rep.Project, "UN R.155")
+	for _, cat := range rep.Categories {
+		gobj := gapreport.Objective{
+			ID:     cat.ID,
+			Title:  cat.Description,
+			Status: mapToCanonical(cat.Status),
+		}
+		if cat.Note != "" {
+			gobj.Findings = []string{cat.Note}
+		}
+		gr.AddObjective(gobj)
+	}
+	return gr
+}
+
+func mapToCanonical(s string) string {
+	switch s {
+	case "PASS":
+		return gapreport.StatusSatisfied
+	case "MANUAL":
+		return gapreport.StatusPartial
+	default:
+		return gapreport.StatusGap
 	}
 }
 

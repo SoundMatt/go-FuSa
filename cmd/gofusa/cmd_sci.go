@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/sci"
 )
@@ -27,8 +28,8 @@ func runSci(args []string, stdout, stderr io.Writer) int {
 		format = fs.String("format", "json", "output format: json or markdown")
 		output = fs.String("output", "", "write SCI to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -37,7 +38,7 @@ func runSci(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa sci: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -54,7 +55,7 @@ func runSci(args []string, stdout, stderr io.Writer) int {
 	index, err := sci.Build(projectRoot, project, version)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa sci: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -62,7 +63,7 @@ func runSci(args []string, stdout, stderr io.Writer) int {
 		f, err := os.Create(*output)
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa sci: create output: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -70,7 +71,7 @@ func runSci(args []string, stdout, stderr io.Writer) int {
 
 	if err := sci.Render(w, index, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa sci: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	present := 0
 	for _, it := range index.Items {
@@ -79,5 +80,5 @@ func runSci(args []string, stdout, stderr io.Writer) int {
 		}
 	}
 	fmt.Fprintf(stdout, "SCI: %d / %d lifecycle data items present\n", present, len(index.Items))
-	return 0
+	return fusa.ExitOK
 }

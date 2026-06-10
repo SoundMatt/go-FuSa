@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/qualify"
 )
@@ -26,8 +27,8 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 	var (
 		outputFile = fs.String("output", "", "path for the JSON qualification report (default: ./qualify-report.json)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	outPath := *outputFile
@@ -35,7 +36,7 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 		wd, err := os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa qualify: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		outPath = filepath.Join(wd, qualify.ReportFile)
 	}
@@ -45,7 +46,7 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 	report, err := qualify.Run(context.Background(), engine.Default, qualify.BuiltinCases())
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa qualify: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fmt.Fprintf(stdout, "Results: %d/%d passed", report.Passed, report.Total)
@@ -62,14 +63,14 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 
 	if err := qualify.Save(outPath, report); err != nil {
 		fmt.Fprintf(stderr, "gofusa qualify: save report: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Qualification report written to %s\n", outPath)
 	fmt.Fprintf(stdout, "Integrity hash: %s\n", report.Hash)
 
 	if report.HasFailures() {
-		return 1
+		return fusa.ExitRuntime
 	}
 	//fusa:req REQ-CLI007
-	return 0
+	return fusa.ExitOK
 }

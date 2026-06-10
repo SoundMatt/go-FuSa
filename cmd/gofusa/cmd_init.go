@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/template"
 )
@@ -29,8 +30,8 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 		standard = fs.String("standard", "generic", "safety standard: ISO26262 IEC61508 ISO21434 DO178C generic")
 		docs     = fs.Bool("docs", false, "generate starter safety documentation templates")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -39,14 +40,14 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa init: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
 	cfgPath := filepath.Join(projectRoot, config.ConfigFile)
 	if _, err := os.Stat(cfgPath); err == nil {
 		fmt.Fprintf(stderr, "gofusa init: %s already exists; delete it to reinitialise\n", cfgPath)
-		return 1
+		return fusa.ExitUsage
 	}
 
 	modPath := *module
@@ -55,7 +56,7 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 		modPath, err = readModulePath(filepath.Join(projectRoot, "go.mod"))
 		if err != nil && !os.IsNotExist(err) {
 			fmt.Fprintf(stderr, "gofusa init: read go.mod: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -69,7 +70,7 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 
 	if err := config.Save(cfgPath, cfg); err != nil {
 		fmt.Fprintf(stderr, "gofusa init: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Created %s\n", cfgPath)
 
@@ -77,12 +78,12 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 		docsDir := filepath.Join(projectRoot, "docs", "safety")
 		if err := template.Generate(docsDir, template.TypeAll); err != nil {
 			fmt.Fprintf(stderr, "gofusa init: generate templates: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		fmt.Fprintf(stdout, "Generated safety templates in %s\n", docsDir)
 	}
 
-	return 0
+	return fusa.ExitOK
 }
 
 // readModulePath parses the module path from a go.mod file.

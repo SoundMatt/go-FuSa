@@ -14,13 +14,38 @@ import (
 )
 
 // Report is the top-level go-FuSa compliance report.
+// It carries the §3.1 common header plus the §3.2 report-extension fields.
 //
 //fusa:req REQ-RPT005
 type Report struct {
-	GeneratedAt time.Time      `json:"generatedAt"`
-	ProjectRoot string         `json:"projectRoot"`
-	Findings    []fusa.Finding `json:"findings"`
-	Summary     Summary        `json:"summary"`
+	// §3.1 common header — present on every JSON document
+	SchemaVersion string    `json:"schemaVersion"`
+	Kind          string    `json:"kind"`
+	Tool          string    `json:"tool"`
+	ToolVersion   string    `json:"toolVersion"`
+	Language      string    `json:"language"`
+	GeneratedAt   time.Time `json:"generatedAt"`
+
+	// §3.2 report-extension fields
+	ProjectRoot string    `json:"projectRoot"`
+	Project     string    `json:"project,omitempty"`
+	Standard    string    `json:"standard,omitempty"`
+	ASIL        string    `json:"asil,omitempty"`
+	Error       *ErrorDoc `json:"error,omitempty"`
+
+	Findings     []fusa.Finding `json:"findings"`
+	Summary      Summary        `json:"summary"`
+	SummaryTable SummaryTable   `json:"summaryTable"`
+
+	// NoSummary suppresses the SUMMARY / TOP RULES block in text output.
+	// It does not affect JSON serialisation.
+	NoSummary bool `json:"-"`
+}
+
+// ErrorDoc is the structured error field emitted on exit 3 (§3.2).
+type ErrorDoc struct {
+	Code    string `json:"code"` // no-config | invalid-config | unsupported | internal
+	Message string `json:"message"`
 }
 
 // Summary holds aggregate finding counts.
@@ -31,18 +56,36 @@ type Summary struct {
 	Infos    int `json:"infos"`
 }
 
-// New builds a Report from findings and computes the Summary.
+// New builds a Report from findings, populates the §3.1 header, and
+// auto-derives category and fingerprint on any finding that lacks them.
 //
 //fusa:req REQ-RPT003
 //fusa:req REQ-NF002
 func New(projectRoot string, findings []fusa.Finding) *Report {
-	r := &Report{
-		GeneratedAt: time.Now().UTC(),
-		ProjectRoot: projectRoot,
-		Findings:    findings,
+	enriched := make([]fusa.Finding, len(findings))
+	for i, f := range findings {
+		if f.Category == "" {
+			f.Category = fusa.DeriveCategory(f.RuleID)
+		}
+		if f.Fingerprint == "" && f.Location.File != "" {
+			f.Fingerprint = fusa.ComputeFingerprint(f)
+		}
+		enriched[i] = f
 	}
-	r.Summary.Total = len(findings)
-	for _, f := range findings {
+
+	r := &Report{
+		SchemaVersion: fusa.SpecVersion,
+		Kind:          "check-report",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   time.Now().UTC(),
+		ProjectRoot:   projectRoot,
+		Findings:      enriched,
+		SummaryTable:  buildSummaryTable(enriched),
+	}
+	r.Summary.Total = len(enriched)
+	for _, f := range enriched {
 		switch f.Severity {
 		case fusa.SeverityError:
 			r.Summary.Errors++

@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/vuln"
 )
 
@@ -30,8 +31,8 @@ func runVuln(args []string, stdout, stderr io.Writer) int {
 		outputDir = fs.String("output-dir", "", "output directory (default: project root)")
 		format    = fs.String("format", "json", "output format: json or text")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -40,7 +41,7 @@ func runVuln(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa vuln: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -51,26 +52,26 @@ func runVuln(args []string, stdout, stderr io.Writer) int {
 
 	if mkErr := os.MkdirAll(outDir, 0o750); mkErr != nil {
 		fmt.Fprintf(stderr, "gofusa vuln: mkdir: %v\n", mkErr)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	report, err := vuln.Scan(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa vuln: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	outPath := filepath.Join(outDir, vuln.VulnFile)
 	f, err := os.Create(outPath)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa vuln: create %s: %v\n", outPath, err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	defer func() { _ = f.Close() }()
 
 	if err := vuln.Render(f, report, "json"); err != nil {
 		fmt.Fprintf(stderr, "gofusa vuln: write %s: %v\n", outPath, err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Vulnerability report written to %s\n", outPath)
 
@@ -78,12 +79,12 @@ func runVuln(args []string, stdout, stderr io.Writer) int {
 	if *format == "text" || *format == "" {
 		if err := vuln.Render(stdout, report, "text"); err != nil {
 			fmt.Fprintf(stderr, "gofusa vuln: render text: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	} else {
 		fmt.Fprintf(stdout, "Scanned: %d dependencies  Findings: %d\n",
 			report.Scanned, len(report.Findings))
 	}
 
-	return 0
+	return fusa.ExitOK
 }

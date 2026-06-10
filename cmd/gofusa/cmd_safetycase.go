@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/safetycase"
 )
 
@@ -31,8 +32,8 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 		outputDir = fs.String("output-dir", "", "output directory (default: project root)")
 		standard  = fs.String("standard", "", "safety standard: iso26262, iec61508, iso21434, generic (default: from config or generic)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -41,7 +42,7 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa safety-case: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -53,19 +54,19 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 	sc, err := safetycase.Build(projectRoot, *standard)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa safety-case: build: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if err := os.MkdirAll(outDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa safety-case: mkdir: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	// Write safety-case.json
 	jsonPath := filepath.Join(outDir, "safety-case.json")
 	if err := writeFormatted(jsonPath, sc, "json"); err != nil {
 		fmt.Fprintf(stderr, "gofusa safety-case: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Safety case written to %s\n", jsonPath)
 
@@ -73,7 +74,7 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 	mdPath := filepath.Join(outDir, "safety-case.md")
 	if err := writeFormatted(mdPath, sc, "text"); err != nil {
 		fmt.Fprintf(stderr, "gofusa safety-case: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Safety case written to %s\n", mdPath)
 
@@ -81,7 +82,7 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 	mermaidPath := filepath.Join(outDir, "safety-case.mermaid")
 	if err := writeFormatted(mermaidPath, sc, "mermaid"); err != nil {
 		fmt.Fprintf(stderr, "gofusa safety-case: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Safety case written to %s\n", mermaidPath)
 
@@ -111,11 +112,11 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 		canonPath := filepath.Join(projectRoot, "safety-case.json")
 		if err := writeFormatted(canonPath, sc, "json"); err != nil {
 			fmt.Fprintf(stderr, "gofusa safety-case: write canonical: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
-	return 0
+	return fusa.ExitOK
 }
 
 func writeFormatted(path string, sc *safetycase.SafetyCase, format string) error {

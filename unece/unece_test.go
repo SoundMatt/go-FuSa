@@ -174,12 +174,20 @@ func TestRender_JSON(t *testing.T) {
 	if err := unece.Render(&buf, rep, "json"); err != nil {
 		t.Fatalf("Render json: %v", err)
 	}
-	var parsed unece.Report
+	var parsed struct {
+		Standard   string `json:"standard"`
+		Objectives []struct {
+			ID string `json:"id"`
+		} `json:"objectives"`
+	}
 	if err := json.Unmarshal(buf.Bytes(), &parsed); err != nil {
 		t.Fatalf("Render json: invalid JSON: %v", err)
 	}
-	if len(parsed.Categories) == 0 {
-		t.Error("expected categories in JSON output")
+	if parsed.Standard == "" {
+		t.Error("missing standard field in JSON")
+	}
+	if len(parsed.Objectives) == 0 {
+		t.Error("expected objectives in JSON output")
 	}
 }
 

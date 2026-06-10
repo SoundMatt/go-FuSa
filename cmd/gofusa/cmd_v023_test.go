@@ -255,8 +255,8 @@ func TestRunReqShow_FilterNotFound(t *testing.T) {
 	}
 	var out, errBuf bytes.Buffer
 	code := runReq([]string{"--dir", dir, "REQ-999"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for missing req, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for missing req, got %d", code)
 	}
 }
 
@@ -417,8 +417,8 @@ func TestRunISO21434_JSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	runISO21434([]string{"--dir", dir, "--format", "json"}, &out, &errBuf)
-	if !strings.Contains(out.String(), `"cal"`) {
-		t.Errorf("expected cal field in JSON, got: %s", out.String())
+	if !strings.Contains(out.String(), `"standard"`) {
+		t.Errorf("expected standard field in JSON, got: %s", out.String())
 	}
 }
 
@@ -451,8 +451,8 @@ func TestRunUNECE_JSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	runUNECE([]string{"--dir", dir, "--format", "json"}, &out, &errBuf)
-	if !strings.Contains(out.String(), `"categories"`) {
-		t.Errorf("expected categories in JSON, got: %s", out.String())
+	if !strings.Contains(out.String(), `"standard"`) {
+		t.Errorf("expected standard field in JSON, got: %s", out.String())
 	}
 }
 

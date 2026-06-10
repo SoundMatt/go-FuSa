@@ -30,8 +30,8 @@ func runReport(args []string, stdout, stderr io.Writer) int {
 		format = fs.String("format", "", "output format: text, json, or html (default: from config or text)")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -40,7 +40,7 @@ func runReport(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa report: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -50,7 +50,7 @@ func runReport(args []string, stdout, stderr io.Writer) int {
 			cfg = config.Default("", filepath.Base(projectRoot))
 		} else {
 			fmt.Fprintf(stderr, "gofusa report: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -64,7 +64,7 @@ func runReport(args []string, stdout, stderr io.Writer) int {
 	result, err := engine.Default.Run(context.Background(), projectRoot, cfg)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa report: engine error: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	for _, runErr := range result.Errors {
 		fmt.Fprintf(stderr, "gofusa report: warning: %v\n", runErr)
@@ -77,14 +77,14 @@ func runReport(args []string, stdout, stderr io.Writer) int {
 		f, err := os.Create(outPath)
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa report: create output: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
 	}
 	if err := report.Render(w, rep, cfg.Report.Format); err != nil {
 		fmt.Fprintf(stderr, "gofusa report: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
-	return 0
+	return fusa.ExitOK
 }

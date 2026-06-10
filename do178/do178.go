@@ -12,7 +12,6 @@
 package do178
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -20,6 +19,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/SoundMatt/go-FuSa/gapreport"
 	"github.com/SoundMatt/go-FuSa/trace"
 )
 
@@ -504,13 +504,45 @@ func commandForFile(file string) string {
 func Render(w io.Writer, rep *Report, format string) error {
 	switch format {
 	case "json", "":
-		enc := json.NewEncoder(w)
-		enc.SetIndent("", "  ")
-		return enc.Encode(rep)
+		return gapreport.Render(w, toGapReport(rep), "json")
 	case "text":
 		return renderText(w, rep)
 	default:
 		return fmt.Errorf("do178: unsupported format %q", format)
+	}
+}
+
+func toGapReport(rep *Report) *gapreport.Report {
+	gr := gapreport.New(rep.Project, "DO-178C "+string(rep.DAL))
+	for _, obj := range rep.Objectives {
+		if obj.Status == StatusNA {
+			continue
+		}
+		gobj := gapreport.Objective{
+			ID:     obj.ID,
+			Title:  obj.Description,
+			Clause: obj.Table,
+			Status: mapToCanonical(obj.Status),
+		}
+		if obj.Evidence != "" {
+			gobj.Evidence = []string{obj.Evidence}
+		}
+		if obj.Gap != "" {
+			gobj.Findings = []string{obj.Gap}
+		}
+		gr.AddObjective(gobj)
+	}
+	return gr
+}
+
+func mapToCanonical(s ObjectiveStatus) string {
+	switch s {
+	case StatusPass:
+		return gapreport.StatusSatisfied
+	case StatusManual:
+		return gapreport.StatusPartial
+	default:
+		return gapreport.StatusGap
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/iec61508"
 )
 
@@ -27,14 +28,14 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 		format = fs.String("format", "text", "output format: text, json")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	validSILs := map[string]bool{"SIL-1": true, "SIL-2": true, "SIL-3": true, "SIL-4": true}
 	if !validSILs[*sil] {
 		fmt.Fprintf(stderr, "gofusa iec61508: unknown SIL level %q (must be SIL-1, SIL-2, SIL-3, or SIL-4)\n", *sil)
-		return 1
+		return fusa.ExitUsage
 	}
 
 	projectRoot := *dir
@@ -43,7 +44,7 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa iec61508: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -52,7 +53,7 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 	rep, err := iec61508.Assess(projectRoot, project, iec61508.SIL(*sil))
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa iec61508: assess: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -60,7 +61,7 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 		f, ferr := os.Create(*output)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa iec61508: create %s: %v\n", *output, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -68,7 +69,7 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 
 	if err := iec61508.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa iec61508: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *output != "" {
@@ -76,7 +77,7 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if rep.Gap > 0 {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }

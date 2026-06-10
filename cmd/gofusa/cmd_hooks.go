@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+
+	fusa "github.com/SoundMatt/go-FuSa"
 )
 
 const preCommitScript = `#!/bin/sh
@@ -34,12 +36,12 @@ func runHooks(args []string, stdout, stderr io.Writer) int {
 	}
 
 	dir := fs.String("dir", "", "project root directory (default: current directory)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 	if fs.NArg() == 0 {
 		fs.Usage()
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	projectRoot := *dir
@@ -48,7 +50,7 @@ func runHooks(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa hooks: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -61,42 +63,42 @@ func runHooks(args []string, stdout, stderr io.Writer) int {
 		return hooksRemove(hookPath, stdout, stderr)
 	case "show":
 		fmt.Fprint(stdout, preCommitScript)
-		return 0
+		return fusa.ExitOK
 	default:
 		fmt.Fprintf(stderr, "gofusa hooks: unknown subcommand %q\n", fs.Arg(0))
 		fs.Usage()
-		return 1
+		return fusa.ExitRuntime
 	}
 }
 
 func hooksInstall(hookPath string, stdout, stderr io.Writer) int {
 	if _, err := os.Stat(hookPath); err == nil {
 		fmt.Fprintf(stderr, "gofusa hooks: %s already exists; remove it first or use 'gofusa hooks remove'\n", hookPath)
-		return 1
+		return fusa.ExitUsage
 	}
 	hooksDir := filepath.Dir(hookPath)
 	if err := os.MkdirAll(hooksDir, 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa hooks: create hooks dir: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if err := os.WriteFile(hookPath, []byte(preCommitScript), 0o750); err != nil {
 		fmt.Fprintf(stderr, "gofusa hooks: write hook: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "go-FuSa pre-commit hook installed: %s\n", hookPath)
 	fmt.Fprintf(stdout, "Hook runs 'gofusa check --strict' on every commit.\n")
-	return 0
+	return fusa.ExitOK
 }
 
 func hooksRemove(hookPath string, stdout, stderr io.Writer) int {
 	if err := os.Remove(hookPath); err != nil {
 		if os.IsNotExist(err) {
 			fmt.Fprintf(stderr, "gofusa hooks: hook not found: %s\n", hookPath)
-			return 1
+			return fusa.ExitUsage
 		}
 		fmt.Fprintf(stderr, "gofusa hooks: remove hook: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "go-FuSa pre-commit hook removed: %s\n", hookPath)
-	return 0
+	return fusa.ExitOK
 }

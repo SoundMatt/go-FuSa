@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/verify"
 )
 
@@ -25,8 +26,8 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 		dir    = fs.String("dir", "", "project root directory (default: current directory)")
 		output = fs.String("output", "", "evidence bundle path (default: <dir>/.fusa-evidence.json)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -35,7 +36,7 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa verify: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -43,7 +44,7 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 	results, err := verify.Run(context.Background(), projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa verify: run tests: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	bundle := verify.New(projectRoot, results)
@@ -53,7 +54,7 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 	}
 	if err := verify.Save(outPath, bundle); err != nil {
 		fmt.Fprintf(stderr, "gofusa verify: save bundle: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	s := bundle.Summary
@@ -62,7 +63,7 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 	fmt.Fprintf(stdout, "Evidence bundle written to %s\n", outPath)
 
 	if s.Failed > 0 {
-		return 1
+		return fusa.ExitRuntime
 	}
-	return 0
+	return fusa.ExitOK
 }

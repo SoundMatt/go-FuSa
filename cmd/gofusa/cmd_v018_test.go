@@ -27,16 +27,16 @@ func TestRunDo178_JSON(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	runDo178([]string{"--dir", dir, "--dal", "DAL-B", "--format", "json"}, &out, &errBuf)
-	if !strings.Contains(out.String(), `"dal"`) {
-		t.Errorf("missing dal field in JSON; got: %q", out.String())
+	if !strings.Contains(out.String(), `"standard"`) {
+		t.Errorf("missing standard field in JSON; got: %q", out.String())
 	}
 }
 
 func TestRunDo178_InvalidDAL(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runDo178([]string{"--dal", "INVALID"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for invalid DAL, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for invalid DAL, got %d", code)
 	}
 }
 
@@ -49,8 +49,8 @@ func TestRunDo178_Output(t *testing.T) {
 	if err != nil {
 		t.Fatalf("output file not created: %v", err)
 	}
-	if !strings.Contains(string(data), `"dal"`) {
-		t.Error("output file missing dal field")
+	if !strings.Contains(string(data), `"standard"`) {
+		t.Error("output file missing standard field")
 	}
 }
 
@@ -127,8 +127,8 @@ func TestRunSci_Output(t *testing.T) {
 func TestRunCoverage_MissingFile(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runCoverage([]string{"/does/not/exist/coverage.out"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for missing coverage file, got %d", code)
+	if code != 3 {
+		t.Errorf("expected exit 3 (runtime) for missing coverage file, got %d", code)
 	}
 }
 
@@ -175,8 +175,8 @@ func TestRunCoverage_InvalidDAL(t *testing.T) {
 	_ = os.WriteFile(profilePath, []byte("mode: set\n"), 0o644)
 	var out, errBuf bytes.Buffer
 	code := runCoverage([]string{"--dal", "NOPE", profilePath}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for invalid DAL, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for invalid DAL, got %d", code)
 	}
 }
 
@@ -185,16 +185,16 @@ func TestRunCoverage_InvalidDAL(t *testing.T) {
 func TestRunPR_NoArgs(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runPR([]string{}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for no args, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for no args, got %d", code)
 	}
 }
 
 func TestRunPR_UnknownSubcommand(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runPR([]string{"bogus"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for unknown subcommand, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for unknown subcommand, got %d", code)
 	}
 }
 
@@ -217,8 +217,8 @@ func TestRunPR_Init_AlreadyExists(t *testing.T) {
 	}
 	var out, errBuf bytes.Buffer
 	code := runPR([]string{"--dir", dir, "init"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 when file already exists, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) when file already exists, got %d", code)
 	}
 }
 
@@ -249,8 +249,8 @@ func TestRunPR_Add_MissingID(t *testing.T) {
 	_ = os.WriteFile(filepath.Join(dir, ".fusa-problems.json"), []byte(`{"project":"x"}`), 0o644)
 	var out, errBuf bytes.Buffer
 	code := runPR([]string{"--dir", dir, "add", "--title", "no id"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for missing --id, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for missing --id, got %d", code)
 	}
 }
 
@@ -274,7 +274,7 @@ func TestRunPR_Close_MissingID(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
 	code := runPR([]string{"--dir", dir, "close"}, &out, &errBuf)
-	if code != 1 {
-		t.Errorf("expected exit 1 for missing --id, got %d", code)
+	if code != 2 {
+		t.Errorf("expected exit 2 (usage) for missing --id, got %d", code)
 	}
 }

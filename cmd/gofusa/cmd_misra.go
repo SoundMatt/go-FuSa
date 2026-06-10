@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/misra"
 )
 
@@ -24,8 +25,8 @@ func runMisra(args []string, stdout, stderr io.Writer) int {
 		format = fs.String("format", "text", "output format: text, json")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	rep := misra.Assess()
@@ -35,7 +36,7 @@ func runMisra(args []string, stdout, stderr io.Writer) int {
 		f, ferr := os.Create(*output)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa misra: create %s: %v\n", *output, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -43,7 +44,7 @@ func runMisra(args []string, stdout, stderr io.Writer) int {
 
 	if err := misra.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa misra: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *output != "" {
@@ -51,5 +52,5 @@ func runMisra(args []string, stdout, stderr io.Writer) int {
 			*output, rep.Covered, rep.Total)
 	}
 
-	return 0
+	return fusa.ExitOK
 }

@@ -137,8 +137,8 @@ func TestRender_JSON(t *testing.T) {
 	if err := iec61508.Render(&buf, rep, "json"); err != nil {
 		t.Fatalf("Render json: %v", err)
 	}
-	if !strings.Contains(buf.String(), `"sil"`) {
-		t.Error("missing sil field in JSON")
+	if !strings.Contains(buf.String(), `"standard"`) {
+		t.Error("missing standard field in JSON")
 	}
 }
 

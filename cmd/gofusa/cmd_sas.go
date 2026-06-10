@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/sas"
 )
@@ -29,8 +30,8 @@ func runSas(args []string, stdout, stderr io.Writer) int {
 		format   = fs.String("format", "markdown", "output format: markdown or json")
 		output   = fs.String("output", sas.SASFile, "write SAS to file (use - for stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -39,7 +40,7 @@ func runSas(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa sas: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -58,7 +59,7 @@ func runSas(args []string, stdout, stderr io.Writer) int {
 	doc, err := sas.Build(projectRoot, project, version, *dalFlag, *prepared)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa sas: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -70,7 +71,7 @@ func runSas(args []string, stdout, stderr io.Writer) int {
 		f, err := os.Create(outPath)
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa sas: create output: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -79,10 +80,10 @@ func runSas(args []string, stdout, stderr io.Writer) int {
 
 	if err := sas.Render(w, doc, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa sas: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if len(doc.Gaps) > 0 {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }

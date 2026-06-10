@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/iso21434"
 )
 
@@ -27,8 +28,8 @@ func runISO21434(args []string, stdout, stderr io.Writer) int {
 		format = fs.String("format", "text", "output format: text, json")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -37,7 +38,7 @@ func runISO21434(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa iso21434: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -46,7 +47,7 @@ func runISO21434(args []string, stdout, stderr io.Writer) int {
 	rep, err := iso21434.Assess(projectRoot, *cal)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa iso21434: assess: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -54,7 +55,7 @@ func runISO21434(args []string, stdout, stderr io.Writer) int {
 		f, ferr := os.Create(*output)
 		if ferr != nil {
 			fmt.Fprintf(stderr, "gofusa iso21434: create %s: %v\n", *output, ferr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -62,7 +63,7 @@ func runISO21434(args []string, stdout, stderr io.Writer) int {
 
 	if err := iso21434.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa iso21434: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *output != "" {
@@ -70,7 +71,7 @@ func runISO21434(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if rep.Gap > 0 {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }

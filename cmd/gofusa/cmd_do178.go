@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/do178"
 )
 
@@ -28,8 +29,8 @@ func runDo178(args []string, stdout, stderr io.Writer) int {
 		format  = fs.String("format", "text", "output format: text or json")
 		output  = fs.String("output", "", "write report to file (default: stdout)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -38,7 +39,7 @@ func runDo178(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa do178: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -47,14 +48,14 @@ func runDo178(args []string, stdout, stderr io.Writer) int {
 	case do178.DALA, do178.DALB, do178.DALC, do178.DALD:
 	default:
 		fmt.Fprintf(stderr, "gofusa do178: invalid --dal %q (must be DAL-A, DAL-B, DAL-C, or DAL-D)\n", *dalFlag)
-		return 1
+		return fusa.ExitUsage
 	}
 
 	project := filepath.Base(projectRoot)
 	rep, err := do178.Assess(projectRoot, project, dal)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa do178: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -62,7 +63,7 @@ func runDo178(args []string, stdout, stderr io.Writer) int {
 		f, err := os.Create(*output)
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa do178: create output: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -70,10 +71,10 @@ func runDo178(args []string, stdout, stderr io.Writer) int {
 
 	if err := do178.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa do178: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if rep.Gap > 0 {
-		return 1
+		return fusa.ExitGateFail
 	}
-	return 0
+	return fusa.ExitOK
 }

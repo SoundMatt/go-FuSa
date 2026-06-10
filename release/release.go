@@ -76,41 +76,61 @@ type SPDX31Hash struct {
 type Component struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
-	Hash    string `json:"hash,omitempty"` // h1: hash from go.sum
+	Hash    string `json:"hash,omitempty"` // algo:value per §2.7
 }
 
-// SBOM is a go-FuSa Software Bill of Materials.
+// SBOM is a go-FuSa Software Bill of Materials (§7).
+// It carries the §3.1 common header (kind: "sbom").
 type SBOM struct {
-	Format      string      `json:"format"`
-	GeneratedAt time.Time   `json:"generatedAt"`
-	Module      string      `json:"module"`
-	GoVersion   string      `json:"goVersion"`
-	Components  []Component `json:"components"`
+	SchemaVersion string      `json:"schemaVersion"`
+	Kind          string      `json:"kind"`
+	Tool          string      `json:"tool"`
+	ToolVersion   string      `json:"toolVersion"`
+	Language      string      `json:"language"`
+	GeneratedAt   time.Time   `json:"generatedAt"`
+	Format        string      `json:"format"`
+	Module        string      `json:"module"`
+	GoVersion     string      `json:"goVersion"`
+	Components    []Component `json:"components"`
 }
 
-// Provenance records the build environment for audit purposes.
+// Provenance records the build environment for audit purposes (§7).
+// It carries the §3.1 common header (kind: "provenance").
 type Provenance struct {
-	Format      string    `json:"format"`
-	GeneratedAt time.Time `json:"generatedAt"`
-	Module      string    `json:"module"`
-	GoVersion   string    `json:"goVersion"`
-	GOOS        string    `json:"goos"`
-	GOARCH      string    `json:"goarch"`
-	VCSRevision string    `json:"vcsRevision,omitempty"`
-	VCSModified bool      `json:"vcsModified"`
+	SchemaVersion string    `json:"schemaVersion"`
+	Kind          string    `json:"kind"`
+	Tool          string    `json:"tool"`
+	ToolVersion   string    `json:"toolVersion"`
+	Language      string    `json:"language"`
+	GeneratedAt   time.Time `json:"generatedAt"`
+	Format        string    `json:"format"`
+	Module        string    `json:"module"`
+	GoVersion     string    `json:"goVersion"`
+	GOOS          string    `json:"goos"`
+	GOARCH        string    `json:"goarch"`
+	VCSRevision   string    `json:"vcsRevision,omitempty"`
+	VCSModified   bool      `json:"vcsModified"`
 }
 
-// Artifact is a file path paired with its SHA-256 checksum.
+// Artifact is a file path paired with its bare SHA-256 hex checksum (§2.7).
 type Artifact struct {
 	Path string `json:"path"`
-	Hash string `json:"sha256"`
+	Size int64  `json:"size,omitempty"`
+	Hash string `json:"sha256"` // bare lowercase hex (key names the algorithm)
 }
 
-// Manifest lists the hashes of released artifact files.
+// Manifest lists the hashes of released artifact files (§8).
+// It carries the §3.1 common header (kind: "audit-manifest").
 type Manifest struct {
-	Format      string     `json:"format"`
-	GeneratedAt time.Time  `json:"generatedAt"`
-	Artifacts   []Artifact `json:"artifacts"`
+	SchemaVersion string     `json:"schemaVersion"`
+	Kind          string     `json:"kind"`
+	Tool          string     `json:"tool"`
+	ToolVersion   string     `json:"toolVersion"`
+	Language      string     `json:"language"`
+	GeneratedAt   time.Time  `json:"generatedAt"`
+	Format        string     `json:"format"`
+	Module        string     `json:"module,omitempty"`
+	Artifacts     []Artifact `json:"artifacts"`
 }
 
 // BuildSBOM generates an SBOM by parsing go.mod and go.sum in projectRoot.
@@ -130,11 +150,16 @@ func BuildSBOM(projectRoot string) (*SBOM, error) {
 		return nil, err
 	}
 	return &SBOM{
-		Format:      "go-FuSa SBOM v1",
-		GeneratedAt: time.Now().UTC(),
-		Module:      modPath,
-		GoVersion:   goVersion,
-		Components:  components,
+		SchemaVersion: fusa.SpecVersion,
+		Kind:          "sbom",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   time.Now().UTC(),
+		Format:        "x-FuSa SBOM v1",
+		Module:        modPath,
+		GoVersion:     goVersion,
+		Components:    components,
 	}, nil
 }
 
@@ -149,14 +174,19 @@ func BuildProvenance(ctx context.Context, projectRoot string) (*Provenance, erro
 	}
 	revision, modified := vcsInfo(ctx, projectRoot)
 	return &Provenance{
-		Format:      "go-FuSa Provenance v1",
-		GeneratedAt: time.Now().UTC(),
-		Module:      modPath,
-		GoVersion:   runtime.Version(),
-		GOOS:        runtime.GOOS,
-		GOARCH:      runtime.GOARCH,
-		VCSRevision: revision,
-		VCSModified: modified,
+		SchemaVersion: fusa.SpecVersion,
+		Kind:          "provenance",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   time.Now().UTC(),
+		Format:        "x-FuSa provenance v1",
+		Module:        modPath,
+		GoVersion:     runtime.Version(),
+		GOOS:          runtime.GOOS,
+		GOARCH:        runtime.GOARCH,
+		VCSRevision:   revision,
+		VCSModified:   modified,
 	}, nil
 }
 
@@ -372,9 +402,14 @@ func BuildManifest(paths []string) (*Manifest, error) {
 		return nil, fmt.Errorf("release: build manifest: %w", err)
 	}
 	return &Manifest{
-		Format:      "go-FuSa Manifest v1",
-		GeneratedAt: time.Now().UTC(),
-		Artifacts:   artifacts,
+		SchemaVersion: fusa.SpecVersion,
+		Kind:          "artifact-manifest",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   time.Now().UTC(),
+		Format:        "x-FuSa manifest v1",
+		Artifacts:     artifacts,
 	}, nil
 }
 

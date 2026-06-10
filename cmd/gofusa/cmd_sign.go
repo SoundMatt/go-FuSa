@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	fusa "github.com/SoundMatt/go-FuSa"
 )
 
 //fusa:req REQ-CLI-SIGN001
@@ -30,8 +32,8 @@ func runSign(args []string, stdout, stderr io.Writer) int {
 		verify  = fs.Bool("verify", false, "verify an existing signature instead of creating one")
 		keygen  = fs.String("keygen", "", "generate a new random key and write to this path")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	if *keygen != "" {
@@ -40,18 +42,18 @@ func runSign(args []string, stdout, stderr io.Writer) int {
 
 	if fs.NArg() != 1 {
 		fs.Usage()
-		return 1
+		return fusa.ExitRuntime
 	}
 	target := fs.Arg(0)
 
 	if *keyFile == "" {
 		fmt.Fprintf(stderr, "gofusa sign: --key is required\n")
-		return 1
+		return fusa.ExitUsage
 	}
 	key, err := loadKey(*keyFile)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa sign: load key: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *verify {
@@ -64,30 +66,30 @@ func signKeygen(path string, stdout, stderr io.Writer) int {
 	key := make([]byte, 32)
 	if _, err := rand.Read(key); err != nil {
 		fmt.Fprintf(stderr, "gofusa sign: generate key: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	encoded := hex.EncodeToString(key) + "\n"
 	if err := os.WriteFile(path, []byte(encoded), 0o600); err != nil {
 		fmt.Fprintf(stderr, "gofusa sign: write key: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Key written to %s (keep this secret)\n", path)
-	return 0
+	return fusa.ExitOK
 }
 
 func signCreate(target string, key []byte, stdout, stderr io.Writer) int {
 	sig, err := hmacFile(target, key)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa sign: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	sigPath := target + ".sig"
 	if err := os.WriteFile(sigPath, []byte(hex.EncodeToString(sig)+"\n"), 0o640); err != nil {
 		fmt.Fprintf(stderr, "gofusa sign: write signature: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "Signature written to %s\n", sigPath)
-	return 0
+	return fusa.ExitOK
 }
 
 func signVerify(target string, key []byte, stdout, stderr io.Writer) int {
@@ -95,24 +97,24 @@ func signVerify(target string, key []byte, stdout, stderr io.Writer) int {
 	sigData, err := os.ReadFile(sigPath)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa sign: read signature: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	want, err := hex.DecodeString(string(sigData[:len(sigData)-1]))
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa sign: decode signature: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	got, err := hmacFile(target, key)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa sign: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if !hmac.Equal(got, want) {
 		fmt.Fprintf(stderr, "gofusa sign: signature INVALID for %s\n", target)
-		return 1
+		return fusa.ExitUsage
 	}
 	fmt.Fprintf(stdout, "Signature OK for %s\n", target)
-	return 0
+	return fusa.ExitOK
 }
 
 func hmacFile(path string, key []byte) ([]byte, error) {

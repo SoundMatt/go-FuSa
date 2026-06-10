@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/coverage"
 )
 
@@ -29,8 +30,8 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 		output  = fs.String("output", "", "write report to file (default: stdout)")
 		mutate  = fs.Bool("mutate", false, "run mutation testing via go-mutesting (MC/DC-equivalent evidence for DO-178C Level A)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	profilePath := coverage.CoverageFile
@@ -50,14 +51,14 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 	case coverage.DALA, coverage.DALB, coverage.DALC, coverage.DALD:
 	default:
 		fmt.Fprintf(stderr, "gofusa coverage: invalid --dal %q\n", *dalFlag)
-		return 1
+		return fusa.ExitUsage
 	}
 
 	rep, err := coverage.BuildFromFile(profilePath, dal)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa coverage: %v\n", err)
 		fmt.Fprintf(stderr, "Tip: generate a profile with: go test -coverprofile=%s ./...\n", coverage.CoverageFile)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	w := stdout
@@ -65,7 +66,7 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 		f, err := os.Create(*output)
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa coverage: create output: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 		defer func() { _ = f.Close() }()
 		w = f
@@ -73,7 +74,7 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 
 	if err := coverage.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa coverage: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	if *mutate {
@@ -89,7 +90,7 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 		mRep, mErr := coverage.RunMutation(projectRoot, dal)
 		if mErr != nil {
 			fmt.Fprintf(stderr, "gofusa coverage: mutation: %v\n", mErr)
-			return 1
+			return fusa.ExitRuntime
 		}
 		switch *format {
 		case "json":
@@ -97,7 +98,7 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 			enc.SetIndent("", "  ")
 			if err := enc.Encode(mRep); err != nil {
 				fmt.Fprintf(stderr, "gofusa coverage: mutation json: %v\n", err)
-				return 1
+				return fusa.ExitRuntime
 			}
 		default:
 			fmt.Fprintf(w, "\nMutation Testing\n")
@@ -109,5 +110,5 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 			}
 		}
 	}
-	return 0
+	return fusa.ExitOK
 }

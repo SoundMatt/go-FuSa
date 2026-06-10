@@ -30,10 +30,11 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 		format = fs.String("format", "", "output format: text or json (default: from config or text)")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 		//fusa:req REQ-CLI011
-		strict = fs.Bool("strict", false, "exit 1 on any WARNING or ERROR finding (default: exit 1 on ERROR only)")
+		strict    = fs.Bool("strict", false, "exit 1 on any WARNING or ERROR finding (default: exit 1 on ERROR only)")
+		noSummary = fs.Bool("no-summary", false, "suppress the per-category and top-rules summary block")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -41,8 +42,7 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 		var err error
 		projectRoot, err = os.Getwd()
 		if err != nil {
-			fmt.Fprintf(stderr, "gofusa check: get working directory: %v\n", err)
-			return 1
+			return runtimeErrorf(stderr, "check", "get working directory: %v", err)
 		}
 	}
 
@@ -51,8 +51,7 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 		if errors.Is(err, fusa.ErrNoConfig) {
 			cfg = config.Default("", filepath.Base(projectRoot))
 		} else {
-			fmt.Fprintf(stderr, "gofusa check: %v\n", err)
-			return 1
+			return runtimeErrorf(stderr, "check", "%v", err)
 		}
 	}
 
@@ -65,37 +64,35 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 
 	result, err := engine.Default.Run(context.Background(), projectRoot, cfg)
 	if err != nil {
-		fmt.Fprintf(stderr, "gofusa check: engine error: %v\n", err)
-		return 1
+		return runtimeErrorf(stderr, "check", "engine error: %v", err)
 	}
 	for _, runErr := range result.Errors {
 		fmt.Fprintf(stderr, "gofusa check: warning: %v\n", runErr)
 	}
 
 	rep := report.New(projectRoot, result.Findings)
+	rep.NoSummary = *noSummary
 	outPath := cfg.Report.Output
 	w := stdout
 	if outPath != "" {
 		f, err := os.Create(outPath)
 		if err != nil {
-			fmt.Fprintf(stderr, "gofusa check: create output: %v\n", err)
-			return 1
+			return runtimeErrorf(stderr, "check", "create output: %v", err)
 		}
 		defer func() { _ = f.Close() }()
 		w = f
 	}
 	if err := report.Render(w, rep, cfg.Report.Format); err != nil {
-		fmt.Fprintf(stderr, "gofusa check: render: %v\n", err)
-		return 1
+		return runtimeErrorf(stderr, "check", "render: %v", err)
 	}
 
 	//fusa:req REQ-CLI006
 	if result.HasErrors() {
-		return 1
+		return fusa.ExitGateFail
 	}
 	if *strict && result.HasWarnings() {
-		return 1
+		return fusa.ExitGateFail
 	}
 	//fusa:req REQ-CLI005
-	return 0
+	return fusa.ExitOK
 }

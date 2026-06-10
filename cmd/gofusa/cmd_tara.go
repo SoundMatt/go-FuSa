@@ -33,8 +33,8 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 		dir       = fs.String("dir", "", "project root directory (default: current directory)")
 		outputDir = fs.String("output-dir", "", "output directory for tara.json and tara.md (default: project root)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -43,7 +43,7 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa tara: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
@@ -55,7 +55,7 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 	cfg, err := config.Load(filepath.Join(projectRoot, ".fusa.json"))
 	if err != nil && !errors.Is(err, fusa.ErrNoConfig) {
 		fmt.Fprintf(stderr, "gofusa tara: load config: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if cfg == nil {
 		cfg = config.Default("", filepath.Base(projectRoot))
@@ -65,14 +65,14 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 	cyberFindings, err := cyber.Scan(context.Background(), projectRoot, cfg)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa tara: cyber scan: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	// Build TARA.
 	report, err := tara.Scan(projectRoot, cyberFindings)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa tara: build tara: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	// Write tara.json
@@ -81,7 +81,7 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 		return tara.Render(f, report, "json")
 	}); err != nil {
 		fmt.Fprintf(stderr, "gofusa tara: write %s: %v\n", jsonPath, err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "TARA report written to %s\n", jsonPath)
 
@@ -91,11 +91,11 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 		return tara.Render(f, report, "markdown")
 	}); err != nil {
 		fmt.Fprintf(stderr, "gofusa tara: write %s: %v\n", mdPath, err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	fmt.Fprintf(stdout, "TARA markdown written to %s\n", mdPath)
 	fmt.Fprintf(stdout, "Threats identified: %d\n", len(report.Entries))
-	return 0
+	return fusa.ExitOK
 }
 
 func writeFile(path string, fn func(io.Writer) error) error {

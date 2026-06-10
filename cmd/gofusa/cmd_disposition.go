@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/disposition"
 )
 
@@ -26,8 +27,8 @@ func runDisposition(args []string, stdout, stderr io.Writer) int {
 		fs.PrintDefaults()
 	}
 	dir := fs.String("dir", "", "project root directory (default: current directory)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	projectRoot := *dir
@@ -36,14 +37,14 @@ func runDisposition(args []string, stdout, stderr io.Writer) int {
 		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa disposition: get working directory: %v\n", err)
-			return 1
+			return fusa.ExitRuntime
 		}
 	}
 
 	sub := fs.Args()
 	if len(sub) == 0 {
 		fs.Usage()
-		return 1
+		return fusa.ExitUsage
 	}
 
 	switch sub[0] {
@@ -55,7 +56,7 @@ func runDisposition(args []string, stdout, stderr io.Writer) int {
 		return runDispositionShow(sub[1:], projectRoot, stdout, stderr)
 	default:
 		fmt.Fprintf(stderr, "gofusa disposition: unknown subcommand %q\n", sub[0])
-		return 1
+		return fusa.ExitUsage
 	}
 }
 
@@ -69,31 +70,31 @@ func runDispositionAdd(args []string, projectRoot string, stdout, stderr io.Writ
 		rationale = fs.String("rationale", "", "rationale for disposition (required)")
 		ref       = fs.String("ref", "", "optional reference (issue, ticket, etc)")
 	)
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 
 	if *ruleID == "" {
 		fmt.Fprintf(stderr, "gofusa disposition add: --rule is required\n")
-		return 1
+		return fusa.ExitUsage
 	}
 	if *reviewer == "" {
 		fmt.Fprintf(stderr, "gofusa disposition add: --reviewer is required\n")
-		return 1
+		return fusa.ExitUsage
 	}
 	if *rationale == "" {
 		fmt.Fprintf(stderr, "gofusa disposition add: --rationale is required\n")
-		return 1
+		return fusa.ExitUsage
 	}
 	if *action != "accept" && *action != "fix" {
 		fmt.Fprintf(stderr, "gofusa disposition add: --action must be 'accept' or 'fix'\n")
-		return 1
+		return fusa.ExitUsage
 	}
 
 	log, err := disposition.Load(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa disposition add: load: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	entry := disposition.Entry{
@@ -109,12 +110,12 @@ func runDispositionAdd(args []string, projectRoot string, stdout, stderr io.Writ
 	path := filepath.Join(projectRoot, disposition.DispositionsFile)
 	if err := disposition.Save(path, log); err != nil {
 		fmt.Fprintf(stderr, "gofusa disposition add: save: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	fmt.Fprintf(stdout, "Disposition added: rule=%s action=%s reviewer=%s\n",
 		entry.RuleID, entry.Action, entry.Reviewer)
-	return 0
+	return fusa.ExitOK
 }
 
 func runDispositionList(args []string, projectRoot string, stdout, stderr io.Writer) int {
@@ -122,31 +123,31 @@ func runDispositionList(args []string, projectRoot string, stdout, stderr io.Wri
 	log, err := disposition.Load(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa disposition list: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 	if err := disposition.RenderEntries(stdout, log); err != nil {
 		fmt.Fprintf(stderr, "gofusa disposition list: render: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
-	return 0
+	return fusa.ExitOK
 }
 
 func runDispositionShow(args []string, projectRoot string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("gofusa disposition show", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	ruleID := fs.String("rule", "", "rule ID to show (required)")
-	if err := fs.Parse(args); err != nil {
-		return 1
+	if code := parseFlags(fs, args); code != 0 {
+		return code
 	}
 	if *ruleID == "" {
 		fmt.Fprintf(stderr, "gofusa disposition show: --rule is required\n")
-		return 1
+		return fusa.ExitUsage
 	}
 
 	log, err := disposition.Load(projectRoot)
 	if err != nil {
 		fmt.Fprintf(stderr, "gofusa disposition show: %v\n", err)
-		return 1
+		return fusa.ExitRuntime
 	}
 
 	for _, e := range log.Entries {
@@ -159,10 +160,10 @@ func runDispositionShow(args []string, projectRoot string, stdout, stderr io.Wri
 			if e.Reference != "" {
 				fmt.Fprintf(stdout, "Reference: %s\n", e.Reference)
 			}
-			return 0
+			return fusa.ExitOK
 		}
 	}
 
 	fmt.Fprintf(stderr, "gofusa disposition show: no disposition found for rule %q\n", *ruleID)
-	return 1
+	return fusa.ExitUsage
 }
