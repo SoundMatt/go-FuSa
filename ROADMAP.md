@@ -118,6 +118,21 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.25 — x-FuSa Spec v1.9 conformance ✅
+
+**Goal:** Adopt x-FuSa spec v1.9. All four SHOULD→MUST promotions (`category`, `remediation`,
+`fingerprint`, `capabilities`) were already implemented in v0.24. Only change: bump
+`fusa.SpecVersion` `"1.8"` → `"1.9"` so every emitted document declares the correct
+`schemaVersion`. Remaining ▫️ items (trace/qualify/sbom/pack common header, `.fusa.json` full
+schema, OCI image labels, `endLine/endColumn`, verify items) are SHOULD/MAY and carried forward.
+
+### Version bump
+- `fusa.SpecVersion` → `"1.9"` (propagates to `schemaVersion` in every emitted document).
+
+Deliverables: `fusa.go` SpecVersion bump; version bump to 0.25.0
+
+---
+
 ## v0.24 — x-FuSa Spec v1.8: Exit Codes & Canonical Gap-Report JSON ✅
 
 **Goal:** Implement x-FuSa spec v1.8 compliance across the CLI and all gap-report packages,
