@@ -36,6 +36,16 @@ RUN apk add --no-cache git ca-certificates
 
 COPY --from=builder /bin/gofusa /usr/local/bin/gofusa
 
+LABEL org.opencontainers.image.title="go-FuSa" \
+      org.opencontainers.image.description="Functional safety enablement toolkit for Go" \
+      org.opencontainers.image.version="0.25.1" \
+      org.opencontainers.image.source="https://github.com/SoundMatt/go-FuSa" \
+      org.opencontainers.image.licenses="MPL-2.0" \
+      io.x-fusa.tool="go-FuSa" \
+      io.x-fusa.language="go" \
+      io.x-fusa.binary="gofusa" \
+      io.x-fusa.spec-version="1.9"
+
 # Default working directory is /project; mount your Go project here.
 WORKDIR /project
 

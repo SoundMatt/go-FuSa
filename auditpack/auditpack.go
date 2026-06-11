@@ -39,12 +39,17 @@ type AuditManifestEntry struct {
 	Size   int64  `json:"size"`
 }
 
-// AuditManifest is the index of all files in the audit pack.
+// AuditManifest is the index of all files in the audit pack (§8).
+// It carries the §3.1 common header (kind: "audit-manifest").
 type AuditManifest struct {
-	Format      string               `json:"format"`
-	GeneratedAt time.Time            `json:"generated_at"`
-	Module      string               `json:"module"`
-	Files       []AuditManifestEntry `json:"files"`
+	SchemaVersion string               `json:"schemaVersion"`
+	Kind          string               `json:"kind"`
+	Tool          string               `json:"tool"`
+	ToolVersion   string               `json:"toolVersion"`
+	Language      string               `json:"language"`
+	GeneratedAt   time.Time            `json:"generatedAt"`
+	Module        string               `json:"module"`
+	Files         []AuditManifestEntry `json:"files"`
 }
 
 // EvidenceFiles is the ordered list of evidence file names that Pack collects.
@@ -78,9 +83,13 @@ var EvidenceFiles = []string{
 func Pack(projectRoot, outputPath string) (*AuditManifest, error) {
 	module := readModule(projectRoot)
 	manifest := &AuditManifest{
-		Format:      "go-FuSa Audit Pack v1",
-		GeneratedAt: time.Now().UTC(),
-		Module:      module,
+		SchemaVersion: fusa.SpecVersion,
+		Kind:          "audit-manifest",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   time.Now().UTC(),
+		Module:        module,
 	}
 
 	// Hash all evidence files that are present; skip absent ones.

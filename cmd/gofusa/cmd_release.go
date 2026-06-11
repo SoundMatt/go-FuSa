@@ -36,7 +36,7 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 		dir         = fs.String("dir", "", "project root directory (default: current directory)")
 		outputDir   = fs.String("output-dir", "", "directory for generated files (default: project root)")
 		full        = fs.Bool("full", false, "also run fmea, boundary, vuln scan, and audit-pack")
-		spdxVersion = fs.String("spdx-version", "3.0.1", "SPDX version for SBOM output: 2.2, 2.3, or 3.0.1")
+		spdxVersion = fs.String("spdx-version", "", "also write an SPDX SBOM (sbom-spdx-<ver>.json); values: 2.2, 2.3, 3.0.1")
 	)
 	if code := parseFlags(fs, args); code != 0 {
 		return code
@@ -67,27 +67,40 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "gofusa release: build SBOM: %v\n", err)
 		return fusa.ExitRuntime
 	}
-	sbomPath := filepath.Join(outDir, release.SBOMFile)
+	// Write x-FuSa SBOM v1 (conformant §3.1 + §7) to sbom.json.
 	//fusa:req REQ-RELEASE007
-	var sbomDoc any
-	sbomVersionLabel := *spdxVersion
-	switch *spdxVersion {
-	case "2.2":
-		sbomDoc = release.ToSPDX22(sbom)
-	case "2.3":
-		sbomDoc = release.ToSPDX23(sbom)
-	case "", "3.0.1":
-		sbomDoc = release.ToSPDX31(sbom)
-		sbomVersionLabel = "3.0.1"
-	default:
-		fmt.Fprintf(stderr, "gofusa release: unsupported --spdx-version %q (use 2.2, 2.3, or 3.0.1)\n", *spdxVersion)
-		return fusa.ExitUsage
-	}
-	if err = release.SaveJSON(sbomPath, sbomDoc); err != nil {
+	sbomPath := filepath.Join(outDir, release.SBOMFile)
+	if err = release.SaveJSON(sbomPath, sbom); err != nil {
 		fmt.Fprintf(stderr, "gofusa release: save SBOM: %v\n", err)
 		return fusa.ExitRuntime
 	}
-	fmt.Fprintf(stdout, "SBOM written to %s (%d components, SPDX %s)\n", sbomPath, len(sbom.Components), sbomVersionLabel)
+	fmt.Fprintf(stdout, "SBOM written to %s (%d components, x-FuSa SBOM v1)\n", sbomPath, len(sbom.Components))
+
+	// Optionally also write SPDX format as sbom-spdx-<ver>.json.
+	if *spdxVersion != "" {
+		var spdxDoc any
+		spdxFileName := ""
+		switch *spdxVersion {
+		case "2.2":
+			spdxDoc = release.ToSPDX22(sbom)
+			spdxFileName = "sbom-spdx-2.2.json"
+		case "2.3":
+			spdxDoc = release.ToSPDX23(sbom)
+			spdxFileName = "sbom-spdx-2.3.json"
+		case "3.0.1":
+			spdxDoc = release.ToSPDX31(sbom)
+			spdxFileName = "sbom-spdx-3.0.1.json"
+		default:
+			fmt.Fprintf(stderr, "gofusa release: unsupported --spdx-version %q (use 2.2, 2.3, or 3.0.1)\n", *spdxVersion)
+			return fusa.ExitUsage
+		}
+		spdxPath := filepath.Join(outDir, spdxFileName)
+		if spdxErr := release.SaveJSON(spdxPath, spdxDoc); spdxErr != nil {
+			fmt.Fprintf(stderr, "gofusa release: save SPDX SBOM: %v\n", spdxErr)
+			return fusa.ExitRuntime
+		}
+		fmt.Fprintf(stdout, "SPDX SBOM written to %s (SPDX %s)\n", spdxPath, *spdxVersion)
+	}
 
 	prov, err := release.BuildProvenance(context.Background(), projectRoot)
 	if err != nil {

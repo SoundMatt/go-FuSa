@@ -24,6 +24,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
@@ -89,6 +90,7 @@ const (
 
 // Matrix is the full traceability matrix for a project.
 type Matrix struct {
+	ProjectRoot  string        `json:"-"` // set by Build; used in JSON envelope
 	Requirements []Requirement `json:"requirements"`
 	Tags         []Tag         `json:"tags"`
 	Coverage     Coverage      `json:"coverage"`
@@ -278,6 +280,7 @@ func Build(root string) (*Matrix, error) {
 	}
 
 	return &Matrix{
+		ProjectRoot:  root,
 		Requirements: reqs,
 		Tags:         tags,
 		Coverage:     cov,
@@ -446,9 +449,32 @@ func renderText(w io.Writer, m *Matrix) error {
 }
 
 func renderJSON(w io.Writer, m *Matrix) error {
+	doc := struct {
+		SchemaVersion string        `json:"schemaVersion"`
+		Kind          string        `json:"kind"`
+		Tool          string        `json:"tool"`
+		ToolVersion   string        `json:"toolVersion"`
+		Language      string        `json:"language"`
+		GeneratedAt   time.Time     `json:"generatedAt"`
+		ProjectRoot   string        `json:"projectRoot"`
+		Requirements  []Requirement `json:"requirements"`
+		Tags          []Tag         `json:"tags"`
+		Coverage      Coverage      `json:"coverage"`
+	}{
+		SchemaVersion: fusa.SpecVersion,
+		Kind:          "trace-matrix",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   time.Now().UTC(),
+		ProjectRoot:   m.ProjectRoot,
+		Requirements:  m.Requirements,
+		Tags:          m.Tags,
+		Coverage:      m.Coverage,
+	}
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
-	if err := enc.Encode(m); err != nil {
+	if err := enc.Encode(doc); err != nil {
 		return fmt.Errorf("trace: json encode: %w", err)
 	}
 	return nil

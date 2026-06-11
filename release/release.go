@@ -256,8 +256,8 @@ func ToSPDX31(sbom *SBOM) *SPDX31Document {
 			SoftwareVersion: c.Version,
 			CreationInfo:    ciID,
 		}
-		if h := h1ToHex(c.Hash); h != "" {
-			elem.VerifiedUsing = []SPDX31Hash{{Type: "Hash", Algorithm: "SHA-256", HashValue: h}}
+		if hexHash := hashToHex(c.Hash); hexHash != "" {
+			elem.VerifiedUsing = []SPDX31Hash{{Type: "Hash", Algorithm: "SHA-256", HashValue: hexHash}}
 		}
 		elements = append(elements, elem)
 	}
@@ -350,8 +350,8 @@ func toSPDX2x(sbom *SBOM, version string) *SPDX2xDocument {
 			DownloadLocation: "https://pkg.go.dev/" + c.Name,
 			FilesAnalyzed:    false,
 		}
-		if h := h1ToHex(c.Hash); h != "" {
-			pkg.Checksums = []SPDX2xHash{{Algorithm: "SHA256", ChecksumValue: h}}
+		if hexHash := hashToHex(c.Hash); hexHash != "" {
+			pkg.Checksums = []SPDX2xHash{{Algorithm: "SHA256", ChecksumValue: hexHash}}
 		}
 		pkgs = append(pkgs, pkg)
 		rels = append(rels, SPDX2xRel{
@@ -380,7 +380,7 @@ func spdx2xID(name, version string) string {
 }
 
 // h1ToHex converts a go.sum h1: hash (base64-encoded SHA-256) to lowercase hex.
-// Returns the original string unchanged if it is not a valid h1: value.
+// Returns "" if the input is not a valid h1: value.
 func h1ToHex(h1 string) string {
 	s := strings.TrimPrefix(h1, "h1:")
 	if s == h1 || s == "" {
@@ -391,6 +391,16 @@ func h1ToHex(h1 string) string {
 		return ""
 	}
 	return hex.EncodeToString(b)
+}
+
+// hashToHex extracts a lowercase hex SHA-256 from an algo:value hash string.
+// Handles "sha256:<hex>" directly and "h1:<base64>" via h1ToHex.
+// Returns "" if the format is not recognised.
+func hashToHex(hash string) string {
+	if strings.HasPrefix(hash, "sha256:") {
+		return strings.TrimPrefix(hash, "sha256:")
+	}
+	return h1ToHex(hash)
 }
 
 // BuildManifest hashes the named artifact files and returns a Manifest.
@@ -467,7 +477,12 @@ func readComponents(projectRoot string) ([]Component, error) {
 	for _, r := range requires {
 		c := Component{Name: r[0], Version: r[1]}
 		if h, ok := hashes[r[0]+" "+r[1]]; ok {
-			c.Hash = h
+			// Convert go.sum h1: (base64 SHA-256) to sha256:hex per §2.7.
+			if hexHash := h1ToHex(h); hexHash != "" {
+				c.Hash = "sha256:" + hexHash
+			} else {
+				c.Hash = h
+			}
 		}
 		components = append(components, c)
 	}

@@ -82,8 +82,8 @@ func TestBuildSBOM_WithDeps(t *testing.T) {
 	if c.Version != "v1.2.3" {
 		t.Errorf("Component.Version = %q, want v1.2.3", c.Version)
 	}
-	if c.Hash != "h1:abc123==" {
-		t.Errorf("Component.Hash = %q, want h1:abc123==", c.Hash)
+	if !strings.HasPrefix(c.Hash, "sha256:") {
+		t.Errorf("Component.Hash = %q, want sha256:<hex> format", c.Hash)
 	}
 }
 

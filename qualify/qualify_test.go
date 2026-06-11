@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	// Blank imports populate engine.Default with all built-in rule sets.
@@ -78,8 +79,12 @@ func TestRun_HashIsSet(t *testing.T) {
 	if report.Hash == "" {
 		t.Error("Run: Hash field is empty")
 	}
-	if len(report.Hash) != 64 {
-		t.Errorf("Run: Hash length = %d, want 64 (SHA-256 hex)", len(report.Hash))
+	const wantLen = 71 // "sha256:" (7) + 64 hex chars
+	if len(report.Hash) != wantLen {
+		t.Errorf("Run: Hash length = %d, want %d (\"sha256:<64-hex>\")", len(report.Hash), wantLen)
+	}
+	if !strings.HasPrefix(report.Hash, "sha256:") {
+		t.Errorf("Run: Hash does not start with \"sha256:\": %q", report.Hash)
 	}
 }
 

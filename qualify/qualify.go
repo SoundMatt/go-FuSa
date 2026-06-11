@@ -59,14 +59,19 @@ type Result struct {
 //
 //fusa:req REQ-QUALIFY002
 type Report struct {
-	GeneratedAt time.Time `json:"generatedAt"`
-	GoVersion   string    `json:"goVersion"`
-	Module      string    `json:"module"`
-	Total       int       `json:"total"`
-	Passed      int       `json:"passed"`
-	Failed      int       `json:"failed"`
-	Results     []Result  `json:"results"`
-	// Hash is a SHA-256 of the report JSON (sans the Hash field) for integrity.
+	SchemaVersion string    `json:"schemaVersion"`
+	Kind          string    `json:"kind"`
+	Tool          string    `json:"tool"`
+	ToolVersion   string    `json:"toolVersion"`
+	Language      string    `json:"language"`
+	GeneratedAt   time.Time `json:"generatedAt"`
+	GoVersion     string    `json:"goVersion"`
+	Module        string    `json:"module"`
+	Total         int       `json:"total"`
+	Passed        int       `json:"passed"`
+	Failed        int       `json:"failed"`
+	Results       []Result  `json:"results"`
+	// Hash is a SHA-256 integrity hash in "sha256:<hex>" format (§6).
 	Hash string `json:"hash"`
 }
 
@@ -80,10 +85,15 @@ func (r *Report) HasFailures() bool { return r.Failed > 0 }
 //fusa:req REQ-QUALIFY001
 func Run(ctx context.Context, reg *engine.Registry, cases []Case) (*Report, error) {
 	report := &Report{
-		GeneratedAt: time.Now().UTC(),
-		GoVersion:   runtime.Version(),
-		Module:      "github.com/SoundMatt/go-FuSa",
-		Results:     make([]Result, 0, len(cases)),
+		SchemaVersion: fusa.SpecVersion,
+		Kind:          "qualification",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   time.Now().UTC(),
+		GoVersion:     runtime.Version(),
+		Module:        "github.com/SoundMatt/go-FuSa",
+		Results:       make([]Result, 0, len(cases)),
 	}
 
 	for _, c := range cases {
@@ -188,7 +198,8 @@ func hasFinding(findings []fusa.Finding, ruleID string) bool {
 	return false
 }
 
-// computeHash returns a hex SHA-256 of the report JSON without the Hash field.
+// computeHash returns a "sha256:<hex>" integrity hash of the report content
+// (excluding the Hash field and common-header metadata) per §6.
 //
 //fusa:req REQ-QUALIFY004
 func computeHash(r *Report) (string, error) {
@@ -215,7 +226,7 @@ func computeHash(r *Report) (string, error) {
 		return "", err
 	}
 	sum := sha256.Sum256(data)
-	return fmt.Sprintf("%x", sum), nil
+	return fmt.Sprintf("sha256:%x", sum), nil
 }
 
 // ruleQualifyReport implements engine.Rule for QUALIFY001.
