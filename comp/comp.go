@@ -88,6 +88,96 @@ func countLogicalOps(expr ast.Expr) int {
 	return count
 }
 
+// ─── Public assess API ────────────────────────────────────────────────────────
+
+// ThresholdForDAL returns the cyclomatic complexity threshold for a DAL level.
+// DAL-A=4, DAL-B=10, DAL-C=15, DAL-D=20; unknown/empty returns DefaultThreshold.
+//
+//fusa:req REQ-COMP-ASSESS001
+func ThresholdForDAL(dal string) int {
+	switch dal {
+	case "DAL-A":
+		return 4
+	case "DAL-B":
+		return 10
+	case "DAL-C":
+		return 15
+	case "DAL-D":
+		return 20
+	}
+	return DefaultThreshold
+}
+
+// FunctionResult holds the cyclomatic complexity result for a single function.
+type FunctionResult struct {
+	Name       string `json:"name"`
+	File       string `json:"file"`
+	Line       int    `json:"line"`
+	Complexity int    `json:"complexity"`
+	Threshold  int    `json:"threshold"`
+	Exceeds    bool   `json:"exceeds"`
+}
+
+// Assess walks projectRoot and returns complexity results for all non-test,
+// non-vendor, non-generated Go functions that have a body.
+//
+//fusa:req REQ-COMP-ASSESS002
+func Assess(projectRoot string, threshold int) ([]FunctionResult, error) {
+	fset := token.NewFileSet()
+	var results []FunctionResult
+
+	err := filepath.WalkDir(projectRoot, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			if path == projectRoot {
+				return nil
+			}
+			name := d.Name()
+			if name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".") {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		if !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
+			return nil
+		}
+		f, parseErr := parser.ParseFile(fset, path, nil, 0)
+		if parseErr != nil {
+			return nil
+		}
+		for _, decl := range f.Decls {
+			fn, ok := decl.(*ast.FuncDecl)
+			if !ok || fn.Body == nil {
+				continue
+			}
+			cc := Complexity(fn)
+			pos := fset.Position(fn.Pos())
+			name := fn.Name.Name
+			if fn.Recv != nil && len(fn.Recv.List) > 0 {
+				if t, ok2 := fn.Recv.List[0].Type.(*ast.StarExpr); ok2 {
+					if id, ok3 := t.X.(*ast.Ident); ok3 {
+						name = id.Name + "." + name
+					}
+				} else if id, ok2 := fn.Recv.List[0].Type.(*ast.Ident); ok2 {
+					name = id.Name + "." + name
+				}
+			}
+			results = append(results, FunctionResult{
+				Name:       name,
+				File:       pos.Filename,
+				Line:       pos.Line,
+				Complexity: cc,
+				Threshold:  threshold,
+				Exceeds:    cc > threshold,
+			})
+		}
+		return nil
+	})
+	return results, err
+}
+
 // ─── COMP001 rule ─────────────────────────────────────────────────────────────
 
 type ruleComplexity struct{}

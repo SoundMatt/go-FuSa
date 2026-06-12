@@ -1206,6 +1206,42 @@
       "title": "Test harness utilities create deterministic project fixtures",
       "text": "testutil.ProjectDir shall create a temporary directory populated with all specified files; testutil.MinimalProject shall return a file map that satisfies all FUSA001-005 built-in rules; testutil.GoSource shall return MinimalProject extended with the given Go source file.",
       "standard": "generic"
+    },
+    {
+      "id": "REQ-COMP-ASSESS001",
+      "title": "Cyclomatic complexity threshold by DAL",
+      "text": "comp.ThresholdForDAL shall return the cyclomatic complexity threshold for a given DO-178C DAL: DAL-A=4, DAL-B=10, DAL-C=15, DAL-D=20; unknown DAL returns the default threshold (10).",
+      "standard": "DO-178C"
+    },
+    {
+      "id": "REQ-COMP-ASSESS002",
+      "title": "Cyclomatic complexity assessment",
+      "text": "comp.Assess shall walk all non-test Go source files under projectRoot (excluding vendor, testdata, and hidden directories), compute cyclomatic complexity for each function with a body, and return a FunctionResult per function indicating whether it exceeds the given threshold.",
+      "standard": "DO-178C"
+    },
+    {
+      "id": "REQ-CLI-COMP-001",
+      "title": "gofusa comp command",
+      "text": "gofusa comp shall run comp.Assess against --dir, render results in --format (text|json), and exit with ExitOK (no exceedances), ExitGateFail (one or more exceedances), or ExitUsage (bad flag/format). The --dal flag selects a DO-178C DAL threshold; --threshold overrides it when both are provided.",
+      "standard": "DO-178C"
+    },
+    {
+      "id": "REQ-REPORT-MD001",
+      "title": "Markdown compliance report",
+      "text": "report.Render with format \"md\" or \"markdown\" shall produce a GitHub/Confluence-compatible Markdown report with a heading, summary table (ERROR/WARNING/INFO/Total counts), and a findings table (Rule|Severity|File|Line|Message). Pipe characters in message text shall be escaped.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-REPORT-SIL001",
+      "title": "SIL and DAL fields in compliance report",
+      "text": "report.Report shall carry distinct sil (IEC 61508) and dal (DO-178C) fields alongside the existing asil (ISO 26262) field. Callers populate the appropriate field based on the active standard; all three are omitempty in JSON output.",
+      "standard": "IEC61508"
+    },
+    {
+      "id": "REQ-TRACE-MD001",
+      "title": "Markdown traceability matrix",
+      "text": "trace.Render with format \"md\" or \"markdown\" shall produce a Markdown Requirements Traceability Matrix with a coverage summary table and per-requirement status (traced+tested / traced / untraced).",
+      "standard": "generic"
     }
   ]
 }

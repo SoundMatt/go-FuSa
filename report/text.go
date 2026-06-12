@@ -7,8 +7,22 @@ import (
 )
 
 func renderText(w io.Writer, r *Report) error {
+	header := "go-FuSa Safety Report"
+	if r.Standard != "" {
+		level := r.ASIL
+		if r.SIL != "" {
+			level = r.SIL
+		} else if r.DAL != "" {
+			level = r.DAL
+		}
+		if level != "" {
+			header += fmt.Sprintf("  [%s %s]", r.Standard, level)
+		} else {
+			header += fmt.Sprintf("  [%s]", r.Standard)
+		}
+	}
 	lines := []string{
-		"go-FuSa Safety Report",
+		header,
 		fmt.Sprintf("Generated: %s", r.GeneratedAt.Format("2006-01-02 15:04:05 UTC")),
 		fmt.Sprintf("Project:   %s", r.ProjectRoot),
 		"",

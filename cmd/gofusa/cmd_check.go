@@ -27,7 +27,7 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 
 	var (
 		dir    = fs.String("dir", "", "project root directory (default: current directory)")
-		format = fs.String("format", "", "output format: text or json (default: from config or text)")
+		format = fs.String("format", "", "output format: text, json, html, sarif, or md (default: from config or text)")
 		output = fs.String("output", "", "write report to file (default: stdout)")
 		//fusa:req REQ-CLI011
 		strict    = fs.Bool("strict", false, "exit 1 on any WARNING or ERROR finding (default: exit 1 on ERROR only)")
@@ -72,6 +72,15 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 
 	rep := report.New(projectRoot, result.Findings)
 	rep.NoSummary = *noSummary
+	rep.Standard = string(cfg.Project.Standard)
+	switch cfg.Project.Standard {
+	case "IEC61508":
+		rep.SIL = cfg.Project.ASIL
+	case "DO178C":
+		rep.DAL = cfg.Project.ASIL
+	default:
+		rep.ASIL = cfg.Project.ASIL
+	}
 	outPath := cfg.Report.Output
 	w := stdout
 	if outPath != "" {

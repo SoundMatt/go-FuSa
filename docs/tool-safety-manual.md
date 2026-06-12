@@ -1,6 +1,6 @@
 # go-FuSa Tool Safety Manual
 
-**Version:** 0.26.0  
+**Version:** 0.27.0  
 **Module:** `github.com/SoundMatt/go-FuSa`  
 **License:** Mozilla Public License 2.0  
 **Standards addressed:** ISO 26262, IEC 61508, ISO 21434, DO-178C
@@ -46,7 +46,7 @@ Capabilities:
 | Software Configuration Index (DO-178C §11.16) | — | `gofusa sci` |
 | Structural coverage report (DO-178C §6.4.4) | — | `gofusa coverage` |
 | Problem report log (DO-178C §11.17) | PR001 | `gofusa pr` |
-| Cyclomatic complexity (DO-178C §6.3.4) | COMP001 | `gofusa check` |
+| Cyclomatic complexity gate (DO-178C §6.3.4) | COMP001 | `gofusa check` / `gofusa comp` |
 | Data/control coupling report generation | COUP001–003 | `gofusa coupling` |
 | ISO 26262 Part 6 compliance gap report | ISO26262001 | `gofusa iso26262` |
 | IEC 61508 Parts 1-3 compliance gap report | IEC61508001 | `gofusa iec61508` |
@@ -286,6 +286,17 @@ gofusa slsa [--dir <path>] [--level L1|L2|L3|L4] [--format text|json] [--output 
 Runs a 10-objective SLSA v1.0 supply-chain integrity gap assessment for the given assurance level.
 Checks provenance fields, SBOM presence, CODEOWNERS, SHA256SUMS, and audit-pack evidence.
 Emits §9.3-canonical JSON or human-readable text.
+
+### `gofusa comp`
+
+```
+gofusa comp [--dir <path>] [--dal DAL-A|DAL-B|DAL-C|DAL-D] [--threshold N] [--format text|json] [--output <file>]
+```
+
+Runs a cyclomatic complexity gate across all non-test Go source files under `--dir`.
+Implements DO-178C §6.3.4 software complexity metric. `--dal` selects a threshold by DAL
+(A=4, B=10, C=15, D=20); `--threshold` overrides it when both are provided.
+Exits 0 when no functions exceed the threshold; exits 1 (gate fail) when any do.
 
 ### `gofusa version`
 
