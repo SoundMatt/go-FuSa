@@ -2,3 +2,5 @@
 CLAUDE.md
 /dist/
 /.fusa-cache/
+/.claude/
+/cmd/gofusa/safety-case.json
