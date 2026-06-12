@@ -263,8 +263,8 @@ func TestRender_JSON(t *testing.T) {
 	if err := json.Unmarshal(buf.Bytes(), &doc); err != nil {
 		t.Fatalf("JSON parse: %v", err)
 	}
-	if doc["standard"] != "slsa-v1.0" {
-		t.Errorf("standard = %v, want slsa-v1.0", doc["standard"])
+	if doc["standard"] != "slsa" {
+		t.Errorf("standard = %v, want slsa", doc["standard"])
 	}
 	if doc["kind"] != "gap-report" {
 		t.Errorf("kind = %v, want gap-report", doc["kind"])

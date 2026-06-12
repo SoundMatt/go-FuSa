@@ -7,6 +7,17 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.28.0] — 2026-06-12
+
+### Fixed
+- **SLSA canonical standard ID** — `gofusa slsa` JSON output now emits `"standard": "slsa"` instead of
+  `"standard": "slsa-v1.0"`, conforming to §2.4.1 of the x-FuSa spec.
+
+### Added
+- **`endLine`/`endColumn`** on all lint and analyze findings (§4 MAY). The `Location` struct already
+  carried these fields; `lint` and `analyze` now populate them from the AST node's `End()` position
+  so that tooling (IDEs, SARIF viewers) can highlight the full span of a finding.
+
 ## [0.27.0] — 2026-06-12
 
 ### Added

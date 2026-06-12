@@ -118,6 +118,20 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.28 — Spec conformance: SLSA canonical ID + endLine/endColumn ✅
+
+**Goal:** Fix one MUST conformance bug and implement the §4 MAY endLine/endColumn requirement.
+
+### Deliverables
+- `slsa/assess.go` — `gapreport.New(…, "slsa")` (was `"slsa-v1.0"`) to conform to §2.4.1 canonical IDs
+- `analyze/` — `locationEnd()` helper replaces `location()` across all rule files; all ANA findings now carry `endLine`/`endColumn` from the AST node's `End()` position
+- `lint/` — same pattern; all LINT findings carry `endLine`/`endColumn`
+- Tests confirming `EndLine > 0` for LINT002, LINT004, ANA001, ANA004
+
+Version bump to 0.28.0
+
+---
+
 ## v0.27 — Feature parity: `gofusa comp`, markdown format, SIL/DAL report fields ✅
 
 **Goal:** Close four feature-parity gaps identified against the cross-language FuSa superset

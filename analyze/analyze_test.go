@@ -239,6 +239,47 @@ func walk(n int) {
 	}
 }
 
+// ─── endLine / endColumn (§4 MAY) ────────────────────────────────────────────
+
+func TestAnalyze_EndLinePopulated_GoStmt(t *testing.T) {
+	src := `package main
+func fn() { go func() {}() }
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	for _, f := range findings {
+		if f.RuleID == "ANA001" {
+			if f.Location.EndLine == 0 {
+				t.Errorf("ANA001: EndLine not populated (got 0)")
+			}
+			if f.Location.EndLine < f.Location.Line {
+				t.Errorf("ANA001: EndLine %d < Line %d", f.Location.EndLine, f.Location.Line)
+			}
+			return
+		}
+	}
+	t.Error("ANA001: no finding produced")
+}
+
+func TestAnalyze_EndLinePopulated_DeferInLoop(t *testing.T) {
+	src := `package main
+func fn() {
+	for i := 0; i < 3; i++ {
+		defer func() {}()
+	}
+}
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	for _, f := range findings {
+		if f.RuleID == "ANA004" {
+			if f.Location.EndLine == 0 {
+				t.Errorf("ANA004: EndLine not populated (got 0)")
+			}
+			return
+		}
+	}
+	t.Error("ANA004: no finding produced")
+}
+
 // ─── Descriptions ─────────────────────────────────────────────────────────────
 
 func TestAnalyzeRuleDescriptions(t *testing.T) {
