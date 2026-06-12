@@ -48,7 +48,7 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `sas/` | Software Accomplishment Summary — 20 evidence items (DO-178C §11.20) |
 | `iso21434/` | ISO 21434 cybersecurity engineering — CAL 1–4 gap assessment, TARA evidence checking |
 | `unece/` | UN R.155 Annex 5 — threat-category coverage assessment (TC-1 through TC-9) |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr`, `coupling`, `iso21434`, `unece` |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr`, `coupling`, `iso21434`, `unece`, `iec62443`, `slsa` |
 
 ## Install
 
@@ -184,6 +184,12 @@ gofusa iso21434 --cal CAL-3
 
 # UN R.155 Annex 5 threat-category coverage
 gofusa unece
+
+# IEC 62443-4-2 IACS cybersecurity gap report (SL-1 through SL-4)
+gofusa iec62443 --sl SL-2
+
+# SLSA v1.0 supply-chain integrity gap report (L1 through L4)
+gofusa slsa --level L2
 
 # Hazard Analysis and Risk Assessment (HARA)
 gofusa hara init                              # create .fusa-hara.json
