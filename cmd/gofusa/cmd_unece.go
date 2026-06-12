@@ -63,7 +63,7 @@ func runUNECE(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if *output != "" {
-		fmt.Fprintf(stdout, "UN R.155 gap report written to %s (%d gaps)\n", *output, rep.Gap)
+		fmt.Fprintf(stderr, "UN R.155 gap report written to %s (%d gaps)\n", *output, rep.Gap)
 	}
 
 	if rep.Gap > 0 {

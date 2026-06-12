@@ -186,9 +186,9 @@ func TestRunUNECE_OutputFile(t *testing.T) {
 	if _, err := os.Stat(outFile); err != nil {
 		t.Error("output file not written")
 	}
-	// Should also print count message to stdout
-	if !strings.Contains(out.String(), "UN R.155") {
-		t.Errorf("expected UN R.155 count message in stdout; got: %s", out.String())
+	// §2.2: confirmation goes to stderr, not stdout
+	if !strings.Contains(errBuf.String(), "UN R.155") {
+		t.Errorf("expected UN R.155 count message in stderr; got: %s", errBuf.String())
 	}
 }
 

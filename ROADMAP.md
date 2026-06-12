@@ -118,6 +118,19 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.29 — §2.2/§2.9 conformance tests + stdout fix ✅
+
+**Goal:** Verify and enforce two x-FuSa spec invariants that had been unverified.
+
+### Deliverables
+- Fix §2.2 (stdout suppression): six gap-report commands (`slsa`, `iec62443`, `iso26262`, `iso21434`, `iec61508`, `unece`) were leaking a summary line to stdout when `--output` was given; now goes to stderr
+- `cmd/gofusa/conform_test.go` — 14 conformance tests: 11 for §2.2 (stdout empty on `--output`) and 3 for §2.9 (ruleId/severity/category invariant across JSON/SARIF/text)
+- Updated three existing tests that incorrectly expected the summary on stdout (now checks stderr)
+
+Version bump to 0.29.0
+
+---
+
 ## v0.28 — Spec conformance: SLSA canonical ID + endLine/endColumn ✅
 
 **Goal:** Fix one MUST conformance bug and implement the §4 MAY endLine/endColumn requirement.

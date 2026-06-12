@@ -73,7 +73,7 @@ func runIEC61508(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if *output != "" {
-		fmt.Fprintf(stdout, "IEC 61508 gap report written to %s (%d gaps)\n", *output, rep.Gap)
+		fmt.Fprintf(stderr, "IEC 61508 gap report written to %s (%d gaps)\n", *output, rep.Gap)
 	}
 
 	if rep.Gap > 0 {
