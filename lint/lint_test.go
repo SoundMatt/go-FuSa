@@ -2,6 +2,7 @@ package lint_test
 
 import (
 	"context"
+	"path/filepath"
 	"testing"
 
 	fusa "github.com/SoundMatt/go-FuSa"
@@ -283,6 +284,24 @@ var _ = unsafe.Sizeof(0)
 		}
 	}
 	t.Error("LINT004: no finding produced")
+}
+
+// ─── location.file is project-relative (§4 MUST) ─────────────────────────────
+
+func TestLint_LocationRelative(t *testing.T) {
+	src := `package main
+func f() { panic("x") }
+`
+	findings := runLint(t, testutil.GoSource("main.go", src))
+	for _, f := range findings {
+		if f.RuleID == "LINT002" {
+			if filepath.IsAbs(f.Location.File) {
+				t.Errorf("LINT002: location.file is absolute %q, want project-relative", f.Location.File)
+			}
+			return
+		}
+	}
+	t.Error("LINT002: no finding produced")
 }
 
 // ─── Descriptions ─────────────────────────────────────────────────────────────

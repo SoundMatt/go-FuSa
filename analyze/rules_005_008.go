@@ -56,7 +56,7 @@ func (r *ruleContextDropped) Run(_ context.Context, projectRoot string, _ *confi
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "context.Background()/TODO() called inside function that has a context parameter — propagate the incoming context instead",
-						Location:    locationEnd(pf.fset, call.Pos(), call.End()),
+						Location:    locationEnd(pf.fset, call.Pos(), call.End(), projectRoot),
 						Remediation: "pass the incoming context.Context to downstream calls instead of creating a new one",
 					})
 				}
@@ -143,7 +143,7 @@ func (r *ruleErrorNotWrapped) Run(_ context.Context, projectRoot string, _ *conf
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityInfo,
 					Message:     fmt.Sprintf("fmt.Errorf format string %q does not wrap error with %%w", fmtStr),
-					Location:    locationEnd(pf.fset, call.Pos(), call.End()),
+					Location:    locationEnd(pf.fset, call.Pos(), call.End(), projectRoot),
 					Remediation: "add %w to the format string to preserve the error chain for errors.Is/As",
 				})
 			}
@@ -210,7 +210,7 @@ func (r *ruleNilDerefRisk) Run(_ context.Context, projectRoot string, _ *config.
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     fmt.Sprintf("value %q from function call used before checking err — potential nil dereference", valIdent.Name),
-						Location:    locationEnd(pf.fset, assign.Pos(), assign.End()),
+						Location:    locationEnd(pf.fset, assign.Pos(), assign.End(), projectRoot),
 						Remediation: "check err != nil before using the returned value",
 					})
 				}
@@ -284,7 +284,7 @@ func (r *ruleGoroutineSharedVar) Run(_ context.Context, projectRoot string, _ *c
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     fmt.Sprintf("goroutine accesses package-level variable %q — protect with sync.Mutex or use atomic", id.Name),
-						Location:    locationEnd(pf.fset, id.Pos(), id.End()),
+						Location:    locationEnd(pf.fset, id.Pos(), id.End(), projectRoot),
 						Remediation: "protect shared state with sync.Mutex, sync/atomic, or channel communication",
 					})
 					return false

@@ -118,6 +118,19 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.30 — §4 MUST: location.file project-relative + §2.4.1 capabilities Standards fix ✅
+
+**Goal:** Fix two MUST conformance bugs: `location.file` emitting absolute paths and `capabilities.Standards` emitting `"slsa-v1.0"` instead of canonical `"slsa"`.
+
+### Deliverables
+- `lint/lint.go`, `analyze/analyze.go`, `analyze/rules_005_008.go`, `analyze/rule_009_deadcode.go` — `locationEnd()` now applies `filepath.Rel(projectRoot, p.Filename)` + `filepath.ToSlash()` so `location.file` is always project-relative (§4 MUST). Fixes fingerprint portability (§4.2), SARIF `artifactLocation`, and cross-environment baseline diffing.
+- `cmd/gofusa/cmd_capabilities.go` — `Standards` array now contains `"slsa"` instead of `"slsa-v1.0"` (§2.4.1 canonical ID).
+- Tests: `TestLint_LocationRelative`, `TestAnalyze_LocationRelative`, `TestCapabilities_StandardsSLSA`, `TestCapabilities_NoAbsoluteStandards`
+
+Version bump to 0.30.0
+
+---
+
 ## v0.29 — §2.2/§2.9 conformance tests + stdout fix ✅
 
 **Goal:** Verify and enforce two x-FuSa spec invariants that had been unverified.
