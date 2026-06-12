@@ -285,7 +285,7 @@ func Render(w io.Writer, rep *Report, format string) error {
 }
 
 func toGapReport(rep *Report) *gapreport.Report {
-	gr := gapreport.New(rep.Project, "slsa-v1.0")
+	gr := gapreport.New(rep.Project, "slsa")
 	for _, obj := range rep.Objectives {
 		gobj := gapreport.Objective{
 			ID:     obj.ID,

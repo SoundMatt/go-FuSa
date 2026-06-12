@@ -72,10 +72,10 @@ func parseProject(projectRoot string) ([]ParsedFile, error) {
 	return results, nil
 }
 
-// location converts an ast.Node position to a fusa.Location.
-func location(fset *token.FileSet, pos token.Pos) fusa.Location {
+func locationEnd(fset *token.FileSet, pos, end token.Pos) fusa.Location {
 	p := fset.Position(pos)
-	return fusa.Location{File: p.Filename, Line: p.Line, Column: p.Column}
+	e := fset.Position(end)
+	return fusa.Location{File: p.Filename, Line: p.Line, Column: p.Column, EndLine: e.Line, EndColumn: e.Column}
 }
 
 // ─── LINT001: no discarded error returns ─────────────────────────────────────
@@ -117,7 +117,7 @@ func (r *ruleNoDiscardedErrors) Run(_ context.Context, projectRoot string, _ *co
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "return value discarded with blank identifier in multi-value call",
-						Location:    location(pf.Fset, assign.Pos()),
+						Location:    locationEnd(pf.Fset, assign.Pos(), assign.End()),
 						Remediation: "assign all return values to named variables and handle each explicitly",
 					})
 					return true
@@ -159,7 +159,7 @@ func (r *rulePanicDetect) Run(_ context.Context, projectRoot string, _ *config.C
 				RuleID:      r.ID(),
 				Severity:    fusa.SeverityWarning,
 				Message:     "panic() call detected",
-				Location:    location(pf.Fset, call.Pos()),
+				Location:    locationEnd(pf.Fset, call.Pos(), call.End()),
 				Remediation: "replace panic with an explicit error return; document any remaining panic usage",
 			})
 			return true
@@ -198,7 +198,7 @@ func (r *ruleRecoverInventory) Run(_ context.Context, projectRoot string, _ *con
 				RuleID:      r.ID(),
 				Severity:    fusa.SeverityInfo,
 				Message:     "recover() call inventoried — verify it is inside a deferred function",
-				Location:    location(pf.Fset, call.Pos()),
+				Location:    locationEnd(pf.Fset, call.Pos(), call.End()),
 				Remediation: "ensure recover() is called only inside a function passed to defer",
 			})
 			return true
@@ -231,7 +231,7 @@ func (r *ruleUnsafeInventory) Run(_ context.Context, projectRoot string, _ *conf
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     `import of "unsafe" package detected`,
-					Location:    location(pf.Fset, imp.Pos()),
+					Location:    locationEnd(pf.Fset, imp.Pos(), imp.End()),
 					Remediation: "document justification for unsafe usage; avoid in safety-critical code paths",
 				})
 			}
@@ -264,7 +264,7 @@ func (r *ruleReflectInventory) Run(_ context.Context, projectRoot string, _ *con
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityInfo,
 					Message:     `import of "reflect" package inventoried`,
-					Location:    location(pf.Fset, imp.Pos()),
+					Location:    locationEnd(pf.Fset, imp.Pos(), imp.End()),
 					Remediation: "prefer explicit type handling over reflection in safety-critical code",
 				})
 			}
@@ -308,7 +308,7 @@ func (r *ruleGlobalMutableState) Run(_ context.Context, projectRoot string, _ *c
 						RuleID:   r.ID(),
 						Severity: fusa.SeverityInfo,
 						Message:  "package-level var " + name.Name + " introduces global mutable state",
-						Location: location(pf.Fset, vs.Pos()),
+						Location: locationEnd(pf.Fset, vs.Pos(), vs.End()),
 						Remediation: "prefer passing state explicitly; document justification for " +
 							"any global variable (registries, once-initialised singletons are acceptable)",
 					})

@@ -63,9 +63,10 @@ func parseProject(projectRoot string) ([]parsedFile, error) {
 	return results, err
 }
 
-func location(fset *token.FileSet, pos token.Pos) fusa.Location {
+func locationEnd(fset *token.FileSet, pos, end token.Pos) fusa.Location {
 	p := fset.Position(pos)
-	return fusa.Location{File: p.Filename, Line: p.Line, Column: p.Column}
+	e := fset.Position(end)
+	return fusa.Location{File: p.Filename, Line: p.Line, Column: p.Column, EndLine: e.Line, EndColumn: e.Column}
 }
 
 // isIdent reports whether expr is an identifier with the given name.
@@ -125,7 +126,7 @@ func (r *ruleGoroutineWithoutSignal) Run(_ context.Context, projectRoot string, 
 				RuleID:      r.ID(),
 				Severity:    fusa.SeverityWarning,
 				Message:     "goroutine launched without visible termination signal",
-				Location:    location(pf.fset, goStmt.Pos()),
+				Location:    locationEnd(pf.fset, goStmt.Pos(), goStmt.End()),
 				Remediation: "pass a context.Context or done <-chan struct{} parameter to allow cancellation",
 			})
 			return true
@@ -196,7 +197,7 @@ func (r *ruleGoroutineInLoop) Run(_ context.Context, projectRoot string, _ *conf
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     "goroutine spawned inside for loop — potential unbounded goroutine creation",
-					Location:    location(pf.fset, forStmt.Pos()),
+					Location:    locationEnd(pf.fset, forStmt.Pos(), forStmt.End()),
 					Remediation: "use a semaphore, worker pool, or errgroup to bound concurrency",
 				})
 			}
@@ -213,7 +214,7 @@ func (r *ruleGoroutineInLoop) Run(_ context.Context, projectRoot string, _ *conf
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     "goroutine spawned inside range loop — potential unbounded goroutine creation",
-					Location:    location(pf.fset, rangeStmt.Pos()),
+					Location:    locationEnd(pf.fset, rangeStmt.Pos(), rangeStmt.End()),
 					Remediation: "use a semaphore, worker pool, or errgroup to bound concurrency",
 				})
 			}
@@ -273,7 +274,7 @@ func (r *ruleBlockingInGoroutine) Run(_ context.Context, projectRoot string, _ *
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "time.Sleep inside goroutine cannot be interrupted",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    locationEnd(pf.fset, call.Pos(), call.End()),
 						Remediation: "replace time.Sleep with select { case <-time.After(d): ... case <-ctx.Done(): ... }",
 					})
 				}
@@ -308,12 +309,12 @@ func (r *ruleDeferInLoop) Run(_ context.Context, projectRoot string, _ *config.C
 	for _, pf := range pfs {
 		ast.Inspect(pf.file, func(n ast.Node) bool {
 			var body *ast.BlockStmt
-			var pos token.Pos
+			var pos, end token.Pos
 			switch stmt := n.(type) {
 			case *ast.ForStmt:
-				body, pos = stmt.Body, stmt.Pos()
+				body, pos, end = stmt.Body, stmt.Pos(), stmt.End()
 			case *ast.RangeStmt:
-				body, pos = stmt.Body, stmt.Pos()
+				body, pos, end = stmt.Body, stmt.Pos(), stmt.End()
 			default:
 				return true
 			}
@@ -323,7 +324,7 @@ func (r *ruleDeferInLoop) Run(_ context.Context, projectRoot string, _ *config.C
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "defer inside loop delays resource release until function returns",
-						Location:    location(pf.fset, pos),
+						Location:    locationEnd(pf.fset, pos, end),
 						Remediation: "extract loop body into a helper function so defer runs each iteration",
 					})
 					break

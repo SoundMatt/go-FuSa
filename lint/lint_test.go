@@ -247,6 +247,44 @@ func run() {
 	}
 }
 
+// ─── endLine / endColumn (§4 MAY) ────────────────────────────────────────────
+
+func TestLint_EndLinePopulated(t *testing.T) {
+	src := `package main
+func f() { panic("x") }
+`
+	findings := runLint(t, testutil.GoSource("main.go", src))
+	for _, f := range findings {
+		if f.RuleID == "LINT002" {
+			if f.Location.EndLine == 0 {
+				t.Errorf("LINT002: EndLine not populated (got 0)")
+			}
+			if f.Location.EndLine < f.Location.Line {
+				t.Errorf("LINT002: EndLine %d < Line %d", f.Location.EndLine, f.Location.Line)
+			}
+			return
+		}
+	}
+	t.Error("LINT002: no finding produced")
+}
+
+func TestLint_EndLineUnsafe(t *testing.T) {
+	src := `package main
+import "unsafe"
+var _ = unsafe.Sizeof(0)
+`
+	findings := runLint(t, testutil.GoSource("main.go", src))
+	for _, f := range findings {
+		if f.RuleID == "LINT004" {
+			if f.Location.EndLine == 0 {
+				t.Errorf("LINT004: EndLine not populated (got 0)")
+			}
+			return
+		}
+	}
+	t.Error("LINT004: no finding produced")
+}
+
 // ─── Descriptions ─────────────────────────────────────────────────────────────
 
 func TestLintRuleDescriptions(t *testing.T) {
