@@ -1142,6 +1142,66 @@
       "level": "CAL-2"
     },
     {
+      "id": "REQ-SLSA-ASSESS001",
+      "title": "SLSA Level type",
+      "text": "slsa.Level shall define the four SLSA v1.0 assurance levels L1, L2, L3, L4.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-SLSA-ASSESS002",
+      "title": "SLSA gap Report type",
+      "text": "slsa.Report shall aggregate per-objective SLSA assessment results with project, level, generated timestamp, and pass/gap/na counts.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-SLSA-ASSESS003",
+      "title": "SLSA gap assessment",
+      "text": "slsa.Assess shall scan the project root and return a SLSA v1.0 gap report for the given Level, mapping evidence files to SLSA objectives.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-SLSA-ASSESS004",
+      "title": "SLSA gap report rendering",
+      "text": "slsa.Render shall write the gap report in text or §9.3 JSON format, returning an error for unsupported formats.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-CLI-SLSA-001",
+      "title": "gofusa slsa command",
+      "text": "gofusa slsa shall run slsa.Assess against --dir, render the result via --format (text|json), and exit with ExitOK (no gaps), ExitGateFail (gaps), ExitUsage (bad flag), or ExitRuntime (I/O error).",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-IEC62443-ASSESS001",
+      "title": "IEC 62443 SL type",
+      "text": "iec62443.SL shall define the four IEC 62443 Security Levels SL-1, SL-2, SL-3, SL-4.",
+      "standard": "IEC62443"
+    },
+    {
+      "id": "REQ-IEC62443-ASSESS002",
+      "title": "IEC 62443 gap Report type",
+      "text": "iec62443.Report shall aggregate per-objective IEC 62443-4-2 assessment results with project, SL, generated timestamp, and pass/gap/na counts.",
+      "standard": "IEC62443"
+    },
+    {
+      "id": "REQ-IEC62443-ASSESS003",
+      "title": "IEC 62443 gap assessment",
+      "text": "iec62443.Assess shall scan the project root and return an IEC 62443-4-2 gap report for the given SL, mapping evidence files to Component Requirements.",
+      "standard": "IEC62443"
+    },
+    {
+      "id": "REQ-IEC62443-ASSESS004",
+      "title": "IEC 62443 gap report rendering",
+      "text": "iec62443.Render shall write the gap report in text or §9.3 JSON format, returning an error for unsupported formats.",
+      "standard": "IEC62443"
+    },
+    {
+      "id": "REQ-CLI-IEC62443-001",
+      "title": "gofusa iec62443 command",
+      "text": "gofusa iec62443 shall run iec62443.Assess against --dir, render the result via --format (text|json), and exit with ExitOK (no gaps), ExitGateFail (gaps), ExitUsage (bad flag), or ExitRuntime (I/O error).",
+      "standard": "IEC62443"
+    },
+    {
       "id": "REQ-TESTUTIL001",
       "title": "Test harness utilities create deterministic project fixtures",
       "text": "testutil.ProjectDir shall create a temporary directory populated with all specified files; testutil.MinimalProject shall return a file map that satisfies all FUSA001-005 built-in rules; testutil.GoSource shall return MinimalProject extended with the given Go source file.",
