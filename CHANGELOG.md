@@ -7,6 +7,20 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.26.0] — 2026-06-12
+
+### Added
+- **`gofusa slsa`** — standalone SLSA v1.0 supply-chain integrity gap report command.
+  `slsa.Assess` evaluates 10 objectives across L1–L4 (provenance, SBOM, CODEOWNERS, SHA256SUMS,
+  audit-pack). `slsa.Render` emits §9.3-canonical JSON or human-readable text.
+  Exits 0 (no gaps), 1 (gaps found), 2 (bad flag/level), 3 (I/O error).
+- **`gofusa iec62443`** — standalone IEC 62443-4-2 IACS cybersecurity gap report command.
+  `iec62443.Assess` evaluates 12 Component Requirement objectives across SL-1–SL-4 (SECURITY.md,
+  cyber-report, provenance builder field, incident-response plan, boundary diagram, audit-pack).
+  `iec62443.Render` emits §9.3-canonical JSON or human-readable text.
+- **10 new requirements** — REQ-SLSA-ASSESS001–004, REQ-CLI-SLSA-001,
+  REQ-IEC62443-ASSESS001–004, REQ-CLI-IEC62443-001 added to `.fusa-reqs.json`.
+
 ## [0.23.0] — 2026-06-09
 
 ### Added

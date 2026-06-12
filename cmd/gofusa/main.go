@@ -35,6 +35,8 @@
 //	iso21434     Generate an ISO 21434 cybersecurity compliance gap report
 //	iso26262     Generate an ISO 26262 Part 6 compliance gap report
 //	iec61508     Generate an IEC 61508 Parts 1-3 compliance gap report
+//	iec62443     Generate an IEC 62443-4-2 IACS cybersecurity gap report
+//	slsa         Generate a SLSA v1.0 supply-chain integrity gap report
 //	unece        Generate a UN R.155 cybersecurity compliance gap report
 //	sas          Generate a Software Accomplishment Summary (DO-178C §11.20)
 //	sci          Generate a Software Configuration Index (DO-178C §11.16)
@@ -155,6 +157,10 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runISO26262(args[1:], stdout, stderr)
 	case "iec61508":
 		return runIEC61508(args[1:], stdout, stderr)
+	case "iec62443":
+		return runIEC62443(args[1:], stdout, stderr)
+	case "slsa":
+		return runSLSA(args[1:], stdout, stderr)
 	case "unece":
 		return runUNECE(args[1:], stdout, stderr)
 	case "sas":
@@ -237,6 +243,8 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  iso21434     Generate an ISO 21434 cybersecurity compliance gap report\n")
 	fmt.Fprintf(w, "  iso26262     Generate an ISO 26262 Part 6 compliance gap report\n")
 	fmt.Fprintf(w, "  iec61508     Generate an IEC 61508 Parts 1-3 compliance gap report\n")
+	fmt.Fprintf(w, "  iec62443     Generate an IEC 62443-4-2 IACS cybersecurity gap report\n")
+	fmt.Fprintf(w, "  slsa         Generate a SLSA v1.0 supply-chain integrity gap report\n")
 	fmt.Fprintf(w, "  unece        Generate a UN R.155 cybersecurity compliance gap report\n")
 	fmt.Fprintf(w, "  sas          Generate a Software Accomplishment Summary (DO-178C §11.20)\n")
 	fmt.Fprintf(w, "  sci          Generate a Software Configuration Index (DO-178C §11.16)\n")

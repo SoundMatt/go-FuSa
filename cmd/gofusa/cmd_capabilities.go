@@ -55,7 +55,7 @@ func runCapabilities(args []string, stdout, stderr io.Writer) int {
 			"release", "audit-pack", "report",
 			"verify", "hara", "tara", "fmea", "safety-case", "coupling",
 			"cyber", "vuln", "boundary", "coverage", "diff",
-			"iso26262", "iec61508", "do178", "iso21434", "unece",
+			"iso26262", "iec61508", "iec62443", "slsa", "do178", "iso21434", "unece",
 			"lint", "analyze", "badge", "disposition", "sign",
 			"sas", "sci", "pr", "req", "fix", "hooks", "impact", "metrics",
 			"template", "misra",
@@ -67,12 +67,15 @@ func runCapabilities(args []string, stdout, stderr io.Writer) int {
 			"qualify":  {"text", "json"},
 			"iso26262": {"text", "json"},
 			"iec61508": {"text", "json"},
+			"iec62443": {"text", "json"},
+			"slsa":     {"text", "json"},
 			"do178":    {"text", "json"},
 			"iso21434": {"text", "json"},
 			"unece":    {"text", "json"},
 		},
 		Standards: []string{
 			"iso26262", "iec61508", "do178c", "iso21434", "unece-r155",
+			"iec62443", "slsa-v1.0",
 		},
 	}
 

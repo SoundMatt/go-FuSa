@@ -1,6 +1,6 @@
 # go-FuSa Tool Safety Manual
 
-**Version:** 0.25.0  
+**Version:** 0.26.0  
 **Module:** `github.com/SoundMatt/go-FuSa`  
 **License:** Mozilla Public License 2.0  
 **Standards addressed:** ISO 26262, IEC 61508, ISO 21434, DO-178C
@@ -39,8 +39,8 @@ Capabilities:
 | Evidence bundle for auditors | AUDITPACK001 | `gofusa audit-pack` |
 | Cybersecurity static analysis (CWE-mapped) | CYBER001–020 | `gofusa cyber` |
 | Threat Analysis and Risk Assessment (ISO 21434) | TARA001 | `gofusa tara` |
-| IEC 62443 Security Level compliance | IEC62443-001–004 | `gofusa check` |
-| SLSA L2/L3 supply-chain checks | SLSA001–003 | `gofusa check` |
+| IEC 62443 Security Level compliance | IEC62443-001–004 | `gofusa check` / `gofusa iec62443` |
+| SLSA v1.0 supply-chain integrity | SLSA001–003 | `gofusa check` / `gofusa slsa` |
 | DO-178C Annex A gap report | — | `gofusa do178` |
 | Software Accomplishment Summary (DO-178C §11.20) | — | `gofusa sas` |
 | Software Configuration Index (DO-178C §11.16) | — | `gofusa sci` |
@@ -266,6 +266,26 @@ gofusa misra [--format text|json] [--output <file>]
 
 Generates a static MISRA C:2023 to Go / go-FuSa rule alignment report mapping 90+ rules to
 `go vet / compiler`, go-FuSa rule IDs, `N/A — Go type system prevents this`, or `manual review`.
+
+### `gofusa iec62443`
+
+```
+gofusa iec62443 [--dir <path>] [--sl SL-1|SL-2|SL-3|SL-4] [--format text|json] [--output <file>]
+```
+
+Runs a 12-objective IEC 62443-4-2 IACS cybersecurity gap assessment for the given Security Level.
+Checks Component Requirements: CR 1.1, CR 2.1, CR 2.6, CR 3.1, CR 3.4, CR 4.3, CR 6.1, CR 6.2,
+CR 6.2.1, CR 1.4, CR 7.3, CR 7.6. Emits §9.3-canonical JSON or human-readable text.
+
+### `gofusa slsa`
+
+```
+gofusa slsa [--dir <path>] [--level L1|L2|L3|L4] [--format text|json] [--output <file>]
+```
+
+Runs a 10-objective SLSA v1.0 supply-chain integrity gap assessment for the given assurance level.
+Checks provenance fields, SBOM presence, CODEOWNERS, SHA256SUMS, and audit-pack evidence.
+Emits §9.3-canonical JSON or human-readable text.
 
 ### `gofusa version`
 

@@ -118,6 +118,25 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.26 — `gofusa slsa` and `gofusa iec62443` gap-report commands ✅
+
+**Goal:** Bring go-FuSa to feature parity with py-FuSa and c-FuSa by adding the two missing
+standalone gap-report CLI commands. The `slsa/` and `iec62443/` packages already had engine
+rules (running via `gofusa check`); this version adds `Assess`/`Render` functions and CLI
+entry points following the same pattern as `gofusa iso26262`, `gofusa iec61508`, etc.
+
+### Deliverables
+- `slsa/assess.go` — `Level` type (L1–L4), `Assess`, `Render`, 10 objectives mapped to evidence files
+- `iec62443/assess.go` — `SL` type (SL-1–SL-4), `Assess`, `Render`, 12 objectives per CR 4.2
+- `cmd/gofusa/cmd_slsa.go` — `gofusa slsa [--level L1|L2|L3|L4] [--format text|json] [--output]`
+- `cmd/gofusa/cmd_iec62443.go` — `gofusa iec62443 [--sl SL-1|SL-2|SL-3|SL-4] [--format text|json] [--output]`
+- Both added to `capabilities` command list, formats map, and standards list
+- Full test suites for package + CLI
+
+Version bump to 0.26.0
+
+---
+
 ## v0.25 — x-FuSa Spec v1.9 conformance ✅
 
 **Goal:** Adopt x-FuSa spec v1.9. All four SHOULD→MUST promotions (`category`, `remediation`,
