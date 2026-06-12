@@ -76,7 +76,7 @@ func runCapabilities(args []string, stdout, stderr io.Writer) int {
 		},
 		Standards: []string{
 			"iso26262", "iec61508", "do178c", "iso21434", "unece-r155",
-			"iec62443", "slsa-v1.0",
+			"iec62443", "slsa",
 		},
 	}
 

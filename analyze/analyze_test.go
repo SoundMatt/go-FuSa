@@ -2,6 +2,7 @@ package analyze_test
 
 import (
 	"context"
+	"path/filepath"
 	"testing"
 
 	fusa "github.com/SoundMatt/go-FuSa"
@@ -278,6 +279,24 @@ func fn() {
 		}
 	}
 	t.Error("ANA004: no finding produced")
+}
+
+// ─── location.file is project-relative (§4 MUST) ─────────────────────────────
+
+func TestAnalyze_LocationRelative(t *testing.T) {
+	src := `package main
+func fn() { go func() {}() }
+`
+	findings := runAnalyze(t, testutil.GoSource("main.go", src))
+	for _, f := range findings {
+		if f.RuleID == "ANA001" {
+			if filepath.IsAbs(f.Location.File) {
+				t.Errorf("ANA001: location.file is absolute %q, want project-relative", f.Location.File)
+			}
+			return
+		}
+	}
+	t.Error("ANA001: no finding produced")
 }
 
 // ─── Descriptions ─────────────────────────────────────────────────────────────

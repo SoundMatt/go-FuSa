@@ -47,7 +47,7 @@ func (r *ruleDeadCode) Run(_ context.Context, projectRoot string, _ *config.Conf
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "unreachable statement after unconditional transfer of control",
-						Location:    locationEnd(pf.fset, next.Pos(), next.End()),
+						Location:    locationEnd(pf.fset, next.Pos(), next.End(), projectRoot),
 						Remediation: "remove dead code — DO-178C §6.4.4.2 prohibits deactivated code at DAL-A/B",
 					})
 					break

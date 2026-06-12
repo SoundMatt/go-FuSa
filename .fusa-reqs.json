@@ -1242,6 +1242,18 @@
       "title": "Markdown traceability matrix",
       "text": "trace.Render with format \"md\" or \"markdown\" shall produce a Markdown Requirements Traceability Matrix with a coverage summary table and per-requirement status (traced+tested / traced / untraced).",
       "standard": "generic"
+    },
+    {
+      "id": "REQ-LOC-REL001",
+      "title": "location.file is project-relative",
+      "text": "All Finding.Location.File values produced by lint and analyze rules shall be paths relative to projectRoot using forward-slash separators. Absolute paths are prohibited. This ensures fingerprints (§4.2) are portable across environments.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CAP-STD001",
+      "title": "capabilities Standards array uses canonical IDs",
+      "text": "The capabilities.Standards array shall contain only canonical §2.4.1 lower-case IDs (e.g. \"slsa\", not \"slsa-v1.0\"). Version suffixes are not part of the canonical enum.",
+      "standard": "x-FuSa"
     }
   ]
 }

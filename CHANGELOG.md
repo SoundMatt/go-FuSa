@@ -7,6 +7,18 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.30.0] — 2026-06-12
+
+### Fixed
+- **§4 MUST: `location.file` is now project-relative** — `locationEnd()` in `lint` and `analyze` now
+  applies `filepath.Rel(projectRoot, filename)` + `filepath.ToSlash()` before storing in
+  `Location.File`. Previously the absolute path from the AST file set was passed through unchanged,
+  making fingerprints (§4.2) machine-specific and breaking cross-environment baseline diffing.
+  Affects all LINT and ANA rule findings.
+- **§2.4.1 MUST: `capabilities.Standards` canonical SLSA ID** — `cmd/gofusa/cmd_capabilities.go`
+  now emits `"slsa"` instead of `"slsa-v1.0"` in the `standards` array. The `Commands` and
+  `Formats` maps were already correct; only `Standards` was wrong.
+
 ## [0.29.0] — 2026-06-12
 
 ### Fixed
