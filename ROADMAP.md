@@ -118,6 +118,26 @@ Deliverables: `go-fusa/runtime`
 
 ---
 
+## v0.27 — Feature parity: `gofusa comp`, markdown format, SIL/DAL report fields ✅
+
+**Goal:** Close four feature-parity gaps identified against the cross-language FuSa superset
+(rust-FuSa, cpp-FuSa, py-FuSa, java-FuSa). Adds the `comp` complexity gate (java-FuSa),
+`--format md` for check/report/trace (rust-FuSa, py-FuSa), and distinct `sil`/`dal` JSON
+fields in the compliance report (py-FuSa spec conformance).
+
+### Deliverables
+- `comp/comp.go` — `ThresholdForDAL(dal string) int` + `FunctionResult` struct + `Assess(root, threshold)` public API
+- `cmd/gofusa/cmd_comp.go` — `gofusa comp [--dir] [--dal DAL-A|B|C|D] [--threshold N] [--format text|json] [--output]`
+- `report/markdown.go` — `renderMarkdown(w, r)` for GitHub/Confluence-compatible compliance reports
+- `trace/trace.go` — `renderMarkdown(w, m)` for Markdown traceability matrix output
+- `report/report.go` — `SIL string` and `DAL string` fields (omitempty JSON)
+- `cmd/gofusa/cmd_check.go` + `cmd_report.go` — populate sil/dal based on configured standard
+- 7 new requirements; full test suites for all new code
+
+Version bump to 0.27.0
+
+---
+
 ## v0.26 — `gofusa slsa` and `gofusa iec62443` gap-report commands ✅
 
 **Goal:** Bring go-FuSa to feature parity with py-FuSa and c-FuSa by adding the two missing

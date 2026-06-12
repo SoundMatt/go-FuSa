@@ -30,7 +30,9 @@ type Report struct {
 	ProjectRoot string    `json:"projectRoot"`
 	Project     string    `json:"project,omitempty"`
 	Standard    string    `json:"standard,omitempty"`
-	ASIL        string    `json:"asil,omitempty"`
+	ASIL        string    `json:"asil,omitempty"` // ISO 26262 ASIL-A…D
+	SIL         string    `json:"sil,omitempty"`  // IEC 61508 SIL-1…4
+	DAL         string    `json:"dal,omitempty"`  // DO-178C DAL-A…D
 	Error       *ErrorDoc `json:"error,omitempty"`
 
 	Findings     []fusa.Finding `json:"findings"`
@@ -98,7 +100,7 @@ func New(projectRoot string, findings []fusa.Finding) *Report {
 	return r
 }
 
-// Render writes r to w in the requested format ("text", "json", "html", or "sarif").
+// Render writes r to w in the requested format ("text", "json", "html", "sarif", or "md").
 //
 //fusa:req REQ-REPORT001
 func Render(w io.Writer, r *Report, format string) error {
@@ -111,6 +113,8 @@ func Render(w io.Writer, r *Report, format string) error {
 		return RenderHTML(w, r)
 	case "sarif":
 		return renderSARIF(w, r)
+	case "md", "markdown":
+		return renderMarkdown(w, r)
 	default:
 		return fmt.Errorf("report: unsupported format %q", format)
 	}

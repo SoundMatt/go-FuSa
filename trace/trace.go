@@ -353,7 +353,7 @@ func ScanFuncCoverage(root string, tags []Tag) (*FuncCoverage, error) {
 }
 
 // Render writes the traceability matrix to w in the given format.
-// Supported formats: "text" (default), "json".
+// Supported formats: "text" (default), "json", "md"/"markdown".
 //
 //fusa:req REQ-TRACE006
 func Render(w io.Writer, m *Matrix, format string) error {
@@ -362,9 +362,55 @@ func Render(w io.Writer, m *Matrix, format string) error {
 		return renderText(w, m)
 	case "json":
 		return renderJSON(w, m)
+	case "md", "markdown":
+		return renderMarkdown(w, m)
 	default:
 		return fmt.Errorf("trace: unsupported format %q", format)
 	}
+}
+
+func renderMarkdown(w io.Writer, m *Matrix) error {
+	fmt.Fprintf(w, "# Requirements Traceability Matrix\n\n")
+	fmt.Fprintf(w, "| Metric | Count |\n|---|---|\n")
+	fmt.Fprintf(w, "| Requirements | %d |\n", m.Coverage.TotalRequirements)
+	fmt.Fprintf(w, "| Traced | %d |\n", m.Coverage.TracedRequirements)
+	fmt.Fprintf(w, "| Tested | %d |\n", m.Coverage.TestedRequirements)
+	fmt.Fprintf(w, "| Sec-Tested | %d |\n\n", m.Coverage.SecTestedRequirements)
+
+	if len(m.Requirements) == 0 {
+		fmt.Fprintf(w, "_No requirements defined._\n")
+		return nil
+	}
+
+	byReq := make(map[string][]Tag)
+	for _, t := range m.Tags {
+		byReq[t.RequirementID] = append(byReq[t.RequirementID], t)
+	}
+
+	fmt.Fprintf(w, "## Requirements\n\n")
+	fmt.Fprintf(w, "| ID | Title | Status |\n|---|---|---|\n")
+	for _, req := range m.Requirements {
+		entries := byReq[req.ID]
+		hasImpl := false
+		hasTest := false
+		for _, e := range entries {
+			if e.Kind == KindImpl {
+				hasImpl = true
+			}
+			if e.Kind == KindTest {
+				hasTest = true
+			}
+		}
+		status := "❌ untraced"
+		switch {
+		case hasImpl && hasTest:
+			status = "✅ traced+tested"
+		case hasImpl:
+			status = "⚠️ traced"
+		}
+		fmt.Fprintf(w, "| `%s` | %s | %s |\n", req.ID, req.Title, status)
+	}
+	return nil
 }
 
 func renderText(w io.Writer, m *Matrix) error {

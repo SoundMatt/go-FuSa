@@ -45,6 +45,7 @@
 //	disposition  Manage finding disposition entries
 //	impact       Analyse change impact on requirements and safety artefacts
 //	metrics      Track safety metrics over time
+//	comp         Report cyclomatic complexity of all non-test Go functions (DO-178C §6.3.4)
 //	misra        Show MISRA C:2023 to Go / go-FuSa rule coverage mapping
 //	version      Print the go-FuSa version
 //
@@ -177,6 +178,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runImpact(args[1:], stdout, stderr)
 	case "metrics":
 		return runMetrics(args[1:], stdout, stderr)
+	case "comp":
+		return runComp(args[1:], stdout, stderr)
 	case "misra":
 		return runMisra(args[1:], stdout, stderr)
 	case "capabilities":
@@ -253,6 +256,7 @@ func usage(w io.Writer) {
 	fmt.Fprintf(w, "  disposition  Manage finding disposition entries\n")
 	fmt.Fprintf(w, "  impact       Analyse change impact on requirements and safety artefacts\n")
 	fmt.Fprintf(w, "  metrics      Track safety metrics over time\n")
+	fmt.Fprintf(w, "  comp         Report cyclomatic complexity of non-test functions (DO-178C §6.3.4)\n")
 	fmt.Fprintf(w, "  misra        Show MISRA C:2023 to Go / go-FuSa rule coverage mapping\n")
 	fmt.Fprintf(w, "  capabilities Report tool capabilities (commands, formats, standards)\n")
 	fmt.Fprintf(w, "  version      Print the go-FuSa version\n")

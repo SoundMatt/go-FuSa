@@ -7,6 +7,24 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.27.0] — 2026-06-12
+
+### Added
+- **`gofusa comp`** — cyclomatic complexity gate command (DO-178C §6.3.4).
+  `comp.Assess` walks all non-test Go source files and returns per-function
+  complexity results. `comp.ThresholdForDAL` maps DO-178C DAL-A/B/C/D to
+  thresholds (4/10/15/20). Exits 0 (no exceedances), 1 (gate fail), 2 (bad flag).
+  `--dal` selects a DAL threshold; `--threshold` overrides it.
+- **Markdown report format** (`--format md`/`markdown`) for `gofusa check`,
+  `gofusa report`, and `gofusa trace`. Produces GitHub/Confluence-compatible
+  Markdown with a summary table and findings/requirements table.
+- **`sil` and `dal` JSON fields** in `report.Report` for IEC 61508 and DO-178C
+  projects respectively, distinct from the existing `asil` field (ISO 26262).
+  `gofusa check` and `gofusa report` now populate the correct field based on
+  the configured standard.
+- **7 new requirements** — REQ-COMP-ASSESS001–002, REQ-CLI-COMP-001,
+  REQ-REPORT-MD001, REQ-REPORT-SIL001, REQ-TRACE-MD001 added to `.fusa-reqs.json`.
+
 ## [0.26.0] — 2026-06-12
 
 ### Added

@@ -281,6 +281,53 @@ func TestRender_UnknownFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TRACE-MD001
+func TestRender_MarkdownFormat(t *testing.T) {
+	dir := t.TempDir()
+	reqs := []trace.Requirement{{ID: "REQ-001", Title: "Error handling"}}
+	writeReqs(t, dir, reqs)
+
+	m, err := trace.Build(dir)
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "md"); err != nil {
+		t.Fatalf("Render md: %v", err)
+	}
+	out := sb.String()
+	if !strings.Contains(out, "# Requirements") {
+		t.Errorf("expected markdown heading: %s", out)
+	}
+	if !strings.Contains(out, "REQ-001") {
+		t.Errorf("expected requirement ID in markdown: %s", out)
+	}
+}
+
+//fusa:test REQ-TRACE-MD001
+func TestRender_MarkdownAlias(t *testing.T) {
+	m := &trace.Matrix{}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "markdown"); err != nil {
+		t.Fatalf("Render markdown: %v", err)
+	}
+	if !strings.Contains(sb.String(), "# Requirements") {
+		t.Errorf("expected markdown output")
+	}
+}
+
+//fusa:test REQ-TRACE-MD001
+func TestRender_Markdown_NoRequirements(t *testing.T) {
+	m := &trace.Matrix{}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "md"); err != nil {
+		t.Fatalf("Render md: %v", err)
+	}
+	if !strings.Contains(sb.String(), "No requirements") {
+		t.Errorf("expected 'No requirements' message: %s", sb.String())
+	}
+}
+
 // ─── Engine rules ─────────────────────────────────────────────────────────────
 
 //fusa:test REQ-TRACE001

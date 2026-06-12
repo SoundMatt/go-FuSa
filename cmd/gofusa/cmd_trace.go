@@ -23,7 +23,7 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 
 	var (
 		dir    = fs.String("dir", "", "project root directory (default: current directory)")
-		format = fs.String("format", "text", "output format: text or json")
+		format = fs.String("format", "text", "output format: text, json, or md")
 		output = fs.String("output", "", "write output to file (default: stdout)")
 		gaps   = fs.Bool("gaps", false, "show only requirements with no //fusa:test tag (test coverage gaps)")
 		//fusa:req REQ-CLI-TRACE001
