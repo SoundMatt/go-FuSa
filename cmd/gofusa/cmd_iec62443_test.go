@@ -79,8 +79,8 @@ func TestRunIEC62443_OutputFile(t *testing.T) {
 	if _, err := os.Stat(outFile); err != nil {
 		t.Errorf("output file not created: %v", err)
 	}
-	if !strings.Contains(out.String(), "IEC 62443 gap report written to") {
-		t.Errorf("missing confirmation message; stdout: %s", out.String())
+	if !strings.Contains(errBuf.String(), "IEC 62443 gap report written to") {
+		t.Errorf("missing confirmation message; stderr: %s", errBuf.String())
 	}
 }
 

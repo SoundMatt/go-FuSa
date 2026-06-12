@@ -75,7 +75,7 @@ func runISO26262(args []string, stdout, stderr io.Writer) int {
 	if *output == "" && *format == "text" {
 		// summary already in render
 	} else if *output != "" {
-		fmt.Fprintf(stdout, "ISO 26262 gap report written to %s (%d gaps)\n", *output, rep.Gap)
+		fmt.Fprintf(stderr, "ISO 26262 gap report written to %s (%d gaps)\n", *output, rep.Gap)
 	}
 
 	if rep.Gap > 0 {

@@ -73,7 +73,7 @@ func runSLSA(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if *output != "" {
-		fmt.Fprintf(stdout, "SLSA gap report written to %s (%d gaps)\n", *output, rep.Gap)
+		fmt.Fprintf(stderr, "SLSA gap report written to %s (%d gaps)\n", *output, rep.Gap)
 	}
 
 	if rep.Gap > 0 {

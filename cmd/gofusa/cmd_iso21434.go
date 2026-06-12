@@ -67,7 +67,7 @@ func runISO21434(args []string, stdout, stderr io.Writer) int {
 	}
 
 	if *output != "" {
-		fmt.Fprintf(stdout, "ISO 21434 gap report written to %s (%d gaps)\n", *output, rep.Gap)
+		fmt.Fprintf(stderr, "ISO 21434 gap report written to %s (%d gaps)\n", *output, rep.Gap)
 	}
 
 	if rep.Gap > 0 {

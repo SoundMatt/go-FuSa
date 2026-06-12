@@ -7,6 +7,21 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## [0.29.0] — 2026-06-12
+
+### Fixed
+- **§2.2 `--output` no-stdout invariant** — six gap-report commands (`slsa`, `iec62443`,
+  `iso26262`, `iso21434`, `iec61508`, `unece`) were writing a summary line to stdout even
+  when `--output <file>` was given. That summary now goes to stderr so stdout is clean for
+  pipeline consumption.
+
+### Added
+- **§2.2/§2.9 conformance test suite** (`cmd/gofusa/conform_test.go`) — 14 tests covering:
+  - §2.2: stdout is empty for every `--output`-capable tool (check, report, lint, trace,
+    comp, slsa, iec62443, iso26262, iso21434, iec61508, unece)
+  - §2.9: ruleId/severity/category are identical across JSON and SARIF output; ruleIds are
+    present in text output
+
 ## [0.28.0] — 2026-06-12
 
 ### Fixed
