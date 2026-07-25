@@ -94,6 +94,48 @@ func TestBuildSBOM_MissingGoMod(t *testing.T) {
 	}
 }
 
+// ─── DetectBuilder ────────────────────────────────────────────────────────────
+
+//fusa:test REQ-RELEASE010
+func TestDetectBuilder_Override(t *testing.T) {
+	b := release.DetectBuilder("my-ci:repo@refs/heads/main")
+	if b != "my-ci:repo@refs/heads/main" {
+		t.Errorf("DetectBuilder: got %q, want my-ci:repo@refs/heads/main", b)
+	}
+}
+
+//fusa:test REQ-RELEASE010
+func TestDetectBuilder_GitHubActions(t *testing.T) {
+	t.Setenv("FUSA_BUILDER", "")
+	t.Setenv("GITHUB_ACTIONS", "true")
+	t.Setenv("GITHUB_WORKFLOW_REF", "SoundMatt/go-FuSa/.github/workflows/release.yml@refs/tags/v0.30.0")
+	b := release.DetectBuilder("")
+	const want = "github-actions:SoundMatt/go-FuSa/.github/workflows/release.yml@refs/tags/v0.30.0"
+	if b != want {
+		t.Errorf("DetectBuilder: got %q, want %q", b, want)
+	}
+}
+
+//fusa:test REQ-RELEASE010
+func TestDetectBuilder_FusaBuilder(t *testing.T) {
+	t.Setenv("GITHUB_ACTIONS", "")
+	t.Setenv("FUSA_BUILDER", "jenkins:my-pipeline@main")
+	b := release.DetectBuilder("")
+	if b != "jenkins:my-pipeline@main" {
+		t.Errorf("DetectBuilder: got %q, want jenkins:my-pipeline@main", b)
+	}
+}
+
+//fusa:test REQ-RELEASE010
+func TestDetectBuilder_None(t *testing.T) {
+	t.Setenv("GITHUB_ACTIONS", "")
+	t.Setenv("FUSA_BUILDER", "")
+	b := release.DetectBuilder("")
+	if b != "" {
+		t.Errorf("DetectBuilder: got %q, want empty string for local build", b)
+	}
+}
+
 // ─── BuildProvenance ──────────────────────────────────────────────────────────
 
 //fusa:test REQ-RELEASE005

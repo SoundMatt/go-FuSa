@@ -37,6 +37,7 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 		outputDir   = fs.String("output-dir", "", "directory for generated files (default: project root)")
 		full        = fs.Bool("full", false, "also run fmea, boundary, vuln scan, and audit-pack")
 		spdxVersion = fs.String("spdx-version", "", "also write an SPDX SBOM (sbom-spdx-<ver>.json); values: 2.2, 2.3, 3.0.1")
+		builder     = fs.String("builder", "", "builder identifier for provenance.json (overrides CI auto-detection and FUSA_BUILDER env var)")
 	)
 	if code := parseFlags(fs, args); code != 0 {
 		return code
@@ -107,12 +108,22 @@ func runRelease(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "gofusa release: build provenance: %v\n", err)
 		return fusa.ExitRuntime
 	}
+	// --builder flag takes highest priority; DetectBuilder("") ran inside
+	// BuildProvenance and already handles FUSA_BUILDER / GITHUB_ACTIONS.
+	//fusa:req REQ-RELEASE010
+	if b := release.DetectBuilder(*builder); b != "" {
+		prov.Builder = b
+	}
 	provPath := filepath.Join(outDir, release.ProvenanceFile)
 	if err = release.SaveJSON(provPath, prov); err != nil {
 		fmt.Fprintf(stderr, "gofusa release: save provenance: %v\n", err)
 		return fusa.ExitRuntime
 	}
-	fmt.Fprintf(stdout, "Provenance written to %s\n", provPath)
+	if prov.Builder != "" {
+		fmt.Fprintf(stdout, "Provenance written to %s (builder: %s)\n", provPath, prov.Builder)
+	} else {
+		fmt.Fprintf(stdout, "Provenance written to %s\n", provPath)
+	}
 
 	//fusa:req REQ-RELEASE008
 	manifest, err := release.BuildManifest([]string{sbomPath, provPath})
