@@ -20,6 +20,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-2025]
         go: ["1.22", "1.23"]
+        exclude:
+          # Go 1.22 race-detector binaries lack LC_UUID; macOS 26 dyld rejects them
+          - os: macos-latest
+            go: "1.22"
 
     steps:
       - uses: actions/checkout@v5
