@@ -256,7 +256,7 @@ func provenanceHasBuilder(root string) (bool, string) {
 	if v, _ := prov["builder"].(string); v != "" {
 		return true, ""
 	}
-	return false, "provenance.json missing builder field — run 'gofusa release' from CI"
+	return false, "provenance.json missing builder field — run 'gofusa release' from CI (auto-detected via GITHUB_ACTIONS/GITHUB_WORKFLOW_REF or FUSA_BUILDER), or pass --builder explicitly"
 }
 
 // Render writes the IEC 62443 gap report to w.
