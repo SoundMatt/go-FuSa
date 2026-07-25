@@ -7,6 +7,11 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.31.0 — 2026-07-25
+
+- Fix SpecVersion constant from "1.9" to "1.10.4"
+- Auto-detect CI builder field in provenance.json; add --builder flag
+
 ## [0.30.0] — 2026-06-12
 
 ### Fixed
