@@ -18,7 +18,7 @@ import (
 const Version = "0.30.0"
 
 // SpecVersion is the x-FuSa spec version this release implements.
-const SpecVersion = "1.9"
+const SpecVersion = "1.10.4"
 
 // Exit codes (§2.3).
 const (
