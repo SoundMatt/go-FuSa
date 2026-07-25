@@ -110,6 +110,7 @@ type Provenance struct {
 	GOARCH        string    `json:"goarch"`
 	VCSRevision   string    `json:"vcsRevision,omitempty"`
 	VCSModified   bool      `json:"vcsModified"`
+	Builder       string    `json:"builder,omitempty"`
 }
 
 // Artifact is a file path paired with its bare SHA-256 hex checksum (§2.7).
@@ -163,8 +164,35 @@ func BuildSBOM(projectRoot string) (*SBOM, error) {
 	}, nil
 }
 
+// DetectBuilder returns the build system identifier for provenance.json.
+// If override is non-empty it is returned as-is, giving the caller (or the
+// --builder flag) the highest priority. Otherwise the function consults, in
+// order: the FUSA_BUILDER environment variable (for non-GitHub CI), and the
+// GitHub Actions variables GITHUB_ACTIONS + GITHUB_WORKFLOW_REF (producing a
+// "github-actions:<ref>" string). An empty string is returned when none of the
+// signals are present, so the builder field is omitted from provenance.json in
+// local builds.
+//
+//fusa:req REQ-RELEASE010
+func DetectBuilder(override string) string {
+	if override != "" {
+		return override
+	}
+	if v := os.Getenv("FUSA_BUILDER"); v != "" {
+		return v
+	}
+	if os.Getenv("GITHUB_ACTIONS") == "true" {
+		if ref := os.Getenv("GITHUB_WORKFLOW_REF"); ref != "" {
+			return "github-actions:" + ref
+		}
+	}
+	return ""
+}
+
 // BuildProvenance records the current build environment for projectRoot.
-// ctx is used for the optional git subprocess calls.
+// ctx is used for the optional git subprocess calls. The builder field is
+// populated automatically via DetectBuilder; the caller may override it after
+// the fact (e.g. from the --builder CLI flag).
 //
 //fusa:req REQ-RELEASE005
 func BuildProvenance(ctx context.Context, projectRoot string) (*Provenance, error) {
@@ -187,6 +215,7 @@ func BuildProvenance(ctx context.Context, projectRoot string) (*Provenance, erro
 		GOARCH:        runtime.GOARCH,
 		VCSRevision:   revision,
 		VCSModified:   modified,
+		Builder:       DetectBuilder(""),
 	}, nil
 }
 

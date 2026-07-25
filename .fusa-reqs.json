@@ -463,6 +463,13 @@
       "level": "CAL-2"
     },
     {
+      "id": "REQ-RELEASE010",
+      "title": "Provenance builder field auto-detected from CI environment",
+      "text": "release.DetectBuilder shall return a non-empty builder string when running in GitHub Actions (GITHUB_ACTIONS=true with GITHUB_WORKFLOW_REF set, producing 'github-actions:<ref>') or when FUSA_BUILDER is set. A non-empty override argument takes the highest priority. An empty string is returned when none of the signals are present, causing the builder field to be omitted from provenance.json in local builds.",
+      "standard": "IEC 62443",
+      "level": "SL-2"
+    },
+    {
       "id": "REQ-RPT001",
       "title": "Text report includes rule ID, severity, and location",
       "text": "The text-format report shall include for each finding: the rule ID, severity label, and location in file:line:column format when line and column are present.",
