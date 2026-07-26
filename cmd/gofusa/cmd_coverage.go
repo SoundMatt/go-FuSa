@@ -25,10 +25,10 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 	}
 
 	var (
-		dalFlag       = fs.String("dal", "DAL-B", "design assurance level: DAL-A, DAL-B, DAL-C, DAL-D")
-		format        = fs.String("format", "text", "output format: text or json")
-		output        = fs.String("output", "", "write report to file (default: stdout)")
-		mutate        = fs.Bool("mutate", false, "run mutation testing via go-mutesting (MC/DC-equivalent evidence for DO-178C Level A)")
+		dalFlag = fs.String("dal", "DAL-B", "design assurance level: DAL-A, DAL-B, DAL-C, DAL-D")
+		format  = fs.String("format", "text", "output format: text or json")
+		output  = fs.String("output", "", "write report to file (default: stdout)")
+		mutate  = fs.Bool("mutate", false, "run mutation testing via go-mutesting (MC/DC-equivalent evidence for DO-178C Level A)")
 		//fusa:req REQ-COV015
 		mcdcFlag      = fs.Bool("mcdc", false, "parse and gate on MC/DC condition coverage (requires --mcdc-file)")
 		mcdcFile      = fs.String("mcdc-file", "", "path to LLVM coverage JSON export containing MC/DC records")

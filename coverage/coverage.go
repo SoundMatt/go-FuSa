@@ -104,28 +104,28 @@ type MCDCRecord struct {
 //
 //fusa:req REQ-COV015
 type MCDCFunctionResult struct {
-	Name               string       `json:"name"`
-	Records            []MCDCRecord `json:"records"`
-	TotalConditions    int          `json:"totalConditions"`
-	CoveredConditions  int          `json:"coveredConditions"`
-	UncoveredConditions []string    `json:"uncoveredConditions,omitempty"` // "record[i].condition[j]"
-	Passed             bool         `json:"passed"`
+	Name                string       `json:"name"`
+	Records             []MCDCRecord `json:"records"`
+	TotalConditions     int          `json:"totalConditions"`
+	CoveredConditions   int          `json:"coveredConditions"`
+	UncoveredConditions []string     `json:"uncoveredConditions,omitempty"` // "record[i].condition[j]"
+	Passed              bool         `json:"passed"`
 }
 
 // MCDCReport is the structured MC/DC measurement result.
 //
 //fusa:req REQ-COV015
 type MCDCReport struct {
-	Generated           time.Time            `json:"generated"`
-	DAL                 DAL                  `json:"dal"`
-	SourceFile          string               `json:"sourceFile,omitempty"`
-	Threshold           int                  `json:"threshold"` // minimum % of conditions covered
-	Functions           []MCDCFunctionResult `json:"functions"`
-	TotalConditions     int                  `json:"totalConditions"`
-	CoveredConditions   int                  `json:"coveredConditions"`
-	CoveragePct         float64              `json:"coveragePct"`
-	Passed              bool                 `json:"passed"`
-	Note                string               `json:"note,omitempty"`
+	Generated         time.Time            `json:"generated"`
+	DAL               DAL                  `json:"dal"`
+	SourceFile        string               `json:"sourceFile,omitempty"`
+	Threshold         int                  `json:"threshold"` // minimum % of conditions covered
+	Functions         []MCDCFunctionResult `json:"functions"`
+	TotalConditions   int                  `json:"totalConditions"`
+	CoveredConditions int                  `json:"coveredConditions"`
+	CoveragePct       float64              `json:"coveragePct"`
+	Passed            bool                 `json:"passed"`
+	Note              string               `json:"note,omitempty"`
 }
 
 // Parse reads a Go coverage profile from r and returns the raw blocks.

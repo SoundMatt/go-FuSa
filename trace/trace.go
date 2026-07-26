@@ -103,10 +103,10 @@ const (
 
 // Matrix is the full traceability matrix for a project.
 type Matrix struct {
-	ProjectRoot  string          `json:"-"` // set by Build; used in JSON envelope
-	Requirements []Requirement   `json:"requirements"`
-	Tags         []Tag           `json:"tags"`
-	Coverage     Coverage        `json:"coverage"`
+	ProjectRoot   string         `json:"-"` // set by Build; used in JSON envelope
+	Requirements  []Requirement  `json:"requirements"`
+	Tags          []Tag          `json:"tags"`
+	Coverage      Coverage       `json:"coverage"`
 	HLRLLRSummary *HLRLLRSummary `json:"hlrllrSummary,omitempty"`
 }
 
@@ -567,17 +567,17 @@ func renderText(w io.Writer, m *Matrix) error {
 
 func renderJSON(w io.Writer, m *Matrix) error {
 	doc := struct {
-		SchemaVersion string          `json:"schemaVersion"`
-		Kind          string          `json:"kind"`
-		Tool          string          `json:"tool"`
-		ToolVersion   string          `json:"toolVersion"`
-		Language      string          `json:"language"`
-		GeneratedAt   time.Time       `json:"generatedAt"`
-		ProjectRoot   string          `json:"projectRoot"`
-		Requirements  []Requirement   `json:"requirements"`
-		Tags          []Tag           `json:"tags"`
-		Coverage      Coverage        `json:"coverage"`
-		HLRLLRSummary *HLRLLRSummary  `json:"hlrllrSummary,omitempty"`
+		SchemaVersion string         `json:"schemaVersion"`
+		Kind          string         `json:"kind"`
+		Tool          string         `json:"tool"`
+		ToolVersion   string         `json:"toolVersion"`
+		Language      string         `json:"language"`
+		GeneratedAt   time.Time      `json:"generatedAt"`
+		ProjectRoot   string         `json:"projectRoot"`
+		Requirements  []Requirement  `json:"requirements"`
+		Tags          []Tag          `json:"tags"`
+		Coverage      Coverage       `json:"coverage"`
+		HLRLLRSummary *HLRLLRSummary `json:"hlrllrSummary,omitempty"`
 	}{
 		SchemaVersion: fusa.SpecVersion,
 		Kind:          "trace-matrix",
