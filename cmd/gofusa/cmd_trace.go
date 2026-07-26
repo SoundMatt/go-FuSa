@@ -30,6 +30,8 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 		secTested = fs.Int("sec-tested", 0, "exit 1 if fewer than N%% of requirements have //fusa:test tags (0 = disabled)")
 		//fusa:req REQ-CLI-TRACE003
 		reqCoverage = fs.Int("req-coverage", 0, "exit 1 if requirement coverage or function annotation density is below N%% (0 = disabled)")
+		//fusa:req REQ-TRACE008
+		strictHLRLLR = fs.Bool("strict-hlr-llr", false, "exit 1 if any HLR/LLR decomposition violations are found (regardless of ASIL)")
 	)
 	if code := parseFlags(fs, args); code != 0 {
 		return code
@@ -61,6 +63,10 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 
 	if *reqCoverage > 0 {
 		return runTraceReqCoverage(projectRoot, matrix, *reqCoverage, stdout, stderr)
+	}
+
+	if *strictHLRLLR {
+		return runTraceHLRLLR(matrix, stdout, stderr)
 	}
 
 	w := stdout
@@ -168,6 +174,32 @@ func runTraceReqCoverage(root string, matrix *trace.Matrix, threshold int, stdou
 		failed = true
 	}
 	if failed {
+		return fusa.ExitGateFail
+	}
+	return fusa.ExitOK
+}
+
+// runTraceHLRLLR reports HLR/LLR decomposition violations and exits 1 if any are found.
+//
+//fusa:req REQ-TRACE008
+func runTraceHLRLLR(matrix *trace.Matrix, stdout, stderr io.Writer) int {
+	s := matrix.HLRLLRSummary
+	if s == nil {
+		fmt.Fprintf(stdout, "HLR/LLR: no hierarchical requirements defined (no Level: HLR or LLR in requirements)\n")
+		return fusa.ExitOK
+	}
+	fmt.Fprintf(stdout, "HLR/LLR Decomposition\n")
+	fmt.Fprintf(stdout, "HLRs: %d  LLRs: %d  Orphaned: %d  Uncovered: %d\n",
+		s.HLRCount, s.LLRCount, len(s.Orphaned), len(s.Uncovered))
+	for _, id := range s.Orphaned {
+		fmt.Fprintf(stdout, "  ORPHANED LLR  %s  (parentId missing or invalid)\n", id)
+	}
+	for _, id := range s.Uncovered {
+		fmt.Fprintf(stdout, "  UNCOVERED HLR %s  (no LLR children)\n", id)
+	}
+	if len(s.Orphaned) > 0 || len(s.Uncovered) > 0 {
+		fmt.Fprintf(stderr, "gofusa trace: --strict-hlr-llr gate failed: %d orphaned LLR(s), %d uncovered HLR(s)\n",
+			len(s.Orphaned), len(s.Uncovered))
 		return fusa.ExitGateFail
 	}
 	return fusa.ExitOK

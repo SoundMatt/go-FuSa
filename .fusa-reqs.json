@@ -1169,7 +1169,7 @@
     {
       "id": "REQ-SLSA-ASSESS004",
       "title": "SLSA gap report rendering",
-      "text": "slsa.Render shall write the gap report in text or §9.3 JSON format, returning an error for unsupported formats.",
+      "text": "slsa.Render shall write the gap report in text or \u00a79.3 JSON format, returning an error for unsupported formats.",
       "standard": "generic"
     },
     {
@@ -1199,7 +1199,7 @@
     {
       "id": "REQ-IEC62443-ASSESS004",
       "title": "IEC 62443 gap report rendering",
-      "text": "iec62443.Render shall write the gap report in text or §9.3 JSON format, returning an error for unsupported formats.",
+      "text": "iec62443.Render shall write the gap report in text or \u00a79.3 JSON format, returning an error for unsupported formats.",
       "standard": "IEC62443"
     },
     {
@@ -1253,14 +1253,63 @@
     {
       "id": "REQ-LOC-REL001",
       "title": "location.file is project-relative",
-      "text": "All Finding.Location.File values produced by lint and analyze rules shall be paths relative to projectRoot using forward-slash separators. Absolute paths are prohibited. This ensures fingerprints (§4.2) are portable across environments.",
+      "text": "All Finding.Location.File values produced by lint and analyze rules shall be paths relative to projectRoot using forward-slash separators. Absolute paths are prohibited. This ensures fingerprints (\u00a74.2) are portable across environments.",
       "standard": "x-FuSa"
     },
     {
       "id": "REQ-CAP-STD001",
       "title": "capabilities Standards array uses canonical IDs",
-      "text": "The capabilities.Standards array shall contain only canonical §2.4.1 lower-case IDs (e.g. \"slsa\", not \"slsa-v1.0\"). Version suffixes are not part of the canonical enum.",
+      "text": "The capabilities.Standards array shall contain only canonical \u00a72.4.1 lower-case IDs (e.g. \"slsa\", not \"slsa-v1.0\"). Version suffixes are not part of the canonical enum.",
       "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-TRACE008",
+      "title": "HLR/LLR hierarchical traceability",
+      "text": "The tool shall detect HLR/LLR decomposition violations: LLRs whose parentId is absent or references a non-existent HLR (orphaned), and HLRs that have no LLR children (uncovered). The engine rule TRACE008 shall emit WARNING severity by default and ERROR when project ASIL is ASIL-D. The CLI --strict-hlr-llr flag shall gate on any violation regardless of ASIL.",
+      "standard": "ISO 26262",
+      "level": "HLR"
+    },
+    {
+      "id": "REQ-QUALIFY007",
+      "title": "Tool qualification method and record display",
+      "text": "The qualify command shall accept --qualification-method (self|independent), --qualifier (identity string), and --record-uri (URI to dossier) flags and store them in the qualification report. The report shall expose a QualificationBadge() method returning independently-qualified, self-qualified, or unqualified.",
+      "standard": "ISO 26262",
+      "level": "HLR"
+    },
+    {
+      "id": "REQ-QUALIFY008",
+      "title": "V&V independence declaration in qualification",
+      "text": "The qualify command shall accept --implementation-author, --independent-reviewer, --independent-test-executor, and --achievable-asil flags and store them in the qualification report. The IndependenceStatus() method shall return independent when reviewer differs from author, self-reviewed when they are the same, or unqualified when no reviewer is set.",
+      "standard": "ISO 26262",
+      "level": "HLR"
+    },
+    {
+      "id": "REQ-COV001",
+      "title": "DO-178C structural coverage report",
+      "text": "The tool shall produce a DO-178C structural coverage report including statement coverage percentage, decision coverage approximation, and MC/DC requirement flag for the given DAL.",
+      "standard": "DO-178C",
+      "level": "HLR"
+    },
+    {
+      "id": "REQ-COV002",
+      "title": "Parse Go coverage profile",
+      "text": "The tool shall parse Go coverage profiles in the standard go test -coverprofile format into a slice of coverage blocks.",
+      "standard": "DO-178C",
+      "level": "LLR"
+    },
+    {
+      "id": "REQ-COV003",
+      "title": "Render coverage report in text and JSON",
+      "text": "The tool shall render the coverage report in both text and JSON formats.",
+      "standard": "DO-178C",
+      "level": "LLR"
+    },
+    {
+      "id": "REQ-COV015",
+      "title": "MC/DC coverage measurement and gate",
+      "text": "The coverage command shall accept --mcdc, --mcdc-file (path to LLVM coverage JSON), and --mcdc-threshold (0-100) flags. A condition is MC/DC covered when covered_true_count > 0 AND covered_false_count > 0. The gate shall fail when overall condition coverage falls below the threshold.",
+      "standard": "DO-178C",
+      "level": "HLR"
     }
   ]
 }

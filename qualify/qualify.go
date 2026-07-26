@@ -58,6 +58,8 @@ type Result struct {
 // Report is the output of a full qualification run.
 //
 //fusa:req REQ-QUALIFY002
+//fusa:req REQ-QUALIFY007
+//fusa:req REQ-QUALIFY008
 type Report struct {
 	SchemaVersion string    `json:"schemaVersion"`
 	Kind          string    `json:"kind"`
@@ -73,6 +75,48 @@ type Report struct {
 	Results       []Result  `json:"results"`
 	// Hash is a SHA-256 integrity hash in "sha256:<hex>" format (§6).
 	Hash string `json:"hash"`
+
+	// Tool qualification metadata (Feature 2 — §ISO 26262-8 / IEC 61508-6).
+	//fusa:req REQ-QUALIFY007
+	QualificationMethod    string `json:"qualificationMethod,omitempty"`    // "self" or "independent"
+	QualificationRecordUri string `json:"qualificationRecordUri,omitempty"` // URI to qualification dossier
+	QualifierIdentity      string `json:"qualifierIdentity,omitempty"`      // name/org performing qualification
+
+	// V&V independence metadata (Feature 4 — DO-178C §6.4.2 / ISO 26262-8 §9).
+	//fusa:req REQ-QUALIFY008
+	ImplementationAuthor    string `json:"implementationAuthor,omitempty"`
+	IndependentReviewer     string `json:"independentReviewer,omitempty"`
+	IndependentTestExecutor string `json:"independentTestExecutor,omitempty"`
+	AchievableASIL          string `json:"achievableAsil,omitempty"`
+}
+
+// IndependenceStatus returns the V&V independence status for the report.
+// Returns "independent" when IndependentReviewer is non-empty and differs from ImplementationAuthor.
+// Returns "self-reviewed" when they are the same. Returns "unqualified" when no reviewer is set.
+//
+//fusa:req REQ-QUALIFY008
+func (r *Report) IndependenceStatus() string {
+	if r.IndependentReviewer == "" {
+		return "unqualified"
+	}
+	if r.ImplementationAuthor != "" && r.IndependentReviewer == r.ImplementationAuthor {
+		return "self-reviewed"
+	}
+	return "independent"
+}
+
+// QualificationBadge returns a human-readable qualification badge string.
+//
+//fusa:req REQ-QUALIFY007
+func (r *Report) QualificationBadge() string {
+	switch r.QualificationMethod {
+	case "independent":
+		return "independently-qualified"
+	case "self":
+		return "self-qualified"
+	default:
+		return "unqualified"
+	}
 }
 
 // HasFailures reports whether any test case in the report failed.

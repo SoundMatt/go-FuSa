@@ -824,3 +824,151 @@ func TestTRACE005_NoRequirements(t *testing.T) {
 		t.Error("TRACE005: unexpected finding when there are no requirements")
 	}
 }
+
+// ─── TRACE008: HLR/LLR decomposition ─────────────────────────────────────────
+
+//fusa:test REQ-TRACE008
+func TestComputeHLRLLR_NoLevels(t *testing.T) {
+	// Requirements without Level set → HLRCount=0, LLRCount=0, no issues.
+	reqs := []trace.Requirement{
+		{ID: "REQ-001", Title: "A requirement"},
+	}
+	s := trace.ComputeHLRLLR(reqs)
+	if s.HLRCount != 0 || s.LLRCount != 0 {
+		t.Errorf("got HLR=%d LLR=%d, want 0 0", s.HLRCount, s.LLRCount)
+	}
+	if len(s.Orphaned) != 0 || len(s.Uncovered) != 0 {
+		t.Errorf("expected no violations, got orphaned=%v uncovered=%v", s.Orphaned, s.Uncovered)
+	}
+}
+
+//fusa:test REQ-TRACE008
+func TestComputeHLRLLR_WellFormed(t *testing.T) {
+	reqs := []trace.Requirement{
+		{ID: "HLR-001", Title: "High-level", Level: "HLR"},
+		{ID: "LLR-001", Title: "Low-level A", Level: "LLR", ParentID: "HLR-001"},
+		{ID: "LLR-002", Title: "Low-level B", Level: "LLR", ParentID: "HLR-001"},
+	}
+	s := trace.ComputeHLRLLR(reqs)
+	if s.HLRCount != 1 || s.LLRCount != 2 {
+		t.Errorf("got HLR=%d LLR=%d, want 1 2", s.HLRCount, s.LLRCount)
+	}
+	if len(s.Orphaned) != 0 || len(s.Uncovered) != 0 {
+		t.Errorf("well-formed hierarchy: expected no violations, got orphaned=%v uncovered=%v",
+			s.Orphaned, s.Uncovered)
+	}
+}
+
+//fusa:test REQ-TRACE008
+func TestComputeHLRLLR_OrphanedLLR(t *testing.T) {
+	// LLR with missing or invalid ParentID.
+	reqs := []trace.Requirement{
+		{ID: "HLR-001", Title: "High-level", Level: "HLR"},
+		{ID: "LLR-001", Title: "Orphan", Level: "LLR", ParentID: ""},
+		{ID: "LLR-002", Title: "Bad parent", Level: "LLR", ParentID: "NONEXISTENT"},
+	}
+	s := trace.ComputeHLRLLR(reqs)
+	if len(s.Orphaned) != 2 {
+		t.Errorf("expected 2 orphaned LLRs, got %v", s.Orphaned)
+	}
+	if len(s.Uncovered) != 1 || s.Uncovered[0] != "HLR-001" {
+		t.Errorf("expected HLR-001 uncovered, got %v", s.Uncovered)
+	}
+}
+
+//fusa:test REQ-TRACE008
+func TestComputeHLRLLR_UncoveredHLR(t *testing.T) {
+	// HLR with no LLR children.
+	reqs := []trace.Requirement{
+		{ID: "HLR-001", Title: "Has children", Level: "HLR"},
+		{ID: "HLR-002", Title: "No children", Level: "HLR"},
+		{ID: "LLR-001", Title: "Child of HLR-001", Level: "LLR", ParentID: "HLR-001"},
+	}
+	s := trace.ComputeHLRLLR(reqs)
+	if len(s.Uncovered) != 1 || s.Uncovered[0] != "HLR-002" {
+		t.Errorf("expected HLR-002 uncovered, got %v", s.Uncovered)
+	}
+	if len(s.Orphaned) != 0 {
+		t.Errorf("expected no orphaned LLRs, got %v", s.Orphaned)
+	}
+}
+
+//fusa:test REQ-TRACE008
+func TestTRACE008_EngineRule_OrphanedLLR(t *testing.T) {
+	// Engine rule fires when LLRs have no valid parent HLR.
+	files := testutil.MinimalProject()
+	files[trace.ReqsFile] = `{"requirements":[
+		{"id":"HLR-001","title":"High","level":"HLR"},
+		{"id":"LLR-001","title":"Orphan","level":"LLR","parentId":""}
+	]}`
+	findings := runTrace(t, files)
+	if !hasRule(findings, "TRACE008") {
+		t.Error("TRACE008: expected finding for orphaned LLR, got none")
+	}
+}
+
+//fusa:test REQ-TRACE008
+func TestTRACE008_EngineRule_NoViolations(t *testing.T) {
+	// Engine rule silent when hierarchy is well-formed.
+	files := testutil.MinimalProject()
+	files[trace.ReqsFile] = `{"requirements":[
+		{"id":"HLR-001","title":"High","level":"HLR"},
+		{"id":"LLR-001","title":"Low","level":"LLR","parentId":"HLR-001"}
+	]}`
+	findings := runTrace(t, files)
+	if hasRule(findings, "TRACE008") {
+		t.Error("TRACE008: unexpected finding for well-formed HLR/LLR hierarchy")
+	}
+}
+
+//fusa:test REQ-TRACE008
+func TestBuild_HLRLLRSummary_Populated(t *testing.T) {
+	dir := t.TempDir()
+	writeReqs(t, dir, []trace.Requirement{
+		{ID: "HLR-001", Title: "High", Level: "HLR"},
+		{ID: "LLR-001", Title: "Low", Level: "LLR", ParentID: "HLR-001"},
+	})
+	m, err := trace.Build(dir)
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	if m.HLRLLRSummary == nil {
+		t.Fatal("HLRLLRSummary is nil for project with HLR/LLR requirements")
+	}
+	if m.HLRLLRSummary.HLRCount != 1 || m.HLRLLRSummary.LLRCount != 1 {
+		t.Errorf("HLRCount=%d LLRCount=%d, want 1 1", m.HLRLLRSummary.HLRCount, m.HLRLLRSummary.LLRCount)
+	}
+}
+
+//fusa:test REQ-TRACE008
+func TestBuild_HLRLLRSummary_NilWhenNoLevels(t *testing.T) {
+	dir := t.TempDir()
+	writeReqs(t, dir, []trace.Requirement{
+		{ID: "REQ-001", Title: "Plain req"},
+	})
+	m, err := trace.Build(dir)
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	if m.HLRLLRSummary != nil {
+		t.Error("HLRLLRSummary should be nil when no requirements have Level set")
+	}
+}
+
+//fusa:test REQ-TRACE008
+func TestRenderText_HLRLLRSummaryShown(t *testing.T) {
+	m := &trace.Matrix{
+		Requirements: []trace.Requirement{
+			{ID: "HLR-001", Title: "High", Level: "HLR"},
+			{ID: "LLR-001", Title: "Low", Level: "LLR", ParentID: "HLR-001"},
+		},
+		HLRLLRSummary: &trace.HLRLLRSummary{HLRCount: 1, LLRCount: 1},
+	}
+	var buf strings.Builder
+	if err := trace.Render(&buf, m, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(buf.String(), "HLR/LLR") {
+		t.Error("text render should include HLR/LLR summary line")
+	}
+}

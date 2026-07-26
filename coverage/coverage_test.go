@@ -389,3 +389,150 @@ func TestRunMutation_WithFakeBinary_EmptyOutput(t *testing.T) {
 		t.Errorf("empty output: Mutants = %d, want 0", rep.Mutants)
 	}
 }
+
+// ─── MC/DC ────────────────────────────────────────────────────────────────────
+
+//fusa:test REQ-COV015
+func TestParseMCDC_AllCovered(t *testing.T) {
+	input := `{"data":[{"functions":[{"name":"Foo","mcdc_records":[{"conditions":[{"covered_true_count":3,"covered_false_count":2}]}]}]}]}`
+	rep, err := coverage.ParseMCDC([]byte(input), coverage.DALA, "test", 100)
+	if err != nil {
+		t.Fatalf("ParseMCDC: %v", err)
+	}
+	if !rep.Passed {
+		t.Errorf("ParseMCDC: expected Passed=true, got false; note: %s", rep.Note)
+	}
+	if rep.TotalConditions != 1 || rep.CoveredConditions != 1 {
+		t.Errorf("ParseMCDC: TotalConditions=%d CoveredConditions=%d, want 1 1",
+			rep.TotalConditions, rep.CoveredConditions)
+	}
+	if rep.CoveragePct != 100 {
+		t.Errorf("ParseMCDC: CoveragePct=%.1f, want 100.0", rep.CoveragePct)
+	}
+}
+
+//fusa:test REQ-COV015
+func TestParseMCDC_UncoveredCondition(t *testing.T) {
+	// covered_false_count=0 → condition not MC/DC covered.
+	input := `{"data":[{"functions":[{"name":"Bar","mcdc_records":[{"conditions":[{"covered_true_count":5,"covered_false_count":0}]}]}]}]}`
+	rep, err := coverage.ParseMCDC([]byte(input), coverage.DALA, "test", 100)
+	if err != nil {
+		t.Fatalf("ParseMCDC: %v", err)
+	}
+	if rep.Passed {
+		t.Error("ParseMCDC: expected Passed=false for uncovered condition")
+	}
+	if rep.CoveredConditions != 0 || rep.TotalConditions != 1 {
+		t.Errorf("ParseMCDC: covered=%d total=%d, want 0 1",
+			rep.CoveredConditions, rep.TotalConditions)
+	}
+	if !strings.Contains(rep.Note, "MC/DC gate failed") {
+		t.Errorf("ParseMCDC: Note should mention gate failure, got: %q", rep.Note)
+	}
+}
+
+//fusa:test REQ-COV015
+func TestParseMCDC_NoRecords(t *testing.T) {
+	// Function exists but has no mcdc_records.
+	input := `{"data":[{"functions":[{"name":"Baz","mcdc_records":[]}]}]}`
+	rep, err := coverage.ParseMCDC([]byte(input), coverage.DALB, "test", 100)
+	if err != nil {
+		t.Fatalf("ParseMCDC: %v", err)
+	}
+	if !rep.Passed {
+		t.Error("ParseMCDC: expected Passed=true when no records")
+	}
+	if rep.Note == "" {
+		t.Error("ParseMCDC: Note should explain no records found")
+	}
+}
+
+//fusa:test REQ-COV015
+func TestMCDCCondition_IsCovered(t *testing.T) {
+	tests := []struct {
+		trueCount  int
+		falseCount int
+		want       bool
+	}{
+		{1, 1, true},
+		{3, 2, true},
+		{0, 5, false},
+		{5, 0, false},
+		{0, 0, false},
+	}
+	for _, tc := range tests {
+		cond := coverage.MCDCCondition{CoveredTrueCount: tc.trueCount, CoveredFalseCount: tc.falseCount}
+		if got := cond.IsCovered(); got != tc.want {
+			t.Errorf("IsCovered(true=%d,false=%d) = %v, want %v",
+				tc.trueCount, tc.falseCount, got, tc.want)
+		}
+	}
+}
+
+//fusa:test REQ-COV015
+func TestParseMCDCFile_NotFound(t *testing.T) {
+	_, err := coverage.ParseMCDCFile("/nonexistent/mcdc.json", coverage.DALA, 100)
+	if err == nil {
+		t.Error("expected error for missing file")
+	}
+}
+
+//fusa:test REQ-COV015
+func TestParseMCDCFile_ValidFile(t *testing.T) {
+	content := `{"data":[{"functions":[{"name":"Qux","mcdc_records":[{"conditions":[{"covered_true_count":2,"covered_false_count":1}]}]}]}]}`
+	path := filepath.Join(t.TempDir(), "mcdc.json")
+	if err := os.WriteFile(path, []byte(content), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	rep, err := coverage.ParseMCDCFile(path, coverage.DALA, 100)
+	if err != nil {
+		t.Fatalf("ParseMCDCFile: %v", err)
+	}
+	if !rep.Passed {
+		t.Errorf("ParseMCDCFile: expected Passed=true, got false; note: %s", rep.Note)
+	}
+	if rep.SourceFile != path {
+		t.Errorf("SourceFile = %q, want %q", rep.SourceFile, path)
+	}
+}
+
+//fusa:test REQ-COV015
+func TestParseMCDC_ThresholdPartialCoverage(t *testing.T) {
+	// Two conditions: one covered, one not. Threshold=50 → should pass.
+	input := `{"data":[{"functions":[{"name":"Multi","mcdc_records":[{"conditions":[{"covered_true_count":1,"covered_false_count":1},{"covered_true_count":0,"covered_false_count":1}]}]}]}]}`
+	rep, err := coverage.ParseMCDC([]byte(input), coverage.DALA, "test", 50)
+	if err != nil {
+		t.Fatalf("ParseMCDC: %v", err)
+	}
+	if rep.CoveragePct != 50 {
+		t.Errorf("CoveragePct = %.1f, want 50.0", rep.CoveragePct)
+	}
+	if !rep.Passed {
+		t.Errorf("expected Passed=true at 50%% with threshold 50, note: %s", rep.Note)
+	}
+}
+
+//fusa:test REQ-COV015
+func TestRenderText_MCDCReport(t *testing.T) {
+	blocks := []coverage.Block{{File: "foo.go", StartLine: 1, EndLine: 10, Stmts: 5, Count: 5}}
+	rep := coverage.Analyse(blocks, coverage.DALA)
+	rep.MCDCReport = &coverage.MCDCReport{
+		DAL:               coverage.DALA,
+		Threshold:         100,
+		TotalConditions:   2,
+		CoveredConditions: 1,
+		CoveragePct:       50,
+		Passed:            false,
+		Note:              "MC/DC gate failed: 50.0% covered (threshold 100%)",
+	}
+	var buf bytes.Buffer
+	if err := coverage.Render(&buf, rep, "text"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(buf.String(), "MC/DC coverage") {
+		t.Error("text output should include MC/DC coverage line")
+	}
+	if !strings.Contains(buf.String(), "FAIL") {
+		t.Error("text output should indicate FAIL for failed MC/DC gate")
+	}
+}

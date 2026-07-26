@@ -490,4 +490,25 @@ var builtinCases = []Case{
 			"qualify-report.json": `{"generatedAt":"2026-01-01T00:00:00Z","goVersion":"go1.22","module":"github.com/SoundMatt/go-FuSa","total":44,"passed":44,"failed":0,"results":[],"hash":"abc123"}`,
 		}),
 	},
+
+	// ── TRACE008: HLR/LLR decomposition ──────────────────────────────────────────
+
+	{
+		Name:          "TRACE008-pos: orphaned LLR requirement",
+		RuleID:        "TRACE008",
+		Description:   "Project with an LLR whose parentId is empty must produce a TRACE008 finding.",
+		ExpectFinding: true,
+		Files: mergeBase(map[string]string{
+			".fusa-reqs.json": `{"requirements":[{"id":"HLR-001","title":"High","level":"HLR"},{"id":"LLR-001","title":"Orphan","level":"LLR","parentId":""}]}`,
+		}),
+	},
+	{
+		Name:          "TRACE008-neg: well-formed HLR/LLR hierarchy",
+		RuleID:        "TRACE008",
+		Description:   "Project with a properly decomposed HLR/LLR hierarchy must not produce a TRACE008 finding.",
+		ExpectFinding: false,
+		Files: mergeBase(map[string]string{
+			".fusa-reqs.json": `{"requirements":[{"id":"HLR-001","title":"High","level":"HLR"},{"id":"LLR-001","title":"Low","level":"LLR","parentId":"HLR-001"}]}`,
+		}),
+	},
 }
