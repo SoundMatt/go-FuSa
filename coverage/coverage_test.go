@@ -512,6 +512,25 @@ func TestParseMCDC_ThresholdPartialCoverage(t *testing.T) {
 	}
 }
 
+// TestRenderText_DAL_D exercises the req() helper's "no" branch: DAL-D has no
+// required coverage metrics, so all req(false) calls return "no".
+func TestRenderText_DALD_ReqHelperNoBranch(t *testing.T) {
+	blocks := []coverage.Block{{File: "main.go", StartLine: 1, EndLine: 5, Stmts: 3, Count: 3}}
+	rep := coverage.Analyse(blocks, coverage.DALD)
+	var buf bytes.Buffer
+	if err := coverage.Render(&buf, rep, "text"); err != nil {
+		t.Fatalf("Render DAL-D: %v", err)
+	}
+	out := buf.String()
+	if !strings.Contains(out, "DAL-D") {
+		t.Errorf("expected DAL-D in output; got: %s", out)
+	}
+	// DAL-D has no required metrics; "no" appears for statement and decision coverage.
+	if !strings.Contains(out, "no") {
+		t.Errorf("expected 'no' for non-required metrics at DAL-D; got: %s", out)
+	}
+}
+
 //fusa:test REQ-COV015
 func TestRenderText_MCDCReport(t *testing.T) {
 	blocks := []coverage.Block{{File: "foo.go", StartLine: 1, EndLine: 10, Stmts: 5, Count: 5}}

@@ -328,6 +328,38 @@ func TestRender_Markdown_NoRequirements(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TRACE-MD001
+//fusa:test REQ-TRACE008
+func TestRender_Markdown_HLRLLRSummary(t *testing.T) {
+	// Build a matrix with an HLRLLRSummary populated so the markdown
+	// renderer exercises the HLR/LLR summary section added in v0.32.0.
+	m := &trace.Matrix{
+		HLRLLRSummary: &trace.HLRLLRSummary{
+			HLRCount:  2,
+			LLRCount:  3,
+			Orphaned:  []string{"REQ-LLR-X"},
+			Uncovered: []string{"REQ-HLR-Y"},
+		},
+	}
+	var sb strings.Builder
+	if err := trace.Render(&sb, m, "md"); err != nil {
+		t.Fatalf("Render md with HLRLLRSummary: %v", err)
+	}
+	out := sb.String()
+	if !strings.Contains(out, "HLRs") {
+		t.Errorf("markdown should contain HLR count row; got:\n%s", out)
+	}
+	if !strings.Contains(out, "LLRs") {
+		t.Errorf("markdown should contain LLR count row; got:\n%s", out)
+	}
+	if !strings.Contains(out, "Orphaned LLRs") {
+		t.Errorf("markdown should contain Orphaned LLRs row; got:\n%s", out)
+	}
+	if !strings.Contains(out, "Uncovered HLRs") {
+		t.Errorf("markdown should contain Uncovered HLRs row; got:\n%s", out)
+	}
+}
+
 // ─── Engine rules ─────────────────────────────────────────────────────────────
 
 //fusa:test REQ-TRACE001

@@ -112,6 +112,8 @@ func TestNewBundle(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-VERIFY006
+//fusa:test REQ-VERIFY007
 func TestSaveAndLoad_Roundtrip(t *testing.T) {
 	dir := t.TempDir()
 	results, err := verify.Parse(strings.NewReader(sampleJSON))

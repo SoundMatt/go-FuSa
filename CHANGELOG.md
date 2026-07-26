@@ -7,6 +7,24 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.33.0 — 2026-07-26
+
+### Added
+- **Maximize test coverage and requirement annotations** (audit-driven):
+  - `cmd/gofusa/cmd_v032_test.go`: CLI-level tests for `runTraceHLRLLR` (P0 — REQ-TRACE008),
+    `runCoverage --mcdc` (P2 — REQ-COV015), and `runQualify` new flags (P2 — REQ-QUALIFY007/008).
+  - `trace/trace_test.go`: `TestRender_Markdown_HLRLLRSummary` covers the HLR/LLR summary
+    section of `renderMarkdown` introduced in v0.32.0.
+  - `coverage/coverage_test.go`: `TestRenderText_DALD_ReqHelperNoBranch` exercises the `false`
+    branch of the unexported `req()` helper.
+  - `verify/verify_test.go`: `//fusa:test REQ-VERIFY006` and `//fusa:test REQ-VERIFY007`
+    annotations added to `TestSaveAndLoad_Roundtrip`.
+  - `qualify/qualify_test.go`: `//fusa:test REQ-QUALIFY005` on `TestSaveAndLoad_Roundtrip`,
+    `//fusa:test REQ-QUALIFY006` on `TestBuiltinCases_NonEmpty`.
+- **Four new requirements registered** in `.fusa-reqs.json`:
+  REQ-VERIFY006 (`verify.Save`), REQ-VERIFY007 (`verify.Load`),
+  REQ-QUALIFY005 (`qualify.Load`), REQ-QUALIFY006 (`qualify.BuiltinCases`).
+
 ## v0.32.0 — 2026-07-26
 
 ### Added
