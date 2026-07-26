@@ -407,6 +407,20 @@
       "level": "SIL-2"
     },
     {
+      "id": "REQ-QUALIFY005",
+      "title": "qualify.Load reads qualification report from disk",
+      "text": "qualify.Load shall read a qualification report from the given path, returning fusa.ErrNoConfig when the file does not exist and fusa.ErrInvalidConfig when the JSON is malformed.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
+      "id": "REQ-QUALIFY006",
+      "title": "qualify.BuiltinCases returns non-empty test suite",
+      "text": "qualify.BuiltinCases shall return a non-empty slice of qualification test cases, with one positive (expects finding) and one negative (expects no finding) case for each registered engine rule.",
+      "standard": "IEC 61508",
+      "level": "SIL-2"
+    },
+    {
       "id": "REQ-RELEASE001",
       "title": "SBOM presence check",
       "text": "The tool shall report a WARNING finding (RELEASE001) when no sbom.json Software Bill of Materials is present in the project root directory.",
@@ -585,6 +599,20 @@
       "id": "REQ-VERIFY005",
       "title": "verify.Run invokes go test with JSON output",
       "text": "verify.Run shall execute go test -json -count=1 ./... in the specified directory, producing machine-readable output that is parsed into structured test results.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-VERIFY006",
+      "title": "verify.Save persists evidence bundle as indented JSON",
+      "text": "verify.Save shall marshal the evidence bundle as indented JSON and write it to the specified path with a trailing newline, returning a non-nil error on marshal or write failure.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-VERIFY007",
+      "title": "verify.Load reads evidence bundle from disk",
+      "text": "verify.Load shall read an evidence bundle from the specified path, returning fusa.ErrNoConfig when the file does not exist and a descriptive error when the JSON is malformed.",
       "standard": "ISO 26262",
       "level": "ASIL-A"
     },

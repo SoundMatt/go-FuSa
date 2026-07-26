@@ -21,6 +21,7 @@ import (
 
 // ─── BuiltinCases ─────────────────────────────────────────────────────────────
 
+//fusa:test REQ-QUALIFY006
 func TestBuiltinCases_NonEmpty(t *testing.T) {
 	cases := qualify.BuiltinCases()
 	if len(cases) == 0 {
@@ -116,6 +117,7 @@ func TestHasFailures(t *testing.T) {
 
 // ─── Save / Load ──────────────────────────────────────────────────────────────
 
+//fusa:test REQ-QUALIFY005
 func TestSaveAndLoad_Roundtrip(t *testing.T) {
 	cases := qualify.BuiltinCases()[:2]
 	report, err := qualify.Run(context.Background(), engine.Default, cases)
