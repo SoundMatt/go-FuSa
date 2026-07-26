@@ -7,6 +7,33 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.32.0 — 2026-07-26
+
+### Added
+- **Feature 1 — HLR/LLR hierarchical traceability** (`trace` package): `Requirement.ParentID`
+  field; `HLRLLRSummary` struct; `ComputeHLRLLR()` function; engine rule TRACE008 that detects
+  orphaned LLRs (missing/invalid parentId) and uncovered HLRs (no LLR children). Severity is
+  WARNING by default, ERROR when project ASIL is ASIL-D. CLI `--strict-hlr-llr` flag gates on
+  any violation regardless of ASIL. Renderers (text/json/markdown) now show HLR/LLR summary.
+  Two TRACE008 qualification cases added to the builtin suite (REQ-TRACE008).
+- **Feature 2 — Tool qualification display** (`qualify` package): `Report` gains
+  `QualificationMethod`, `QualificationRecordUri`, `QualifierIdentity` fields and a
+  `QualificationBadge()` method. CLI flags `--qualification-method`, `--qualifier`,
+  `--record-uri`. Badge shown in `gofusa qualify` output (REQ-QUALIFY007).
+- **Feature 3 — MC/DC coverage measurement** (`coverage` package): `MCDCCondition`,
+  `MCDCRecord`, `MCDCFunctionResult`, `MCDCReport` types; `ParseMCDC()` and `ParseMCDCFile()`
+  functions parse LLVM coverage JSON exports. A condition is covered when
+  `covered_true_count > 0 && covered_false_count > 0`. CLI flags `--mcdc`, `--mcdc-file`,
+  `--mcdc-threshold` added to `gofusa coverage`. Gate fails when coverage falls below
+  threshold (REQ-COV015).
+- **Feature 4 — V&V independence declaration** (`qualify` package): `Report` gains
+  `ImplementationAuthor`, `IndependentReviewer`, `IndependentTestExecutor`, `AchievableASIL`
+  fields and `IndependenceStatus()` method. CLI flags `--implementation-author`,
+  `--independent-reviewer`, `--independent-test-executor`, `--achievable-asil`.
+  Independence status shown in `gofusa qualify` output (REQ-QUALIFY008).
+- Seven new requirements added to `.fusa-reqs.json`:
+  REQ-TRACE008, REQ-QUALIFY007, REQ-QUALIFY008, REQ-COV001, REQ-COV002, REQ-COV003, REQ-COV015.
+
 ## v0.31.0 — 2026-07-25
 
 - Fix SpecVersion constant from "1.9" to "1.10.4"

@@ -70,6 +70,62 @@ type Report struct {
 	MCDCNote         string      `json:"mcdcNote,omitempty"`
 	Files            []FileStats `json:"files"`
 	Gaps             []string    `json:"gaps,omitempty"`
+	// MCDCReport holds structured MC/DC measurement results from an LLVM coverage export.
+	//fusa:req REQ-COV015
+	MCDCReport *MCDCReport `json:"mcdcReport,omitempty"`
+}
+
+// ─── MC/DC types ──────────────────────────────────────────────────────────────
+
+// MCDCCondition is a single boolean condition within an MC/DC record.
+// A condition is MC/DC covered when both covered_true_count > 0 and covered_false_count > 0.
+//
+//fusa:req REQ-COV015
+type MCDCCondition struct {
+	CoveredTrueCount  int `json:"coveredTrueCount"`
+	CoveredFalseCount int `json:"coveredFalseCount"`
+}
+
+// IsCovered reports whether this condition has been exercised in both true and false outcomes.
+//
+//fusa:req REQ-COV015
+func (c MCDCCondition) IsCovered() bool {
+	return c.CoveredTrueCount > 0 && c.CoveredFalseCount > 0
+}
+
+// MCDCRecord is one MC/DC coverage record containing a slice of conditions.
+//
+//fusa:req REQ-COV015
+type MCDCRecord struct {
+	Conditions []MCDCCondition `json:"conditions"`
+}
+
+// MCDCFunctionResult holds MC/DC coverage results for a single function.
+//
+//fusa:req REQ-COV015
+type MCDCFunctionResult struct {
+	Name                string       `json:"name"`
+	Records             []MCDCRecord `json:"records"`
+	TotalConditions     int          `json:"totalConditions"`
+	CoveredConditions   int          `json:"coveredConditions"`
+	UncoveredConditions []string     `json:"uncoveredConditions,omitempty"` // "record[i].condition[j]"
+	Passed              bool         `json:"passed"`
+}
+
+// MCDCReport is the structured MC/DC measurement result.
+//
+//fusa:req REQ-COV015
+type MCDCReport struct {
+	Generated         time.Time            `json:"generated"`
+	DAL               DAL                  `json:"dal"`
+	SourceFile        string               `json:"sourceFile,omitempty"`
+	Threshold         int                  `json:"threshold"` // minimum % of conditions covered
+	Functions         []MCDCFunctionResult `json:"functions"`
+	TotalConditions   int                  `json:"totalConditions"`
+	CoveredConditions int                  `json:"coveredConditions"`
+	CoveragePct       float64              `json:"coveragePct"`
+	Passed            bool                 `json:"passed"`
+	Note              string               `json:"note,omitempty"`
 }
 
 // Parse reads a Go coverage profile from r and returns the raw blocks.
@@ -217,7 +273,27 @@ func renderText(w io.Writer, rep *Report) error {
 	fmt.Fprintf(w, "DAL: %s  Generated: %s\n\n", rep.DAL, rep.Generated.Format(time.RFC3339))
 	fmt.Fprintf(w, "Statement coverage : %5.1f%%  (required: %v)\n", rep.StmtPct, req(rep.StmtRequired))
 	fmt.Fprintf(w, "Decision coverage  : %5.1f%%  (required: %v)\n", rep.DecisionPct, req(rep.DecisionRequired))
-	if rep.MCDCRequired {
+	if rep.MCDCReport != nil {
+		m := rep.MCDCReport
+		status := "PASS"
+		if !m.Passed {
+			status = "FAIL"
+		}
+		fmt.Fprintf(w, "MC/DC coverage     : %5.1f%%  (threshold: %d%%)  [%s]\n",
+			m.CoveragePct, m.Threshold, status)
+		if m.Note != "" {
+			fmt.Fprintf(w, "  Note: %s\n", m.Note)
+		}
+		for _, fn := range m.Functions {
+			if !fn.Passed {
+				fmt.Fprintf(w, "  FAIL  %s: %d/%d conditions covered\n",
+					fn.Name, fn.CoveredConditions, fn.TotalConditions)
+				for _, uc := range fn.UncoveredConditions {
+					fmt.Fprintf(w, "    uncovered: %s\n", uc)
+				}
+			}
+		}
+	} else if rep.MCDCRequired {
 		fmt.Fprintf(w, "MC/DC coverage     : MANUAL CHECK REQUIRED\n")
 		fmt.Fprintf(w, "  Note: %s\n", rep.MCDCNote)
 	}
@@ -239,6 +315,107 @@ func req(required bool) string {
 		return "YES"
 	}
 	return "no"
+}
+
+// ─── MC/DC analysis ───────────────────────────────────────────────────────────
+
+// llvmMCDCExport is the shape of the LLVM coverage JSON format for MC/DC records.
+// We only decode what we need.
+type llvmMCDCExport struct {
+	Data []struct {
+		Functions []struct {
+			Name        string `json:"name"`
+			MCDCRecords []struct {
+				Conditions []struct {
+					CoveredTrueCount  int `json:"covered_true_count"`
+					CoveredFalseCount int `json:"covered_false_count"`
+				} `json:"conditions"`
+			} `json:"mcdc_records"`
+		} `json:"functions"`
+	} `json:"data"`
+}
+
+// ParseMCDCFile reads an LLVM coverage JSON file and returns an MCDCReport.
+// threshold is the minimum percentage (0–100) of conditions that must be covered.
+// A threshold of 0 means all conditions must be covered (100%).
+//
+//fusa:req REQ-COV015
+func ParseMCDCFile(path string, dal DAL, threshold int) (*MCDCReport, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("coverage: mcdc: read %s: %w", path, err)
+	}
+	return ParseMCDC(data, dal, path, threshold)
+}
+
+// ParseMCDC parses LLVM MC/DC coverage JSON bytes and returns an MCDCReport.
+//
+//fusa:req REQ-COV015
+func ParseMCDC(data []byte, dal DAL, sourceFile string, threshold int) (*MCDCReport, error) {
+	var export llvmMCDCExport
+	if err := json.Unmarshal(data, &export); err != nil {
+		return nil, fmt.Errorf("coverage: mcdc: parse JSON: %w", err)
+	}
+
+	if threshold <= 0 {
+		threshold = 100
+	}
+
+	rep := &MCDCReport{
+		Generated:  time.Now().UTC(),
+		DAL:        dal,
+		SourceFile: sourceFile,
+		Threshold:  threshold,
+	}
+
+	for _, d := range export.Data {
+		for _, fn := range d.Functions {
+			if len(fn.MCDCRecords) == 0 {
+				continue
+			}
+			result := MCDCFunctionResult{Name: fn.Name, Passed: true}
+			for ri, rec := range fn.MCDCRecords {
+				r := MCDCRecord{}
+				for ci, cond := range rec.Conditions {
+					mc := MCDCCondition{
+						CoveredTrueCount:  cond.CoveredTrueCount,
+						CoveredFalseCount: cond.CoveredFalseCount,
+					}
+					r.Conditions = append(r.Conditions, mc)
+					result.TotalConditions++
+					rep.TotalConditions++
+					if mc.IsCovered() {
+						result.CoveredConditions++
+						rep.CoveredConditions++
+					} else {
+						result.UncoveredConditions = append(result.UncoveredConditions,
+							fmt.Sprintf("record[%d].condition[%d]", ri, ci))
+					}
+				}
+				result.Records = append(result.Records, r)
+			}
+			if len(result.UncoveredConditions) > 0 {
+				result.Passed = false
+			}
+			rep.Functions = append(rep.Functions, result)
+		}
+	}
+
+	if rep.TotalConditions > 0 {
+		rep.CoveragePct = float64(rep.CoveredConditions) * 100 / float64(rep.TotalConditions)
+	}
+
+	if rep.TotalConditions == 0 {
+		rep.Passed = true
+		rep.Note = "no MC/DC records found in coverage export"
+	} else {
+		// Gate: pass when overall coverage meets the threshold.
+		rep.Passed = rep.CoveragePct >= float64(threshold)
+		if !rep.Passed {
+			rep.Note = fmt.Sprintf("MC/DC gate failed: %.1f%% covered (threshold %d%%)", rep.CoveragePct, threshold)
+		}
+	}
+	return rep, nil
 }
 
 // ─── Mutation testing ──────────────────────────────────────────────────────────

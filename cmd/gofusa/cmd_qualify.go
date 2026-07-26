@@ -26,6 +26,17 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 
 	var (
 		outputFile = fs.String("output", "", "path for the JSON qualification report (default: ./qualify-report.json)")
+		// Feature 2 — tool qualification display
+		//fusa:req REQ-QUALIFY007
+		qualMethod = fs.String("qualification-method", "", `qualification method: "self" or "independent"`)
+		qualifier  = fs.String("qualifier", "", "name or organisation performing the qualification")
+		recordURI  = fs.String("record-uri", "", "URI to the qualification dossier / evidence record")
+		// Feature 4 — V&V independence
+		//fusa:req REQ-QUALIFY008
+		implAuthor  = fs.String("implementation-author", "", "name of the implementation author")
+		indReviewer = fs.String("independent-reviewer", "", "name of the independent reviewer")
+		indTestExec = fs.String("independent-test-executor", "", "name of the independent test executor")
+		achieveASIL = fs.String("achievable-asil", "", "achievable ASIL level when independence requirements are met")
 	)
 	if code := parseFlags(fs, args); code != 0 {
 		return code
@@ -49,6 +60,32 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 		return fusa.ExitRuntime
 	}
 
+	// Apply qualification metadata flags.
+	//fusa:req REQ-QUALIFY007
+	if *qualMethod != "" {
+		report.QualificationMethod = *qualMethod
+	}
+	if *qualifier != "" {
+		report.QualifierIdentity = *qualifier
+	}
+	if *recordURI != "" {
+		report.QualificationRecordUri = *recordURI
+	}
+	// Apply V&V independence flags.
+	//fusa:req REQ-QUALIFY008
+	if *implAuthor != "" {
+		report.ImplementationAuthor = *implAuthor
+	}
+	if *indReviewer != "" {
+		report.IndependentReviewer = *indReviewer
+	}
+	if *indTestExec != "" {
+		report.IndependentTestExecutor = *indTestExec
+	}
+	if *achieveASIL != "" {
+		report.AchievableASIL = *achieveASIL
+	}
+
 	fmt.Fprintf(stdout, "Results: %d/%d passed", report.Passed, report.Total)
 	if report.HasFailures() {
 		fmt.Fprintf(stdout, " (%d failed)\n", report.Failed)
@@ -60,6 +97,12 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 	} else {
 		fmt.Fprintf(stdout, " — all passed\n")
 	}
+
+	// Show qualification badge and independence status.
+	//fusa:req REQ-QUALIFY007
+	fmt.Fprintf(stdout, "Qualification badge: %s\n", report.QualificationBadge())
+	//fusa:req REQ-QUALIFY008
+	fmt.Fprintf(stdout, "Independence status: %s\n", report.IndependenceStatus())
 
 	if err := qualify.Save(outPath, report); err != nil {
 		fmt.Fprintf(stderr, "gofusa qualify: save report: %v\n", err)

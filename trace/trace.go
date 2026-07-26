@@ -48,13 +48,26 @@ const (
 )
 
 // Requirement is a traceable safety requirement.
+//
+//fusa:req REQ-TRACE008
 type Requirement struct {
 	ID       string `json:"id"`
 	Title    string `json:"title"`
 	Text     string `json:"text,omitempty"`
 	Standard string `json:"standard,omitempty"`
-	Level    string `json:"level,omitempty"` // HLR or LLR
-	ASIL     string `json:"asil,omitempty"`  // e.g. ASIL-B, SIL-2
+	Level    string `json:"level,omitempty"`    // HLR or LLR
+	ASIL     string `json:"asil,omitempty"`     // e.g. ASIL-B, SIL-2
+	ParentID string `json:"parentId,omitempty"` // LLR → parent HLR ID
+}
+
+// HLRLLRSummary records HLR/LLR decomposition metrics.
+//
+//fusa:req REQ-TRACE008
+type HLRLLRSummary struct {
+	HLRCount  int      `json:"hlrCount"`
+	LLRCount  int      `json:"llrCount"`
+	Orphaned  []string `json:"orphaned,omitempty"`  // LLR IDs with missing/invalid ParentID
+	Uncovered []string `json:"uncovered,omitempty"` // HLR IDs with no LLR children
 }
 
 // Tag links a source location to a requirement.
@@ -90,10 +103,11 @@ const (
 
 // Matrix is the full traceability matrix for a project.
 type Matrix struct {
-	ProjectRoot  string        `json:"-"` // set by Build; used in JSON envelope
-	Requirements []Requirement `json:"requirements"`
-	Tags         []Tag         `json:"tags"`
-	Coverage     Coverage      `json:"coverage"`
+	ProjectRoot   string         `json:"-"` // set by Build; used in JSON envelope
+	Requirements  []Requirement  `json:"requirements"`
+	Tags          []Tag          `json:"tags"`
+	Coverage      Coverage       `json:"coverage"`
+	HLRLLRSummary *HLRLLRSummary `json:"hlrllrSummary,omitempty"`
 }
 
 // LoadRequirements reads requirements from .fusa-reqs.json in dir.
@@ -279,12 +293,59 @@ func Build(root string) (*Matrix, error) {
 		}
 	}
 
-	return &Matrix{
+	hlrllr := ComputeHLRLLR(reqs)
+
+	m := &Matrix{
 		ProjectRoot:  root,
 		Requirements: reqs,
 		Tags:         tags,
 		Coverage:     cov,
-	}, nil
+	}
+	if hlrllr.HLRCount > 0 || hlrllr.LLRCount > 0 {
+		m.HLRLLRSummary = hlrllr
+	}
+	return m, nil
+}
+
+// ComputeHLRLLR analyses requirements for HLR/LLR hierarchy consistency.
+// It is a no-op (returns a zero-valued summary) when no requirements have Level set.
+//
+//fusa:req REQ-TRACE008
+func ComputeHLRLLR(reqs []Requirement) *HLRLLRSummary {
+	hlrIDs := make(map[string]bool)
+	var hlrs, llrs []Requirement
+	for _, r := range reqs {
+		switch strings.ToUpper(r.Level) {
+		case "HLR":
+			hlrs = append(hlrs, r)
+			hlrIDs[r.ID] = true
+		case "LLR":
+			llrs = append(llrs, r)
+		}
+	}
+	s := &HLRLLRSummary{
+		HLRCount: len(hlrs),
+		LLRCount: len(llrs),
+	}
+	// Orphaned: LLRs whose ParentID is absent or does not reference a known HLR.
+	for _, llr := range llrs {
+		if llr.ParentID == "" || !hlrIDs[llr.ParentID] {
+			s.Orphaned = append(s.Orphaned, llr.ID)
+		}
+	}
+	// Uncovered: HLRs with no LLR children.
+	covered := make(map[string]bool)
+	for _, llr := range llrs {
+		if llr.ParentID != "" {
+			covered[llr.ParentID] = true
+		}
+	}
+	for _, hlr := range hlrs {
+		if !covered[hlr.ID] {
+			s.Uncovered = append(s.Uncovered, hlr.ID)
+		}
+	}
+	return s
 }
 
 // ScanFuncCoverage counts exported functions and how many live in files that
@@ -376,6 +437,12 @@ func renderMarkdown(w io.Writer, m *Matrix) error {
 	fmt.Fprintf(w, "| Traced | %d |\n", m.Coverage.TracedRequirements)
 	fmt.Fprintf(w, "| Tested | %d |\n", m.Coverage.TestedRequirements)
 	fmt.Fprintf(w, "| Sec-Tested | %d |\n\n", m.Coverage.SecTestedRequirements)
+	if s := m.HLRLLRSummary; s != nil {
+		fmt.Fprintf(w, "| HLRs | %d |\n", s.HLRCount)
+		fmt.Fprintf(w, "| LLRs | %d |\n", s.LLRCount)
+		fmt.Fprintf(w, "| Orphaned LLRs | %d |\n", len(s.Orphaned))
+		fmt.Fprintf(w, "| Uncovered HLRs | %d |\n\n", len(s.Uncovered))
+	}
 
 	if len(m.Requirements) == 0 {
 		fmt.Fprintf(w, "_No requirements defined._\n")
@@ -421,8 +488,12 @@ func renderText(w io.Writer, m *Matrix) error {
 			m.Coverage.TracedRequirements,
 			m.Coverage.TestedRequirements,
 			m.Coverage.SecTestedRequirements),
-		"",
 	}
+	if s := m.HLRLLRSummary; s != nil {
+		lines = append(lines, fmt.Sprintf("HLR/LLR: %d HLRs  %d LLRs  %d orphaned  %d uncovered",
+			s.HLRCount, s.LLRCount, len(s.Orphaned), len(s.Uncovered)))
+	}
+	lines = append(lines, "")
 	for _, l := range lines {
 		if _, err := fmt.Fprintln(w, l); err != nil {
 			return err
@@ -496,16 +567,17 @@ func renderText(w io.Writer, m *Matrix) error {
 
 func renderJSON(w io.Writer, m *Matrix) error {
 	doc := struct {
-		SchemaVersion string        `json:"schemaVersion"`
-		Kind          string        `json:"kind"`
-		Tool          string        `json:"tool"`
-		ToolVersion   string        `json:"toolVersion"`
-		Language      string        `json:"language"`
-		GeneratedAt   time.Time     `json:"generatedAt"`
-		ProjectRoot   string        `json:"projectRoot"`
-		Requirements  []Requirement `json:"requirements"`
-		Tags          []Tag         `json:"tags"`
-		Coverage      Coverage      `json:"coverage"`
+		SchemaVersion string         `json:"schemaVersion"`
+		Kind          string         `json:"kind"`
+		Tool          string         `json:"tool"`
+		ToolVersion   string         `json:"toolVersion"`
+		Language      string         `json:"language"`
+		GeneratedAt   time.Time      `json:"generatedAt"`
+		ProjectRoot   string         `json:"projectRoot"`
+		Requirements  []Requirement  `json:"requirements"`
+		Tags          []Tag          `json:"tags"`
+		Coverage      Coverage       `json:"coverage"`
+		HLRLLRSummary *HLRLLRSummary `json:"hlrllrSummary,omitempty"`
 	}{
 		SchemaVersion: fusa.SpecVersion,
 		Kind:          "trace-matrix",
@@ -517,6 +589,7 @@ func renderJSON(w io.Writer, m *Matrix) error {
 		Requirements:  m.Requirements,
 		Tags:          m.Tags,
 		Coverage:      m.Coverage,
+		HLRLLRSummary: m.HLRLLRSummary,
 	}
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
@@ -536,6 +609,7 @@ func init() {
 	engine.Default.MustRegister(&ruleVerificationIndependence{})
 	engine.Default.MustRegister(&ruleReqCoverage{})
 	engine.Default.MustRegister(&ruleFuncAnnotationDensity{})
+	engine.Default.MustRegister(&ruleHLRLLRDecomposition{})
 }
 
 // TRACE001 — .fusa-reqs.json should be present.
@@ -812,4 +886,60 @@ func (r *ruleFuncAnnotationDensity) Run(_ context.Context, projectRoot string, _
 		Location:    fusa.Location{File: "."},
 		Remediation: "add //fusa:req annotations to source files containing exported functions",
 	}}, nil
+}
+
+// TRACE008 — HLR/LLR decomposition consistency.
+// Fires when LLRs reference non-existent HLRs (orphaned) or HLRs have no LLR
+// children (uncovered). Severity is WARNING for ASIL-A/B/C; ERROR for ASIL-D.
+// Only fires when at least one requirement has a Level field of "HLR" or "LLR".
+//
+//fusa:req REQ-TRACE008
+type ruleHLRLLRDecomposition struct{}
+
+func (r *ruleHLRLLRDecomposition) ID() string { return "TRACE008" }
+func (r *ruleHLRLLRDecomposition) Description() string {
+	return "HLR/LLR decomposition: orphaned LLRs (no valid parent HLR) or uncovered HLRs (no LLR children) detected."
+}
+
+//fusa:req REQ-TRACE008
+func (r *ruleHLRLLRDecomposition) Run(_ context.Context, projectRoot string, cfg *config.Config) ([]fusa.Finding, error) {
+	reqs, err := LoadRequirements(projectRoot)
+	if err != nil {
+		if errors.Is(err, fusa.ErrNoConfig) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	s := ComputeHLRLLR(reqs)
+	if s.HLRCount == 0 && s.LLRCount == 0 {
+		return nil, nil // no HLR/LLR annotations — rule is not applicable
+	}
+
+	// Determine severity based on project ASIL.
+	severity := fusa.SeverityWarning
+	if cfg != nil && strings.ToUpper(cfg.Project.ASIL) == "ASIL-D" {
+		severity = fusa.SeverityError
+	}
+
+	var findings []fusa.Finding
+	for _, id := range s.Orphaned {
+		findings = append(findings, fusa.Finding{
+			RuleID:      r.ID(),
+			Severity:    severity,
+			Message:     fmt.Sprintf("LLR %q has no valid parent HLR (parentId is absent or references an unknown requirement)", id),
+			Location:    fusa.Location{File: ReqsFile},
+			Remediation: "set the parentId field of " + id + " to the ID of an existing HLR requirement",
+		})
+	}
+	for _, id := range s.Uncovered {
+		findings = append(findings, fusa.Finding{
+			RuleID:      r.ID(),
+			Severity:    severity,
+			Message:     fmt.Sprintf("HLR %q has no LLR children — every HLR must be decomposed into at least one LLR", id),
+			Location:    fusa.Location{File: ReqsFile},
+			Remediation: "add LLR requirements with parentId: " + id,
+		})
+	}
+	return findings, nil
 }

@@ -194,3 +194,117 @@ func TestQUALIFY001_Description(t *testing.T) {
 	}
 	t.Error("QUALIFY001 not registered")
 }
+
+// ─── Feature 2: Tool qualification display ────────────────────────────────────
+
+//fusa:test REQ-QUALIFY007
+func TestReport_QualificationBadge_Independent(t *testing.T) {
+	r := &qualify.Report{QualificationMethod: "independent"}
+	if badge := r.QualificationBadge(); badge != "independently-qualified" {
+		t.Errorf("QualificationBadge = %q, want \"independently-qualified\"", badge)
+	}
+}
+
+//fusa:test REQ-QUALIFY007
+func TestReport_QualificationBadge_Self(t *testing.T) {
+	r := &qualify.Report{QualificationMethod: "self"}
+	if badge := r.QualificationBadge(); badge != "self-qualified" {
+		t.Errorf("QualificationBadge = %q, want \"self-qualified\"", badge)
+	}
+}
+
+//fusa:test REQ-QUALIFY007
+func TestReport_QualificationBadge_Unset(t *testing.T) {
+	r := &qualify.Report{}
+	if badge := r.QualificationBadge(); badge != "unqualified" {
+		t.Errorf("QualificationBadge = %q, want \"unqualified\"", badge)
+	}
+}
+
+//fusa:test REQ-QUALIFY007
+func TestReport_QualificationFields_RoundTrip(t *testing.T) {
+	r := &qualify.Report{
+		QualificationMethod:    "independent",
+		QualificationRecordUri: "https://example.com/dossier",
+		QualifierIdentity:      "Acme Safety Labs",
+	}
+	data, err := json.Marshal(r)
+	if err != nil {
+		t.Fatalf("Marshal: %v", err)
+	}
+	var got qualify.Report
+	if err := json.Unmarshal(data, &got); err != nil {
+		t.Fatalf("Unmarshal: %v", err)
+	}
+	if got.QualificationMethod != "independent" {
+		t.Errorf("QualificationMethod = %q", got.QualificationMethod)
+	}
+	if got.QualificationRecordUri != "https://example.com/dossier" {
+		t.Errorf("QualificationRecordUri = %q", got.QualificationRecordUri)
+	}
+	if got.QualifierIdentity != "Acme Safety Labs" {
+		t.Errorf("QualifierIdentity = %q", got.QualifierIdentity)
+	}
+}
+
+// ─── Feature 4: V&V independence ─────────────────────────────────────────────
+
+//fusa:test REQ-QUALIFY008
+func TestReport_IndependenceStatus_Independent(t *testing.T) {
+	r := &qualify.Report{
+		ImplementationAuthor: "Alice",
+		IndependentReviewer:  "Bob",
+	}
+	if status := r.IndependenceStatus(); status != "independent" {
+		t.Errorf("IndependenceStatus = %q, want \"independent\"", status)
+	}
+}
+
+//fusa:test REQ-QUALIFY008
+func TestReport_IndependenceStatus_SelfReviewed(t *testing.T) {
+	r := &qualify.Report{
+		ImplementationAuthor: "Alice",
+		IndependentReviewer:  "Alice",
+	}
+	if status := r.IndependenceStatus(); status != "self-reviewed" {
+		t.Errorf("IndependenceStatus = %q, want \"self-reviewed\"", status)
+	}
+}
+
+//fusa:test REQ-QUALIFY008
+func TestReport_IndependenceStatus_Unqualified(t *testing.T) {
+	r := &qualify.Report{ImplementationAuthor: "Alice"}
+	if status := r.IndependenceStatus(); status != "unqualified" {
+		t.Errorf("IndependenceStatus = %q, want \"unqualified\"", status)
+	}
+}
+
+//fusa:test REQ-QUALIFY008
+func TestReport_VVIndependenceFields_RoundTrip(t *testing.T) {
+	r := &qualify.Report{
+		ImplementationAuthor:    "Alice",
+		IndependentReviewer:     "Bob",
+		IndependentTestExecutor: "Carol",
+		AchievableASIL:          "ASIL-D",
+	}
+	data, err := json.Marshal(r)
+	if err != nil {
+		t.Fatalf("Marshal: %v", err)
+	}
+	var got qualify.Report
+	if err := json.Unmarshal(data, &got); err != nil {
+		t.Fatalf("Unmarshal: %v", err)
+	}
+	if got.ImplementationAuthor != "Alice" {
+		t.Errorf("ImplementationAuthor = %q", got.ImplementationAuthor)
+	}
+	if got.IndependentReviewer != "Bob" {
+		t.Errorf("IndependentReviewer = %q", got.IndependentReviewer)
+	}
+	if got.IndependentTestExecutor != "Carol" {
+		t.Errorf("IndependentTestExecutor = %q", got.IndependentTestExecutor)
+	}
+	if got.AchievableASIL != "ASIL-D" {
+		t.Errorf("AchievableASIL = %q", got.AchievableASIL)
+	}
+}

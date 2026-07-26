@@ -29,6 +29,10 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 		format  = fs.String("format", "text", "output format: text or json")
 		output  = fs.String("output", "", "write report to file (default: stdout)")
 		mutate  = fs.Bool("mutate", false, "run mutation testing via go-mutesting (MC/DC-equivalent evidence for DO-178C Level A)")
+		//fusa:req REQ-COV015
+		mcdcFlag      = fs.Bool("mcdc", false, "parse and gate on MC/DC condition coverage (requires --mcdc-file)")
+		mcdcFile      = fs.String("mcdc-file", "", "path to LLVM coverage JSON export containing MC/DC records")
+		mcdcThreshold = fs.Int("mcdc-threshold", 100, "minimum %% of MC/DC conditions that must be covered (default 100)")
 	)
 	if code := parseFlags(fs, args); code != 0 {
 		return code
@@ -72,9 +76,32 @@ func runCoverage(args []string, stdout, stderr io.Writer) int {
 		w = f
 	}
 
+	// MC/DC analysis: attach to report before rendering so it is included.
+	//fusa:req REQ-COV015
+	if *mcdcFlag {
+		mcdcPath := *mcdcFile
+		if mcdcPath == "" {
+			fmt.Fprintf(stderr, "gofusa coverage: --mcdc requires --mcdc-file\n")
+			return fusa.ExitUsage
+		}
+		mcdcRep, mcdcErr := coverage.ParseMCDCFile(mcdcPath, dal, *mcdcThreshold)
+		if mcdcErr != nil {
+			fmt.Fprintf(stderr, "gofusa coverage: mcdc: %v\n", mcdcErr)
+			return fusa.ExitRuntime
+		}
+		rep.MCDCReport = mcdcRep
+	}
+
 	if err := coverage.Render(w, rep, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa coverage: render: %v\n", err)
 		return fusa.ExitRuntime
+	}
+
+	// Gate on MC/DC after rendering.
+	//fusa:req REQ-COV015
+	if *mcdcFlag && rep.MCDCReport != nil && !rep.MCDCReport.Passed {
+		fmt.Fprintf(stderr, "gofusa coverage: MC/DC gate failed: %s\n", rep.MCDCReport.Note)
+		return fusa.ExitGateFail
 	}
 
 	if *mutate {
