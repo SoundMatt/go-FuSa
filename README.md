@@ -48,7 +48,7 @@ for ISO 26262, IEC 61508, ISO 21434, and DO-178C.
 | `sas/` | Software Accomplishment Summary — 20 evidence items (DO-178C §11.20) |
 | `iso21434/` | ISO 21434 cybersecurity engineering — CAL 1–4 gap assessment, TARA evidence checking |
 | `unece/` | UN R.155 Annex 5 — threat-category coverage assessment (TC-1 through TC-9) |
-| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr`, `coupling`, `iso21434`, `unece`, `iec62443`, `slsa`, `comp` |
+| `cmd/gofusa` | CLI — `init`, `check`, `lint`, `analyze`, `template`, `report`, `trace`, `verify`, `release`, `qualify`, `safety-case`, `fmea`, `boundary`, `vuln`, `audit-pack`, `cyber`, `tara`, `diff`, `badge`, `req`, `fix`, `hooks`, `sign`, `do178`, `sas`, `sci`, `coverage`, `pr`, `coupling`, `iso21434`, `unece`, `iec62443`, `slsa`, `comp`, `hara`, `iso26262`, `iec61508`, `disposition`, `impact`, `metrics`, `misra`, `capabilities`, `version` |
 
 ## Install
 
@@ -59,6 +59,13 @@ go install github.com/SoundMatt/go-FuSa/cmd/gofusa@latest
 ## Quick start
 
 ```bash
+# Print the tool/spec version
+gofusa version                          # text
+gofusa version --format json            # {"tool","version","specVersion"}
+
+# Discover supported commands, formats, and standards (§9.1 discovery document)
+gofusa capabilities
+
 # Initialise a project
 gofusa init
 
@@ -274,7 +281,7 @@ docker build -t go-fusa .
 docker run --rm -v "$(pwd)":/project go-fusa check
 ```
 
-Published tags: `latest`, `0.33`, `0.33.4` (and matching semver for every release).
+Published tags: `latest`, `0.33`, `0.33.5` (and matching semver for every release).
 
 ## Standards coverage
 
