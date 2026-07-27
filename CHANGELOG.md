@@ -7,6 +7,13 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.33.2 — 2026-07-27
+
+### Fixed
+- **Doc version check** — `README.md` and `docs/tool-safety-manual.md` still referenced
+  `0.33.0` after the v0.33.1 bump, failing CI's version-consistency gate. Both now
+  reference `0.33.2`.
+
 ## v0.33.1 — 2026-07-27
 
 ### Fixed
