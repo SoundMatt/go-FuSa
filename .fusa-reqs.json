@@ -1338,6 +1338,145 @@
       "text": "The coverage command shall accept --mcdc, --mcdc-file (path to LLVM coverage JSON), and --mcdc-threshold (0-100) flags. A condition is MC/DC covered when covered_true_count > 0 AND covered_false_count > 0. The gate shall fail when overall condition coverage falls below the threshold.",
       "standard": "DO-178C",
       "level": "HLR"
+    },
+    {
+      "id": "REQ-TRACE009",
+      "title": "Function-level tag coverage (x-FuSa spec §1.4.1 item 2)",
+      "text": "trace.ScanFuncTagCoverage shall count exported top-level functions/methods in non-test .go files that carry a //fusa:req tag directly above them in their doc comment, excluding trivial fmt.Stringer/error-interface shims and boilerplate zero-parameter getters, and report the percentage covered.",
+      "standard": "x-FuSa",
+      "level": "1.4.1"
+    },
+    {
+      "id": "REQ-CLI-TRACE004",
+      "title": "--func-coverage CLI gate",
+      "text": "gofusa trace --func-coverage N shall exit 1 when fewer than N%% of exported functions/methods carry a //fusa:req tag directly above them; N=0 disables the gate (x-FuSa spec §5).",
+      "standard": "x-FuSa",
+      "level": "1.4.1"
+    },
+    {
+      "id": "REQ-TRACE010",
+      "title": "Dangling //fusa:test tag detection",
+      "text": "The trace engine shall report a WARNING finding (TRACE009, category requirement) for every //fusa:test tag whose requirement ID does not exist in .fusa-reqs.json, the same way a malformed annotation is treated (x-FuSa spec §1.4.1 item 3).",
+      "standard": "x-FuSa",
+      "level": "1.4.1"
+    },
+    {
+      "id": "REQ-RUNTIME006",
+      "title": "Watchdog Start begins periodic liveness monitoring",
+      "text": "runtime.Watchdog.Start shall begin the periodic expiry-check goroutine and return an error if the watchdog is already running.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME007",
+      "title": "Watchdog Stop halts monitoring safely",
+      "text": "runtime.Watchdog.Stop shall halt the monitoring goroutine and be safe to call when the watchdog is not running (idempotent no-op).",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME008",
+      "title": "Watchdog Kick resets the liveness timer",
+      "text": "runtime.Watchdog.Kick shall reset the last-kick timestamp, preventing onExpiry from firing while kicks continue within the timeout window.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME009",
+      "title": "Watchdog IsRunning reports monitoring state",
+      "text": "runtime.Watchdog.IsRunning shall report false before Start and after Stop, and true while monitoring is active.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME010",
+      "title": "Heartbeat Start begins periodic beat monitoring",
+      "text": "runtime.Heartbeat.Start shall begin the periodic missed-beat check goroutine and return an error if the heartbeat is already running.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME011",
+      "title": "Heartbeat Stop halts monitoring safely",
+      "text": "runtime.Heartbeat.Stop shall halt the monitoring goroutine and be safe to call when the heartbeat is not running (idempotent no-op).",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME012",
+      "title": "Heartbeat Beat signals liveness",
+      "text": "runtime.Heartbeat.Beat shall record the current time as the last beat and reset the consecutive-missed-beat counter to zero.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME013",
+      "title": "Heartbeat IsRunning reports monitoring state",
+      "text": "runtime.Heartbeat.IsRunning shall report false before Start and after Stop, and true while monitoring is active.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME014",
+      "title": "FaultMonitor SetThreshold configures per-fault callback threshold",
+      "text": "runtime.FaultMonitor.SetThreshold shall set the count at which onFault fires for the given faultID; a threshold of 0 shall disable callback firing for that fault.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-RUNTIME015",
+      "title": "FaultMonitor Record increments count and fires at threshold",
+      "text": "runtime.FaultMonitor.Record shall increment the counter for faultID and invoke onFault(faultID, count) once the counter reaches or exceeds the configured threshold.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-REQXML001",
+      "title": "Parse DOORS ReqIF XML",
+      "text": "trace.ParseDOORS shall parse a DOORS ReqIF XML document and return the requirements it contains as Requirement records.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-REQXML002",
+      "title": "Export DOORS ReqIF XML",
+      "text": "trace.ExportDOORS shall serialise a slice of Requirement records as minimal DOORS ReqIF XML that round-trips through ParseDOORS.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-REQXML003",
+      "title": "Parse Codebeamer tracker XML",
+      "text": "trace.ParseCodebeamer shall parse a Codebeamer tracker XML export and return the requirements it contains as Requirement records, including ASIL/level custom fields.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-REQXML004",
+      "title": "Export Codebeamer tracker XML",
+      "text": "trace.ExportCodebeamer shall serialise a slice of Requirement records as Codebeamer tracker XML that round-trips through ParseCodebeamer.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-REQXML005",
+      "title": "Parse Jama Connect XML",
+      "text": "trace.ParseJama shall parse a Jama Connect XML export and return the requirements it contains as Requirement records, including ASIL/level custom fields.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-REQXML006",
+      "title": "Export Jama Connect XML",
+      "text": "trace.ExportJama shall serialise a slice of Requirement records as Jama Connect XML that round-trips through ParseJama.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-REQXML007",
+      "title": "Parse Polarion workitems XML",
+      "text": "trace.ParsePolarion shall parse a Polarion workitems XML export and return the requirements it contains as Requirement records, including the ASIL custom field.",
+      "standard": "generic"
+    },
+    {
+      "id": "REQ-REQXML008",
+      "title": "Export Polarion workitems XML",
+      "text": "trace.ExportPolarion shall serialise a slice of Requirement records as Polarion workitems XML that round-trips through ParsePolarion.",
+      "standard": "generic"
     }
   ]
 }

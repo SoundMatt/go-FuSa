@@ -31,6 +31,8 @@ func NewHeartbeat(interval time.Duration, onMissed func(missed int)) *Heartbeat 
 }
 
 // Start begins heartbeat monitoring. Returns an error if already running.
+//
+//fusa:req REQ-RUNTIME010
 func (h *Heartbeat) Start() error {
 	h.mu.Lock()
 	if h.running {
@@ -70,6 +72,8 @@ func (h *Heartbeat) Start() error {
 }
 
 // Stop halts heartbeat monitoring. Safe to call when not running.
+//
+//fusa:req REQ-RUNTIME011
 func (h *Heartbeat) Stop() {
 	h.mu.Lock()
 	defer h.mu.Unlock()
@@ -81,6 +85,8 @@ func (h *Heartbeat) Stop() {
 }
 
 // Beat signals liveness, resetting the missed-beat counter.
+//
+//fusa:req REQ-RUNTIME012
 func (h *Heartbeat) Beat() {
 	h.mu.Lock()
 	defer h.mu.Unlock()
@@ -89,6 +95,8 @@ func (h *Heartbeat) Beat() {
 }
 
 // IsRunning reports whether the heartbeat is active.
+//
+//fusa:req REQ-RUNTIME013
 func (h *Heartbeat) IsRunning() bool {
 	h.mu.Lock()
 	defer h.mu.Unlock()

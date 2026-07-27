@@ -17,6 +17,7 @@ import (
 // TestAssess_EmptyDir verifies TC-1 through TC-6 are GAP and TC-7 through TC-9 are MANUAL.
 //
 //fusa:test REQ-UNECE-001
+//fusa:test REQ-UNECE-002
 func TestAssess_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := unece.Assess(dir)
@@ -49,6 +50,7 @@ func TestAssess_EmptyDir(t *testing.T) {
 // TestAssess_WithEvidence verifies that providing evidence files results in passes.
 //
 //fusa:test REQ-UNECE-001
+//fusa:test REQ-UNECE-002
 func TestAssess_WithEvidence(t *testing.T) {
 	dir := t.TempDir()
 	for _, f := range []string{"tara.json", "provenance.json", "check-report.json", "sbom.json"} {
@@ -146,6 +148,7 @@ func TestUNECE001_Run_NilCfg(t *testing.T) {
 // TestRender_Text verifies text rendering runs without error.
 //
 //fusa:test REQ-UNECE-001
+//fusa:test REQ-UNECE-003
 func TestRender_Text(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := unece.Assess(dir)
@@ -164,6 +167,7 @@ func TestRender_Text(t *testing.T) {
 // TestRender_JSON verifies JSON rendering produces valid JSON.
 //
 //fusa:test REQ-UNECE-001
+//fusa:test REQ-UNECE-003
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := unece.Assess(dir)

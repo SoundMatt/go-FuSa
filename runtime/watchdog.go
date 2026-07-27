@@ -40,6 +40,8 @@ func NewWatchdog(interval, timeout time.Duration, onExpiry func()) *Watchdog {
 }
 
 // Start begins watchdog monitoring. Returns an error if already running.
+//
+//fusa:req REQ-RUNTIME006
 func (w *Watchdog) Start() error {
 	w.mu.Lock()
 	if w.running {
@@ -73,6 +75,8 @@ func (w *Watchdog) Start() error {
 }
 
 // Stop halts watchdog monitoring. Safe to call when not running.
+//
+//fusa:req REQ-RUNTIME007
 func (w *Watchdog) Stop() {
 	w.mu.Lock()
 	defer w.mu.Unlock()
@@ -85,6 +89,8 @@ func (w *Watchdog) Stop() {
 
 // Kick resets the watchdog timer. Should be called periodically by the
 // monitored component to signal liveness.
+//
+//fusa:req REQ-RUNTIME008
 func (w *Watchdog) Kick() {
 	w.mu.Lock()
 	defer w.mu.Unlock()
@@ -92,6 +98,8 @@ func (w *Watchdog) Kick() {
 }
 
 // IsRunning reports whether the watchdog is active.
+//
+//fusa:req REQ-RUNTIME009
 func (w *Watchdog) IsRunning() bool {
 	w.mu.Lock()
 	defer w.mu.Unlock()

@@ -130,6 +130,10 @@ gofusa trace --sec-tested 80
 # Assess requirement-to-source coverage and function annotation density (DO-178C §6.4.4)
 gofusa trace --req-coverage 80   # exits 1 if either metric is below 80%
 
+# Assess function-level tag placement (x-FuSa spec §1.4.1): % of exported
+# functions/methods with a //fusa:req tag directly above them
+gofusa trace --func-coverage 80
+
 # Show a specific requirement and its annotation locations
 gofusa req REQ-CYBER001
 
@@ -270,7 +274,7 @@ docker build -t go-fusa .
 docker run --rm -v "$(pwd)":/project go-fusa check
 ```
 
-Published tags: `latest`, `0.33`, `0.33.2` (and matching semver for every release).
+Published tags: `latest`, `0.33`, `0.33.3` (and matching semver for every release).
 
 ## Standards coverage
 

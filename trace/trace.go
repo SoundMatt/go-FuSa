@@ -413,6 +413,135 @@ func ScanFuncCoverage(root string, tags []Tag) (*FuncCoverage, error) {
 	return fc, nil
 }
 
+// ScanFuncTagCoverage counts exported top-level functions/methods (in
+// non-test .go files) that carry a //fusa:req tag directly above them, in
+// their doc comment — the function-level tag-placement target of x-FuSa spec
+// §1.4.1 item 2. Unlike ScanFuncCoverage (which only requires the tag to be
+// somewhere in the same file), a function here counts as covered only when
+// the tag is attached to that specific function's own doc comment.
+//
+// Trivial fmt.Stringer/error-interface shims (a zero-parameter String() or
+// Error() method) and boilerplate zero-parameter getters (a body consisting
+// of exactly one "return <field>" statement) are excluded from both the
+// numerator and the denominator — they are not expected to carry requirement
+// tags.
+//
+//fusa:req REQ-TRACE009
+func ScanFuncTagCoverage(root string) (*FuncCoverage, error) {
+	fset := token.NewFileSet()
+	fc := &FuncCoverage{}
+
+	err := filepath.WalkDir(root, func(path string, d os.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if d.IsDir() {
+			if path == root {
+				return nil
+			}
+			name := d.Name()
+			if name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".") {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		name := d.Name()
+		if !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") {
+			return nil
+		}
+		rel, err := filepath.Rel(root, path)
+		if err != nil {
+			return err
+		}
+		f, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
+		if err != nil {
+			return nil // skip unparseable files
+		}
+		for _, decl := range f.Decls {
+			fn, ok := decl.(*ast.FuncDecl)
+			if !ok || fn.Name == nil || !ast.IsExported(fn.Name.Name) {
+				continue
+			}
+			if isTrivialAccessor(fn) {
+				continue
+			}
+			fc.Total++
+			if funcDocHasReqTag(fn) {
+				fc.Covered++
+			} else {
+				fc.Uncovered = append(fc.Uncovered, rel+":"+fn.Name.Name)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("trace: scan func tag coverage: %w", err)
+	}
+	if fc.Total > 0 {
+		fc.Pct = float64(fc.Covered) * 100 / float64(fc.Total)
+	}
+	return fc, nil
+}
+
+// funcDocHasReqTag reports whether fn's doc comment contains a //fusa:req tag
+// carrying a non-empty requirement ID.
+func funcDocHasReqTag(fn *ast.FuncDecl) bool {
+	if fn.Doc == nil {
+		return false
+	}
+	for _, c := range fn.Doc.List {
+		text := strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(c.Text), "//"))
+		if id, ok := strings.CutPrefix(text, "fusa:req "); ok && strings.TrimSpace(id) != "" {
+			return true
+		}
+	}
+	return false
+}
+
+// isTrivialAccessor reports whether fn is one of the boilerplate shapes
+// §1.4.1 item 2 exempts from "every public function has a requirement":
+//
+//   - a zero-parameter String() or Error() method (fmt.Stringer/error shim);
+//   - a zero-parameter method whose body is exactly one
+//     "return <receiver>.<field>" statement (a plain field getter); or
+//   - a zero-parameter func/method whose body is exactly one
+//     "return <constant literal>" statement — the classic interface-boilerplate
+//     shape (e.g. a Rule's ID()/Description() method returning a fixed string).
+//
+// The getter/literal checks are deliberately narrow — they match only a
+// direct receiver-field selector or a literal constant, not any
+// single-identifier return (e.g. "return nil" or "return someLocal"), so
+// ordinary functions that merely happen to have a one-line body are not
+// miscounted as boilerplate.
+func isTrivialAccessor(fn *ast.FuncDecl) bool {
+	if fn.Type == nil || fn.Type.Params == nil || fn.Type.Params.NumFields() != 0 {
+		return false
+	}
+	if name := fn.Name.Name; name == "String" || name == "Error" {
+		return true
+	}
+	if fn.Body == nil || len(fn.Body.List) != 1 {
+		return false
+	}
+	ret, ok := fn.Body.List[0].(*ast.ReturnStmt)
+	if !ok || len(ret.Results) != 1 {
+		return false
+	}
+	if _, isLit := ret.Results[0].(*ast.BasicLit); isLit {
+		return true // e.g. func (r *rule) ID() string { return "RULE001" }
+	}
+	sel, ok := ret.Results[0].(*ast.SelectorExpr)
+	if !ok || fn.Recv == nil || len(fn.Recv.List) == 0 {
+		return false
+	}
+	recvNames := fn.Recv.List[0].Names
+	if len(recvNames) == 0 || recvNames[0] == nil || recvNames[0].Name == "_" {
+		return false
+	}
+	recvIdent, ok := sel.X.(*ast.Ident)
+	return ok && recvIdent.Name == recvNames[0].Name
+}
+
 // Render writes the traceability matrix to w in the given format.
 // Supported formats: "text" (default), "json", "md"/"markdown".
 //
@@ -610,6 +739,7 @@ func init() {
 	engine.Default.MustRegister(&ruleReqCoverage{})
 	engine.Default.MustRegister(&ruleFuncAnnotationDensity{})
 	engine.Default.MustRegister(&ruleHLRLLRDecomposition{})
+	engine.Default.MustRegister(&ruleDanglingTestTag{})
 }
 
 // TRACE001 — .fusa-reqs.json should be present.
@@ -939,6 +1069,55 @@ func (r *ruleHLRLLRDecomposition) Run(_ context.Context, projectRoot string, cfg
 			Message:     fmt.Sprintf("HLR %q has no LLR children — every HLR must be decomposed into at least one LLR", id),
 			Location:    fusa.Location{File: ReqsFile},
 			Remediation: "add LLR requirements with parentId: " + id,
+		})
+	}
+	return findings, nil
+}
+
+// TRACE009 — dangling //fusa:test tag: a test tag whose requirement ID does
+// not exist in .fusa-reqs.json (x-FuSa spec §1.4.1 item 3). Treated the same
+// as a malformed annotation (§1.4) — a WARNING, never silently accepted.
+type ruleDanglingTestTag struct{}
+
+func (r *ruleDanglingTestTag) ID() string { return "TRACE009" }
+func (r *ruleDanglingTestTag) Description() string {
+	return "A //fusa:test tag references a requirement ID that does not exist in .fusa-reqs.json (dangling reference)."
+}
+
+//fusa:req REQ-TRACE010
+func (r *ruleDanglingTestTag) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	reqs, err := LoadRequirements(projectRoot)
+	if err != nil {
+		if errors.Is(err, fusa.ErrNoConfig) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	known := make(map[string]bool, len(reqs))
+	for _, req := range reqs {
+		known[req.ID] = true
+	}
+
+	tags, err := ScanTags(projectRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	var findings []fusa.Finding
+	for _, t := range tags {
+		if t.Kind != KindTest || known[t.RequirementID] {
+			continue
+		}
+		findings = append(findings, fusa.Finding{
+			RuleID:   r.ID(),
+			Severity: fusa.SeverityWarning,
+			Message: fmt.Sprintf(
+				"//fusa:test %s (%s:%d) references a requirement ID that does not exist in %s — dangling reference",
+				t.RequirementID, t.File, t.Line, ReqsFile,
+			),
+			Location:    fusa.Location{File: t.File, Line: t.Line},
+			Remediation: "add " + t.RequirementID + " to " + ReqsFile + " or fix the tag to reference an existing requirement id",
 		})
 	}
 	return findings, nil

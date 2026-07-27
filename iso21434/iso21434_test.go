@@ -18,6 +18,7 @@ import (
 // at CAL-1, and MANUAL for manual objectives.
 //
 //fusa:test REQ-ISO21434-001
+//fusa:test REQ-ISO21434-002
 func TestAssess_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso21434.Assess(dir, "CAL-1")
@@ -35,6 +36,7 @@ func TestAssess_EmptyDir(t *testing.T) {
 // TestAssess_WithEvidence checks that providing evidence files results in passes.
 //
 //fusa:test REQ-ISO21434-001
+//fusa:test REQ-ISO21434-002
 func TestAssess_WithEvidence(t *testing.T) {
 	dir := t.TempDir()
 	for _, f := range []string{"tara.json", "vuln.json", "sbom.json", "provenance.json",
@@ -191,6 +193,7 @@ func TestISO21434001_Run_NilCfg(t *testing.T) {
 // TestRender_Text verifies text rendering runs without error.
 //
 //fusa:test REQ-ISO21434-001
+//fusa:test REQ-ISO21434-003
 func TestRender_Text(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso21434.Assess(dir, "CAL-1")
@@ -209,6 +212,7 @@ func TestRender_Text(t *testing.T) {
 // TestRender_JSON verifies JSON rendering produces valid JSON.
 //
 //fusa:test REQ-ISO21434-001
+//fusa:test REQ-ISO21434-003
 func TestRender_JSON(t *testing.T) {
 	dir := t.TempDir()
 	rep, err := iso21434.Assess(dir, "CAL-2")

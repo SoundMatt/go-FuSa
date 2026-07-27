@@ -63,6 +63,10 @@ func parseProject(projectRoot string) ([]parsedFile, error) {
 	return results, err
 }
 
+// locationEnd builds a fusa.Location with a projectRoot-relative, forward-slash
+// File path (§4 MUST) so fingerprints (§4.2) are portable across environments.
+//
+//fusa:req REQ-LOC-REL001
 func locationEnd(fset *token.FileSet, pos, end token.Pos, projectRoot string) fusa.Location {
 	p := fset.Position(pos)
 	e := fset.Position(end)

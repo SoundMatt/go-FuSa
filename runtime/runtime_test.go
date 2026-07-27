@@ -11,6 +11,7 @@ import (
 // ─── Watchdog ─────────────────────────────────────────────────────────────────
 
 //fusa:test REQ-RUNTIME001
+//fusa:test REQ-RUNTIME006
 func TestWatchdog_ExpiryFires(t *testing.T) {
 	var fired atomic.Bool
 	wd := fusaruntime.NewWatchdog(5*time.Millisecond, 10*time.Millisecond, func() {
@@ -31,6 +32,7 @@ func TestWatchdog_ExpiryFires(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME008
 func TestWatchdog_KickPreventsExpiry(t *testing.T) {
 	var fired atomic.Bool
 	interval := 10 * time.Millisecond
@@ -54,6 +56,7 @@ func TestWatchdog_KickPreventsExpiry(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME006
 func TestWatchdog_StartTwice(t *testing.T) {
 	wd := fusaruntime.NewWatchdog(10*time.Millisecond, 50*time.Millisecond, func() {})
 	if err := wd.Start(); err != nil {
@@ -65,6 +68,8 @@ func TestWatchdog_StartTwice(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME007
+//fusa:test REQ-RUNTIME009
 func TestWatchdog_IsRunning(t *testing.T) {
 	wd := fusaruntime.NewWatchdog(10*time.Millisecond, 50*time.Millisecond, func() {})
 	if wd.IsRunning() {
@@ -85,6 +90,7 @@ func TestWatchdog_IsRunning(t *testing.T) {
 // ─── Heartbeat ────────────────────────────────────────────────────────────────
 
 //fusa:test REQ-RUNTIME002
+//fusa:test REQ-RUNTIME010
 func TestHeartbeat_MissedCallbackFires(t *testing.T) {
 	var missed atomic.Int64
 	hb := fusaruntime.NewHeartbeat(20*time.Millisecond, func(n int) {
@@ -105,6 +111,7 @@ func TestHeartbeat_MissedCallbackFires(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME012
 func TestHeartbeat_RegularBeatSuppressesCallback(t *testing.T) {
 	var missed atomic.Int64
 	hb := fusaruntime.NewHeartbeat(50*time.Millisecond, func(n int) {
@@ -125,6 +132,7 @@ func TestHeartbeat_RegularBeatSuppressesCallback(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME010
 func TestHeartbeat_StartTwice(t *testing.T) {
 	hb := fusaruntime.NewHeartbeat(50*time.Millisecond, func(int) {})
 	if err := hb.Start(); err != nil {
@@ -136,6 +144,8 @@ func TestHeartbeat_StartTwice(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME011
+//fusa:test REQ-RUNTIME013
 func TestHeartbeat_IsRunning(t *testing.T) {
 	hb := fusaruntime.NewHeartbeat(50*time.Millisecond, func(int) {})
 	if hb.IsRunning() {
@@ -276,6 +286,8 @@ func TestDiagLevelString(t *testing.T) {
 // ─── FaultMonitor ─────────────────────────────────────────────────────────────
 
 //fusa:test REQ-RUNTIME005
+//fusa:test REQ-RUNTIME014
+//fusa:test REQ-RUNTIME015
 func TestFaultMonitor_ThresholdFires(t *testing.T) {
 	var firedID string
 	var firedCount int

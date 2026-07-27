@@ -38,6 +38,8 @@ type reqifAttrValue struct {
 // ParseDOORS parses a ReqIF XML byte slice and returns Requirement records.
 // It collects ATTRIBUTE-VALUE-STRING THE-VALUE attributes per SPEC-OBJECT
 // positionally: [0]=id, [1]=title, [2]=text (if present).
+//
+//fusa:req REQ-REQXML001
 func ParseDOORS(data []byte) ([]Requirement, error) {
 	var root reqifRoot
 	if err := xml.Unmarshal(data, &root); err != nil {
@@ -68,6 +70,8 @@ func ParseDOORS(data []byte) ([]Requirement, error) {
 }
 
 // ExportDOORS serialises requirements as minimal ReqIF XML.
+//
+//fusa:req REQ-REQXML002
 func ExportDOORS(reqs []Requirement) ([]byte, error) {
 	type attrDef struct {
 		Ref string `xml:"ATTRIBUTE-DEFINITION-STRING-REF"`
@@ -147,6 +151,8 @@ type codebeamerField struct {
 }
 
 // ParseCodebeamer parses a Codebeamer tracker XML export.
+//
+//fusa:req REQ-REQXML003
 func ParseCodebeamer(data []byte) ([]Requirement, error) {
 	var root codebeamerTracker
 	if err := xml.Unmarshal(data, &root); err != nil {
@@ -182,6 +188,8 @@ func ParseCodebeamer(data []byte) ([]Requirement, error) {
 }
 
 // ExportCodebeamer serialises requirements as Codebeamer tracker XML.
+//
+//fusa:req REQ-REQXML004
 func ExportCodebeamer(reqs []Requirement) ([]byte, error) {
 	var items []codebeamerItem
 	for _, r := range reqs {
@@ -241,6 +249,8 @@ type jamaField struct {
 }
 
 // ParseJama parses a Jama Connect XML export.
+//
+//fusa:req REQ-REQXML005
 func ParseJama(data []byte) ([]Requirement, error) {
 	var root jamaItems
 	if err := xml.Unmarshal(data, &root); err != nil {
@@ -276,6 +286,8 @@ func ParseJama(data []byte) ([]Requirement, error) {
 }
 
 // ExportJama serialises requirements as Jama Connect XML.
+//
+//fusa:req REQ-REQXML006
 func ExportJama(reqs []Requirement) ([]byte, error) {
 	var items []jamaItem
 	for _, r := range reqs {
@@ -333,6 +345,8 @@ type polarionCustomField struct {
 }
 
 // ParsePolarion parses Polarion workitems XML and returns Requirement records.
+//
+//fusa:req REQ-REQXML007
 func ParsePolarion(data []byte) ([]Requirement, error) {
 	var root polarionWorkitems
 	if err := xml.Unmarshal(data, &root); err != nil {
@@ -361,6 +375,8 @@ func ParsePolarion(data []byte) ([]Requirement, error) {
 }
 
 // ExportPolarion serialises requirements as Polarion XML.
+//
+//fusa:req REQ-REQXML008
 func ExportPolarion(reqs []Requirement) ([]byte, error) {
 	var items []polarionWorkitem
 	for _, r := range reqs {

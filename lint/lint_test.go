@@ -288,6 +288,7 @@ var _ = unsafe.Sizeof(0)
 
 // ─── location.file is project-relative (§4 MUST) ─────────────────────────────
 
+//fusa:test REQ-LOC-REL001
 func TestLint_LocationRelative(t *testing.T) {
 	src := `package main
 func f() { panic("x") }

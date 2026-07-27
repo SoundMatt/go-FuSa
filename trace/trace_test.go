@@ -11,6 +11,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/report"
 	"github.com/SoundMatt/go-FuSa/testutil"
 	"github.com/SoundMatt/go-FuSa/trace"
 )
@@ -1002,5 +1003,280 @@ func TestRenderText_HLRLLRSummaryShown(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "HLR/LLR") {
 		t.Error("text render should include HLR/LLR summary line")
+	}
+}
+
+// ─── ScanFuncTagCoverage (x-FuSa spec §1.4.1 item 2) ─────────────────────────
+
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_EmptyDir(t *testing.T) {
+	dir := t.TempDir()
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	if fc.Total != 0 || fc.Covered != 0 || fc.Pct != 0 {
+		t.Errorf("empty dir: got %+v, want all zeroes", fc)
+	}
+}
+
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_DirectlyTaggedFuncCounts(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\n" +
+		"// DoWork does the work.\n" +
+		"//\n" +
+		"//fusa:req REQ-001\n" +
+		"func DoWork() error { return nil }\n" +
+		"\n" +
+		"func Untagged() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "work.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	if fc.Total != 2 {
+		t.Errorf("Total = %d, want 2", fc.Total)
+	}
+	if fc.Covered != 1 {
+		t.Errorf("Covered = %d, want 1 (only the directly-tagged func)", fc.Covered)
+	}
+	if fc.Pct != 50 {
+		t.Errorf("Pct = %f, want 50", fc.Pct)
+	}
+	if len(fc.Uncovered) != 1 || !strings.Contains(fc.Uncovered[0], "Untagged") {
+		t.Errorf("Uncovered = %v, want [work.go:Untagged]", fc.Uncovered)
+	}
+}
+
+// TestScanFuncTagCoverage_FileLevelTagDoesNotCount verifies function-level
+// placement (§1.4.1 item 1): a //fusa:req tag elsewhere in the file, not
+// directly above a given function, must NOT count that function as covered —
+// this is the key difference from the coarser file-level ScanFuncCoverage.
+//
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_FileLevelTagDoesNotCount(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\n" +
+		"//fusa:req REQ-001\n" +
+		"func Tagged() {}\n" +
+		"\n" +
+		"func NotDirectlyTagged() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "work.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	if fc.Total != 2 {
+		t.Errorf("Total = %d, want 2", fc.Total)
+	}
+	if fc.Covered != 1 {
+		t.Errorf("Covered = %d, want 1 (file-level co-location must not count for the second func)", fc.Covered)
+	}
+}
+
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_SkipsTestFiles(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\nfunc DoWork() {}\n"
+	testSrc := "package mypkg\n\nimport \"testing\"\n\nfunc TestDoWork(t *testing.T) {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "work.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "work_test.go"), []byte(testSrc), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	if fc.Total != 1 {
+		t.Errorf("Total = %d, want 1 (test file excluded)", fc.Total)
+	}
+}
+
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_SkipsUnexported(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\nfunc unexported() {}\nfunc Exported() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	if fc.Total != 1 {
+		t.Errorf("Total = %d, want 1 (unexported excluded)", fc.Total)
+	}
+}
+
+// TestScanFuncTagCoverage_ExcludesTrivialStringer verifies String()/Error()
+// methods are excluded from both numerator and denominator.
+//
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_ExcludesTrivialStringer(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\n" +
+		"type Level int\n\n" +
+		"func (l Level) String() string { return \"level\" }\n\n" +
+		"type MyErr struct{}\n\n" +
+		"func (e MyErr) Error() string { return \"boom\" }\n"
+	if err := os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	if fc.Total != 0 {
+		t.Errorf("Total = %d, want 0 (String/Error excluded as trivial)", fc.Total)
+	}
+}
+
+// TestScanFuncTagCoverage_ExcludesBoilerplateGetter verifies a zero-parameter
+// single "return <field>" getter is excluded as boilerplate.
+//
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_ExcludesBoilerplateGetter(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\n" +
+		"type Config struct{ name string }\n\n" +
+		"func (c Config) Name() string { return c.name }\n\n" +
+		"func (c Config) Compute() string { x := c.name + \"!\"; return x }\n"
+	if err := os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	// Name() is a trivial getter (excluded); Compute() has 2 statements so it
+	// is not trivial and must still be counted (untagged).
+	if fc.Total != 1 {
+		t.Errorf("Total = %d, want 1 (trivial getter excluded, Compute() counted)", fc.Total)
+	}
+	if fc.Covered != 0 {
+		t.Errorf("Covered = %d, want 0", fc.Covered)
+	}
+}
+
+// TestScanFuncTagCoverage_ExcludesInterfaceBoilerplate verifies a
+// zero-parameter method whose body is a single "return <constant literal>"
+// statement — the classic engine.Rule.ID()/Description() shape — is excluded
+// as generated boilerplate.
+//
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_ExcludesInterfaceBoilerplate(t *testing.T) {
+	dir := t.TempDir()
+	src := "package mypkg\n\n" +
+		"type myRule struct{}\n\n" +
+		"func (r *myRule) ID() string { return \"RULE001\" }\n\n" +
+		"func (r *myRule) Description() string { return \"does a thing\" }\n"
+	if err := os.WriteFile(filepath.Join(dir, "rule.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	if fc.Total != 0 {
+		t.Errorf("Total = %d, want 0 (constant-returning interface boilerplate excluded)", fc.Total)
+	}
+}
+
+//fusa:test REQ-TRACE009
+func TestScanFuncTagCoverage_IgnoresVendorAndHidden(t *testing.T) {
+	dir := t.TempDir()
+	for _, sub := range []string{"vendor", "testdata", ".git"} {
+		if err := os.MkdirAll(filepath.Join(dir, sub), 0o750); err != nil {
+			t.Fatal(err)
+		}
+		src := "package mypkg\n\nfunc Exported() {}\n"
+		if err := os.WriteFile(filepath.Join(dir, sub, "f.go"), []byte(src), 0o640); err != nil {
+			t.Fatal(err)
+		}
+	}
+	fc, err := trace.ScanFuncTagCoverage(dir)
+	if err != nil {
+		t.Fatalf("ScanFuncTagCoverage: %v", err)
+	}
+	if fc.Total != 0 {
+		t.Errorf("Total = %d, want 0 (vendor/testdata/hidden dirs excluded)", fc.Total)
+	}
+}
+
+// ─── TRACE009 — dangling //fusa:test tag ──────────────────────────────────────
+
+//fusa:test REQ-TRACE010
+func TestTRACE009_DanglingTestTag(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	writeReqs(t, dir, []trace.Requirement{{ID: "REQ-001", Title: "Real requirement"}})
+	src := "package main\n\n//fusa:test REQ-DOES-NOT-EXIST\nfunc TestFoo() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "foo_test.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if !hasRule(result.Findings, "TRACE009") {
+		t.Error("TRACE009: expected finding for dangling //fusa:test tag")
+	}
+	for _, f := range result.Findings {
+		if f.RuleID == "TRACE009" && f.Severity != fusa.SeverityWarning {
+			t.Errorf("TRACE009: expected WARNING severity, got %s", f.Severity)
+		}
+	}
+
+	// Category is auto-derived from the ruleId prefix at report-construction
+	// time (report.New), same as every other TRACE-prefixed rule.
+	rep := report.New(dir, result.Findings)
+	for _, f := range rep.Findings {
+		if f.RuleID == "TRACE009" && f.Category != fusa.CategoryRequirement {
+			t.Errorf("TRACE009: expected category %q, got %q", fusa.CategoryRequirement, f.Category)
+		}
+	}
+}
+
+//fusa:test REQ-TRACE010
+func TestTRACE009_NoDanglingTags(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.MinimalProject())
+	writeReqs(t, dir, []trace.Requirement{{ID: "REQ-001", Title: "Real requirement"}})
+	src := "package main\n\n//fusa:test REQ-001\nfunc TestFoo() {}\n"
+	if err := os.WriteFile(filepath.Join(dir, "foo_test.go"), []byte(src), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if hasRule(result.Findings, "TRACE009") {
+		t.Error("TRACE009: unexpected finding when all //fusa:test tags reference known requirements")
+	}
+}
+
+//fusa:test REQ-TRACE010
+func TestTRACE009_NoReqsFile(t *testing.T) {
+	// No .fusa-reqs.json at all — rule should not be applicable (not every
+	// dangling tag in an un-configured project is worth flagging).
+	dir := testutil.ProjectDir(t, testutil.GoSource("foo_test.go",
+		"package main\n\n//fusa:test REQ-ANYTHING\nfunc TestFoo() {}\n"))
+
+	cfg := config.Default("github.com/example/test", "test")
+	result, err := engine.Default.Run(context.Background(), dir, cfg)
+	if err != nil {
+		t.Fatalf("engine.Run: %v", err)
+	}
+	if hasRule(result.Findings, "TRACE009") {
+		t.Error("TRACE009: unexpected finding when .fusa-reqs.json is absent")
 	}
 }

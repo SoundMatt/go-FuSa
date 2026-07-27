@@ -10,6 +10,7 @@ import (
 // ─── DOORS ReqIF ─────────────────────────────────────────────────────────────
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML001
 func TestParseDOORS_Basic(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <REQ-IF>
@@ -44,6 +45,7 @@ func TestParseDOORS_Basic(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML001
 func TestParseDOORS_Empty(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <REQ-IF>
@@ -62,6 +64,7 @@ func TestParseDOORS_Empty(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML001
 func TestParseDOORS_WithText(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <REQ-IF>
@@ -96,6 +99,8 @@ func TestParseDOORS_WithText(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML001
+//fusa:test REQ-REQXML002
 func TestExportDOORS_RoundTrip(t *testing.T) {
 	original := []trace.Requirement{
 		{ID: "REQ-001", Title: "Authentication", Text: "The system shall authenticate users."},
@@ -130,6 +135,7 @@ func TestExportDOORS_RoundTrip(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML001
 func TestParseDOORS_InvalidXML(t *testing.T) {
 	_, err := trace.ParseDOORS([]byte("not xml at all"))
 	if err == nil {
@@ -140,6 +146,7 @@ func TestParseDOORS_InvalidXML(t *testing.T) {
 // ─── Polarion XML ─────────────────────────────────────────────────────────────
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML007
 func TestParsePolarion_Basic(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <workitems>
@@ -167,6 +174,7 @@ func TestParsePolarion_Basic(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML007
 func TestParsePolarion_WithCustomFields(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <workitems>
@@ -190,6 +198,8 @@ func TestParsePolarion_WithCustomFields(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML007
+//fusa:test REQ-REQXML008
 func TestExportPolarion_RoundTrip(t *testing.T) {
 	original := []trace.Requirement{
 		{ID: "REQ-001", Title: "Auth", Text: "Shall authenticate", ASIL: "ASIL-B"},
@@ -218,6 +228,7 @@ func TestExportPolarion_RoundTrip(t *testing.T) {
 // ─── Codebeamer XML ───────────────────────────────────────────────────────────
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML003
 func TestParseCodebeamer_Basic(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <tracker>
@@ -247,6 +258,7 @@ func TestParseCodebeamer_Basic(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML003
 func TestParseCodebeamer_WithCustomFields(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <tracker>
@@ -275,6 +287,8 @@ func TestParseCodebeamer_WithCustomFields(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML003
+//fusa:test REQ-REQXML004
 func TestExportCodebeamer_RoundTrip(t *testing.T) {
 	original := []trace.Requirement{
 		{ID: "REQ-001", Title: "First", Text: "Body", ASIL: "ASIL-B", Level: "HLR"},
@@ -306,6 +320,7 @@ func TestExportCodebeamer_RoundTrip(t *testing.T) {
 // ─── Jama XML ─────────────────────────────────────────────────────────────────
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML005
 func TestParseJama_Basic(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <items>
@@ -333,6 +348,7 @@ func TestParseJama_Basic(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML005
 func TestParseJama_WithFields(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <items>
@@ -360,6 +376,8 @@ func TestParseJama_WithFields(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML005
+//fusa:test REQ-REQXML006
 func TestExportJama_RoundTrip(t *testing.T) {
 	original := []trace.Requirement{
 		{ID: "REQ-001", Title: "Authentication", Text: "Shall auth users", ASIL: "ASIL-B", Level: "HLR"},
@@ -391,6 +409,7 @@ func TestExportJama_RoundTrip(t *testing.T) {
 }
 
 //fusa:test REQ-TRACE006
+//fusa:test REQ-REQXML005
 func TestParseJama_Empty(t *testing.T) {
 	xmlData := `<?xml version="1.0"?>
 <items>

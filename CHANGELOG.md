@@ -7,6 +7,40 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.33.3 — 2026-07-27
+
+### Added
+- **`gofusa trace --func-coverage N`** (x-FuSa spec §1.4.1 item 2): gates on the
+  percentage of exported top-level functions/methods (non-test `.go` files) that
+  carry a `//fusa:req` tag directly above them in their doc comment — function-level
+  placement, not merely file co-location like `--req-coverage`'s metric 2. `N=0`
+  disables the gate (mirrors `--req-coverage`'s pattern exactly). Trivial
+  `fmt.Stringer`/`error`-shim methods (`String()`/`Error()`), boilerplate field
+  getters (`return recv.field`), and constant-returning interface boilerplate
+  (`return "RULE001"`) are excluded from both the numerator and denominator.
+  New `trace.ScanFuncTagCoverage`.
+- **Dangling `//fusa:test` tag detection (TRACE009)** (x-FuSa spec §1.4.1 item 3): a
+  `//fusa:test <ID>` tag whose ID does not exist in `.fusa-reqs.json` now produces a
+  WARNING finding (category `requirement`), the same treatment a malformed
+  annotation already gets under §1.4.
+
+### Fixed (traceability retrofit — issue #41)
+- Added `//fusa:req`/`//fusa:test` tags closing real gaps found by the new
+  `--func-coverage` gate: `runtime/heartbeat.go` (`Start`, `Stop`, `Beat`,
+  `IsRunning` — REQ-RUNTIME010..013), `runtime/watchdog.go` (`Start`, `Stop`,
+  `Kick`, `IsRunning` — REQ-RUNTIME006..009), `runtime/faultmonitor.go`
+  (`SetThreshold`, `Record` — REQ-RUNTIME014/015), and `trace/reqxml.go`'s
+  DOORS/Codebeamer/Jama/Polarion `Parse*`/`Export*` functions (REQ-REQXML001..008).
+  All new requirements are registered in `.fusa-reqs.json` and their existing
+  test coverage tagged with `//fusa:test`.
+- Added missing `//fusa:req` tags for two previously-untagged v0.30.0 conformance
+  fixes: `cmd/gofusa/cmd_capabilities.go`'s canonical `Standards` array
+  (REQ-CAP-STD001) and `lint`/`analyze`'s `locationEnd` project-relative path
+  helper (REQ-LOC-REL001).
+- Added `//fusa:test` tags to existing-but-untested requirements found via
+  `gofusa trace --gaps`: REQ-CAP-STD001, REQ-ISO21434-002, REQ-ISO21434-003,
+  REQ-LOC-REL001, REQ-UNECE-002, REQ-UNECE-003.
+
 ## v0.33.2 — 2026-07-27
 
 ### Fixed

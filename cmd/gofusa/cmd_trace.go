@@ -30,6 +30,8 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 		secTested = fs.Int("sec-tested", 0, "exit 1 if fewer than N%% of requirements have //fusa:test tags (0 = disabled)")
 		//fusa:req REQ-CLI-TRACE003
 		reqCoverage = fs.Int("req-coverage", 0, "exit 1 if requirement coverage or function annotation density is below N%% (0 = disabled)")
+		//fusa:req REQ-CLI-TRACE004
+		funcCoverage = fs.Int("func-coverage", 0, "exit 1 if fewer than N%% of exported functions/methods carry a //fusa:req tag directly above them (0 = disabled)")
 		//fusa:req REQ-TRACE008
 		strictHLRLLR = fs.Bool("strict-hlr-llr", false, "exit 1 if any HLR/LLR decomposition violations are found (regardless of ASIL)")
 	)
@@ -63,6 +65,10 @@ func runTrace(args []string, stdout, stderr io.Writer) int {
 
 	if *reqCoverage > 0 {
 		return runTraceReqCoverage(projectRoot, matrix, *reqCoverage, stdout, stderr)
+	}
+
+	if *funcCoverage > 0 {
+		return runTraceFuncCoverage(projectRoot, *funcCoverage, stdout, stderr)
 	}
 
 	if *strictHLRLLR {
@@ -174,6 +180,47 @@ func runTraceReqCoverage(root string, matrix *trace.Matrix, threshold int, stdou
 		failed = true
 	}
 	if failed {
+		return fusa.ExitGateFail
+	}
+	return fusa.ExitOK
+}
+
+// runTraceFuncCoverage reports exported-function tag-placement coverage
+// (x-FuSa spec §1.4.1 item 2 — every public function has a requirement,
+// measured at function-level granularity via trace.ScanFuncTagCoverage) and
+// exits 1 if it falls below threshold when there is at least one exported
+// function to measure.
+//
+//fusa:req REQ-CLI-TRACE004
+func runTraceFuncCoverage(root string, threshold int, stdout, stderr io.Writer) int {
+	fc, err := trace.ScanFuncTagCoverage(root)
+	if err != nil {
+		fmt.Fprintf(stderr, "gofusa trace: scan func-coverage: %v\n", err)
+		return fusa.ExitRuntime
+	}
+
+	fmt.Fprintf(stdout, "Function Tag Coverage Report\n\n")
+
+	if fc.Total == 0 {
+		fmt.Fprintf(stdout, "Function tag coverage: N/A (no exported functions found)\n")
+		return fusa.ExitOK
+	}
+
+	pct := int(fc.Pct)
+	fmt.Fprintf(stdout, "Function tag coverage: %d%% (%d/%d exported functions carry a //fusa:req tag directly above them)\n",
+		pct, fc.Covered, fc.Total)
+	shown := 0
+	for _, fn := range fc.Uncovered {
+		if shown >= 20 {
+			fmt.Fprintf(stdout, "  ... and %d more\n", len(fc.Uncovered)-shown)
+			break
+		}
+		fmt.Fprintf(stdout, "  UNTAGGED  %s\n", fn)
+		shown++
+	}
+
+	if pct < threshold {
+		fmt.Fprintf(stderr, "gofusa trace: func-coverage gate failed: %d%% < required %d%%\n", pct, threshold)
 		return fusa.ExitGateFail
 	}
 	return fusa.ExitOK

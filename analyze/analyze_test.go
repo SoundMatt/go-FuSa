@@ -283,6 +283,7 @@ func fn() {
 
 // ─── location.file is project-relative (§4 MUST) ─────────────────────────────
 
+//fusa:test REQ-LOC-REL001
 func TestAnalyze_LocationRelative(t *testing.T) {
 	src := `package main
 func fn() { go func() {}() }

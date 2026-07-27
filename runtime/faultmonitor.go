@@ -26,6 +26,8 @@ func NewFaultMonitor(onFault func(id string, count int)) *FaultMonitor {
 
 // SetThreshold configures the count at which onFault fires for faultID.
 // A threshold of 0 disables callback firing for that fault.
+//
+//fusa:req REQ-RUNTIME014
 func (f *FaultMonitor) SetThreshold(faultID string, threshold int) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
@@ -34,6 +36,8 @@ func (f *FaultMonitor) SetThreshold(faultID string, threshold int) {
 
 // Record increments the counter for faultID and fires onFault if the
 // threshold has been reached or exceeded.
+//
+//fusa:req REQ-RUNTIME015
 func (f *FaultMonitor) Record(faultID string) {
 	f.mu.Lock()
 	f.counts[faultID]++

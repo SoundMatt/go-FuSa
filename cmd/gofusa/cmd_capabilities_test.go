@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+//fusa:test REQ-CAP-STD001
 func TestCapabilities_StandardsSLSA(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 	code := runCapabilities([]string{}, &stdout, &stderr)
@@ -33,6 +34,7 @@ func TestCapabilities_StandardsSLSA(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-CAP-STD001
 func TestCapabilities_NoAbsoluteStandards(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 	code := runCapabilities([]string{}, &stdout, &stderr)
