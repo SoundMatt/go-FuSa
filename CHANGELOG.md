@@ -7,6 +7,36 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.33.5 — 2026-07-27
+
+### Fixed (issue #43)
+- **Stale Dockerfile OCI labels** — the custom `io.x-fusa.spec-version` label
+  was hardcoded to `"1.9"` (four spec versions behind the current
+  `fusa.SpecVersion` of `1.10.12`), and `org.opencontainers.image.version`
+  was hardcoded to `"0.25.1"`. Both are now `ARG`-driven (`VERSION`,
+  `SPEC_VERSION`) with sane defaults for a plain local `docker build`.
+  `.github/workflows/docker-publish.yml` now derives `SPEC_VERSION` by
+  grepping `fusa.go`'s `SpecVersion` constant at build time and `VERSION`
+  from the pushed tag, and passes both via `--build-arg`, so these labels
+  can no longer silently drift from the source of truth. (The standard
+  `org.opencontainers.image.version` label is also overwritten at publish
+  time by `docker/metadata-action`, so the previously *published* image was
+  unaffected — only local builds and the raw label value in this file were
+  stale.)
+
+### Added (issue #43)
+- **README package table** — the `cmd/gofusa` row now lists all 43
+  subcommands; previously it omitted `hara`, `iso26262`, `iec61508`,
+  `disposition`, `impact`, `metrics`, `misra`, `capabilities`, and `version`.
+- **README Quick Start** — added `gofusa version` and `gofusa capabilities`
+  examples; these two commands had zero README mentions before this release.
+
+### Documented (issue #43)
+- **CHANGELOG.md** — backfilled 5 entries for tagged/released versions that
+  had no changelog coverage: `v0.29.1`, `v0.25.1`, `v0.25.0`, `v0.24.0`, and
+  `v0.8.0`, each inserted in its correct chronological slot with content
+  derived from the actual commit history and GitHub release notes.
+
 ## v0.33.4 — 2026-07-27
 
 ### Fixed (function-tag coverage retrofit)
@@ -144,6 +174,14 @@ Dates reference the merged commit timestamp.
 - Fix SpecVersion constant from "1.9" to "1.10.4"
 - Auto-detect CI builder field in provenance.json; add --builder flag
 
+## [0.29.1] — 2026-06-12
+
+### Fixed
+- Removed a stray duplicate `cmd/gofusa/conform_test 2.go` (an editor-created
+  exact copy of `conform_test.go`) that had been committed by mistake.
+- Added `.claude/` (AI session state) and `cmd/gofusa/safety-case.json`
+  (generated evidence artifact) to `.gitignore`.
+
 ## [0.30.0] — 2026-06-12
 
 ### Fixed
@@ -213,6 +251,47 @@ Dates reference the merged commit timestamp.
   `iec62443.Render` emits §9.3-canonical JSON or human-readable text.
 - **10 new requirements** — REQ-SLSA-ASSESS001–004, REQ-CLI-SLSA-001,
   REQ-IEC62443-ASSESS001–004, REQ-CLI-IEC62443-001 added to `.fusa-reqs.json`.
+
+## [0.25.1] — 2026-06-10
+
+### Added
+- Test suite expansion to raise overall coverage from 81.5% to ≥85%: targeted
+  error-path tests for `cmd/gofusa` (render-failure/bad-format paths,
+  `os.Create` error paths, no-dir tests exercising the `os.Getwd()` branch
+  across 16 commands), a new `gapreport_test.go` (100% coverage), and
+  additional branch-coverage tests for `auditpack`, `comp`, `coupling`,
+  `qualify`, `coverage`, `disposition`, and `metrics`.
+- `//fusa:req` annotations added to `gapreport`, `cmd_capabilities.go`, and
+  `helpers.go`.
+
+## [0.25.0] — 2026-06-10
+
+### Changed
+- **x-FuSa spec v1.9 conformance** — `fusa.SpecVersion` bumped `"1.8"` →
+  `"1.9"`, which propagates automatically to the `schemaVersion` field on
+  every emitted document (check report, gap reports, SBOM/provenance/manifest,
+  audit-pack, capabilities). Spec v1.9 promotes four SHOULD→MUST fields
+  (`category`, `remediation`, `fingerprint`, `capabilities`); go-FuSa already
+  implemented all four as of v0.24.0, so this is a mechanical version bump
+  with no behavioral change.
+- `fusa.Version` bumped `0.24.0` → `0.25.0`.
+
+## [0.24.0] — 2026-06-10
+
+### Added
+- **x-FuSa spec v1.8 exit codes (§2.3)** — all ~40 `cmd_*.go` files now return
+  the spec-mandated codes (`ExitOK`=0, `ExitGateFail`=1, `ExitUsage`=2,
+  `ExitRuntime`=3) via new constants in `fusa.go` and a `parseFlags()` helper
+  in `cmd/gofusa/helpers.go`. Previously every failure returned bare `1`,
+  making it impossible for CI pipelines to distinguish a gate failure from a
+  bad flag.
+- **Canonical §9.3 gap-report JSON** — `iso26262`, `iec61508`, `do178`,
+  `iso21434`, and `unece` `Render()` functions now delegate to the new
+  `gapreport/` package instead of encoding private structs, so every gap
+  report shares one schema: `{schemaVersion, kind, tool, toolVersion,
+  language, generatedAt, projectRoot, standard, objectives[], summary}` with
+  status values `satisfied`/`partial`/`gap`/`skip`.
+- `cmd_capabilities.go` and `report/summary.go` added.
 
 ## [0.23.0] — 2026-06-09
 
@@ -582,6 +661,19 @@ Dates reference the merged commit timestamp.
 - DCO CI job — validates `Signed-off-by` on every PR commit
 - Fuzz tests in `config`, `release`, `lint`, `analyze`, `trace`, and `verify` packages
 - 8 new requirements (REQ-CLI008–011, REQ-CFG008, REQ-ENG007, REQ-RELEASE007–008), total 77
+
+## [0.8.0] — 2026-06-07
+
+Tagged from the same squash-merged commit as v0.9.0 (`feat: v0.8 Docker + v0.9
+Tool Qualification + full auditor evidence package`), which bundled the
+Docker deliverable below alongside v0.9.0's tool-qualification suite.
+
+### Added
+- Docker multi-stage build (`Dockerfile`), `.dockerignore`, `docker-compose.yml`, CI Docker build job
+- `docs/release-process.md` — release process documentation
+- `.github/PULL_REQUEST_TEMPLATE.md` and issue templates
+- `CHANGELOG.md`, `SECURITY.md`, `Makefile` added to the repo
+- `sbom.json` and `provenance.json` committed in-tree; tool now passes its own RELEASE001/002 checks
 
 ## [0.9.0] — 2026-06-07
 
