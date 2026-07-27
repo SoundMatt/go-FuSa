@@ -50,6 +50,39 @@ func TestAssess_WithEvidence(t *testing.T) {
 	}
 }
 
+// Regression for #45: a freshly-scaffolded project (`gofusa template`
+// defaults to docs/safety/) must not report the plan documents as gaps
+// just because they aren't sitting at the project root, and the A-3.1
+// "all 4 plans present" manual-review check must also find them there.
+//
+//fusa:test REQ-DO178-001
+//fusa:test REQ-DOC001
+func TestAssess_DocsSafetyScaffoldPath(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "docs", "safety"), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	for _, f := range []string{"SAFETY_PLAN.md", "SVP.md", "SCMP.md", "SQAP.md"} {
+		if err := os.WriteFile(filepath.Join(dir, "docs", "safety", f), []byte("x"), 0o644); err != nil {
+			t.Fatalf("write %s: %v", f, err)
+		}
+	}
+	rep, err := do178.Assess(dir, "proj", do178.DALB)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	for _, obj := range rep.Objectives {
+		if obj.Gap != "" && (strings.Contains(obj.Gap, "SAFETY_PLAN.md") ||
+			strings.Contains(obj.Gap, "SVP.md") || strings.Contains(obj.Gap, "SCMP.md") ||
+			strings.Contains(obj.Gap, "SQAP.md")) {
+			t.Errorf("plan doc under docs/safety/ still reported as gap: %s", obj.Gap)
+		}
+		if obj.ID == "A-3.1" && obj.Status != do178.StatusManual {
+			t.Errorf("A-3.1 status = %v, want Manual (all 4 plans present under docs/safety/)", obj.Status)
+		}
+	}
+}
+
 //fusa:test REQ-DO178-001
 func TestAssess_DALE_AllNA(t *testing.T) {
 	dir := t.TempDir()

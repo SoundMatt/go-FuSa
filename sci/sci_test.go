@@ -62,6 +62,36 @@ func TestBuild_WithSomeFiles(t *testing.T) {
 	}
 }
 
+// Regression for #45: a freshly-scaffolded project (`gofusa template`
+// defaults to docs/safety/) must not report SAFETY_PLAN.md as absent from
+// the SCI just because it isn't sitting at the project root.
+//
+//fusa:test REQ-SCI001
+//fusa:test REQ-DOC001
+func TestBuild_DocsSafetyScaffoldPath(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "docs", "safety"), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "docs", "safety", "SAFETY_PLAN.md"), []byte("x"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	index, err := sci.Build(dir, "proj", "1.0.0")
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	for _, it := range index.Items {
+		if it.File == "SAFETY_PLAN.md" {
+			if !it.Present {
+				t.Error("SAFETY_PLAN.md under docs/safety/ should be Present")
+			}
+			if it.SHA256 == "" {
+				t.Error("SAFETY_PLAN.md under docs/safety/ should have a SHA256")
+			}
+		}
+	}
+}
+
 //fusa:test REQ-SCI001
 func TestBuild_SHA256Stable(t *testing.T) {
 	dir := t.TempDir()

@@ -19,25 +19,28 @@ import (
 
 // ─── fixtures ─────────────────────────────────────────────────────────────────
 
-const srcExported = `package mypkg
-
-import "errors"
-
-// DoWork does some work.
-//
-//fusa:req REQ-TEST001
-func DoWork() error {
-	return errors.New("fail")
-}
-
-// RunLoop starts a background loop.
-func RunLoop() {
-	go func() {}()
-}
-
-// helper is unexported and must be skipped.
-func helper() {}
-`
+// Concatenated, not a raw string literal, so this fixture's own
+// //fusa:req line isn't picked up as a real tag by go-FuSa's own
+// self-trace of this repo (it's synthetic sample source for exercising
+// fmea's doc-comment extraction, not a real annotation).
+const srcExported = "package mypkg\n" +
+	"\n" +
+	"import \"errors\"\n" +
+	"\n" +
+	"// DoWork does some work.\n" +
+	"//\n" +
+	"//fusa:req REQ-TEST001\n" +
+	"func DoWork() error {\n" +
+	"\treturn errors.New(\"fail\")\n" +
+	"}\n" +
+	"\n" +
+	"// RunLoop starts a background loop.\n" +
+	"func RunLoop() {\n" +
+	"\tgo func() {}()\n" +
+	"}\n" +
+	"\n" +
+	"// helper is unexported and must be skipped.\n" +
+	"func helper() {}\n"
 
 const srcNoExports = `package empty
 `

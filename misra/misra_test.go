@@ -73,6 +73,7 @@ func TestAssess_SpecificRules(t *testing.T) {
 }
 
 //fusa:test REQ-MISRA004
+//fusa:test REQ-MISRA005
 func TestRender_Text(t *testing.T) {
 	rep := misra.Assess()
 	var buf bytes.Buffer

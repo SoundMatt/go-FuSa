@@ -13,6 +13,7 @@ import (
 // ─── New ──────────────────────────────────────────────────────────────────────
 
 //fusa:test REQ-GAPREPORT001
+//fusa:test REQ-GAPREPORT003
 func TestNew_HeaderFields(t *testing.T) {
 	r := gapreport.New("/some/project", "iso26262")
 	if r.SchemaVersion == "" {
@@ -55,6 +56,7 @@ func TestNew_EmptyObjectives(t *testing.T) {
 // ─── AddObjective / Summary ───────────────────────────────────────────────────
 
 //fusa:test REQ-GAPREPORT001
+//fusa:test REQ-GAPREPORT004
 func TestAddObjective_Satisfied(t *testing.T) {
 	r := gapreport.New(".", "iso26262")
 	r.AddObjective(gapreport.Objective{
@@ -285,6 +287,8 @@ func TestRender_Text_HeaderAndSummary(t *testing.T) {
 }
 
 //fusa:test REQ-GAPREPORT002
+//fusa:test REQ-GAPREPORT005
+//fusa:test REQ-GAPREPORT006
 func TestRender_Text_StatusIcons(t *testing.T) {
 	r := gapreport.New(".", "iec61508")
 	r.AddObjective(gapreport.Objective{ID: "A", Status: gapreport.StatusSatisfied, Title: "Sat"})

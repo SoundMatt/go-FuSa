@@ -136,6 +136,7 @@ func TestRunCapabilities_GeneratedAt(t *testing.T) {
 // ─── helpers: usageErrorf / runtimeErrorf ─────────────────────────────────────
 
 //fusa:test REQ-CLI-HELPERS001
+//fusa:test REQ-CLI-HELPERS002
 func TestUsageErrorf_ReturnsExitUsage(t *testing.T) {
 	var errBuf bytes.Buffer
 	code := usageErrorf(&errBuf, "mycommand", "bad value %q for flag %s", "xyz", "--foo")
@@ -170,6 +171,7 @@ func TestUsageErrorf_NoFormatArgs(t *testing.T) {
 }
 
 //fusa:test REQ-CLI-HELPERS001
+//fusa:test REQ-CLI-HELPERS003
 func TestRuntimeErrorf_ReturnsExitRuntime(t *testing.T) {
 	var errBuf bytes.Buffer
 	code := runtimeErrorf(&errBuf, "release", "failed to write SBOM: %v", "disk full")

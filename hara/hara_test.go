@@ -103,6 +103,11 @@ func TestLoad_InvalidJSON(t *testing.T) {
 }
 
 //fusa:test REQ-HARA008
+//fusa:test REQ-HARA001
+//fusa:test REQ-HARA002
+//fusa:test REQ-HARA003
+//fusa:test REQ-HARA004
+//fusa:test REQ-HARA005
 func TestSave_RoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	h := &hara.HARA{

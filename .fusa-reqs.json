@@ -1596,6 +1596,821 @@
       "text": "trace.ScanTags shall walk all .go files under root (skipping vendor, testdata, and dot-prefixed directories), returning every //fusa:req, //fusa:test, and //fusa:sec-test annotation found as a Tag with its file, line, kind, and requirement ID.",
       "standard": "x-FuSa",
       "level": "1.4.1"
+    },
+    {
+      "id": "REQ-DOC001",
+      "title": "ResolveDoc falls back to the docs/safety/ scaffold path",
+      "text": "fusa.ResolveDoc shall return the project-root-relative path to a scaffolded safety document if present, else the docs/safety/<name> path gofusa template/init write by default if that file is one of the known scaffold filenames and exists there instead, else an empty string, so Assess/Build evidence checks do not report false gaps for freshly-scaffolded projects.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ANA005",
+      "title": "Dropped context detection",
+      "text": "The tool shall report an INFO finding (ANA005) when a function that already receives a context.Context parameter calls context.Background() or context.TODO() internally instead of propagating the received context.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA006",
+      "title": "Unwrapped error detection",
+      "text": "The tool shall report a finding (ANA006) for fmt.Errorf calls that do not use the %w verb, since the resulting error loses its chain and callers cannot use errors.Is/As to inspect the underlying error.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA007",
+      "title": "Unchecked two-result nil-dereference risk",
+      "text": "The tool shall report a finding (ANA007) when the non-error value from a two-result function call (val, err := f()) is used on the very next line without an intervening error check, indicating a nil-dereference risk.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA008",
+      "title": "Goroutine shared-variable access",
+      "text": "The tool shall report a WARNING finding (ANA008) when a goroutine function literal accesses a package-level variable without going through a synchronisation primitive, indicating a potential data race.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-ANA009",
+      "title": "Dead code detection",
+      "text": "The tool shall report a finding (ANA009) for any statement that is unreachable because it follows an unconditional return, break, continue, or panic within the same block, per DO-178C \u00a76.4.4.2's prohibition on dead code at DAL-A/B.",
+      "standard": "ISO 26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-BADGE001",
+      "title": "New returns a Badge derived from finding counts",
+      "text": "New returns a Badge derived from finding counts.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-BADGE002",
+      "title": "Render writes the badge as a self-contained SVG to w",
+      "text": "Render writes the badge as a self-contained SVG to w.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-BADGE001",
+      "title": "Generate an SVG status badge",
+      "text": "Generate an SVG status badge. Reads a gofusa check --format json report, or reads from stdin if no file is given.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-CAP001",
+      "title": "Report the tool's supported commands, formats, and standards",
+      "text": "Report the tool's supported commands, formats, and standards.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-CHECK001",
+      "title": "Run safety checks",
+      "text": "Run safety checks. Exits 1 if any ERROR-severity findings exist.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-COUPLING001",
+      "title": "Analyse data and control coupling between packages (DO-178C \u00a76.4.4.3)",
+      "text": "Analyse data and control coupling between packages (DO-178C \u00a76.4.4.3). Writes coupling-report.json as evidence of coupling characterisation.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-COV001",
+      "title": "Produce a DO-178C structural coverage report from a Go coverage profile",
+      "text": "Produce a DO-178C structural coverage report from a Go coverage profile. Generate coverage.out with: go test -coverprofile=coverage.out ./...",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-DIFF001",
+      "title": "Compare two gofusa check --format json report files",
+      "text": "Compare two gofusa check --format json report files. Exits 1 if any new findings were introduced.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-DISP001",
+      "title": "Manage finding disposition entries",
+      "text": "Manage finding disposition entries. Subcommands: add Add a new disposition entry list List all disposition entries show Show the disposition entry for a specific rule Global flags: gofusa disposition: get working directory: %v",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-DO178-001",
+      "title": "Generate a DO-178C compliance gap report",
+      "text": "Generate a DO-178C compliance gap report. Maps evidence to Annex A objectives and reports PASS/GAP/MANUAL/N/A.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-FIX001",
+      "title": "Show auto-fixable findings from gofusa check",
+      "text": "Show auto-fixable findings from gofusa check. Prints a remediation summary; use --report to also save the report.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-HARA001",
+      "title": "Manage the Hazard Analysis and Risk Assessment (.fusa-hara.json)",
+      "text": "Manage the Hazard Analysis and Risk Assessment (.fusa-hara.json). Subcommands: show Display HARA as text or JSON (default) init Create a starter .fusa-hara.json asil Derive ASIL from S/E/C parameters Flags: gofusa hara: get working directory: %v",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-HELPERS001",
+      "title": "parseFlags parses a command's flag set and returns fusa.ExitUsage on error",
+      "text": "parseFlags parses a command's flag set and returns fusa.ExitUsage on error. Use in place of the inline `if err := fs.Parse(args); err != nil { return 1 }` pattern.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-HELPERS002",
+      "title": "usageErrorf prints a usage-error message to stderr and returns ExitUsage (2)",
+      "text": "usageErrorf prints a usage-error message to stderr and returns ExitUsage (2).",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-HELPERS003",
+      "title": "runtimeErrorf prints a runtime-error message to stderr and returns ExitRuntime (3)",
+      "text": "runtimeErrorf prints a runtime-error message to stderr and returns ExitRuntime (3).",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-HOOKS001",
+      "title": "Manage git hooks for go-FuSa integration",
+      "text": "Manage git hooks for go-FuSa integration. Subcommands: install Install pre-commit hook into .git/hooks/ remove Remove the go-FuSa pre-commit hook show Print the hook script to stdout",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-IEC61508-001",
+      "title": "Generate an IEC 61508 Parts 1-3 compliance gap report",
+      "text": "Generate an IEC 61508 Parts 1-3 compliance gap report.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-IMPACT001",
+      "title": "Analyse the impact of source changes on requirements and safety artefacts",
+      "text": "Analyse the impact of source changes on requirements and safety artefacts.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-INIT001",
+      "title": "Initialise a go-FuSa configuration in the project root",
+      "text": "Initialise a go-FuSa configuration in the project root.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-ISO21434-001",
+      "title": "Generate an ISO 21434 cybersecurity compliance gap report",
+      "text": "Generate an ISO 21434 cybersecurity compliance gap report.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-ISO26262-001",
+      "title": "Generate an ISO 26262 Part 6 compliance gap report",
+      "text": "Generate an ISO 26262 Part 6 compliance gap report.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-METRICS001",
+      "title": "Track go-FuSa safety metrics over time",
+      "text": "Track go-FuSa safety metrics over time. Subcommands: record Collect and append a metrics snapshot show Display the full metrics time series Global flags: gofusa metrics: get working directory: %v",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-MISRA001",
+      "title": "Show MISRA C:2023 to Go / go-FuSa rule coverage mapping",
+      "text": "Show MISRA C:2023 to Go / go-FuSa rule coverage mapping.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-PR001",
+      "title": "Manage software problem reports (DO-178C \u00a711.17)",
+      "text": "Manage software problem reports (DO-178C \u00a711.17). Subcommands: init Create an empty .fusa-problems.json add Add a new problem report list List all problem reports close Close a problem report",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-REPORT001",
+      "title": "Generate a safety compliance report",
+      "text": "Generate a safety compliance report. Always exits 0.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-REQ001",
+      "title": "Show, import, or export requirements",
+      "text": "Show, import, or export requirements. Subcommands: (none) Show requirements and their source/test locations import Import requirements from a CSV file export Export requirements to CSV",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-REQ002",
+      "title": "Import requirements from an external format",
+      "text": "gofusa req import --file <path> [--format csv|doors|polarion|codebeamer|jama] shall import requirements from the given external-format file into the project's .fusa-reqs.json, exiting with a usage error if --file is not given.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-REQ003",
+      "title": "Export requirements to an external format",
+      "text": "gofusa req export [--format csv|doors|polarion|codebeamer|jama] [--output <path>] shall export the project's requirements to the given external format, writing to stdout by default.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-SAS001",
+      "title": "Generate a Software Accomplishment Summary (DO-178C \u00a711.20)",
+      "text": "Generate a Software Accomplishment Summary (DO-178C \u00a711.20).",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-SCI001",
+      "title": "Generate the Software Configuration Index (DO-178C \u00a711.16)",
+      "text": "Generate the Software Configuration Index (DO-178C \u00a711.16).",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-SIGN001",
+      "title": "Sign or verify a file using HMAC-SHA256",
+      "text": "Sign or verify a file using HMAC-SHA256. gofusa sign --key keyfile artifact.zip # creates artifact.zip.sig gofusa sign --verify --key keyfile artifact.zip # verifies artifact.zip.sig gofusa sign --keygen keyfile # generate a new key",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-TRACE001",
+      "title": "--sec-tested CLI gate",
+      "text": "gofusa trace --sec-tested N shall exit 1 when fewer than N%% of requirements have //fusa:test tags; N=0 disables the gate.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-TRACE002",
+      "title": "runTraceSecTested exits 1 if test coverage is below threshold percent",
+      "text": "runTraceSecTested exits 1 if test coverage is below threshold percent.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-TRACE003",
+      "title": "--req-coverage CLI gate",
+      "text": "gofusa trace --req-coverage N shall exit 1 when requirement coverage or function annotation density is below N%%; N=0 disables the gate.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-UNECE-001",
+      "title": "Generate a UN R.155 cybersecurity compliance gap report",
+      "text": "Generate a UN R.155 cybersecurity compliance gap report.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CLI-VERIFY001",
+      "title": "Run go test and save a test evidence bundle",
+      "text": "Run go test and save a test evidence bundle.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-COMP001",
+      "title": "Complexity returns the cyclomatic complexity of a function body",
+      "text": "Complexity returns the cyclomatic complexity of a function body. V(G) = 1 + number of branching nodes (if, for, range, case, &&, ||, select case).",
+      "standard": "DO-178C",
+      "level": "6.3.4"
+    },
+    {
+      "id": "REQ-COUP001",
+      "title": "Exported mutable package-level variable detection",
+      "text": "The tool shall report a finding (COUP001) for exported, non-const package-level variables, since they represent uncontrolled data coupling between packages per DO-178C \u00a76.4.4.3.",
+      "standard": "DO-178C",
+      "level": "6.4.4.3"
+    },
+    {
+      "id": "REQ-COUP002",
+      "title": "Function/interface-parameter control coupling detection",
+      "text": "The tool shall report a finding (COUP002) when an exported function accepts a func or interface-typed parameter, since it represents control coupling with the caller per DO-178C \u00a76.4.4.3.",
+      "standard": "DO-178C",
+      "level": "6.4.4.3"
+    },
+    {
+      "id": "REQ-COUPLING001",
+      "title": "NewDataCouplingRule returns a COUP001 rule instance for testing",
+      "text": "NewDataCouplingRule returns a COUP001 rule instance for testing.",
+      "standard": "DO-178C",
+      "level": "6.4.4.3"
+    },
+    {
+      "id": "REQ-COUPLING002",
+      "title": "NewControlCouplingRule returns a COUP002 rule instance for testing",
+      "text": "NewControlCouplingRule returns a COUP002 rule instance for testing.",
+      "standard": "DO-178C",
+      "level": "6.4.4.3"
+    },
+    {
+      "id": "REQ-COUPLING003",
+      "title": "CouplingReport is the persisted coupling analysis evidence artifact",
+      "text": "CouplingReport is the persisted coupling analysis evidence artifact. It satisfies DO-178C \u00a76.4.4.3 (data and control coupling characterisation).",
+      "standard": "DO-178C",
+      "level": "6.4.4.3"
+    },
+    {
+      "id": "REQ-DIFF001",
+      "title": "Compare returns the delta between a baseline and a current report",
+      "text": "Compare returns the delta between a baseline and a current report.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DIFF002",
+      "title": "LoadReport reads and parses a JSON report file produced by gofusa check --format json",
+      "text": "LoadReport reads and parses a JSON report file produced by gofusa check --format json.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DIFF003",
+      "title": "Render writes the diff to w in the requested format (\"text\" or \"json\")",
+      "text": "Render writes the diff to w in the requested format (\"text\" or \"json\").",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP001",
+      "title": "Action describes what was decided for a finding",
+      "text": "Action describes what was decided for a finding.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP002",
+      "title": "Entry records a single disposition decision",
+      "text": "Entry records a single disposition decision.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP003",
+      "title": "Log is the full dispositions log for a project",
+      "text": "Log is the full dispositions log for a project.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP004",
+      "title": "Load reads the dispositions log from projectRoot",
+      "text": "Load reads the dispositions log from projectRoot. If the file does not exist, it returns an empty log with no error.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP005",
+      "title": "Save writes the dispositions log to path",
+      "text": "Save writes the dispositions log to path.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP006",
+      "title": "Add appends entry to log, deduplicating by RuleID+Action",
+      "text": "Add appends entry to log, deduplicating by RuleID+Action. If an entry with the same RuleID and Action already exists it is replaced. Returns the updated log.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP007",
+      "title": "IsDispositioned reports whether ruleID has any disposition entry",
+      "text": "IsDispositioned reports whether ruleID has any disposition entry.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP008",
+      "title": "Undispositioned ERROR finding detection",
+      "text": "The tool shall report an INFO finding (DISP001) for each ERROR finding present in check-report.json that has no corresponding disposition entry in .fusa-dispositions.json.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DISP009",
+      "title": "RenderEntries writes a human-readable table of entries to w",
+      "text": "RenderEntries writes a human-readable table of entries to w.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-DO178-001",
+      "title": "Objective is a single DO-178C compliance objective",
+      "text": "Objective is a single DO-178C compliance objective.",
+      "standard": "DO-178C"
+    },
+    {
+      "id": "REQ-DO178-002",
+      "title": "Report is the complete DO-178C gap assessment",
+      "text": "Report is the complete DO-178C gap assessment.",
+      "standard": "DO-178C"
+    },
+    {
+      "id": "REQ-DO178-003",
+      "title": "Render writes the gap report to w in the requested format (\"text\" or \"json\")",
+      "text": "Render writes the gap report to w in the requested format (\"text\" or \"json\").",
+      "standard": "DO-178C"
+    },
+    {
+      "id": "REQ-GAPREPORT001",
+      "title": "Report is the canonical gap-report document (\u00a79.3 + \u00a73.1 common header)",
+      "text": "Report is the canonical gap-report document (\u00a79.3 + \u00a73.1 common header).",
+      "standard": "x-FuSa",
+      "level": "9.3"
+    },
+    {
+      "id": "REQ-GAPREPORT002",
+      "title": "Render writes the report to w in the requested format (\"json\" or \"text\")",
+      "text": "Render writes the report to w in the requested format (\"json\" or \"text\").",
+      "standard": "x-FuSa",
+      "level": "9.3"
+    },
+    {
+      "id": "REQ-GAPREPORT003",
+      "title": "New builds a canonical Report with header fields pre-populated",
+      "text": "New builds a canonical Report with header fields pre-populated.",
+      "standard": "x-FuSa",
+      "level": "9.3"
+    },
+    {
+      "id": "REQ-GAPREPORT004",
+      "title": "AddObjective appends an objective and updates the summary counts",
+      "text": "AddObjective appends an objective and updates the summary counts.",
+      "standard": "x-FuSa",
+      "level": "9.3"
+    },
+    {
+      "id": "REQ-GAPREPORT005",
+      "title": "Gap report text rendering",
+      "text": "gapreport.renderText shall write a human-readable rendering of a \u00a79.3 gap Report to the given writer, including the standard name, generation timestamp, project root, summary counts, and a status-icon-prefixed line per objective (with any associated finding rule IDs).",
+      "standard": "x-FuSa",
+      "level": "9.3"
+    },
+    {
+      "id": "REQ-GAPREPORT006",
+      "title": "Gap report status icon mapping",
+      "text": "gapreport.statusIcon shall map each \u00a79.3 objective status string to its display icon used by the text renderer.",
+      "standard": "x-FuSa",
+      "level": "9.3"
+    },
+    {
+      "id": "REQ-HARA001",
+      "title": "RiskRating holds the three ISO 26262-3 classification parameters and the derived ASIL",
+      "text": "RiskRating holds the three ISO 26262-3 classification parameters and the derived ASIL.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA002",
+      "title": "OperationalSituation describes a scenario in which a hazard can manifest",
+      "text": "OperationalSituation describes a scenario in which a hazard can manifest.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA003",
+      "title": "Hazard describes a potential source of harm",
+      "text": "Hazard describes a potential source of harm.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA004",
+      "title": "SafetyGoal is a top-level safety requirement derived from one or more hazards",
+      "text": "SafetyGoal is a top-level safety requirement derived from one or more hazards.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA005",
+      "title": "HARA is the full hazard analysis and risk assessment for a project",
+      "text": "HARA is the full hazard analysis and risk assessment for a project.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA006",
+      "title": "DetermineASIL derives the ASIL from S, E, C per ISO 26262-3:2018 Table 4",
+      "text": "DetermineASIL derives the ASIL from S, E, C per ISO 26262-3:2018 Table 4.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA007",
+      "title": "Load reads the HARA from projectRoot/.fusa-hara.json",
+      "text": "Load reads the HARA from projectRoot/.fusa-hara.json. Returns an empty HARA if the file does not exist.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA008",
+      "title": "Save writes the HARA to path",
+      "text": "Save writes the HARA to path.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA009",
+      "title": "Validate checks the HARA for completeness gaps",
+      "text": "Validate checks the HARA for completeness gaps.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA010",
+      "title": "Render writes the HARA to w in text, json, or markdown format",
+      "text": "Render writes the HARA to w in text, json, or markdown format.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA011",
+      "title": "HARA file presence check",
+      "text": "The tool shall report a finding (HARA001) when no .fusa-hara.json file is present in the project, since hazard analysis data is required for ISO 26262 projects.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA012",
+      "title": "Incomplete hazard risk rating detection",
+      "text": "The tool shall report a finding (HARA002) when a Hazard's risk rating is incomplete, i.e. Severity, Exposure, and Controllability are not all set.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA013",
+      "title": "Hazard with no linked safety goal detection",
+      "text": "The tool shall report a finding (HARA003) when a Hazard has no linked SafetyGoal, since every hazard must be mitigated by at least one safety goal.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA014",
+      "title": "Safety goal without ASIL detection",
+      "text": "The tool shall report a finding (HARA004) when a SafetyGoal has no ASIL assigned, since every safety goal must have an ASIL determined from its linked hazard.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HARA015",
+      "title": "Hazard ASIL exceeding project ASIL detection",
+      "text": "The tool shall report a finding (HARA005) when the highest hazard ASIL in the HARA exceeds the project ASIL declared in .fusa.json, since that means the project configuration understates risk.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-HTML004",
+      "title": "RenderEvidenceHTML writes a self-contained HTML evidence bundle to w",
+      "text": "RenderEvidenceHTML writes a self-contained HTML evidence bundle to w. It reads up to 16 evidence files from projectRoot and renders them as navigable sections. Missing files are shown as \"not present\" cards.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-IEC61508-001",
+      "title": "SIL represents a Safety Integrity Level",
+      "text": "SIL represents a Safety Integrity Level.",
+      "standard": "IEC 61508"
+    },
+    {
+      "id": "REQ-IEC61508-002",
+      "title": "Objective is a single IEC 61508 compliance objective",
+      "text": "Objective is a single IEC 61508 compliance objective.",
+      "standard": "IEC 61508"
+    },
+    {
+      "id": "REQ-IEC61508-003",
+      "title": "Report is the complete IEC 61508 gap assessment",
+      "text": "Report is the complete IEC 61508 gap assessment.",
+      "standard": "IEC 61508"
+    },
+    {
+      "id": "REQ-IEC61508-004",
+      "title": "IEC 61508 gap report presence check",
+      "text": "The tool shall report an INFO finding (IEC61508001) when no iec61508-gap-report.json file is present, since the IEC 61508 gap report should be generated and committed to the repository.",
+      "standard": "IEC 61508"
+    },
+    {
+      "id": "REQ-IMPACT001",
+      "title": "FileChange describes a single file that changed in the diff",
+      "text": "FileChange describes a single file that changed in the diff.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-IMPACT002",
+      "title": "RequirementImpact describes a requirement affected by changes",
+      "text": "RequirementImpact describes a requirement affected by changes.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-IMPACT003",
+      "title": "ArtifactStatus reports whether a safety artefact is stale",
+      "text": "ArtifactStatus reports whether a safety artefact is stale.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-IMPACT004",
+      "title": "Report is the complete impact analysis",
+      "text": "Report is the complete impact analysis.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-IMPACT005",
+      "title": "Render writes the impact report to w in the requested format (\"text\" or \"json\")",
+      "text": "Render writes the impact report to w in the requested format (\"text\" or \"json\").",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-ISO26262-001",
+      "title": "ASIL represents an Automotive Safety Integrity Level",
+      "text": "ASIL represents an Automotive Safety Integrity Level.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-ISO26262-002",
+      "title": "Objective is a single ISO 26262 compliance objective",
+      "text": "Objective is a single ISO 26262 compliance objective.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-ISO26262-003",
+      "title": "Report is the complete ISO 26262 gap assessment",
+      "text": "Report is the complete ISO 26262 gap assessment.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-ISO26262-004",
+      "title": "ISO 26262 gap report presence check",
+      "text": "The tool shall report an INFO finding (ISO26262001) when no iso26262-gap-report.json file is present, since the ISO 26262 gap report should be generated and committed to the repository.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-ISO26262-005",
+      "title": "ASIL-less requirement detection",
+      "text": "The tool shall report a finding (ISO26262002) when requirements in .fusa-reqs.json lack ASIL annotations, since ISO 26262-6 \u00a76.4.2 requires ASIL designations on safety requirements.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-ISO26262-006",
+      "title": "Tool qualification failure detection",
+      "text": "The tool shall report a finding (ISO26262003) when qualify-report.json contains failed test cases, since a non-zero fail count undermines the evidence that the tool is fit for purpose.",
+      "standard": "ISO 26262"
+    },
+    {
+      "id": "REQ-METRICS001",
+      "title": "Snapshot captures a point-in-time set of project safety metrics",
+      "text": "Snapshot captures a point-in-time set of project safety metrics.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-METRICS002",
+      "title": "TimeSeries is the full metrics history for a project",
+      "text": "TimeSeries is the full metrics history for a project.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-METRICS003",
+      "title": "Load reads the metrics time series from projectRoot",
+      "text": "Load reads the metrics time series from projectRoot. If the file does not exist it returns an empty series with no error.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-METRICS004",
+      "title": "Save writes ts to path",
+      "text": "Save writes ts to path.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-METRICS005",
+      "title": "Append adds snap to ts and returns the updated series",
+      "text": "Append adds snap to ts and returns the updated series.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-METRICS006",
+      "title": "Collect reads project artefacts and builds a metrics snapshot",
+      "text": "Collect reads project artefacts and builds a metrics snapshot. It reads check-report.json, .fusa-reqs.json, and coverage-report.json.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-METRICS007",
+      "title": "Render writes the time series to w in the requested format (\"text\" or \"json\")",
+      "text": "Render writes the time series to w in the requested format (\"text\" or \"json\").",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-MISRA001",
+      "title": "Coverage describes how a MISRA rule is addressed",
+      "text": "Coverage describes how a MISRA rule is addressed.",
+      "standard": "MISRA C"
+    },
+    {
+      "id": "REQ-MISRA002",
+      "title": "Rule is a single MISRA C:2023 rule and its Go coverage mapping",
+      "text": "Rule is a single MISRA C:2023 rule and its Go coverage mapping.",
+      "standard": "MISRA C"
+    },
+    {
+      "id": "REQ-MISRA003",
+      "title": "Report is the full MISRA C:2023 coverage mapping",
+      "text": "Report is the full MISRA C:2023 coverage mapping.",
+      "standard": "MISRA C"
+    },
+    {
+      "id": "REQ-MISRA004",
+      "title": "Assess builds the full MISRA C:2023 coverage report",
+      "text": "Assess builds the full MISRA C:2023 coverage report.",
+      "standard": "MISRA C"
+    },
+    {
+      "id": "REQ-MISRA005",
+      "title": "Render writes the MISRA coverage report to w in the requested format (\"text\" or \"json\")",
+      "text": "Render writes the MISRA coverage report to w in the requested format (\"text\" or \"json\").",
+      "standard": "MISRA C"
+    },
+    {
+      "id": "REQ-PR001",
+      "title": "ProblemReport is a single DO-178C problem report entry",
+      "text": "ProblemReport is a single DO-178C problem report entry.",
+      "standard": "DO-178C",
+      "level": "11.17"
+    },
+    {
+      "id": "REQ-PR002",
+      "title": "Log is the complete problem report log",
+      "text": "Log is the complete problem report log.",
+      "standard": "DO-178C",
+      "level": "11.17"
+    },
+    {
+      "id": "REQ-PR003",
+      "title": "Add appends a new problem report to the log and saves it",
+      "text": "Add appends a new problem report to the log and saves it.",
+      "standard": "DO-178C",
+      "level": "11.17"
+    },
+    {
+      "id": "REQ-PR004",
+      "title": "Close marks a problem report as closed and saves it",
+      "text": "Close marks a problem report as closed and saves it.",
+      "standard": "DO-178C",
+      "level": "11.17"
+    },
+    {
+      "id": "REQ-RELEASE009",
+      "title": "SPDX2xDocument is a Software Bill of Materials in SPDX 2.2 or 2.3 JSON format",
+      "text": "SPDX2xDocument is a Software Bill of Materials in SPDX 2.2 or 2.3 JSON format. Produced by ToSPDX22 and ToSPDX23; this format is more widely supported by older toolchains than SPDX 3.0.1 JSON-LD.",
+      "standard": "ISO 21434",
+      "level": "CAL-2"
+    },
+    {
+      "id": "REQ-REPORT001",
+      "title": "Render writes r to w in the requested format (\"text\", \"json\", \"html\", \"sarif\", or \"md\")",
+      "text": "Render writes r to w in the requested format (\"text\", \"json\", \"html\", \"sarif\", or \"md\").",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-REPORT002",
+      "title": "RenderToFile writes the report to path in format",
+      "text": "RenderToFile writes the report to path in format. If path is empty the report is written to stdout.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-RPT006",
+      "title": "SummaryTable holds per-category and per-rule finding breakdowns",
+      "text": "SummaryTable holds per-category and per-rule finding breakdowns.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-SARIF001",
+      "title": "SARIF output is valid JSON",
+      "text": "sarif.Render shall produce output that is valid JSON, so downstream tools (GitHub code scanning and compatible consumers) can parse it without error.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-SARIF002",
+      "title": "SARIF output declares schema version 2.1.0",
+      "text": "sarif.Render shall include a \"$schema\" field and declare \"version\": \"2.1.0\" in its output, per the SARIF 2.1.0 specification.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-SARIF003",
+      "title": "Report-level SARIF rendering",
+      "text": "report.renderSARIF shall render a Report's Findings as SARIF 2.1.0 using the current go-FuSa tool version, delegating to sarif.Render.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-SAS001",
+      "title": "EvidenceSummary describes a single piece of evidence in the SAS",
+      "text": "EvidenceSummary describes a single piece of evidence in the SAS.",
+      "standard": "DO-178C",
+      "level": "11.20"
+    },
+    {
+      "id": "REQ-SAS002",
+      "title": "SAS is the Software Accomplishment Summary",
+      "text": "SAS is the Software Accomplishment Summary.",
+      "standard": "DO-178C",
+      "level": "11.20"
+    },
+    {
+      "id": "REQ-SAS003",
+      "title": "Render writes the SAS in the requested format (\"markdown\" or \"json\") to w",
+      "text": "Render writes the SAS in the requested format (\"markdown\" or \"json\") to w.",
+      "standard": "DO-178C",
+      "level": "11.20"
+    },
+    {
+      "id": "REQ-SCI001",
+      "title": "Item is a single software lifecycle data item",
+      "text": "Item is a single software lifecycle data item.",
+      "standard": "DO-178C",
+      "level": "11.16"
+    },
+    {
+      "id": "REQ-SCI002",
+      "title": "SCI is the complete Software Configuration Index",
+      "text": "SCI is the complete Software Configuration Index.",
+      "standard": "DO-178C",
+      "level": "11.16"
+    },
+    {
+      "id": "REQ-SCI003",
+      "title": "Render writes the SCI in the requested format (\"json\" or \"markdown\") to w",
+      "text": "Render writes the SCI in the requested format (\"json\" or \"markdown\") to w.",
+      "standard": "DO-178C",
+      "level": "11.16"
+    },
+    {
+      "id": "REQ-TESTUTIL002",
+      "title": "MinimalProject returns a file map that satisfies all built-in FUSA rules",
+      "text": "MinimalProject returns a file map that satisfies all built-in FUSA rules.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-TESTUTIL003",
+      "title": "GoSource returns a map with a single Go source file at the given path",
+      "text": "GoSource returns a map with a single Go source file at the given path.",
+      "standard": "x-FuSa"
     }
   ]
 }

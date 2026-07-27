@@ -877,7 +877,7 @@ func TestRunCheck_WithOutputFilev2(t *testing.T) {
 
 // ─── runAuditPack with output path ───────────────────────────────────────────
 
-//fusa:test REQ-CLI-AUDITPACK001
+//fusa:test REQ-CLI016
 func TestRunAuditPack_WithOutputv2(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
@@ -896,7 +896,7 @@ func TestRunAuditPack_WithOutputv2(t *testing.T) {
 
 // ─── runBoundary JSON output ──────────────────────────────────────────────────
 
-//fusa:test REQ-CLI-BOUNDARY001
+//fusa:test REQ-CLI014
 func TestRunBoundary_WithOutputDirv2(t *testing.T) {
 	dir := t.TempDir()
 	outDir := filepath.Join(dir, "bdry-out")
@@ -916,7 +916,7 @@ func TestRunBoundary_WithOutputDirv2(t *testing.T) {
 
 // ─── runLint / runFiltered extra paths ───────────────────────────────────────
 
-//fusa:test REQ-CLI-LINT001
+//fusa:test REQ-CLI008
 func TestRunLint_WithOutputFile(t *testing.T) {
 	dir := t.TempDir()
 	outFile := filepath.Join(dir, "lint.json")

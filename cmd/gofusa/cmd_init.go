@@ -13,6 +13,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/template"
 )
 
+//fusa:req REQ-CLI-INIT001
 func runInit(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("gofusa init", flag.ContinueOnError)
 	fs.SetOutput(stderr)

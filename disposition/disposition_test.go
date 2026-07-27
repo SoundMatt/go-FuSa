@@ -42,6 +42,9 @@ func TestLoad_InvalidFile(t *testing.T) {
 }
 
 //fusa:test REQ-DISP004
+//fusa:test REQ-DISP001
+//fusa:test REQ-DISP002
+//fusa:test REQ-DISP003
 func TestLoad_ValidFile(t *testing.T) {
 	dir := t.TempDir()
 	content := `{"project":"p","entries":[{"ruleID":"LINT001","rationale":"accepted","reviewer":"Alice","date":"2026-01-01T00:00:00Z","action":"accept"}]}`

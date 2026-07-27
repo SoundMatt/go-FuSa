@@ -248,3 +248,62 @@ func TestComputeFingerprint_WhitespaceCollapsed(t *testing.T) {
 		t.Error("messages with collapsed whitespace must yield the same fingerprint")
 	}
 }
+
+//fusa:test REQ-DOC001
+func TestResolveDoc_RootTakesPriority(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "docs", "safety"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	root := filepath.Join(dir, "SAFETY_PLAN.md")
+	alt := filepath.Join(dir, "docs", "safety", "SAFETY_PLAN.md")
+	if err := os.WriteFile(root, []byte("root"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(alt, []byte("alt"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if got := fusa.ResolveDoc(dir, "SAFETY_PLAN.md"); got != root {
+		t.Errorf("ResolveDoc = %q, want root path %q", got, root)
+	}
+}
+
+//fusa:test REQ-DOC001
+func TestResolveDoc_FallsBackToDocsScaffoldPath(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "docs", "safety"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	alt := filepath.Join(dir, "docs", "safety", "SAFETY_PLAN.md")
+	if err := os.WriteFile(alt, []byte("alt"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if got := fusa.ResolveDoc(dir, "SAFETY_PLAN.md"); got != alt {
+		t.Errorf("ResolveDoc = %q, want scaffold path %q", got, alt)
+	}
+}
+
+//fusa:test REQ-DOC001
+func TestResolveDoc_NonScaffoldFileNoFallback(t *testing.T) {
+	// sbom.json is not one of gofusa's docs/safety/ scaffold files, so a
+	// docs/safety/sbom.json copy must NOT be treated as satisfying it —
+	// only the bare root path counts.
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "docs", "safety"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "docs", "safety", "sbom.json"), []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if got := fusa.ResolveDoc(dir, "sbom.json"); got != "" {
+		t.Errorf("ResolveDoc = %q, want \"\" (sbom.json has no docs/safety/ fallback)", got)
+	}
+}
+
+//fusa:test REQ-DOC001
+func TestResolveDoc_NotFound(t *testing.T) {
+	dir := t.TempDir()
+	if got := fusa.ResolveDoc(dir, "SAFETY_PLAN.md"); got != "" {
+		t.Errorf("ResolveDoc = %q, want \"\"", got)
+	}
+}

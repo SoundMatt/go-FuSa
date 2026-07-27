@@ -39,6 +39,8 @@ func TestLoad_InvalidFile(t *testing.T) {
 }
 
 //fusa:test REQ-METRICS004
+//fusa:test REQ-METRICS001
+//fusa:test REQ-METRICS002
 func TestSave_RoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, metrics.MetricsFile)

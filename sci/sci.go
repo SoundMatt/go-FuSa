@@ -15,6 +15,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	fusa "github.com/SoundMatt/go-FuSa"
 )
 
 // SCIFile is the default output filename.
@@ -99,12 +101,15 @@ func Build(projectRoot, project, version string) (*SCI, error) {
 		Generated: time.Now().UTC(),
 	}
 	for _, c := range catalog {
-		path := filepath.Join(projectRoot, filepath.FromSlash(c.file))
 		item := Item{
 			Name:  c.name,
 			File:  c.file,
 			Class: c.class,
 			Note:  c.note,
+		}
+		path := fusa.ResolveDoc(projectRoot, c.file)
+		if path == "" {
+			path = filepath.Join(projectRoot, filepath.FromSlash(c.file))
 		}
 		if data, err := os.ReadFile(path); err == nil {
 			item.Present = true

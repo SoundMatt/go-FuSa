@@ -13,9 +13,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"time"
+
+	fusa "github.com/SoundMatt/go-FuSa"
 )
 
 // SASFile is the default output filename.
@@ -93,13 +93,12 @@ func Build(projectRoot, project, version, dal, prepared string) (*SAS, error) {
 
 	var gaps []string
 	for _, item := range evidenceItems {
-		path := filepath.Join(projectRoot, filepath.FromSlash(item.file))
 		ev := EvidenceSummary{
 			Title:   item.title,
 			File:    item.file,
 			Summary: item.desc,
 		}
-		if _, err := os.Stat(path); err == nil {
+		if fusa.ResolveDoc(projectRoot, item.file) != "" {
 			ev.Present = true
 		} else {
 			gaps = append(gaps, fmt.Sprintf("%s (%s) — not found", item.title, item.file))

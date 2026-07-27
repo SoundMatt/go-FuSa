@@ -418,6 +418,7 @@ func TestToSPDX23_VersionString(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RELEASE009
 func TestToSPDX22_RequiredFields(t *testing.T) {
 	sbom := buildSBOMForSPDX(t)
 	doc := release.ToSPDX22(sbom)

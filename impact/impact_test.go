@@ -124,6 +124,10 @@ func TestAnalyse_FromRef(t *testing.T) {
 	_ = rep // may or may not have changes depending on git version
 }
 
+//fusa:test REQ-IMPACT001
+//fusa:test REQ-IMPACT002
+//fusa:test REQ-IMPACT004
+//fusa:test REQ-IMPACT005
 func TestRender_Text(t *testing.T) {
 	rep := &impact.Report{
 		ChangedFiles: []impact.FileChange{
@@ -171,6 +175,7 @@ func TestRender_InvalidFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-IMPACT003
 func TestRenderText_StaleAndRerun(t *testing.T) {
 	rep := &impact.Report{
 		ChangedFiles: []impact.FileChange{

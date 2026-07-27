@@ -70,6 +70,34 @@ func TestBuild_AllPresent(t *testing.T) {
 	}
 }
 
+// Regression for #45: a freshly-scaffolded project (`gofusa template`
+// defaults to docs/safety/) must not report the plan documents as gaps
+// just because they aren't sitting at the project root.
+//
+//fusa:test REQ-SAS001
+//fusa:test REQ-DOC001
+func TestBuild_DocsSafetyScaffoldPath(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "docs", "safety"), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	for _, f := range []string{"SAFETY_PLAN.md", "SVP.md", "SCMP.md", "SQAP.md"} {
+		if err := os.WriteFile(filepath.Join(dir, "docs", "safety", f), []byte("x"), 0o644); err != nil {
+			t.Fatalf("write %s: %v", f, err)
+		}
+	}
+	doc, err := sas.Build(dir, "proj", "1.0.0", "DAL-B", "Test Team")
+	if err != nil {
+		t.Fatalf("Build: %v", err)
+	}
+	for _, g := range doc.Gaps {
+		if strings.Contains(g, "SAFETY_PLAN.md") || strings.Contains(g, "SVP.md") ||
+			strings.Contains(g, "SCMP.md") || strings.Contains(g, "SQAP.md") {
+			t.Errorf("plan doc under docs/safety/ still reported as gap: %s", g)
+		}
+	}
+}
+
 //fusa:test REQ-SAS003
 func TestRender_Markdown(t *testing.T) {
 	dir := t.TempDir()

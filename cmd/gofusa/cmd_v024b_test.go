@@ -225,13 +225,15 @@ func TestRunReq_ShowAll(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	// Write a Go file with impl annotation
-	src := `package main
-//fusa:req REQ-001
-func Auth() {}
-//fusa:test REQ-002
-func TestSafety() {}
-`
+	// Write a Go file with impl annotation. Concatenated, not a raw
+	// string literal, so this fixture's own //fusa:req/test lines
+	// aren't picked up as real tags by go-FuSa's own self-trace of
+	// this repo (they're synthetic sample data scoped to dir).
+	src := "package main\n" +
+		"//fusa:req REQ-001\n" +
+		"func Auth() {}\n" +
+		"//fusa:test REQ-002\n" +
+		"func TestSafety() {}\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -255,11 +257,12 @@ func TestRunReq_ShowWithAnnotations(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	src := `package main
-//fusa:req REQ-001
-//fusa:test REQ-001
-func Auth() {}
-`
+	// Concatenated, not a raw string literal, for the same
+	// self-trace-noise reason as above.
+	src := "package main\n" +
+		"//fusa:req REQ-001\n" +
+		"//fusa:test REQ-001\n" +
+		"func Auth() {}\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -595,14 +598,15 @@ func TestRunFmea_BadFlag(t *testing.T) {
 //fusa:test REQ-CLI013
 func TestRunFmea_WithGoSource(t *testing.T) {
 	dir := t.TempDir()
-	src := `package main
-
-//fusa:req REQ-001
-func SafetyFunc() error { return nil }
-
-//fusa:req REQ-002
-func CriticalFunc() int { return 0 }
-`
+	// Concatenated, not a raw string literal, for the same
+	// self-trace-noise reason as above.
+	src := "package main\n" +
+		"\n" +
+		"//fusa:req REQ-001\n" +
+		"func SafetyFunc() error { return nil }\n" +
+		"\n" +
+		"//fusa:req REQ-002\n" +
+		"func CriticalFunc() int { return 0 }\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}

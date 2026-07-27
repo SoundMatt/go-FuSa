@@ -979,10 +979,12 @@ func transmit() string { return NoCrypto }
 func TestRunFmea_CyberNoConfig(t *testing.T) {
 	// Test --cyber path when no .fusa.json present (uses default config)
 	dir := t.TempDir()
-	src := `package main
-//fusa:req REQ-001
-func DoWork() {}
-`
+	// Concatenated, not a raw string literal, so this fixture's own
+	// //fusa:req line isn't picked up as a real tag by go-FuSa's own
+	// self-trace of this repo.
+	src := "package main\n" +
+		"//fusa:req REQ-001\n" +
+		"func DoWork() {}\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -1023,7 +1025,7 @@ func TestRunDiff_BadFlag(t *testing.T) {
 
 // ─── runAuditPack extra paths ─────────────────────────────────────────────────
 
-//fusa:test REQ-CLI-AUDIT001
+//fusa:test REQ-CLI016
 func TestRunAuditPack_BadFlag(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runAuditPack([]string{"--no-such-flag"}, &out, &errBuf)
@@ -1049,17 +1051,19 @@ func TestRunSci_TextFormat(t *testing.T) {
 func TestCountBySeverity_Direct(t *testing.T) {
 	// Run fmea on a project with real Go files to get actual entries
 	dir := t.TempDir()
-	src := `package main
-
-//fusa:req REQ-H
-func HighFunc() panic { panic("x") }
-
-//fusa:req REQ-M
-func MedFunc() error { return nil }
-
-//fusa:req REQ-L
-func LowFunc() {}
-`
+	// Concatenated, not a raw string literal, so this fixture's own
+	// //fusa:req lines aren't picked up as real tags by go-FuSa's own
+	// self-trace of this repo.
+	src := "package main\n" +
+		"\n" +
+		"//fusa:req REQ-H\n" +
+		"func HighFunc() panic { panic(\"x\") }\n" +
+		"\n" +
+		"//fusa:req REQ-M\n" +
+		"func MedFunc() error { return nil }\n" +
+		"\n" +
+		"//fusa:req REQ-L\n" +
+		"func LowFunc() {}\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}

@@ -7,7 +7,54 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
-## v0.33.5 — 2026-07-27
+## v0.34.0 — 2026-07-27
+
+### Fixed (issue #45)
+- **`assess`/`sci`/`sas` builders reported false gaps for freshly-scaffolded
+  projects.** `gofusa init`/`gofusa template` default their output directory
+  to `docs/safety/`, but `iso26262.Assess`, `iec61508.Assess`, `do178.Assess`,
+  `sci.Build`, and `sas.Build` only ever checked for `SAFETY_PLAN.md`,
+  `SVP.md`, `SCMP.md`, and `SQAP.md` at the bare project root — the same
+  inconsistency `iec62443.go`'s `SECURITY.md`/`INCIDENT-RESPONSE.md` checks
+  had already been fixed for. Added `fusa.ResolveDoc`, a shared helper that
+  checks the project-root path first and falls back to `docs/safety/<name>`
+  for the known scaffold filenames, and wired it into all five builders.
+
+### Added
+- **`fusa.ResolveDoc(projectRoot, name string) string`** — new exported
+  helper (REQ-DOC001) resolving a scaffolded safety document's on-disk path,
+  used by the fix above.
+
+### Requirement registry sync
+- **Closed a 142-ID / 727-occurrence orphan-tag gap.** A repo-wide
+  `gofusa trace` audit found that entire subsystems — `sas/`, `sci/`,
+  `hara/`, `gapreport/`, `badge/`, `metrics/`, `disposition/`, `impact/`,
+  `analyze` rules ANA005-009, `coupling`, and ~40 `REQ-CLI-*`
+  CLI-subcommand tags — carried real `//fusa:req`/`//fusa:test`
+  annotations that were never registered in `.fusa-reqs.json`, so
+  `gofusa trace`'s own orphan-tag detection (TRACE009) was firing over
+  500 warnings against go-FuSa's own source. Registered all 142 requirement
+  IDs with title/text/standard derived from each implementation's doc
+  comment (or, where none existed, its CLI `--help` usage text), then
+  added the handful of missing test tags surfaced once those requirements
+  became visible to the coverage gate.
+- Fixed a handful of ID inconsistencies uncovered along the way: five
+  test-side tags (`REQ-CLI-AUDIT001`, `REQ-CLI-AUDITPACK001`,
+  `REQ-CLI-BOUNDARY001`, `REQ-CLI-LINT001`, `REQ-CLI-VERSION001`)
+  duplicated already-registered IDs and were consolidated onto them;
+  three `gofusa trace --sec-tested` tests were retagged from
+  `REQ-CLI-TRACE003` (`--req-coverage`) to the correct `REQ-CLI-TRACE001`
+  (`--sec-tested`); `runCheck`/`runInit`/`runReport`/`runVerify` gained the
+  top-level `//fusa:req` tag their tests already assumed existed.
+- Six synthetic fixture IDs (`REQ-001`, `REQ-002`, `REQ-003`, `REQ-H`,
+  `REQ-M`, `REQ-L`) used as sample data inside test-only Go source
+  fixtures were rewritten from raw string literals to string
+  concatenation, so they no longer get picked up by go-FuSa's own
+  self-trace of this repo.
+
+### Requirements
+- `.fusa-reqs.json`: 233 → 363 requirements.
+
 
 ### Fixed (issue #43)
 - **Stale Dockerfile OCI labels** — the custom `io.x-fusa.spec-version` label

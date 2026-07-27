@@ -10,7 +10,8 @@ import (
 
 // ─── Section 3a: runTraceSecTested ────────────────────────────────────────────
 
-//fusa:test REQ-CLI-TRACE003
+//fusa:test REQ-CLI-TRACE001
+//fusa:test REQ-CLI-TRACE002
 func TestRunTraceSecTested_Pass(t *testing.T) {
 	dir := t.TempDir()
 	// Write requirements file
@@ -23,12 +24,15 @@ func TestRunTraceSecTested_Pass(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	// Write Go files with //fusa:test tags for 3/4 requirements (75%)
-	src := `package main
-//fusa:test REQ-001
-//fusa:test REQ-002
-//fusa:test REQ-003
-`
+	// Write Go files with //fusa:test tags for 3/4 requirements (75%).
+	// Built via concatenation rather than a raw string literal so this
+	// fixture's own //fusa:test lines aren't picked up as real tags by
+	// go-FuSa's own self-trace of this repo (they're synthetic sample
+	// data scoped to dir, not real annotations on go-FuSa's own code).
+	src := "package main\n" +
+		"//fusa:test REQ-001\n" +
+		"//fusa:test REQ-002\n" +
+		"//fusa:test REQ-003\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -43,7 +47,7 @@ func TestRunTraceSecTested_Pass(t *testing.T) {
 	}
 }
 
-//fusa:test REQ-CLI-TRACE003
+//fusa:test REQ-CLI-TRACE001
 func TestRunTraceSecTested_Fail(t *testing.T) {
 	dir := t.TempDir()
 	reqs := `{"requirements":[
@@ -55,10 +59,10 @@ func TestRunTraceSecTested_Fail(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, ".fusa-reqs.json"), []byte(reqs), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	// Only 1 out of 4 has a test tag (25%)
-	src := `package main
-//fusa:test REQ-001
-`
+	// Only 1 out of 4 has a test tag (25%). Concatenated, not a raw
+	// string literal, for the same self-trace-noise reason as above.
+	src := "package main\n" +
+		"//fusa:test REQ-001\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -70,7 +74,7 @@ func TestRunTraceSecTested_Fail(t *testing.T) {
 	}
 }
 
-//fusa:test REQ-CLI-TRACE003
+//fusa:test REQ-CLI-TRACE001
 func TestRunTraceSecTested_NoRequirements(t *testing.T) {
 	dir := t.TempDir()
 	var out, errBuf bytes.Buffer
