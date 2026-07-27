@@ -7,6 +7,23 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.33.4 — 2026-07-27
+
+### Fixed (function-tag coverage retrofit)
+- Closed the remaining `--func-coverage` gaps found after v0.33.3: raised
+  function-tag coverage from 93% (234/251) to 100% (251/251) by tagging the
+  last 17 untagged exported functions with `//fusa:req`:
+  `coverage.RunMutation` (REQ-COV016); `engine.Registry.Register`,
+  `engine.Registry.Rules`, `engine.Result.HasWarnings`, `engine.Registry.Run`
+  (REQ-ENG008..011); `fusa.DeriveCategory` (REQ-CAT001) and
+  `fusa.ComputeFingerprint` (REQ-FP001); `qualify.Report.HasFailures`
+  (REQ-QUALIFY009); `runtime.DiagManager.Record`, `.Diagnostics`, `.Clear`,
+  `.Count` (REQ-RUNTIME016..019); `runtime.FaultMonitor.Reset`, `.Count`
+  (REQ-RUNTIME020/021); `runtime.StateManager.State`, `.Transition`
+  (REQ-RUNTIME022/023); and `trace.ScanTags` (REQ-TRACE011). All 17 new
+  requirements are registered in `.fusa-reqs.json` and tagged with
+  `//fusa:test` on the pre-existing tests that already exercised them.
+
 ## v0.33.3 — 2026-07-27
 
 ### Added

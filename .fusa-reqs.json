@@ -1341,7 +1341,7 @@
     },
     {
       "id": "REQ-TRACE009",
-      "title": "Function-level tag coverage (x-FuSa spec §1.4.1 item 2)",
+      "title": "Function-level tag coverage (x-FuSa spec \u00a71.4.1 item 2)",
       "text": "trace.ScanFuncTagCoverage shall count exported top-level functions/methods in non-test .go files that carry a //fusa:req tag directly above them in their doc comment, excluding trivial fmt.Stringer/error-interface shims and boilerplate zero-parameter getters, and report the percentage covered.",
       "standard": "x-FuSa",
       "level": "1.4.1"
@@ -1349,14 +1349,14 @@
     {
       "id": "REQ-CLI-TRACE004",
       "title": "--func-coverage CLI gate",
-      "text": "gofusa trace --func-coverage N shall exit 1 when fewer than N%% of exported functions/methods carry a //fusa:req tag directly above them; N=0 disables the gate (x-FuSa spec §5).",
+      "text": "gofusa trace --func-coverage N shall exit 1 when fewer than N%% of exported functions/methods carry a //fusa:req tag directly above them; N=0 disables the gate (x-FuSa spec \u00a75).",
       "standard": "x-FuSa",
       "level": "1.4.1"
     },
     {
       "id": "REQ-TRACE010",
       "title": "Dangling //fusa:test tag detection",
-      "text": "The trace engine shall report a WARNING finding (TRACE009, category requirement) for every //fusa:test tag whose requirement ID does not exist in .fusa-reqs.json, the same way a malformed annotation is treated (x-FuSa spec §1.4.1 item 3).",
+      "text": "The trace engine shall report a WARNING finding (TRACE009, category requirement) for every //fusa:test tag whose requirement ID does not exist in .fusa-reqs.json, the same way a malformed annotation is treated (x-FuSa spec \u00a71.4.1 item 3).",
       "standard": "x-FuSa",
       "level": "1.4.1"
     },
@@ -1477,6 +1477,125 @@
       "title": "Export Polarion workitems XML",
       "text": "trace.ExportPolarion shall serialise a slice of Requirement records as Polarion workitems XML that round-trips through ParsePolarion.",
       "standard": "generic"
+    },
+    {
+      "id": "REQ-COV016",
+      "title": "Mutation testing execution produces DAL-tagged report",
+      "text": "coverage.RunMutation shall invoke go-mutesting against projectRoot and return a MutationReport tagged with the given DAL; when go-mutesting is not found in PATH it shall return a report with an explanatory Note and MCDCEvidence set, and a nil error.",
+      "standard": "DO-178C",
+      "level": "LLR"
+    },
+    {
+      "id": "REQ-ENG008",
+      "title": "Registry.Register rejects nil and duplicate rule IDs",
+      "text": "engine.Registry.Register shall return an error when passed a nil Rule or when a rule with the same ID has already been registered, and otherwise add the rule to the registry.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG009",
+      "title": "Registry.Rules returns rules sorted by ID",
+      "text": "engine.Registry.Rules shall return a copy of the registered rules ordered by ascending rule ID, giving callers a deterministic iteration order.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG010",
+      "title": "Result.HasWarnings reports WARNING or ERROR findings",
+      "text": "engine.Result.HasWarnings shall return true if any Finding in the result carries SeverityWarning or SeverityError, supporting gofusa check --strict.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-ENG011",
+      "title": "Registry.Run executes all non-excluded rules",
+      "text": "engine.Registry.Run shall execute all registered rules against projectRoot except those listed in cfg.Rules.Exclude, equivalent to calling RunFilter with a nil keep predicate.",
+      "standard": "ISO 26262",
+      "level": "ASIL-A"
+    },
+    {
+      "id": "REQ-CAT001",
+      "title": "DeriveCategory maps rule ID prefixes to categories",
+      "text": "fusa.DeriveCategory shall map a rule ID's alphabetic prefix to its Category per the \u00a71.5.1 prefix registry (case-insensitive), returning CategoryOther for unrecognised or empty prefixes.",
+      "standard": "x-FuSa",
+      "level": "1.5.1"
+    },
+    {
+      "id": "REQ-FP001",
+      "title": "ComputeFingerprint derives a stable SHA-256 finding fingerprint",
+      "text": "fusa.ComputeFingerprint shall compute the \u00a74.2 canonical SHA-256 fingerprint from a Finding's RuleID, project-relative Location.File, and digit/whitespace-normalised Message, producing a stable value across repeated calls and differing values when RuleID, File, or normalised Message differ.",
+      "standard": "x-FuSa",
+      "level": "4.2"
+    },
+    {
+      "id": "REQ-QUALIFY009",
+      "title": "Report.HasFailures reports any failed qualification case",
+      "text": "qualify.Report.HasFailures shall return true when the report's Failed count is greater than zero, and false otherwise.",
+      "standard": "ISO 26262",
+      "level": "HLR"
+    },
+    {
+      "id": "REQ-RUNTIME016",
+      "title": "DiagManager.Record appends and evicts oldest on overflow",
+      "text": "runtime.DiagManager.Record shall append a Diagnostic entry with the given id, level, and message, evicting the oldest buffered entry when the manager is at capacity.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-RUNTIME017",
+      "title": "DiagManager.Diagnostics returns a snapshot copy",
+      "text": "runtime.DiagManager.Diagnostics shall return a copy of all buffered Diagnostic entries in oldest-first order, safe for the caller to retain without affecting the manager's internal state.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-RUNTIME018",
+      "title": "DiagManager.Clear removes all buffered diagnostics",
+      "text": "runtime.DiagManager.Clear shall remove all buffered Diagnostic entries, resetting Count to zero.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-RUNTIME019",
+      "title": "DiagManager.Count reports buffered entry count",
+      "text": "runtime.DiagManager.Count shall return the number of Diagnostic entries currently buffered.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-RUNTIME020",
+      "title": "FaultMonitor.Reset zeroes a fault's counter",
+      "text": "runtime.FaultMonitor.Reset shall set the counter for the given faultID back to zero without invoking the onFault callback.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-RUNTIME021",
+      "title": "FaultMonitor.Count reports a fault's current counter",
+      "text": "runtime.FaultMonitor.Count shall return the current counter value for the given faultID, returning zero for a faultID that has never been recorded.",
+      "standard": "ISO26262",
+      "level": "ASIL-B"
+    },
+    {
+      "id": "REQ-RUNTIME022",
+      "title": "StateManager.State returns the current safe state",
+      "text": "runtime.StateManager.State shall return the manager's current State, starting at StateOperational until a successful Transition changes it.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-RUNTIME023",
+      "title": "StateManager.Transition moves state and notifies onChange",
+      "text": "runtime.StateManager.Transition shall move the manager to the target State and invoke the onChange callback with (from, to) on success; a transition to the current state shall be a no-op that does not invoke onChange.",
+      "standard": "ISO26262",
+      "level": "ASIL-D"
+    },
+    {
+      "id": "REQ-TRACE011",
+      "title": "ScanTags walks a source tree collecting annotation tags",
+      "text": "trace.ScanTags shall walk all .go files under root (skipping vendor, testdata, and dot-prefixed directories), returning every //fusa:req, //fusa:test, and //fusa:sec-test annotation found as a Tag with its file, line, kind, and requirement ID.",
+      "standard": "x-FuSa",
+      "level": "1.4.1"
     }
   ]
 }

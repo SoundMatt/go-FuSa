@@ -81,6 +81,7 @@ func TestSeverity_String(t *testing.T) {
 // ─── DeriveCategory ───────────────────────────────────────────────────────────
 
 //fusa:test REQ-NF001
+//fusa:test REQ-CAT001
 func TestDeriveCategory_KnownPrefixes(t *testing.T) {
 	cases := []struct {
 		ruleID string
@@ -157,6 +158,7 @@ func TestDeriveCategory_MixedCase(t *testing.T) {
 // ─── ComputeFingerprint ───────────────────────────────────────────────────────
 
 //fusa:test REQ-NF001
+//fusa:test REQ-FP001
 func TestComputeFingerprint_Format(t *testing.T) {
 	f := fusa.Finding{
 		RuleID:  "LINT001",

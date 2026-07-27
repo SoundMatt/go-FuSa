@@ -152,6 +152,8 @@ func SaveRequirements(dir string, reqs []Requirement) error {
 
 // ScanTags walks Go source files under root and returns all //fusa:req and
 // //fusa:test annotation tags found in comments.
+//
+//fusa:req REQ-TRACE011
 func ScanTags(root string) ([]Tag, error) {
 	var tags []Tag
 	err := filepath.WalkDir(root, func(path string, d os.DirEntry, walkErr error) error {

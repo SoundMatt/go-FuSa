@@ -45,6 +45,8 @@ func NewRegistry() *Registry {
 
 // Register adds r to the registry. It returns an error if r is nil or if a
 // rule with the same ID has already been registered.
+//
+//fusa:req REQ-ENG008
 func (reg *Registry) Register(r Rule) error {
 	//fusa:req REQ-ENG005
 	if r == nil {
@@ -70,6 +72,8 @@ func (reg *Registry) MustRegister(r Rule) {
 }
 
 // Rules returns a copy of the registered rules sorted by ID.
+//
+//fusa:req REQ-ENG009
 func (reg *Registry) Rules() []Rule {
 	out := make([]Rule, len(reg.rules))
 	copy(out, reg.rules)
@@ -100,6 +104,8 @@ func (r *Result) HasErrors() bool {
 
 // HasWarnings reports whether any Finding carries SeverityWarning or SeverityError.
 // Used by gofusa check --strict to fail on any actionable finding.
+//
+//fusa:req REQ-ENG010
 func (r *Result) HasWarnings() bool {
 	for _, f := range r.Findings {
 		if f.Severity == fusa.SeverityWarning || f.Severity == fusa.SeverityError {
@@ -112,6 +118,8 @@ func (r *Result) HasWarnings() bool {
 // Run executes all registered rules against projectRoot, skipping any whose
 // ID appears in cfg.Rules.Exclude. Rule execution errors are collected in
 // Result.Errors and do not abort the run.
+//
+//fusa:req REQ-ENG011
 func (reg *Registry) Run(ctx context.Context, projectRoot string, cfg *config.Config) (*Result, error) {
 	return reg.RunFilter(ctx, projectRoot, cfg, nil)
 }

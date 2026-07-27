@@ -120,6 +120,8 @@ func (r *Report) QualificationBadge() string {
 }
 
 // HasFailures reports whether any test case in the report failed.
+//
+//fusa:req REQ-QUALIFY009
 func (r *Report) HasFailures() bool { return r.Failed > 0 }
 
 // Run executes cases against reg and returns a Report.

@@ -444,6 +444,8 @@ type MutationReport struct {
 
 // RunMutation runs mutation testing via go-mutesting and returns a MutationReport.
 // If go-mutesting is not in PATH it returns a report with a note and no error.
+//
+//fusa:req REQ-COV016
 func RunMutation(projectRoot string, dal DAL) (*MutationReport, error) {
 	bin, err := exec.LookPath("go-mutesting")
 	if err != nil {

@@ -55,6 +55,8 @@ func NewStateManager(onChange func(from, to State)) *StateManager {
 }
 
 // State returns the current safe state.
+//
+//fusa:req REQ-RUNTIME022
 func (m *StateManager) State() State {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
@@ -64,6 +66,8 @@ func (m *StateManager) State() State {
 // Transition moves the system to the target state.
 // Returns an error if the current state is StateEmergencyStop (terminal)
 // or if to equals the current state (no-op).
+//
+//fusa:req REQ-RUNTIME023
 func (m *StateManager) Transition(to State) error {
 	m.mu.Lock()
 	from := m.state

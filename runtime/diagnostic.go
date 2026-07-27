@@ -65,6 +65,8 @@ func NewDiagManager(maxEntries int) *DiagManager {
 
 // Record appends a diagnostic event. If the buffer is full, the oldest
 // entry is evicted.
+//
+//fusa:req REQ-RUNTIME016
 func (d *DiagManager) Record(id string, level DiagLevel, message string) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
@@ -80,6 +82,8 @@ func (d *DiagManager) Record(id string, level DiagLevel, message string) {
 }
 
 // Diagnostics returns a snapshot copy of all buffered entries, oldest first.
+//
+//fusa:req REQ-RUNTIME017
 func (d *DiagManager) Diagnostics() []Diagnostic {
 	d.mu.RLock()
 	defer d.mu.RUnlock()
@@ -89,6 +93,8 @@ func (d *DiagManager) Diagnostics() []Diagnostic {
 }
 
 // Clear removes all buffered diagnostics.
+//
+//fusa:req REQ-RUNTIME018
 func (d *DiagManager) Clear() {
 	d.mu.Lock()
 	defer d.mu.Unlock()
@@ -96,6 +102,8 @@ func (d *DiagManager) Clear() {
 }
 
 // Count returns the number of buffered diagnostic entries.
+//
+//fusa:req REQ-RUNTIME019
 func (d *DiagManager) Count() int {
 	d.mu.RLock()
 	defer d.mu.RUnlock()

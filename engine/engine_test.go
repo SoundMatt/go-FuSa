@@ -24,6 +24,7 @@ func (r *stubRule) Run(_ context.Context, _ string, _ *config.Config) ([]fusa.Fi
 	return r.findings, r.err
 }
 
+//fusa:test REQ-ENG008
 func TestRegistry_Register(t *testing.T) {
 	reg := engine.NewRegistry()
 	r := &stubRule{id: "TEST001"}
@@ -68,6 +69,7 @@ func TestRegistry_MustRegister_Panics(t *testing.T) {
 }
 
 //fusa:test REQ-ENG001
+//fusa:test REQ-ENG009
 func TestRegistry_Rules_Sorted(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{id: "C"})
@@ -80,6 +82,7 @@ func TestRegistry_Rules_Sorted(t *testing.T) {
 }
 
 //fusa:test REQ-ENG003
+//fusa:test REQ-ENG011
 func TestRegistry_Run_Findings(t *testing.T) {
 	reg := engine.NewRegistry()
 	reg.MustRegister(&stubRule{
@@ -165,6 +168,7 @@ func TestResult_HasErrors_Empty(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-ENG010
 func TestResult_HasWarnings(t *testing.T) {
 	r := &engine.Result{Findings: []fusa.Finding{
 		{RuleID: "W", Severity: fusa.SeverityWarning},

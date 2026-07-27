@@ -227,6 +227,7 @@ func TestBuildFromFile_Valid(t *testing.T) {
 }
 
 //fusa:test REQ-COV003
+//fusa:test REQ-COV016
 func TestRunMutation_NoTool(t *testing.T) {
 	// Without go-mutesting in PATH, should return a report with a note and no error.
 	dir := t.TempDir()

@@ -104,6 +104,7 @@ func TestRun_EmptyCases(t *testing.T) {
 
 // ─── HasFailures ──────────────────────────────────────────────────────────────
 
+//fusa:test REQ-QUALIFY009
 func TestHasFailures(t *testing.T) {
 	pass := &qualify.Report{Total: 2, Passed: 2, Failed: 0}
 	if pass.HasFailures() {

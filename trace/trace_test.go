@@ -95,6 +95,7 @@ func TestSaveAndLoadRequirements_Roundtrip(t *testing.T) {
 
 // ─── ScanTags ─────────────────────────────────────────────────────────────────
 
+//fusa:test REQ-TRACE011
 func TestScanTags_FindsImplAndTestTags(t *testing.T) {
 	dir := t.TempDir()
 	src := "package main\n\n//fusa:req REQ-001\nfunc Foo() {}\n"

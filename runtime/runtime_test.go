@@ -166,6 +166,7 @@ func TestHeartbeat_IsRunning(t *testing.T) {
 // ─── StateManager ─────────────────────────────────────────────────────────────
 
 //fusa:test REQ-RUNTIME003
+//fusa:test REQ-RUNTIME022
 func TestStateManager_InitialState(t *testing.T) {
 	sm := fusaruntime.NewStateManager(nil)
 	if sm.State() != fusaruntime.StateOperational {
@@ -173,6 +174,7 @@ func TestStateManager_InitialState(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME023
 func TestStateManager_Transition(t *testing.T) {
 	var from, to fusaruntime.State
 	sm := fusaruntime.NewStateManager(func(f, t2 fusaruntime.State) {
@@ -230,6 +232,8 @@ func TestStateString(t *testing.T) {
 // ─── DiagManager ──────────────────────────────────────────────────────────────
 
 //fusa:test REQ-RUNTIME004
+//fusa:test REQ-RUNTIME016
+//fusa:test REQ-RUNTIME017
 func TestDiagManager_RecordAndRetrieve(t *testing.T) {
 	dm := fusaruntime.NewDiagManager(10)
 	dm.Record("D001", fusaruntime.DiagWarning, "voltage low")
@@ -247,6 +251,7 @@ func TestDiagManager_RecordAndRetrieve(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME019
 func TestDiagManager_RingEviction(t *testing.T) {
 	dm := fusaruntime.NewDiagManager(3)
 	for range 5 {
@@ -257,6 +262,7 @@ func TestDiagManager_RingEviction(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME018
 func TestDiagManager_Clear(t *testing.T) {
 	dm := fusaruntime.NewDiagManager(10)
 	dm.Record("X", fusaruntime.DiagInfo, "msg")
@@ -317,6 +323,7 @@ func TestFaultMonitor_NoThreshold_NoCallback(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME020
 func TestFaultMonitor_Reset(t *testing.T) {
 	fm := fusaruntime.NewFaultMonitor(nil)
 	fm.Record("f")
@@ -327,6 +334,7 @@ func TestFaultMonitor_Reset(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-RUNTIME021
 func TestFaultMonitor_Count(t *testing.T) {
 	fm := fusaruntime.NewFaultMonitor(nil)
 	if fm.Count("x") != 0 {

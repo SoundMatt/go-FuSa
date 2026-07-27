@@ -15,7 +15,7 @@ import (
 )
 
 // Version is the current release of go-FuSa.
-const Version = "0.33.3"
+const Version = "0.33.4"
 
 // SpecVersion is the x-FuSa spec version this release implements.
 const SpecVersion = "1.10.12"
@@ -104,6 +104,8 @@ type Location struct {
 
 // DeriveCategory returns the category for a rule id using the §1.5.1 prefix registry.
 // Rules with no recognised prefix map to CategoryOther.
+//
+//fusa:req REQ-CAT001
 func DeriveCategory(ruleID string) Category {
 	// extract alphabetic prefix up to first digit or hyphen
 	prefix := strings.ToUpper(ruleID)
@@ -145,6 +147,8 @@ func DeriveCategory(ruleID string) Category {
 
 // ComputeFingerprint returns the canonical §4.2 SHA-256 fingerprint for a finding.
 // The finding's Location.File MUST already be project-relative before calling.
+//
+//fusa:req REQ-FP001
 func ComputeFingerprint(f Finding) string {
 	norm := normalizeMessage(f.Message)
 	canonical := f.RuleID + "\x1f" + f.Location.File + "\x1f" + norm

@@ -51,6 +51,8 @@ func (f *FaultMonitor) Record(faultID string) {
 }
 
 // Reset sets the counter for faultID back to zero.
+//
+//fusa:req REQ-RUNTIME020
 func (f *FaultMonitor) Reset(faultID string) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
@@ -58,6 +60,8 @@ func (f *FaultMonitor) Reset(faultID string) {
 }
 
 // Count returns the current counter value for faultID.
+//
+//fusa:req REQ-RUNTIME021
 func (f *FaultMonitor) Count(faultID string) int {
 	f.mu.Lock()
 	defer f.mu.Unlock()
