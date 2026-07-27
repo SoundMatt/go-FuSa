@@ -7,6 +7,35 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.33.1 — 2026-07-27
+
+### Fixed
+- **SpecVersion updated** to `"1.10.12"` in `fusa.go` (was `"1.10.4"`); aligns with the
+  current x-FuSa spec revision emitted in SBOM, provenance, and manifest headers.
+
+### Added (coverage)
+- `cyber/cyber_gap_test.go`: tests for `isNolinted()` covering all three suppression
+  comment forms (`//nolint:RULE`, `//nolint:A,RULE`, `//fusa:ignore RULE`) and the
+  negative (wrong-rule) case. Coverage: 30% → 90%.
+- `cyber/cyber_gosec_gap_test.go`: tests for `isRequestDerived()` (RawPath, FormValue,
+  PostFormValue, URL.Query().Get, generic URL field) and `isTempPath()` (filepath.Join
+  with literal `/tmp`, filepath.Join with os.TempDir, non-temp variable path).
+  `isRequestDerived`: 36.4% → 100%; `isTempPath`: 47.1% → 58.8%.
+- `release/release_gap_test.go`: tests for `vcsInfo()` via `BuildProvenance` in both
+  a real git repo (success path) and a non-git temp dir (error path). Coverage: 33.3% → 88.9%.
+- `report/report_html_gap_test.go`: tests for `moduleFromRoot()` (go.mod present, no
+  module directive) and `countRequirements()` (valid JSON, invalid JSON).
+  Both functions: 37.5%/42.9% → 100%.
+- `iso26262/iso26262_gap_test.go`: tests for `mapToCanonical()` (Pass, Manual) and
+  `statusIcon()` (Pass, NA, Manual) in ISO 26262 text and JSON output.
+  Both functions: 50% → 83–100%.
+- `iec61508/iec61508_gap_test.go`: equivalent gap tests for IEC 61508.
+  Both functions: 50% → 83–100%.
+- `iec62443/iec62443_gap_test.go`: tests for `statusIcon()` (PASS case) in IEC 62443
+  text output. Coverage: 60% → 80%.
+- `cmd/gofusa/cmd_release_gap_test.go`: tests for `runRelease()` with `--spdx-version 3.0.1`,
+  `--builder` flag, and missing go.mod error path. Coverage: 66.7% → 74.7%.
+
 ## v0.33.0 — 2026-07-26
 
 ### Added
