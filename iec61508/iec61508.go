@@ -290,8 +290,7 @@ func Assess(projectRoot, project string, sil SIL) (*Report, error) {
 		}
 
 		// File-based evidence check
-		path := filepath.Join(projectRoot, filepath.FromSlash(o.file))
-		if _, err := os.Stat(path); err == nil {
+		if path := fusa.ResolveDoc(projectRoot, o.file); path != "" {
 			obj.Status = StatusPass
 			obj.Evidence = o.file + " present"
 			rep.Pass++

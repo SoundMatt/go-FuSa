@@ -15,6 +15,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/report"
 )
 
+//fusa:req REQ-CLI-REPORT001
 func runReport(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("gofusa report", flag.ContinueOnError)
 	fs.SetOutput(stderr)

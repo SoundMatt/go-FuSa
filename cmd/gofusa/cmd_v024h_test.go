@@ -538,7 +538,7 @@ func TestRunDiff_WithOutputFile(t *testing.T) {
 
 // ─── runAuditPack dir error ───────────────────────────────────────────────────
 
-//fusa:test REQ-CLI-AUDITPACK001
+//fusa:test REQ-CLI016
 func TestRunAuditPack_CreateError(t *testing.T) {
 	if os.Getuid() == 0 {
 		t.Skip("root can write anywhere")
@@ -572,7 +572,7 @@ func TestRunMisra_BadFlagv2(t *testing.T) {
 
 // ─── runVersion extra path ────────────────────────────────────────────────────
 
-//fusa:test REQ-CLI-VERSION001
+//fusa:test REQ-CLI004
 func TestRunVersion_JSONFormat(t *testing.T) {
 	var out, errBuf bytes.Buffer
 	code := runVersion([]string{"--format", "json"}, &out, &errBuf)
@@ -646,7 +646,7 @@ func TestRunImpact_StaleArtifacts(t *testing.T) {
 
 // ─── runLint output file and filtered paths ───────────────────────────────────
 
-//fusa:test REQ-CLI-LINT001
+//fusa:test REQ-CLI008
 func TestRunLint_OutputFileError(t *testing.T) {
 	if os.Getuid() == 0 {
 		t.Skip("root can write anywhere")

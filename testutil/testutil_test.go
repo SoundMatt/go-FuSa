@@ -46,6 +46,7 @@ func TestProjectDir_CleanedUp(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TESTUTIL002
 func TestMinimalProject_ContainsRequiredFiles(t *testing.T) {
 	files := testutil.MinimalProject()
 	required := []string{
@@ -76,6 +77,7 @@ func TestMinimalProject_ConfigIsValidJSON(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-TESTUTIL003
 func TestGoSource_IncludesMinimalProject(t *testing.T) {
 	const relPath = "myfile.go"
 	const src = "package mypkg\n\nfunc Foo() {}\n"

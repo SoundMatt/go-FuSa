@@ -63,6 +63,7 @@ func TestNew_EmptyFindings(t *testing.T) {
 }
 
 //fusa:test REQ-RPT001
+//fusa:test REQ-REPORT001
 func TestRender_Text_ContainsFindings(t *testing.T) {
 	r := report.New("/proj", testFindings)
 	var buf bytes.Buffer
@@ -177,6 +178,7 @@ func TestRender_UnknownFormat(t *testing.T) {
 	}
 }
 
+//fusa:test REQ-REPORT002
 func TestRenderToFile(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "report.txt")
@@ -224,6 +226,7 @@ func TestRender_SARIF_Valid(t *testing.T) {
 
 // ─── html_bundle ──────────────────────────────────────────────────────────────
 
+//fusa:test REQ-HTML004
 func TestRenderEvidenceHTML_EmptyDir(t *testing.T) {
 	dir := t.TempDir()
 	var buf bytes.Buffer

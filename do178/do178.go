@@ -19,6 +19,7 @@ import (
 	"strings"
 	"time"
 
+	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/gapreport"
 	"github.com/SoundMatt/go-FuSa/trace"
 )
@@ -383,8 +384,7 @@ func Assess(projectRoot, project string, dal DAL) (*Report, error) {
 		}
 
 		// File-based evidence check
-		path := filepath.Join(projectRoot, filepath.FromSlash(o.file))
-		if _, err := os.Stat(path); err == nil {
+		if path := fusa.ResolveDoc(projectRoot, o.file); path != "" {
 			obj.Status = StatusPass
 			obj.Evidence = o.file + " present"
 			rep.Pass++
@@ -434,7 +434,7 @@ func checkSourceCode(projectRoot string, rep *Report) {
 			plans := []string{"SAFETY_PLAN.md", "SVP.md", "SCMP.md", "SQAP.md"}
 			present := 0
 			for _, p := range plans {
-				if _, err := os.Stat(filepath.Join(projectRoot, p)); err == nil {
+				if fusa.ResolveDoc(projectRoot, p) != "" {
 					present++
 				}
 			}

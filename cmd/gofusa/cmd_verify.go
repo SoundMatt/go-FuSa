@@ -12,6 +12,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/verify"
 )
 
+//fusa:req REQ-CLI-VERIFY001
 func runVerify(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("gofusa verify", flag.ContinueOnError)
 	fs.SetOutput(stderr)

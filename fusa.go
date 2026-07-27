@@ -10,12 +10,14 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
+	"os"
+	"path/filepath"
 	"strings"
 	"unicode"
 )
 
 // Version is the current release of go-FuSa.
-const Version = "0.33.5"
+const Version = "0.34.0"
 
 // SpecVersion is the x-FuSa spec version this release implements.
 const SpecVersion = "1.10.12"
@@ -185,4 +187,41 @@ func normalizeMessage(msg string) string {
 		}
 	}
 	return strings.TrimSpace(b.String())
+}
+
+// docScaffoldFiles are the filenames `gofusa init`/`gofusa template` write
+// into docs/safety/ by default (see template.Generate). Assess/report
+// builders that check for these same files on disk also check
+// docs/safety/<name> as a fallback to the bare project-root path, so a
+// freshly-scaffolded project doesn't immediately report false gaps (#45).
+var docScaffoldFiles = map[string]bool{
+	"SAFETY_PLAN.md":   true,
+	"HARA.md":          true,
+	"TEST_EVIDENCE.md": true,
+	"SVP.md":           true,
+	"SCMP.md":          true,
+	"SQAP.md":          true,
+	"IEC61508-FSP.md":  true,
+	"ISO26262-FMEA.md": true,
+}
+
+// ResolveDoc returns the on-disk path to name under projectRoot: the bare
+// project-root-relative path if it exists there, otherwise
+// docs/safety/<name> (gofusa's own scaffold default) if name is one of the
+// files template.Generate writes and it exists there instead. It returns ""
+// if neither location has the file.
+//
+//fusa:req REQ-DOC001
+func ResolveDoc(projectRoot, name string) string {
+	root := filepath.Join(projectRoot, filepath.FromSlash(name))
+	if _, err := os.Stat(root); err == nil {
+		return root
+	}
+	if docScaffoldFiles[name] {
+		alt := filepath.Join(projectRoot, "docs", "safety", filepath.FromSlash(name))
+		if _, err := os.Stat(alt); err == nil {
+			return alt
+		}
+	}
+	return ""
 }

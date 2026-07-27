@@ -51,6 +51,31 @@ func TestAssess_WithEvidence(t *testing.T) {
 	}
 }
 
+// Regression for #45: a freshly-scaffolded project (`gofusa template`
+// defaults to docs/safety/) must not report SAFETY_PLAN.md as a gap just
+// because it isn't sitting at the project root.
+//
+//fusa:test REQ-ISO26262-001
+//fusa:test REQ-DOC001
+func TestAssess_DocsSafetyScaffoldPath(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(dir, "docs", "safety"), 0o755); err != nil {
+		t.Fatalf("mkdir: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "docs", "safety", "SAFETY_PLAN.md"), []byte("x"), 0o644); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	rep, err := iso26262.Assess(dir, "proj", iso26262.ASILB)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+	for _, obj := range rep.Objectives {
+		if obj.Gap != "" && strings.Contains(obj.Gap, "SAFETY_PLAN.md") {
+			t.Errorf("SAFETY_PLAN.md under docs/safety/ still reported as gap: %s", obj.Gap)
+		}
+	}
+}
+
 //fusa:test REQ-ISO26262-001
 func TestAssess_ASILC_SafetyCase(t *testing.T) {
 	dir := t.TempDir()

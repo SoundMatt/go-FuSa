@@ -60,10 +60,12 @@ func TestRunFmea_WithCyber(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	src := `package main
-//fusa:req REQ-001
-func SafetyFunc() error { return nil }
-`
+	// Concatenated, not a raw string literal, so this fixture's own
+	// //fusa:req line isn't picked up as a real tag by go-FuSa's own
+	// self-trace of this repo.
+	src := "package main\n" +
+		"//fusa:req REQ-001\n" +
+		"func SafetyFunc() error { return nil }\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -525,14 +527,15 @@ func TestReadModulePath_NoModule(t *testing.T) {
 func TestCountBySeverity_AllLevels(t *testing.T) {
 	// Exercise countBySeverity with entries of different severities
 	dir := t.TempDir()
-	src := `package main
-//fusa:req REQ-H
-func High() {}
-//fusa:req REQ-M
-func Med() {}
-//fusa:req REQ-L
-func Low() {}
-`
+	// Concatenated, not a raw string literal, for the same
+	// self-trace-noise reason as above.
+	src := "package main\n" +
+		"//fusa:req REQ-H\n" +
+		"func High() {}\n" +
+		"//fusa:req REQ-M\n" +
+		"func Med() {}\n" +
+		"//fusa:req REQ-L\n" +
+		"func Low() {}\n"
 	if err := os.WriteFile(filepath.Join(dir, "main.go"), []byte(src), 0o644); err != nil {
 		t.Fatal(err)
 	}

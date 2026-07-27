@@ -478,11 +478,13 @@ func TestRun_FMEA_GeneratesFiles(t *testing.T) {
 }
 
 func TestRun_FMEA_WithGoSource(t *testing.T) {
-	files := testutil.GoSource("mypkg/work.go", `package mypkg
-
-//fusa:req REQ-TEST001
-func DoWork() error { return nil }
-`)
+	// Concatenated, not a raw string literal, so this fixture's own
+	// //fusa:req line isn't picked up as a real tag by go-FuSa's own
+	// self-trace of this repo.
+	files := testutil.GoSource("mypkg/work.go", "package mypkg\n"+
+		"\n"+
+		"//fusa:req REQ-TEST001\n"+
+		"func DoWork() error { return nil }\n")
 	dir := testutil.ProjectDir(t, files)
 	outDir := t.TempDir()
 	var out, errOut bytes.Buffer
