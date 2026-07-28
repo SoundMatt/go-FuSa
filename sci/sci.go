@@ -46,14 +46,38 @@ type Item struct {
 	Note    string    `json:"note,omitempty"`
 }
 
+// Artifact is the x-FuSa spec §9.3 `sci.json` canonical inventory row —
+// file/hash/version, a project-relative projection of the richer Item
+// model above, covering only present items (an absent item has no hash to
+// report). Hash MUST be "sha256:"-prefixed (§2.7: a field named "hash",
+// unlike a field named "sha256", carries the algo:value form).
+//
+//fusa:req REQ-SCI004
+type Artifact struct {
+	File    string `json:"file"`
+	Hash    string `json:"hash"`
+	Version string `json:"version,omitempty"`
+}
+
 // SCI is the complete Software Configuration Index.
 //
 //fusa:req REQ-SCI002
 type SCI struct {
+	// §3.1 common header.
+	SchemaVersion string    `json:"schemaVersion"`
+	Kind          string    `json:"kind"`
+	Tool          string    `json:"tool"`
+	ToolVersion   string    `json:"toolVersion"`
+	Language      string    `json:"language"`
+	GeneratedAt   time.Time `json:"generatedAt"`
+
 	Project   string    `json:"project"`
 	Version   string    `json:"version"`
 	Generated time.Time `json:"generated"`
 	Items     []Item    `json:"items"`
+
+	// Artifacts is the x-FuSa spec §9.3 canonical projection of Items.
+	Artifacts []Artifact `json:"artifacts"`
 }
 
 // catalog is the standard set of go-FuSa lifecycle data items.
@@ -95,10 +119,17 @@ var catalog = []struct {
 //
 //fusa:req REQ-SCI001
 func Build(projectRoot, project, version string) (*SCI, error) {
+	now := time.Now().UTC()
 	sci := &SCI{
-		Project:   project,
-		Version:   version,
-		Generated: time.Now().UTC(),
+		SchemaVersion: fusa.SchemaVersion(),
+		Kind:          "sci",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   now,
+		Project:       project,
+		Version:       version,
+		Generated:     now,
 	}
 	for _, c := range catalog {
 		item := Item{
@@ -115,10 +146,30 @@ func Build(projectRoot, project, version string) (*SCI, error) {
 			item.Present = true
 			h := sha256.Sum256(data)
 			item.SHA256 = hex.EncodeToString(h[:])
+			sci.Artifacts = append(sci.Artifacts, Artifact{
+				File:    c.file,
+				Hash:    "sha256:" + item.SHA256,
+				Version: version,
+			})
 		}
 		sci.Items = append(sci.Items, item)
 	}
 	return sci, nil
+}
+
+// LoadReport reads a persisted SCI from path (typically sci.json).
+//
+//fusa:req REQ-SCI005
+func LoadReport(path string) (*SCI, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var s SCI
+	if err := json.Unmarshal(data, &s); err != nil {
+		return nil, fmt.Errorf("%w: %s: %s", fusa.ErrInvalidConfig, path, err)
+	}
+	return &s, nil
 }
 
 // SaveJSON writes the SCI as indented JSON to path.

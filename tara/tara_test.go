@@ -60,8 +60,8 @@ func TestScan_KnownRules(t *testing.T) {
 	// Check CYBER007 maps to ERROR → High likelihood.
 	for _, e := range report.Entries {
 		if e.CyberRuleID == "CYBER007" {
-			if e.Likelihood != "High" {
-				t.Errorf("CYBER007 (ERROR): want Likelihood=High, got %s", e.Likelihood)
+			if e.AttackFeasibility != "high" {
+				t.Errorf("CYBER007 (ERROR): want AttackFeasibility=high, got %s", e.AttackFeasibility)
 			}
 			if !containsSTRIDE(e.STRIDE, "I") {
 				t.Errorf("CYBER007: expected I (Info Disclosure) in STRIDE %v", e.STRIDE)
@@ -133,8 +133,8 @@ func TestRender_JSON(t *testing.T) {
 	if err := tara.Render(&buf, report, "json"); err != nil {
 		t.Fatalf("Render json: %v", err)
 	}
-	if !strings.Contains(buf.String(), `"entries"`) {
-		t.Error("JSON output should contain entries key")
+	if !strings.Contains(buf.String(), `"threats"`) {
+		t.Error("JSON output should contain threats key")
 	}
 	if !strings.Contains(buf.String(), "CYBER006") {
 		t.Error("JSON output should contain CYBER006")
@@ -236,8 +236,8 @@ func TestTARA_SeverityInfo(t *testing.T) {
 	}
 	for _, e := range report.Entries {
 		if e.CyberRuleID == "CYBER003" {
-			if e.Likelihood != "Low" {
-				t.Errorf("SeverityInfo: want Likelihood=Low, got %s", e.Likelihood)
+			if e.AttackFeasibility != "low" {
+				t.Errorf("SeverityInfo: want AttackFeasibility=low, got %s", e.AttackFeasibility)
 			}
 		}
 	}

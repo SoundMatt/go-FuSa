@@ -983,7 +983,7 @@
     {
       "id": "REQ-IEC62443-002",
       "title": "IEC 62443 Security Level validity",
-      "text": "The tool shall emit a WARNING (IEC62443-002) when .fusa-iec62443.json exists but target_sl is not in the range 1\u20134.",
+      "text": "The tool shall emit a WARNING (IEC62443-002) when .fusa-iec62443.json exists but target_sl is not in the range 1–4.",
       "standard": "IEC 62443",
       "level": "CAL-2"
     },
@@ -1197,7 +1197,7 @@
     {
       "id": "REQ-SLSA-ASSESS004",
       "title": "SLSA gap report rendering",
-      "text": "slsa.Render shall write the gap report in text or \u00a79.3 JSON format, returning an error for unsupported formats.",
+      "text": "slsa.Render shall write the gap report in text or §9.3 JSON format, returning an error for unsupported formats.",
       "standard": "generic"
     },
     {
@@ -1227,7 +1227,7 @@
     {
       "id": "REQ-IEC62443-ASSESS004",
       "title": "IEC 62443 gap report rendering",
-      "text": "iec62443.Render shall write the gap report in text or \u00a79.3 JSON format, returning an error for unsupported formats.",
+      "text": "iec62443.Render shall write the gap report in text or §9.3 JSON format, returning an error for unsupported formats.",
       "standard": "IEC62443"
     },
     {
@@ -1281,13 +1281,13 @@
     {
       "id": "REQ-LOC-REL001",
       "title": "location.file is project-relative",
-      "text": "All Finding.Location.File values produced by lint and analyze rules shall be paths relative to projectRoot using forward-slash separators. Absolute paths are prohibited. This ensures fingerprints (\u00a74.2) are portable across environments.",
+      "text": "All Finding.Location.File values produced by lint and analyze rules shall be paths relative to projectRoot using forward-slash separators. Absolute paths are prohibited. This ensures fingerprints (§4.2) are portable across environments.",
       "standard": "x-FuSa"
     },
     {
       "id": "REQ-CAP-STD001",
       "title": "capabilities Standards array uses canonical IDs",
-      "text": "The capabilities.Standards array shall contain only canonical \u00a72.4.1 lower-case IDs (e.g. \"slsa\", not \"slsa-v1.0\"). Version suffixes are not part of the canonical enum.",
+      "text": "The capabilities.Standards array shall contain only canonical §2.4.1 lower-case IDs (e.g. \"slsa\", not \"slsa-v1.0\"). Version suffixes are not part of the canonical enum.",
       "standard": "x-FuSa"
     },
     {
@@ -1341,7 +1341,7 @@
     },
     {
       "id": "REQ-TRACE009",
-      "title": "Function-level tag coverage (x-FuSa spec \u00a71.4.1 item 2)",
+      "title": "Function-level tag coverage (x-FuSa spec §1.4.1 item 2)",
       "text": "trace.ScanFuncTagCoverage shall count exported top-level functions/methods in non-test .go files that carry a //fusa:req tag directly above them in their doc comment, excluding trivial fmt.Stringer/error-interface shims and boilerplate zero-parameter getters, and report the percentage covered.",
       "standard": "x-FuSa",
       "level": "1.4.1"
@@ -1349,14 +1349,14 @@
     {
       "id": "REQ-CLI-TRACE004",
       "title": "--func-coverage CLI gate",
-      "text": "gofusa trace --func-coverage N shall exit 1 when fewer than N%% of exported functions/methods carry a //fusa:req tag directly above them; N=0 disables the gate (x-FuSa spec \u00a75).",
+      "text": "gofusa trace --func-coverage N shall exit 1 when fewer than N%% of exported functions/methods carry a //fusa:req tag directly above them; N=0 disables the gate (x-FuSa spec §5).",
       "standard": "x-FuSa",
       "level": "1.4.1"
     },
     {
       "id": "REQ-TRACE010",
       "title": "Dangling //fusa:test tag detection",
-      "text": "The trace engine shall report a WARNING finding (TRACE009, category requirement) for every //fusa:test tag whose requirement ID does not exist in .fusa-reqs.json, the same way a malformed annotation is treated (x-FuSa spec \u00a71.4.1 item 3).",
+      "text": "The trace engine shall report a WARNING finding (TRACE009, category requirement) for every //fusa:test tag whose requirement ID does not exist in .fusa-reqs.json, the same way a malformed annotation is treated (x-FuSa spec §1.4.1 item 3).",
       "standard": "x-FuSa",
       "level": "1.4.1"
     },
@@ -1516,14 +1516,14 @@
     {
       "id": "REQ-CAT001",
       "title": "DeriveCategory maps rule ID prefixes to categories",
-      "text": "fusa.DeriveCategory shall map a rule ID's alphabetic prefix to its Category per the \u00a71.5.1 prefix registry (case-insensitive), returning CategoryOther for unrecognised or empty prefixes.",
+      "text": "fusa.DeriveCategory shall map a rule ID's alphabetic prefix to its Category per the §1.5.1 prefix registry (case-insensitive), returning CategoryOther for unrecognised or empty prefixes.",
       "standard": "x-FuSa",
       "level": "1.5.1"
     },
     {
       "id": "REQ-FP001",
       "title": "ComputeFingerprint derives a stable SHA-256 finding fingerprint",
-      "text": "fusa.ComputeFingerprint shall compute the \u00a74.2 canonical SHA-256 fingerprint from a Finding's RuleID, project-relative Location.File, and digit/whitespace-normalised Message, producing a stable value across repeated calls and differing values when RuleID, File, or normalised Message differ.",
+      "text": "fusa.ComputeFingerprint shall compute the §4.2 canonical SHA-256 fingerprint from a Finding's RuleID, project-relative Location.File, and digit/whitespace-normalised Message, producing a stable value across repeated calls and differing values when RuleID, File, or normalised Message differ.",
       "standard": "x-FuSa",
       "level": "4.2"
     },
@@ -1635,7 +1635,7 @@
     {
       "id": "REQ-ANA009",
       "title": "Dead code detection",
-      "text": "The tool shall report a finding (ANA009) for any statement that is unreachable because it follows an unconditional return, break, continue, or panic within the same block, per DO-178C \u00a76.4.4.2's prohibition on dead code at DAL-A/B.",
+      "text": "The tool shall report a finding (ANA009) for any statement that is unreachable because it follows an unconditional return, break, continue, or panic within the same block, per DO-178C §6.4.4.2's prohibition on dead code at DAL-A/B.",
       "standard": "ISO 26262",
       "level": "ASIL-B"
     },
@@ -1671,8 +1671,8 @@
     },
     {
       "id": "REQ-CLI-COUPLING001",
-      "title": "Analyse data and control coupling between packages (DO-178C \u00a76.4.4.3)",
-      "text": "Analyse data and control coupling between packages (DO-178C \u00a76.4.4.3). Writes coupling-report.json as evidence of coupling characterisation.",
+      "title": "Analyse data and control coupling between packages (DO-178C §6.4.4.3)",
+      "text": "Analyse data and control coupling between packages (DO-178C §6.4.4.3). Writes coupling-report.json as evidence of coupling characterisation.",
       "standard": "x-FuSa"
     },
     {
@@ -1779,8 +1779,8 @@
     },
     {
       "id": "REQ-CLI-PR001",
-      "title": "Manage software problem reports (DO-178C \u00a711.17)",
-      "text": "Manage software problem reports (DO-178C \u00a711.17). Subcommands: init Create an empty .fusa-problems.json add Add a new problem report list List all problem reports close Close a problem report",
+      "title": "Manage software problem reports (DO-178C §11.17)",
+      "text": "Manage software problem reports (DO-178C §11.17). Subcommands: init Create an empty .fusa-problems.json add Add a new problem report list List all problem reports close Close a problem report",
       "standard": "x-FuSa"
     },
     {
@@ -1809,14 +1809,14 @@
     },
     {
       "id": "REQ-CLI-SAS001",
-      "title": "Generate a Software Accomplishment Summary (DO-178C \u00a711.20)",
-      "text": "Generate a Software Accomplishment Summary (DO-178C \u00a711.20).",
+      "title": "Generate a Software Accomplishment Summary (DO-178C §11.20)",
+      "text": "Generate a Software Accomplishment Summary (DO-178C §11.20).",
       "standard": "x-FuSa"
     },
     {
       "id": "REQ-CLI-SCI001",
-      "title": "Generate the Software Configuration Index (DO-178C \u00a711.16)",
-      "text": "Generate the Software Configuration Index (DO-178C \u00a711.16).",
+      "title": "Generate the Software Configuration Index (DO-178C §11.16)",
+      "text": "Generate the Software Configuration Index (DO-178C §11.16).",
       "standard": "x-FuSa"
     },
     {
@@ -1865,14 +1865,14 @@
     {
       "id": "REQ-COUP001",
       "title": "Exported mutable package-level variable detection",
-      "text": "The tool shall report a finding (COUP001) for exported, non-const package-level variables, since they represent uncontrolled data coupling between packages per DO-178C \u00a76.4.4.3.",
+      "text": "The tool shall report a finding (COUP001) for exported, non-const package-level variables, since they represent uncontrolled data coupling between packages per DO-178C §6.4.4.3.",
       "standard": "DO-178C",
       "level": "6.4.4.3"
     },
     {
       "id": "REQ-COUP002",
       "title": "Function/interface-parameter control coupling detection",
-      "text": "The tool shall report a finding (COUP002) when an exported function accepts a func or interface-typed parameter, since it represents control coupling with the caller per DO-178C \u00a76.4.4.3.",
+      "text": "The tool shall report a finding (COUP002) when an exported function accepts a func or interface-typed parameter, since it represents control coupling with the caller per DO-178C §6.4.4.3.",
       "standard": "DO-178C",
       "level": "6.4.4.3"
     },
@@ -1893,7 +1893,7 @@
     {
       "id": "REQ-COUPLING003",
       "title": "CouplingReport is the persisted coupling analysis evidence artifact",
-      "text": "CouplingReport is the persisted coupling analysis evidence artifact. It satisfies DO-178C \u00a76.4.4.3 (data and control coupling characterisation).",
+      "text": "CouplingReport is the persisted coupling analysis evidence artifact. It satisfies DO-178C §6.4.4.3 (data and control coupling characterisation).",
       "standard": "DO-178C",
       "level": "6.4.4.3"
     },
@@ -1989,8 +1989,8 @@
     },
     {
       "id": "REQ-GAPREPORT001",
-      "title": "Report is the canonical gap-report document (\u00a79.3 + \u00a73.1 common header)",
-      "text": "Report is the canonical gap-report document (\u00a79.3 + \u00a73.1 common header).",
+      "title": "Report is the canonical gap-report document (§9.3 + §3.1 common header)",
+      "text": "Report is the canonical gap-report document (§9.3 + §3.1 common header).",
       "standard": "x-FuSa",
       "level": "9.3"
     },
@@ -2018,14 +2018,14 @@
     {
       "id": "REQ-GAPREPORT005",
       "title": "Gap report text rendering",
-      "text": "gapreport.renderText shall write a human-readable rendering of a \u00a79.3 gap Report to the given writer, including the standard name, generation timestamp, project root, summary counts, and a status-icon-prefixed line per objective (with any associated finding rule IDs).",
+      "text": "gapreport.renderText shall write a human-readable rendering of a §9.3 gap Report to the given writer, including the standard name, generation timestamp, project root, summary counts, and a status-icon-prefixed line per objective (with any associated finding rule IDs).",
       "standard": "x-FuSa",
       "level": "9.3"
     },
     {
       "id": "REQ-GAPREPORT006",
       "title": "Gap report status icon mapping",
-      "text": "gapreport.statusIcon shall map each \u00a79.3 objective status string to its display icon used by the text renderer.",
+      "text": "gapreport.statusIcon shall map each §9.3 objective status string to its display icon used by the text renderer.",
       "standard": "x-FuSa",
       "level": "9.3"
     },
@@ -2206,7 +2206,7 @@
     {
       "id": "REQ-ISO26262-005",
       "title": "ASIL-less requirement detection",
-      "text": "The tool shall report a finding (ISO26262002) when requirements in .fusa-reqs.json lack ASIL annotations, since ISO 26262-6 \u00a76.4.2 requires ASIL designations on safety requirements.",
+      "text": "The tool shall report a finding (ISO26262002) when requirements in .fusa-reqs.json lack ASIL annotations, since ISO 26262-6 §6.4.2 requires ASIL designations on safety requirements.",
       "standard": "ISO 26262"
     },
     {
@@ -2415,14 +2415,284 @@
     {
       "id": "REQ-CFG009",
       "title": "Accept and write both x-FuSa spec and legacy .fusa.json shapes",
-      "text": "Config accepts both go-FuSa's legacy .fusa.json shape (top-level \"version\", \"standard\"/\"asil\"/\"sil\" nested under \"project\") and the x-FuSa spec \u00a71.2.1 shape (top-level \"configVersion\", top-level \"standard\"/\"asil\"/\"sil\"/\"dal\", and the spec's legacy flat \"project\": \"name\" string). Load and Save normalise whichever fields are present into both locations, canonicalising the standard id case-insensitively onto go-FuSa's internal enum, so a spec-compliant .fusa.json written by another x-FuSa tool loads without error and go-FuSa's own init output satisfies both shapes at once.",
+      "text": "Config accepts both go-FuSa's legacy .fusa.json shape (top-level \"version\", \"standard\"/\"asil\"/\"sil\" nested under \"project\") and the x-FuSa spec §1.2.1 shape (top-level \"configVersion\", top-level \"standard\"/\"asil\"/\"sil\"/\"dal\", and the spec's legacy flat \"project\": \"name\" string). Load and Save normalise whichever fields are present into both locations, canonicalising the standard id case-insensitively onto go-FuSa's internal enum, so a spec-compliant .fusa.json written by another x-FuSa tool loads without error and go-FuSa's own init output satisfies both shapes at once.",
       "standard": "x-FuSa"
     },
     {
       "id": "REQ-QUALIFY010",
       "title": "Per-case qualification result status enum (PASS/FAIL/SKIP/ERROR)",
-      "text": "Each qualification case result carries a results[].result status string that is one of PASS, FAIL, SKIP, or ERROR, per x-FuSa spec \u00a76. Infrastructure failures (unable to set up or run the synthetic case) report ERROR; a case that runs to completion but doesn't match its expectation reports FAIL; a matching case reports PASS.",
+      "text": "Each qualification case result carries a results[].result status string that is one of PASS, FAIL, SKIP, or ERROR, per x-FuSa spec §6. Infrastructure failures (unable to set up or run the synthetic case) report ERROR; a case that runs to completion but doesn't match its expectation reports FAIL; a matching case reports PASS.",
       "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-ATT001",
+      "title": "Attestation struct for x-FuSa spec section 1.6.2",
+      "text": "The tool shall support a document-level attestation object (status, implementationAuthor, independentReviewer, reviewedAt, contentHash) on evidence artifacts carrying qualitative content.",
+      "standard": "x-FuSa spec section 1.6.2"
+    },
+    {
+      "id": "REQ-ATT002",
+      "title": "AttestationValid enforces independence and non-staleness",
+      "text": "AttestationValid shall return true only for a status=reviewed attestation whose independentReviewer differs from implementationAuthor and whose contentHash matches the artifact's current canonical content hash; any other case (including nil) shall be treated as invalid (heuristic), fail-safe.",
+      "standard": "x-FuSa spec section 1.6.2"
+    },
+    {
+      "id": "REQ-ATT003",
+      "title": "AttestationContentHash computes a canonical sha256 hash",
+      "text": "AttestationContentHash shall compute a sha256:-prefixed hash over the RFC 8785 canonical JSON serialisation of the given content, excluding the attestation object and generatedAt.",
+      "standard": "x-FuSa spec section 1.6.2 / section 6"
+    },
+    {
+      "id": "REQ-ATT004",
+      "title": "CanonicalizeJSON implements RFC 8785 JSON Canonicalization",
+      "text": "CanonicalizeJSON shall re-serialise JSON with object keys sorted lexicographically at every level, no insignificant whitespace, and numbers in shortest round-trip form, per RFC 8785.",
+      "standard": "x-FuSa spec section 6"
+    },
+    {
+      "id": "REQ-CLI-HELPERS004",
+      "title": "gateContentQuality CLI helper",
+      "text": "gateContentQuality shall scan an artifact's qualitative fields for FUSA-STUB001/002 findings, print them, and return ExitGateFail when a placeholder match exists or when an unsuppressed blanket-fallback match exists and strict gating is requested.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-FMEA007",
+      "title": "FMEA summary block with coverage metrics",
+      "text": "fmea.Report.Summary shall report total, highPriority, componentsAnalyzed, componentsInProject, coveragePct, and componentsInProjectMethod per x-FuSa spec section 9.2.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-FMEA008",
+      "title": "FMEA report carries the section 3.1 common header",
+      "text": "fmea.Report shall carry schemaVersion, kind, tool, toolVersion, language, and generatedAt per the x-FuSa spec section 3.1 common header.",
+      "standard": "x-FuSa spec section 3.1"
+    },
+    {
+      "id": "REQ-FMEA009",
+      "title": "CountProjectFunctions coverage denominator",
+      "text": "CountProjectFunctions shall count exported top-level functions/methods in non-test .go files via a raw source-text scan independent of Scan's own go/ast parse, for use as the fmea coveragePct denominator.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-FMEA010",
+      "title": "LoadReport reads a persisted fmea.json",
+      "text": "fmea.LoadReport shall read and unmarshal a previously-written fmea.json into a Report.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-FMEA011",
+      "title": "fmea --min-coverage / --strict / --require-attestation flags",
+      "text": "gofusa fmea shall support --min-coverage N (exit 1 if summary.coveragePct < N), and --strict/--require-attestation (exit 1 on an unsuppressed FUSA-STUB002 finding).",
+      "standard": "x-FuSa spec section 1.6.2 / section 9.2"
+    },
+    {
+      "id": "REQ-HARA016",
+      "title": "SafetyGoal.FSSRRefs replaces the singular FSSRRef field",
+      "text": "hara.SafetyGoal shall carry fssrRefs as a string array (MUST, >=1 entry) per x-FuSa spec section 1.2.5, replacing the prior singular fssrRef field.",
+      "standard": "x-FuSa spec section 1.2.5"
+    },
+    {
+      "id": "REQ-HARA017",
+      "title": "HARA completeness block",
+      "text": "BuildCompleteness/Report.Completeness shall report totalHazards, hazardsWithAsil, hazardsWithSafetyGoal, totalSafetyGoals, safetyGoalsWithFssrRefs, and danglingReferences per x-FuSa spec section 9.2.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-HARA018",
+      "title": "ValidateReqRefs detects dangling fssrRefs",
+      "text": "ValidateReqRefs shall flag any safetyGoals[].fssrRefs entry that does not resolve to a known requirement id.",
+      "standard": "x-FuSa spec section 1.2.5"
+    },
+    {
+      "id": "REQ-HARA019",
+      "title": "HARA006 engine rule: missing fssrRefs",
+      "text": "The engine rule HARA006 shall emit a finding for any safety goal with an empty fssrRefs array.",
+      "standard": "x-FuSa spec section 1.2.5"
+    },
+    {
+      "id": "REQ-HARA020",
+      "title": "HARA007 engine rule: dangling fssrRefs",
+      "text": "The engine rule HARA007 shall emit a finding for any safetyGoals[].fssrRefs entry with no matching requirement in .fusa-reqs.json.",
+      "standard": "x-FuSa spec section 1.2.5"
+    },
+    {
+      "id": "REQ-HARA021",
+      "title": "hara.Report / BuildReport for hara --format json",
+      "text": "hara.BuildReport shall assemble the x-FuSa spec section 9.2 hara --format json document: the common header, .fusa-hara.json content verbatim, a completeness block, and attestation passthrough.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-HARA022",
+      "title": "hara show --strict / --require-attestation flags",
+      "text": "gofusa hara show shall support --strict/--require-attestation, escalating an unsuppressed FUSA-STUB002 finding on .fusa-hara.json to exit 1.",
+      "standard": "x-FuSa spec section 1.6.2"
+    },
+    {
+      "id": "REQ-SAS004",
+      "title": "SAS ChecklistItem canonical shape",
+      "text": "sas.ChecklistItem shall carry item/clause/present/evidence per x-FuSa spec section 9.3's sas.json checklist schema.",
+      "standard": "x-FuSa spec section 9.3"
+    },
+    {
+      "id": "REQ-SAS005",
+      "title": "SAS ChecklistSummary",
+      "text": "sas.ChecklistSummary shall report total and present counts per x-FuSa spec section 9.3.",
+      "standard": "x-FuSa spec section 9.3"
+    },
+    {
+      "id": "REQ-SAS006",
+      "title": "sas.LoadReport reads a persisted sas.json",
+      "text": "sas.LoadReport shall read and unmarshal a previously-written sas.json into a SAS.",
+      "standard": "x-FuSa spec section 9.3"
+    },
+    {
+      "id": "REQ-SAS007",
+      "title": "sas --strict / --require-attestation flags and sas.md companion",
+      "text": "gofusa sas shall write both sas.md and sas.json (whichever the primary --format didn't produce) and support --strict/--require-attestation gating on Deviations content quality.",
+      "standard": "x-FuSa spec section 9.3 / section 1.6.2"
+    },
+    {
+      "id": "REQ-SC006",
+      "title": "GSN Node/Edge types",
+      "text": "safetycase.Node/Edge shall use the six canonical GSN node types (goal, strategy, solution, context, assumption, justification) and the two canonical edge types (supportedBy, inContextOf) per the GSN Community Standard v3.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-SC007",
+      "title": "GSN completeness block",
+      "text": "safetycase.GSNCompleteness shall report totalGoals, goalsWithEvidence, and undeveloped per x-FuSa spec section 9.2.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-SC008",
+      "title": "buildGSN derives the argument graph from collected evidence",
+      "text": "buildGSN shall derive a GSN goal/strategy/context/assumption/solution graph from the same evidence items Build collects, marking a goal undeveloped when its evidence is absent.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-SC009",
+      "title": "safetycase.Load reads a persisted safety-case.json",
+      "text": "safetycase.Load shall read and unmarshal a previously-written safety-case.json into a SafetyCase.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-SC010",
+      "title": "safety-case --strict / --require-attestation flags",
+      "text": "gofusa safety-case shall support --strict/--require-attestation, escalating an unsuppressed FUSA-STUB002 finding on safety-case.json's node text to exit 1.",
+      "standard": "x-FuSa spec section 1.6.2"
+    },
+    {
+      "id": "REQ-SCI004",
+      "title": "SCI Artifact canonical file/hash/version shape",
+      "text": "sci.Artifact shall carry file/hash/version per x-FuSa spec section 9.3's sci.json schema, with hash sha256:-prefixed per section 2.7.",
+      "standard": "x-FuSa spec section 9.3"
+    },
+    {
+      "id": "REQ-SCI005",
+      "title": "sci.LoadReport reads a persisted sci.json",
+      "text": "sci.LoadReport shall read and unmarshal a previously-written sci.json into an SCI.",
+      "standard": "x-FuSa spec section 9.3"
+    },
+    {
+      "id": "REQ-STUB001",
+      "title": "ScanPlaceholders implements FUSA-STUB001 rule A",
+      "text": "ScanPlaceholders shall flag bracket-wrapped instructional text and a case-insensitive deny-list substring match in any qualitative field value.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB002",
+      "title": "ScanBlanketFallback implements FUSA-STUB002 rule B",
+      "text": "ScanBlanketFallback shall flag a qualitative field whose distinct-value ratio is below 0.1 across at least 10 non-empty entries.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB003",
+      "title": "PlaceholderFinding builds a FUSA-STUB001 Finding",
+      "text": "PlaceholderFinding shall build a canonical section 4 Finding with ruleId FUSA-STUB001, severity ERROR, category safety, and a computed fingerprint.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB004",
+      "title": "BlanketFallbackFinding builds a FUSA-STUB002 Finding",
+      "text": "BlanketFallbackFinding shall build a canonical section 4 Finding with ruleId FUSA-STUB002, severity WARNING, category safety, and a computed fingerprint.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB005",
+      "title": "HaraFields extracts HARA qualitative fields",
+      "text": "HaraFields shall extract operationalSituations[].description, hazards[].description, and safetyGoals[].description for content-quality scanning.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB006",
+      "title": "FmeaFields extracts FMEA qualitative fields",
+      "text": "FmeaFields shall extract entries[].failureMode, entries[].effect, and entries[].cause for content-quality scanning.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB007",
+      "title": "TaraFields extracts TARA qualitative fields",
+      "text": "TaraFields shall extract threats[].threat and threats[].asset for content-quality scanning.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB008",
+      "title": "SafetyCaseFields extracts safety-case qualitative fields",
+      "text": "SafetyCaseFields shall extract nodes[].text for content-quality scanning.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB009",
+      "title": "SasFields extracts SAS qualitative fields",
+      "text": "SasFields shall extract the user-authored deviations[] field for content-quality scanning; the fixed evidenceItems checklist is not scanned.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB010",
+      "title": "FUSA-STUB001 engine rule across all known artifacts",
+      "text": "The rulePlaceholder engine rule shall scan every present evidence artifact (fmea.json, .fusa-hara.json, tara.json, safety-case.json, sas.json) for placeholder text and emit an ERROR finding per match, never suppressed by attestation.",
+      "standard": "x-FuSa spec section 1.6.1"
+    },
+    {
+      "id": "REQ-STUB011",
+      "title": "FUSA-STUB002 engine rule across all known artifacts",
+      "text": "The ruleBlanketFallback engine rule shall scan every present evidence artifact for a blanket qualitative fallback and emit a WARNING finding per match, suppressed when the artifact carries a valid attestation.",
+      "standard": "x-FuSa spec section 1.6.1 / section 1.6.2"
+    },
+    {
+      "id": "REQ-STUB012",
+      "title": "AttestationSuppresses combines hash verification and validity",
+      "text": "AttestationSuppresses shall recompute the artifact's current content hash and return whether the attestation is a valid, non-stale, independent review of that exact content.",
+      "standard": "x-FuSa spec section 1.6.2"
+    },
+    {
+      "id": "REQ-TARA006",
+      "title": "SFOPImpact replaces the single generic impact field",
+      "text": "tara.ThreatEntry.Impact shall be an SFOPImpact object (safety/financial/operational/privacy) per ISO 21434 Clause 15.7, replacing a single generic severity string.",
+      "standard": "ISO 21434 Clause 15.7"
+    },
+    {
+      "id": "REQ-TARA007",
+      "title": "TARA summary block with coverage metrics",
+      "text": "tara.Report.Summary shall report assetsAnalyzed, assetsInProject, coveragePct, and assetInventoryMethod per x-FuSa spec section 9.2.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-TARA008",
+      "title": "CountProjectFiles coverage denominator",
+      "text": "CountProjectFiles shall count non-test .go source files under the project root, independent of which files ended up with a CYBER-derived threat entry, for use as the tara coveragePct denominator.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-TARA009",
+      "title": "tara.LoadReport reads a persisted tara.json",
+      "text": "tara.LoadReport shall read and unmarshal a previously-written tara.json into a Report.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-TARA010",
+      "title": "tara --min-coverage / --strict / --require-attestation flags",
+      "text": "gofusa tara shall support --min-coverage N (exit 1 if summary.coveragePct < N), and --strict/--require-attestation (exit 1 on an unsuppressed FUSA-STUB002 finding).",
+      "standard": "x-FuSa spec section 1.6.2 / section 9.2"
     }
   ]
 }

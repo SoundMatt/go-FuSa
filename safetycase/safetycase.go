@@ -33,6 +33,21 @@ import (
 // SafeCaseFile is the default filename for the machine-readable safety case.
 const SafeCaseFile = "safety-case.json"
 
+// Load reads a persisted SafetyCase from path (typically safety-case.json).
+//
+//fusa:req REQ-SC009
+func Load(path string) (*SafetyCase, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var sc SafetyCase
+	if err := json.Unmarshal(data, &sc); err != nil {
+		return nil, fmt.Errorf("%w: %s: %s", fusa.ErrInvalidConfig, path, err)
+	}
+	return &sc, nil
+}
+
 // EvidenceStatus indicates whether an evidence item was found.
 type EvidenceStatus string
 
@@ -62,9 +77,64 @@ type ClauseMapping struct {
 	EvidenceIDs []string `json:"evidenceIds"`
 }
 
+// NodeType is one of the six GSN Community Standard v3 node types (§9.2 MUST).
+type NodeType string
+
+const (
+	NodeGoal          NodeType = "goal"
+	NodeStrategy      NodeType = "strategy"
+	NodeSolution      NodeType = "solution"
+	NodeContext       NodeType = "context"
+	NodeAssumption    NodeType = "assumption"
+	NodeJustification NodeType = "justification"
+)
+
+// EdgeType is one of the two GSN edge relationships (§9.2 MUST).
+type EdgeType string
+
+const (
+	EdgeSupportedBy EdgeType = "supportedBy" // goal→strategy→solution argument steps
+	EdgeInContextOf EdgeType = "inContextOf" // context/assumption/justification attachment
+)
+
+// Node is one GSN argument node.
+//
+//fusa:req REQ-SC006
+type Node struct {
+	ID       string   `json:"id"`
+	Type     NodeType `json:"type"`
+	Text     string   `json:"text"`
+	Evidence string   `json:"evidence,omitempty"` // solution nodes only: a real, existing artifact filename
+}
+
+// Edge is one GSN argument relationship between two nodes.
+//
+//fusa:req REQ-SC006
+type Edge struct {
+	From string   `json:"from"`
+	To   string   `json:"to"`
+	Type EdgeType `json:"type"`
+}
+
+// GSNCompleteness summarises the argument graph's coverage (§9.2).
+//
+//fusa:req REQ-SC007
+type GSNCompleteness struct {
+	TotalGoals        int `json:"totalGoals"`
+	GoalsWithEvidence int `json:"goalsWithEvidence"`
+	Undeveloped       int `json:"undeveloped"`
+}
+
 // SafetyCase is the assembled safety case for a project.
 type SafetyCase struct {
-	Format      string          `json:"format"`
+	// §3.1 common header.
+	SchemaVersion string `json:"schemaVersion"`
+	Kind          string `json:"kind"`
+	Tool          string `json:"tool"`
+	ToolVersion   string `json:"toolVersion"`
+	Language      string `json:"language"`
+
+	Format      string          `json:"format,omitempty"` // supplementary/legacy, not part of the §3.1 header
 	GeneratedAt time.Time       `json:"generatedAt"`
 	Module      string          `json:"module"`
 	Standard    string          `json:"standard"`
@@ -72,6 +142,18 @@ type SafetyCase struct {
 	Mappings    []ClauseMapping `json:"clauses,omitempty"`
 	//fusa:req REQ-SC002
 	Gaps []string `json:"gaps"`
+
+	// Nodes/Edges/Completeness are the x-FuSa spec §9.2 GSN (Goal
+	// Structuring Notation) argument required of safety-case.json —
+	// Evidence/Mappings/Gaps above remain go-FuSa's own richer evidence
+	// model and are derived into Nodes/Edges/Completeness by Build.
+	Nodes        []Node          `json:"nodes"`
+	Edges        []Edge          `json:"edges"`
+	Completeness GSNCompleteness `json:"completeness"`
+
+	// Attestation is the optional §1.6.2 independent-review assertion that
+	// can suppress a FUSA-STUB002 (blanket-fallback) finding on this file.
+	Attestation *fusa.Attestation `json:"attestation,omitempty"`
 }
 
 // ─── Build ────────────────────────────────────────────────────────────────────
@@ -137,15 +219,71 @@ func Build(projectRoot, standard string) (*SafetyCase, error) {
 	}
 
 	sc := &SafetyCase{
-		Format:      "go-FuSa Safety Case v1",
-		GeneratedAt: time.Now().UTC(),
-		Module:      module,
-		Standard:    standard,
-		Evidence:    items,
-		Mappings:    mappingsFor(standard),
-		Gaps:        gaps,
+		SchemaVersion: fusa.SchemaVersion(),
+		Kind:          "safety-case",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		Format:        "go-FuSa Safety Case v1",
+		GeneratedAt:   time.Now().UTC(),
+		Module:        module,
+		Standard:      standard,
+		Evidence:      items,
+		Mappings:      mappingsFor(standard),
+		Gaps:          gaps,
 	}
+	sc.Nodes, sc.Edges, sc.Completeness = buildGSN(module, standard, items)
 	return sc, nil
+}
+
+// buildGSN derives the §9.2 GSN argument graph from the same evidence items
+// Build already collected: one top goal (G1, tool- and standard-specific —
+// §1.6.1 rule B forbids a generic "the system is acceptably safe" claim with
+// no tool detail), one strategy (St1) decomposing it over the go-FuSa
+// pipeline, a context node scoping that claim, an assumption node the
+// strategy relies on, and one sub-goal/solution pair per evidence item —
+// each sub-goal is "undeveloped" (§9.2) when its evidence is absent.
+//
+//fusa:req REQ-SC008
+func buildGSN(module, standard string, items []EvidenceItem) ([]Node, []Edge, GSNCompleteness) {
+	nodes := []Node{
+		{ID: "G1", Type: NodeGoal, Text: fmt.Sprintf(
+			"%s is acceptably safe for use in a %s context, argued by demonstrating compliance with the go-FuSa safety development lifecycle.",
+			module, standard)},
+		{ID: "St1", Type: NodeStrategy, Text: fmt.Sprintf(
+			"Argue over the %d lifecycle evidence artifacts go-FuSa collects for %s (static checks, requirement traceability, test evidence, tool qualification, and supply-chain provenance).",
+			len(items), module)},
+		{ID: "C1", Type: NodeContext, Text: fmt.Sprintf("Standard: %s. Language: go. Evidence collected for module %q.", standard, module)},
+		{ID: "A1", Type: NodeAssumption, Text: "Each referenced evidence file reflects the repository's current state — a stale artifact (§1.6 freshness) would invalidate the argument even though the file is present."},
+	}
+	edges := []Edge{
+		{From: "G1", To: "St1", Type: EdgeSupportedBy},
+		{From: "G1", To: "C1", Type: EdgeInContextOf},
+		{From: "St1", To: "A1", Type: EdgeInContextOf},
+	}
+
+	completeness := GSNCompleteness{TotalGoals: 1} // G1 itself
+	for i, it := range items {
+		goalID := fmt.Sprintf("G%d", i+2)
+		solID := fmt.Sprintf("Sn%d", i+1)
+		text := fmt.Sprintf("%s is present and satisfactory for %s.", it.Description, module)
+		nodes = append(nodes, Node{ID: goalID, Type: NodeGoal, Text: text})
+		edges = append(edges, Edge{From: "St1", To: goalID, Type: EdgeSupportedBy})
+
+		completeness.TotalGoals++
+		if it.Status == StatusPresent {
+			evidenceText := it.Detail
+			if evidenceText == "" {
+				evidenceText = it.File
+			}
+			nodes = append(nodes, Node{ID: solID, Type: NodeSolution, Text: evidenceText, Evidence: it.File})
+			edges = append(edges, Edge{From: goalID, To: solID, Type: EdgeSupportedBy})
+			completeness.GoalsWithEvidence++
+		} else {
+			completeness.Undeveloped++
+		}
+	}
+	return nodes, edges, completeness
 }
 
 func collectCheck(root string) EvidenceItem {

@@ -13,6 +13,7 @@ import (
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/cyber"
 	"github.com/SoundMatt/go-FuSa/fmea"
+	"github.com/SoundMatt/go-FuSa/stubcheck"
 )
 
 // runFmea generates the dFMEA report for the project.
@@ -35,6 +36,10 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 		outputDir = fs.String("output-dir", "", "output directory (default: project root)")
 		//fusa:req REQ-CLI020
 		withCyber = fs.Bool("cyber", false, "enrich FMEA entries with CYBER findings (adds CyberRisks column)")
+		//fusa:req REQ-FMEA011
+		minCoverage        = fs.Int("min-coverage", 0, "exit 1 if summary.coveragePct is below N (0 = disabled)")
+		strict             = fs.Bool("strict", false, "escalate an unsuppressed FUSA-STUB002 finding to exit 1 (implies --require-attestation)")
+		requireAttestation = fs.Bool("require-attestation", false, "escalate an unsuppressed FUSA-STUB002 finding to exit 1")
 	)
 	if code := parseFlags(fs, args); code != 0 {
 		return code
@@ -103,8 +108,20 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 	high, med, low := countBySeverity(report)
 	fmt.Fprintf(stdout, "\nEntries: %d  (high: %d  medium: %d  low: %d)\n",
 		len(report.Entries), high, med, low)
+	fmt.Fprintf(stdout, "Coverage: %.1f%% (%d/%d components, %s)\n",
+		report.Summary.CoveragePct, report.Summary.ComponentsAnalyzed, report.Summary.ComponentsInProject,
+		"see summary.componentsInProjectMethod in fmea.json")
 
-	return fusa.ExitOK
+	code := fusa.ExitOK
+	//fusa:req REQ-FMEA011
+	if *minCoverage > 0 && report.Summary.CoveragePct < float64(*minCoverage) {
+		fmt.Fprintf(stderr, "gofusa fmea: coverage gate failed: %.1f%% < required %d%%\n", report.Summary.CoveragePct, *minCoverage)
+		code = fusa.ExitGateFail
+	}
+	if sc := gateContentQuality(stderr, "fmea", fmea.FMEAFile, stubcheck.FmeaFields(report), report.Attestation, report.Entries, *strict || *requireAttestation); sc != fusa.ExitOK {
+		code = sc
+	}
+	return code
 }
 
 func writeFmea(path string, r *fmea.Report, format string) error {

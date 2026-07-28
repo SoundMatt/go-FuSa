@@ -176,7 +176,7 @@ func TestValidate_Complete(t *testing.T) {
 			},
 		},
 		SafetyGoals: []hara.SafetyGoal{
-			{ID: "SG-001", Description: "goal", ASIL: hara.ASILB},
+			{ID: "SG-001", Description: "goal", ASIL: hara.ASILB, FSSRRefs: []string{"REQ-TEST001"}},
 		},
 	}
 	findings := hara.Validate(h)

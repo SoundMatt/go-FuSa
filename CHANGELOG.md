@@ -7,7 +7,71 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
-## v0.35.0 — 2026-07-27
+## v0.36.0 — 2026-07-28 (x-FuSa spec v1.13.0/v1.14.0 — evidence-artifact schema conformance + content-quality baseline)
+
+### Added
+- **§9.2/§9.3 evidence-artifact schema conformance** for `hara`/`fmea`/`tara`/
+  `safety-case`/`sas`/`sci`:
+  - `hara`: `.fusa-hara.json` `safetyGoals[].fssrRefs` is now a `[]string`
+    (MUST, ≥1 entry), replacing the prior singular `fssrRef` string. New
+    engine rules `HARA006` (missing `fssrRefs`) and `HARA007` (a `fssrRefs`
+    id with no matching entry in `.fusa-reqs.json`). `hara show --format
+    json` now emits the §9.2 `hara-report` document (common header +
+    verbatim content + a `completeness` block) instead of the bare input
+    file. `hara init` now scaffolds **empty** collections — never a dummy
+    example hazard/safety-goal (§1.6 rule 1).
+  - `fmea`: `entries[].failureMode`/`effect`/`cause` (singular strings, per
+    §9.2) alongside the existing `failureModes`/`effects` arrays;
+    `entries[].item`, `actionPriority`, `mitigations`; a `summary` block
+    with `componentsAnalyzed`/`componentsInProject`/`coveragePct` +
+    `--min-coverage N`.
+  - `tara`: `threats[]` is now the canonical top-level key (was `entries`);
+    `impact` is now an SFOP object (safety/financial/operational/privacy,
+    ISO 21434 Clause 15.7) instead of one generic string; new
+    `attackFeasibility`/`risk`/`treatment`/`location` fields; a `summary`
+    block with `assetsAnalyzed`/`assetsInProject`/`coveragePct`/
+    `assetInventoryMethod` + `--min-coverage N`.
+  - `safety-case`: `nodes[]`/`edges[]`/`completeness` — a real GSN (Goal
+    Structuring Notation v3) argument graph (goal/strategy/solution/
+    context/assumption/justification node types, `supportedBy`/
+    `inContextOf` edges) derived from the same evidence collection as
+    before.
+  - `sas`: `checklist[]` (`item`/`clause`/`present`/`evidence`) + `summary`
+    (`total`/`present`); `sas`'s `sas.md` companion is now always written
+    alongside whichever format `--format`/`--output` produced.
+  - `sci`: `artifacts[]` (`file`/`hash`/`version`), `hash` correctly
+    `sha256:`-prefixed (§2.7 — the existing `items[].sha256` field was
+    already bare-hex-correct; no bug there).
+  - All six now carry the §3.1 common header (`schemaVersion`/`kind`/
+    `tool`/`toolVersion`/`language`/`generatedAt`).
+- **§1.6.1 content-quality detection** (new `stubcheck` package): rule A
+  `FUSA-STUB001` (placeholder/template text — bracket-wrapped instructional
+  text or a deny-listed substring — always an `ERROR`, disposition-
+  suppressible only) and rule B `FUSA-STUB002` (a qualitative field's
+  distinct-value ratio below 10% across ≥10 entries — a `WARNING` by
+  default, advisory). Both run as `check` engine rules across every present
+  evidence artifact, and as an immediate gate on each artifact command
+  itself (see `--strict`/`--require-attestation` below).
+- **§1.6.2 attestation**: `fusa.Attestation` (`status`/
+  `implementationAuthor`/`independentReviewer`/`reviewedAt`/`contentHash`)
+  on every schema above; `fusa.AttestationValid` enforces independence
+  (reviewer ≠ author) and non-staleness (hash match) fail-safe.
+  `fusa.CanonicalizeJSON` implements RFC 8785 (JSON Canonicalization
+  Scheme) for `contentHash`. A valid, non-stale, independent `"reviewed"`
+  attestation suppresses `FUSA-STUB002` for that artifact; `FUSA-STUB001`
+  is never suppressed by attestation. `gofusa fmea|hara|tara|safety-case|
+  sas` all gained `--strict`/`--require-attestation`, escalating an
+  unsuppressed `FUSA-STUB002` finding to exit 1.
+- `fmea`/`tara --min-coverage N`: `fmea.CountProjectFunctions`/
+  `tara.CountProjectFiles` provide an honestly-documented, independent
+  coverage denominator (see each `Summary.*Method` field for the exact
+  methodology and its limitations) rather than a denominator that always
+  trivially equals the numerator.
+
+### Fixed
+- `.fusa-hara.json`'s committed safety goals used the pre-spec singular
+  `fssrRef` (a space-joined string of multiple ids) — migrated to the
+  spec's `fssrRefs` array.
 
 ### Added
 - `docker-publish.yml` now notifies `SoundMatt/FuSaOps` via `repository_dispatch`
