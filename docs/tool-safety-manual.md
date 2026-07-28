@@ -50,7 +50,7 @@ Capabilities:
 | Data/control coupling report generation | COUP001–003 | `gofusa coupling` |
 | ISO 26262 Part 6 compliance gap report | ISO26262001 | `gofusa iso26262` |
 | IEC 61508 Parts 1-3 compliance gap report | IEC61508001 | `gofusa iec61508` |
-| Hazard Analysis and Risk Assessment (HARA) | HARA001–005 | `gofusa hara` |
+| Hazard Analysis and Risk Assessment (HARA) | HARA001–008 | `gofusa hara` |
 | Finding disposition log | DISP001 | `gofusa disposition` |
 | Change impact analysis | — | `gofusa impact` |
 | Safety metrics trending | — | `gofusa metrics` |

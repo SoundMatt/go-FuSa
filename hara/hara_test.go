@@ -601,3 +601,179 @@ func TestHARA005_SilentWhenNoProjectASIL(t *testing.T) {
 		t.Error("HARA005 should not fire when project has no ASIL declared")
 	}
 }
+
+// ─── HARA008: risk.asil cross-validated against DetermineASIL(S,E,C) ──────────
+
+//fusa:test REQ-HARA024
+func TestValidateASIL_MismatchFlagged(t *testing.T) {
+	h := &hara.HARA{Hazards: []hara.Hazard{{
+		ID: "H-001",
+		Risk: hara.RiskRating{
+			Severity: hara.SeverityS1, Exposure: hara.ExposureE1, Controllability: hara.ControllabilityC1,
+			ASIL: hara.ASILD, // S1×E1×C1 derives QM, not ASIL-D
+		},
+	}}}
+	findings := hara.ValidateASIL(h)
+	if len(findings) != 1 {
+		t.Fatalf("expected 1 mismatch finding, got %d: %+v", len(findings), findings)
+	}
+	if findings[0].HazardID != "H-001" {
+		t.Errorf("HazardID = %q, want H-001", findings[0].HazardID)
+	}
+}
+
+//fusa:test REQ-HARA024
+func TestValidateASIL_MatchingASILNotFlagged(t *testing.T) {
+	h := &hara.HARA{Hazards: []hara.Hazard{{
+		ID: "H-001",
+		Risk: hara.RiskRating{
+			Severity: hara.SeverityS2, Exposure: hara.ExposureE4, Controllability: hara.ControllabilityC2,
+			ASIL: hara.ASILC, // S2×E4×C2 derives ASIL-C — matches
+		},
+	}}}
+	if findings := hara.ValidateASIL(h); len(findings) != 0 {
+		t.Errorf("expected no findings for a correctly-derived ASIL, got %+v", findings)
+	}
+}
+
+//fusa:test REQ-HARA024
+func TestValidateASIL_IncompleteSECSkipped(t *testing.T) {
+	// A hazard with an incomplete S/E/C rating is HARA002's job, not
+	// HARA008's — DetermineASIL would otherwise report a misleading
+	// "should be QM" for missing inputs rather than a genuine mismatch.
+	h := &hara.HARA{Hazards: []hara.Hazard{{
+		ID:   "H-001",
+		Risk: hara.RiskRating{Severity: hara.SeverityS2, ASIL: hara.ASILC}, // E/C missing
+	}}}
+	if findings := hara.ValidateASIL(h); len(findings) != 0 {
+		t.Errorf("expected ValidateASIL to skip a hazard with incomplete S/E/C, got %+v", findings)
+	}
+}
+
+//fusa:test REQ-HARA024
+func TestValidateASIL_EmptyASILSkipped(t *testing.T) {
+	h := &hara.HARA{Hazards: []hara.Hazard{{
+		ID: "H-001",
+		Risk: hara.RiskRating{
+			Severity: hara.SeverityS2, Exposure: hara.ExposureE4, Controllability: hara.ControllabilityC2,
+			// ASIL left empty — nothing to cross-check yet.
+		},
+	}}}
+	if findings := hara.ValidateASIL(h); len(findings) != 0 {
+		t.Errorf("expected no findings when risk.asil is unset, got %+v", findings)
+	}
+}
+
+func writeHARAWithMismatchedASIL(t *testing.T, dir string) {
+	t.Helper()
+	h := &hara.HARA{
+		Project:  "test",
+		Standard: "iso26262",
+		Hazards: []hara.Hazard{{
+			ID:          "H-001",
+			Description: "test hazard",
+			Risk: hara.RiskRating{
+				Severity: hara.SeverityS1, Exposure: hara.ExposureE1, Controllability: hara.ControllabilityC1,
+				ASIL: hara.ASILD, // S1×E1×C1 derives QM — a false ASIL-D claim
+			},
+			SafetyGoals: []string{"SG-001"},
+		}},
+		SafetyGoals: []hara.SafetyGoal{{ID: "SG-001", Description: "goal", ASIL: hara.ASILD}},
+	}
+	if err := hara.Save(filepath.Join(dir, hara.HARAFile), h); err != nil {
+		t.Fatal(err)
+	}
+}
+
+//fusa:test REQ-HARA024
+func TestHARA008_FiresOnMismatchedASIL(t *testing.T) {
+	dir := t.TempDir()
+	writeHARAWithMismatchedASIL(t, dir)
+	if !findingsForRule(t, dir, "HARA008") {
+		t.Error("HARA008 should fire when a hazard's risk.asil disagrees with its S/E/C-derived ASIL")
+	}
+}
+
+//fusa:test REQ-HARA024
+func TestHARA008_SilentWhenASILMatches(t *testing.T) {
+	dir := t.TempDir()
+	writeHARAWithASIL(t, dir, hara.ASILC) // S2×E4×C2 genuinely derives ASIL-C
+	if findingsForRule(t, dir, "HARA008") {
+		t.Error("HARA008 should not fire when risk.asil matches DetermineASIL(S,E,C)")
+	}
+}
+
+// Validate's rendered "Gaps" section (hara show) should surface an ASIL
+// mismatch too, not just the engine rule — see go-FuSa#62.
+//
+//fusa:test REQ-HARA009
+//fusa:test REQ-HARA024
+func TestValidate_IncludesASILMismatch(t *testing.T) {
+	h := &hara.HARA{Hazards: []hara.Hazard{{
+		ID: "H-001",
+		Risk: hara.RiskRating{
+			Severity: hara.SeverityS1, Exposure: hara.ExposureE1, Controllability: hara.ControllabilityC1,
+			ASIL: hara.ASILD,
+		},
+	}}}
+	findings := hara.Validate(h)
+	found := false
+	for _, f := range findings {
+		if f.HazardID == "H-001" {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("expected Validate to include the ASIL mismatch finding, got %+v", findings)
+	}
+}
+
+// ─── standard field canonicalisation (x-FuSa spec §2.4.1) ─────────────────────
+
+//fusa:test REQ-HARA025
+func TestLoad_NormalizesLegacyStandardDisplayString(t *testing.T) {
+	dir := t.TempDir()
+	h := &hara.HARA{Project: "p", Standard: "ISO 26262"}
+	if err := hara.Save(filepath.Join(dir, hara.HARAFile), h); err != nil {
+		t.Fatal(err)
+	}
+	loaded, err := hara.Load(dir)
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if loaded.Standard != "iso26262" {
+		t.Errorf("Standard = %q, want canonical id %q", loaded.Standard, "iso26262")
+	}
+}
+
+//fusa:test REQ-HARA025
+func TestLoad_CanonicalStandardUnchanged(t *testing.T) {
+	dir := t.TempDir()
+	h := &hara.HARA{Project: "p", Standard: "iso26262"}
+	if err := hara.Save(filepath.Join(dir, hara.HARAFile), h); err != nil {
+		t.Fatal(err)
+	}
+	loaded, err := hara.Load(dir)
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if loaded.Standard != "iso26262" {
+		t.Errorf("Standard = %q, want unchanged %q", loaded.Standard, "iso26262")
+	}
+}
+
+//fusa:test REQ-HARA025
+func TestLoad_UnrecognisedStandardPassedThrough(t *testing.T) {
+	dir := t.TempDir()
+	h := &hara.HARA{Project: "p", Standard: "some-future-standard"}
+	if err := hara.Save(filepath.Join(dir, hara.HARAFile), h); err != nil {
+		t.Fatal(err)
+	}
+	loaded, err := hara.Load(dir)
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if loaded.Standard != "some-future-standard" {
+		t.Errorf("Standard = %q, want unrecognised id passed through verbatim", loaded.Standard)
+	}
+}

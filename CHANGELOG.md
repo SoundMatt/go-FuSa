@@ -75,6 +75,31 @@ Dates reference the merged commit timestamp.
   continues to be suppressed only by a valid §1.6.2 attestation, never by
   disposition.
 
+## v0.42.0 — 2026-07-28 (hara: risk.asil cross-validation + canonical standard id)
+
+### Fixed
+- **HARA008: `risk.asil` is now cross-validated against `DetermineASIL(S,E,C)`**
+  (x-FuSa spec §1.2.5 MUST — ASIL determination). Previously a hazard's
+  stored `risk.asil` was accepted verbatim: `DetermineASIL` was only ever
+  used as a *fallback* for an empty value, so a hand-edited or
+  copy-pasted hazard could claim any ASIL regardless of its own S/E/C
+  inputs, with zero findings/gaps from either `gofusa hara show` or
+  `check`. The new `hara.ValidateASIL` (wrapped by the new engine rule
+  `HARA008`, and folded into `hara.Validate`'s own gap list so `hara show`
+  surfaces it directly) flags a hazard whose declared `risk.asil` disagrees
+  with the ISO 26262-3:2018 Table 4 value for its own severity/exposure/
+  controllability — skipping hazards with an incomplete S/E/C rating
+  (HARA002's job) or no `risk.asil` set yet.
+- **`standard` now uses the x-FuSa spec §2.4.1 canonical lowercase id**
+  (`iso26262`, not `"ISO 26262"`) in `.fusa-hara.json`: `hara init`'s
+  default `--standard` flag value changed from `"ISO 26262"` to
+  `"iso26262"`, the repo's own checked-in `.fusa-hara.json` was
+  normalised, and `hara.Load` now transparently normalises a legacy
+  display-string value (`"ISO 26262"`, `"IEC 61508"`, …) onto its
+  canonical id for backward compatibility with hand-authored files
+  predating this convention — an unrecognised id is still passed through
+  verbatim, never rejected.
+
 ## v0.36.0 — 2026-07-28 (x-FuSa spec v1.13.0/v1.14.0 — evidence-artifact schema conformance + content-quality baseline)
 
 ### Added
