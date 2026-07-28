@@ -2687,6 +2687,12 @@
       "title": "tara --min-coverage / --strict / --require-attestation flags",
       "text": "gofusa tara shall support --min-coverage N (exit 1 if summary.coveragePct < N), and --strict/--require-attestation (exit 1 on an unsuppressed FUSA-STUB002 finding).",
       "standard": "x-FuSa spec section 1.6.2 / section 9.2"
+    },
+    {
+      "id": "REQ-TARA012",
+      "title": "deriveRisk implements the x-FuSa spec section 9.2 risk combination table",
+      "text": "deriveRisk shall look up risk (critical|high|medium|low) from the highest-ranked of the four SFOP impact axes (critical|major|moderate|negligible) against attackFeasibility (high|medium|low|very-low), per the x-FuSa spec section 9.2 risk combination table, rather than a generic worse-of heuristic.",
+      "standard": "x-FuSa spec section 9.2"
     }
   ]
 }
