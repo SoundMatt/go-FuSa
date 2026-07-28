@@ -34,6 +34,26 @@ Dates reference the merged commit timestamp.
   continues to be suppressed only by a valid §1.6.2 attestation, never by
   disposition.
 
+## v0.39.0 — 2026-07-28 (x-FuSa spec §1.6.2 attestation carry-forward MUST)
+
+### Fixed
+- **§1.6.2 attestation is no longer silently wiped on every regeneration**
+  of `fmea.json`/`tara.json`/`safety-case.json`/`sas.json` (x-FuSa spec
+  v1.15.0 §1.6.2, now a MUST). `gofusa fmea`/`tara`/`safety-case`/`sas`
+  each unconditionally overwrote their output with a brand-new report
+  built from scratch, none of which loaded the existing file first or
+  copied forward its `attestation` field — a hand-added, valid, reviewed
+  attestation was discarded the moment the command was re-run, even when
+  nothing about the artifact's substantive content had changed
+  (go-FuSa#57). Each command now calls the new `carryForwardAttestation`
+  helper (`cmd/gofusa/helpers.go`) to load the prior saved output file's
+  `attestation` field and carry it forward onto the freshly-built result
+  before writing. Staleness continues to fall out automatically: a
+  carried-forward `contentHash` that no longer matches the freshly
+  computed content hash means `stubcheck.AttestationSuppresses` treats it
+  as not currently suppressing (via `fusa.AttestationValid`), never that
+  it vanished outright.
+
 ## v0.36.0 — 2026-07-28 (x-FuSa spec v1.13.0/v1.14.0 — evidence-artifact schema conformance + content-quality baseline)
 
 ### Added

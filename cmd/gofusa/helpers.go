@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
+	"os"
 
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/disposition"
@@ -94,4 +96,34 @@ func gateContentQuality(stderr io.Writer, cmd, projectRoot, artifactFile string,
 		}
 	}
 	return code
+}
+
+// carryForwardAttestation loads path — the prior saved copy of the output
+// file a command is about to rebuild/overwrite — and returns whatever
+// §1.6.2 "attestation" object it carried, or nil if path is absent,
+// unreadable, malformed, or has no attestation. x-FuSa spec §1.6.2 (MUST as
+// of spec v1.15.0): before an artifact-producing command rebuilds its
+// output, it MUST load any existing attestation from the prior saved output
+// file and carry it forward onto the freshly-built result, rather than
+// discarding it. Staleness then falls out automatically: a carried-forward
+// contentHash that no longer matches the freshly-computed content hash
+// means AttestationValid (via stubcheck.AttestationSuppresses) treats the
+// attestation as not currently suppressing — never that it silently
+// vanished. carryForwardAttestation only reads the "attestation" key, so it
+// works uniformly across fmea.json/tara.json/safety-case.json/sas.json
+// without needing each artifact's full schema.
+//
+//fusa:req REQ-CLI-HELPERS005
+func carryForwardAttestation(path string) *fusa.Attestation {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil
+	}
+	var prior struct {
+		Attestation *fusa.Attestation `json:"attestation,omitempty"`
+	}
+	if err := json.Unmarshal(data, &prior); err != nil {
+		return nil
+	}
+	return prior.Attestation
 }

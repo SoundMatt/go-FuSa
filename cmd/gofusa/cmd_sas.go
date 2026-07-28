@@ -83,6 +83,20 @@ func runSas(args []string, stdout, stderr io.Writer) int {
 		defer fmt.Fprintf(stdout, "SAS written to %s\n", outPath)
 	}
 
+	// x-FuSa spec §1.6.2 MUST: carry forward any existing attestation from
+	// the prior saved sas.json (wherever this run's JSON output — primary or
+	// companion — will land) before overwriting it. A fresh sas.Build never
+	// has one of its own. Staleness (a content change since the review)
+	// falls out of gateContentQuality's own hash check below. Nothing is
+	// persisted (and so nothing to carry forward) when --output is "-".
+	if outPath != "" {
+		sasJSONPath := outPath
+		if *format != "json" {
+			sasJSONPath = filepath.Join(filepath.Dir(outPath), sas.SASJSONFile)
+		}
+		doc.Attestation = carryForwardAttestation(sasJSONPath)
+	}
+
 	if err := sas.Render(w, doc, *format); err != nil {
 		fmt.Fprintf(stderr, "gofusa sas: render: %v\n", err)
 		return fusa.ExitRuntime
