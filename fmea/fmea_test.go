@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -547,4 +548,69 @@ func FuzzScan(f *testing.F) {
 		_ = os.WriteFile(filepath.Join(dir, "f.go"), []byte(src), 0o640)
 		_, _ = fmea.Scan(dir) // must not panic
 	})
+}
+
+// ─── §4 project-relative file paths ────────────────────────────────────────────
+
+//fusa:test REQ-LOC-REL003
+func TestScan_EntryFileIsProjectRelative(t *testing.T) {
+	dir := testutil.ProjectDir(t, testutil.GoSource("mypkg/work.go", srcExported))
+	r, err := fmea.Scan(dir)
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+	if len(r.Entries) == 0 {
+		t.Fatal("expected at least one entry")
+	}
+	for _, e := range r.Entries {
+		if filepath.IsAbs(e.File) {
+			t.Errorf("entry %s: File = %q, want a project-relative path (§4 MUST)", e.Function, e.File)
+		}
+		if strings.Contains(e.File, "\\") {
+			t.Errorf("entry %s: File = %q, want forward-slash separators", e.Function, e.File)
+		}
+	}
+	if r.Entries[0].File != "mypkg/work.go" {
+		t.Errorf("File = %q, want %q", r.Entries[0].File, "mypkg/work.go")
+	}
+}
+
+// ─── §9.2 coveragePct MUST NOT exceed 100 ──────────────────────────────────────
+
+//fusa:test REQ-FMEA012
+func TestScan_CoveragePct_NeverExceeds100_WithNonTrivialTestTree(t *testing.T) {
+	// A fixture with a substantial test-source tree (many _test.go files,
+	// each with several exported Test* functions) alongside a small number
+	// of real exported functions — a fixture with no such test-tree cannot
+	// exercise the coveragePct-overflow bug the x-FuSa spec §9.2 MUST
+	// clamp guards against, since _test.go exclusion (or its absence)
+	// can't skew componentsAnalyzed vs componentsInProject without one.
+	files := map[string]string{
+		"go.mod": "module example.com/fixture\n\ngo 1.22\n",
+		"pkg/real.go": "package pkg\n\n" +
+			"func A() error { return nil }\n" +
+			"func B() error { return nil }\n" +
+			"func C() error { return nil }\n",
+	}
+	for i := 0; i < 10; i++ {
+		name := fmt.Sprintf("pkg/thing%d_test.go", i)
+		files[name] = fmt.Sprintf("package pkg\n\nimport \"testing\"\n\n"+
+			"func TestA%d(t *testing.T) {}\nfunc TestB%d(t *testing.T) {}\nfunc TestC%d(t *testing.T) {}\n",
+			i, i, i)
+	}
+	dir := testutil.ProjectDir(t, files)
+
+	r, err := fmea.Scan(dir)
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+	if r.Summary.CoveragePct > 100 {
+		t.Errorf("CoveragePct = %.2f, want <= 100 (x-FuSa spec §9.2 MUST)", r.Summary.CoveragePct)
+	}
+	if r.Summary.ComponentsAnalyzed != 3 {
+		t.Errorf("ComponentsAnalyzed = %d, want 3 (test-file functions must not be counted)", r.Summary.ComponentsAnalyzed)
+	}
+	if r.Summary.ComponentsInProject < r.Summary.ComponentsAnalyzed {
+		t.Errorf("ComponentsInProject = %d, want >= ComponentsAnalyzed = %d", r.Summary.ComponentsInProject, r.Summary.ComponentsAnalyzed)
+	}
 }

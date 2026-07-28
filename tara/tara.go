@@ -32,6 +32,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/trace"
 )
 
 // TARAFile is the default JSON output filename.
@@ -285,6 +286,16 @@ func buildSummary(report *Report, projectRoot string) Summary {
 	} else {
 		s.CoveragePct = 100
 	}
+	// x-FuSa spec §9.2 MUST: coveragePct must never exceed 100. The fallback
+	// above already guarantees total >= AssetsAnalyzed (so this can't
+	// currently trigger), but a defensive clamp is cheap insurance against a
+	// future change to the fallback logic silently reintroducing the
+	// overflow the spec calls out.
+	//
+	//fusa:req REQ-TARA011
+	if s.CoveragePct > 100 {
+		s.CoveragePct = 100
+	}
 	s.AssetInventoryMethod = "every non-test .go source file in the project (excluding vendor/testdata/dot-directories) " +
 		"is treated as one candidate asset (CountProjectFiles); assetsAnalyzed counts the distinct files that ended up " +
 		"with at least one CYBER-derived threat entry — this is file-level granularity, not a deeper per-symbol or " +
@@ -295,7 +306,10 @@ func buildSummary(report *Report, projectRoot string) Summary {
 // CountProjectFiles returns the total count of non-test .go source files
 // under root (excluding vendor/, testdata/, and dot-directories) — the §9.2
 // tara `coveragePct` denominator (assetsInProject). See buildSummary and
-// Summary.AssetInventoryMethod for the file-level-granularity caveat.
+// Summary.AssetInventoryMethod for the file-level-granularity caveat. The
+// test-tree/dot-directory exclusion reuses trace.IsExcludedDir (x-FuSa spec
+// §1.6 rule 4 SHOULD) rather than an independently-drifting copy of the
+// same three-way vendor/testdata/dot-dir check.
 //
 //fusa:req REQ-TARA008
 func CountProjectFiles(root string) (int, error) {
@@ -305,8 +319,7 @@ func CountProjectFiles(root string) (int, error) {
 			return walkErr
 		}
 		if d.IsDir() {
-			base := d.Name()
-			if path != root && (base == "vendor" || base == "testdata" || strings.HasPrefix(base, ".")) {
+			if path != root && trace.IsExcludedDir(d.Name()) {
 				return filepath.SkipDir
 			}
 			return nil
