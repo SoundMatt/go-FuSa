@@ -120,7 +120,7 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 		}
 	}
 
-	return gateContentQuality(stderr, "safety-case", "safety-case.json", stubcheck.SafetyCaseFields(sc), sc.Attestation, struct {
+	return gateContentQuality(stderr, "safety-case", projectRoot, "safety-case.json", stubcheck.SafetyCaseFields(sc), sc.Attestation, struct {
 		Nodes interface{} `json:"nodes"`
 		Edges interface{} `json:"edges"`
 	}{sc.Nodes, sc.Edges}, *strict || *requireAttestation)

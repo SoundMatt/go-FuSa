@@ -118,7 +118,7 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "gofusa fmea: coverage gate failed: %.1f%% < required %d%%\n", report.Summary.CoveragePct, *minCoverage)
 		code = fusa.ExitGateFail
 	}
-	if sc := gateContentQuality(stderr, "fmea", fmea.FMEAFile, stubcheck.FmeaFields(report), report.Attestation, report.Entries, *strict || *requireAttestation); sc != fusa.ExitOK {
+	if sc := gateContentQuality(stderr, "fmea", projectRoot, fmea.FMEAFile, stubcheck.FmeaFields(report), report.Attestation, report.Entries, *strict || *requireAttestation); sc != fusa.ExitOK {
 		code = sc
 	}
 	return code
