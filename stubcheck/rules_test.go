@@ -1,12 +1,9 @@
 package stubcheck_test
 
 import (
-	"context"
 	"testing"
 
 	fusa "github.com/SoundMatt/go-FuSa"
-	"github.com/SoundMatt/go-FuSa/config"
-	"github.com/SoundMatt/go-FuSa/engine"
 	"github.com/SoundMatt/go-FuSa/fmea"
 	"github.com/SoundMatt/go-FuSa/hara"
 	"github.com/SoundMatt/go-FuSa/safetycase"
@@ -16,17 +13,15 @@ import (
 	"github.com/SoundMatt/go-FuSa/testutil"
 )
 
-func findByRule(findings []fusa.Finding, ruleID string) []fusa.Finding {
-	var out []fusa.Finding
-	for _, f := range findings {
-		if f.RuleID == ruleID {
-			out = append(out, f)
-		}
-	}
-	return out
-}
+// These tests exercise the field-extraction + scan pipeline the way each
+// `gofusa <artifact>` command's own gateContentQuality call does — directly,
+// against content the command itself loaded/built — never via
+// engine.Default (x-FuSa spec §1.6.1: detection must not run inside `check`
+// or any other engine.Default-driven command; see the fix for the go-FuSa
+// issue that found FUSA-STUB001/002 leaking into `check`'s own findings).
 
-//fusa:test REQ-STUB010
+//fusa:test REQ-STUB001
+//fusa:test REQ-STUB005
 func TestRulePlaceholder_DetectsHaraTemplate(t *testing.T) {
 	haraJSON := `{
   "project": "test", "standard": "iso26262",
@@ -42,15 +37,16 @@ func TestRulePlaceholder_DetectsHaraTemplate(t *testing.T) {
 }`
 	dir := testutil.ProjectDir(t, map[string]string{hara.HARAFile: haraJSON})
 
-	result, err := engine.Default.Run(context.Background(), dir, config.Default("", "test"))
+	h, err := hara.Load(dir)
 	if err != nil {
-		t.Fatalf("engine.Run: %v", err)
+		t.Fatalf("hara.Load: %v", err)
 	}
-	matches := findByRule(result.Findings, stubcheck.RuleStub001)
+	matches := stubcheck.ScanPlaceholders(stubcheck.HaraFields(h))
 	if len(matches) == 0 {
-		t.Fatal("expected at least one FUSA-STUB001 finding for the placeholder hazard description")
+		t.Fatal("expected at least one FUSA-STUB001 match for the placeholder hazard description")
 	}
-	for _, f := range matches {
+	for _, m := range matches {
+		f := stubcheck.PlaceholderFinding(hara.HARAFile, m)
 		if f.Severity != fusa.SeverityError {
 			t.Errorf("FUSA-STUB001 finding severity = %q, want ERROR", f.Severity)
 		}
@@ -60,7 +56,8 @@ func TestRulePlaceholder_DetectsHaraTemplate(t *testing.T) {
 	}
 }
 
-//fusa:test REQ-STUB011
+//fusa:test REQ-STUB002
+//fusa:test REQ-STUB005
 func TestRuleBlanketFallback_CleanHaraProducesNoFinding(t *testing.T) {
 	// 10 hazards, every description distinct — should not trip rule B.
 	hazards := ""
@@ -76,19 +73,21 @@ func TestRuleBlanketFallback_CleanHaraProducesNoFinding(t *testing.T) {
 	haraJSON := `{"project":"test","standard":"iso26262","operationalSituations":[],"hazards":[` + hazards + `],"safetyGoals":[` + safetyGoals + `]}`
 	dir := testutil.ProjectDir(t, map[string]string{hara.HARAFile: haraJSON})
 
-	result, err := engine.Default.Run(context.Background(), dir, config.Default("", "test"))
+	h, err := hara.Load(dir)
 	if err != nil {
-		t.Fatalf("engine.Run: %v", err)
+		t.Fatalf("hara.Load: %v", err)
 	}
-	if matches := findByRule(result.Findings, stubcheck.RuleStub002); len(matches) != 0 {
-		t.Errorf("expected no FUSA-STUB002 findings for distinct hazard text, got %+v", matches)
+	fields := stubcheck.HaraFields(h)
+	if matches := stubcheck.ScanBlanketFallback(fields); len(matches) != 0 {
+		t.Errorf("expected no FUSA-STUB002 matches for distinct hazard text, got %+v", matches)
 	}
-	if matches := findByRule(result.Findings, stubcheck.RuleStub001); len(matches) != 0 {
-		t.Errorf("expected no FUSA-STUB001 findings for clean text, got %+v", matches)
+	if matches := stubcheck.ScanPlaceholders(fields); len(matches) != 0 {
+		t.Errorf("expected no FUSA-STUB001 matches for clean text, got %+v", matches)
 	}
 }
 
-//fusa:test REQ-STUB011
+//fusa:test REQ-STUB002
+//fusa:test REQ-STUB005
 func TestRuleBlanketFallback_RepeatedHazardTextWarns(t *testing.T) {
 	hazards := ""
 	safetyGoals := ""
@@ -104,15 +103,16 @@ func TestRuleBlanketFallback_RepeatedHazardTextWarns(t *testing.T) {
 	haraJSON := `{"project":"test","standard":"iso26262","operationalSituations":[],"hazards":[` + hazards + `],"safetyGoals":[` + safetyGoals + `]}`
 	dir := testutil.ProjectDir(t, map[string]string{hara.HARAFile: haraJSON})
 
-	result, err := engine.Default.Run(context.Background(), dir, config.Default("", "test"))
+	h, err := hara.Load(dir)
 	if err != nil {
-		t.Fatalf("engine.Run: %v", err)
+		t.Fatalf("hara.Load: %v", err)
 	}
-	matches := findByRule(result.Findings, stubcheck.RuleStub002)
+	matches := stubcheck.ScanBlanketFallback(stubcheck.HaraFields(h))
 	if len(matches) == 0 {
-		t.Fatal("expected a FUSA-STUB002 finding for the repeated hazard description")
+		t.Fatal("expected a FUSA-STUB002 match for the repeated hazard description")
 	}
-	for _, f := range matches {
+	for _, m := range matches {
+		f := stubcheck.BlanketFallbackFinding(hara.HARAFile, m)
 		if f.Severity != fusa.SeverityWarning {
 			t.Errorf("FUSA-STUB002 finding severity = %q, want WARNING", f.Severity)
 		}
@@ -176,26 +176,4 @@ func TestSasFields(t *testing.T) {
 	if len(fields) != 1 || fields[0].Values[0] != "deviation one" {
 		t.Errorf("unexpected fields: %+v", fields)
 	}
-}
-
-//fusa:test REQ-STUB005
-//fusa:test REQ-STUB006
-//fusa:test REQ-STUB007
-//fusa:test REQ-STUB008
-func TestLoadArtifacts_AllPresent(t *testing.T) {
-	haraJSON := `{"project":"t","standard":"iso26262","operationalSituations":[],"hazards":[],"safetyGoals":[]}`
-	fmeaJSON := `{"entries":[{"failureMode":"m","effect":"e"}]}`
-	taraJSON := `{"threats":[{"threat":"t","asset":"a"}]}`
-	scJSON := `{"nodes":[{"id":"G1","type":"goal","text":"txt"}]}`
-	dir := testutil.ProjectDir(t, map[string]string{
-		hara.HARAFile:           haraJSON,
-		fmea.FMEAFile:           fmeaJSON,
-		tara.TARAFile:           taraJSON,
-		safetycase.SafeCaseFile: scJSON,
-	})
-	result, err := engine.Default.Run(context.Background(), dir, config.Default("", "test"))
-	if err != nil {
-		t.Fatalf("engine.Run: %v", err)
-	}
-	_ = result // just exercising loadArtifacts across every known artifact type without error
 }

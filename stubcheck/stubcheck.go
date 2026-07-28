@@ -6,9 +6,14 @@
 //
 // The two scan functions ([ScanPlaceholders], [ScanBlanketFallback]) are
 // pure and artifact-agnostic: callers extract each evidence artifact's own
-// qualitative text into a []Field and pass it in. Engine-rule glue that
-// reads fmea.json/.fusa-hara.json/tara.json/safety-case.json/sas.json off
-// disk and wires these scans into `gofusa check` lives in stubrules.go.
+// qualitative text into a []Field and pass it in. Per x-FuSa spec §1.6.1
+// ("Who runs this (MUST)"), detection runs inside each artifact-producing
+// command over the content that command itself just built or loaded — never
+// inside `gofusa check`, which does not read sibling evidence artifacts.
+// rules.go's per-artifact Field extractors (HaraFields, FmeaFields, …) are
+// consumed directly by each `gofusa <artifact>` command's own
+// gateContentQuality call (cmd/gofusa/cmd_*.go); there is deliberately no
+// engine.Rule wrapper registered on engine.Default for these two scans.
 package stubcheck
 
 import (

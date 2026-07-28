@@ -2659,22 +2659,16 @@
       "standard": "x-FuSa spec section 1.6.1"
     },
     {
-      "id": "REQ-STUB010",
-      "title": "FUSA-STUB001 engine rule across all known artifacts",
-      "text": "The rulePlaceholder engine rule shall scan every present evidence artifact (fmea.json, .fusa-hara.json, tara.json, safety-case.json, sas.json) for placeholder text and emit an ERROR finding per match, never suppressed by attestation.",
-      "standard": "x-FuSa spec section 1.6.1"
-    },
-    {
-      "id": "REQ-STUB011",
-      "title": "FUSA-STUB002 engine rule across all known artifacts",
-      "text": "The ruleBlanketFallback engine rule shall scan every present evidence artifact for a blanket qualitative fallback and emit a WARNING finding per match, suppressed when the artifact carries a valid attestation.",
-      "standard": "x-FuSa spec section 1.6.1 / section 1.6.2"
-    },
-    {
       "id": "REQ-STUB012",
       "title": "AttestationSuppresses combines hash verification and validity",
       "text": "AttestationSuppresses shall recompute the artifact's current content hash and return whether the attestation is a valid, non-stale, independent review of that exact content.",
       "standard": "x-FuSa spec section 1.6.2"
+    },
+    {
+      "id": "REQ-STUB013",
+      "title": "gateContentQuality honours a FUSA-STUB001 disposition",
+      "text": "gateContentQuality shall suppress an otherwise-gating FUSA-STUB001 placeholder finding when projectRoot's .fusa-dispositions.json carries a disposition entry for ruleID FUSA-STUB001, per x-FuSa spec section 1.6.1 rule A's disposition-only escape hatch; FUSA-STUB002 continues to be suppressed only by a valid section 1.6.2 attestation, never by disposition.",
+      "standard": "x-FuSa spec section 1.6.1 / section 1.2.3 / section 4.1"
     },
     {
       "id": "REQ-TARA006",

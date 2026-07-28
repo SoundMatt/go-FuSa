@@ -122,7 +122,7 @@ func runHaraShow(args []string, projectRoot string, stdout, stderr io.Writer) in
 		fmt.Fprintf(stderr, "gofusa hara: %d gap(s) found — run 'gofusa hara show' for details\n", len(findings))
 	}
 
-	return gateContentQuality(stderr, "hara", hara.HARAFile, stubcheck.HaraFields(h), h.Attestation, struct {
+	return gateContentQuality(stderr, "hara", projectRoot, hara.HARAFile, stubcheck.HaraFields(h), h.Attestation, struct {
 		Situations  interface{} `json:"operationalSituations"`
 		Hazards     interface{} `json:"hazards"`
 		SafetyGoals interface{} `json:"safetyGoals"`
