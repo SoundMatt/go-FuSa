@@ -23,10 +23,10 @@ import (
 )
 
 // Version is the current release of go-FuSa.
-const Version = "0.44.0"
+const Version = "0.45.0"
 
 // SpecVersion is the x-FuSa spec version this release implements.
-const SpecVersion = "1.14.0"
+const SpecVersion = "1.15.0"
 
 // SchemaVersion returns the MAJOR.MINOR prefix of SpecVersion, the value
 // every report document's "schemaVersion" header field (§2.8/§3.1) MUST
