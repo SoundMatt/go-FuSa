@@ -2551,6 +2551,18 @@
       "standard": "x-FuSa spec section 1.6.2"
     },
     {
+      "id": "REQ-HARA024",
+      "title": "HARA008 engine rule / ValidateASIL: risk.asil cross-validated against S/E/C",
+      "text": "ValidateASIL (and the HARA008 engine rule that wraps it) shall flag a hazard whose declared risk.asil disagrees with DetermineASIL(severity, exposure, controllability) per ISO 26262-3:2018 Table 4, skipping hazards with an incomplete S/E/C rating or an unset risk.asil; Validate shall include the same check in hara show's rendered gap list.",
+      "standard": "x-FuSa spec section 1.2.5"
+    },
+    {
+      "id": "REQ-HARA025",
+      "title": "hara.Load normalises a legacy display-string standard value",
+      "text": "hara.Load shall normalise a legacy display-string standard value (e.g. \"ISO 26262\") onto its x-FuSa spec section 2.4.1 canonical lowercase id (e.g. \"iso26262\"), leaving an already-canonical or unrecognised id unchanged; hara init's default --standard flag value is the canonical id.",
+      "standard": "x-FuSa spec section 2.4.1"
+    },
+    {
       "id": "REQ-SAS004",
       "title": "SAS ChecklistItem canonical shape",
       "text": "sas.ChecklistItem shall carry item/clause/present/evidence per x-FuSa spec section 9.3's sas.json checklist schema.",
@@ -2716,6 +2728,12 @@
       "id": "REQ-TARA011",
       "title": "tara summary.coveragePct never exceeds 100",
       "text": "tara.buildSummary shall clamp summary.coveragePct to a maximum of 100, defensively, in addition to the assetsInProject >= assetsAnalyzed fallback that already guarantees this, per x-FuSa spec section 9.2 MUST.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
+      "id": "REQ-TARA012",
+      "title": "deriveRisk implements the x-FuSa spec section 9.2 risk combination table",
+      "text": "deriveRisk shall look up risk (critical|high|medium|low) from the highest-ranked of the four SFOP impact axes (critical|major|moderate|negligible) against attackFeasibility (high|medium|low|very-low), per the x-FuSa spec section 9.2 risk combination table, rather than a generic worse-of heuristic.",
       "standard": "x-FuSa spec section 9.2"
     }
   ]

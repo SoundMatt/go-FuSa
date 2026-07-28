@@ -7,34 +7,7 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
-## v0.37.0 — 2026-07-28 (x-FuSa spec §1.6.1 conformance fixes: content-quality scope + FUSA-STUB001 disposition)
-
-### Fixed
-- **FUSA-STUB001/002 no longer run inside `check`** (x-FuSa spec §1.6.1
-  "Who runs this (MUST)"): the two content-quality rules were registered on
-  `engine.Default` and therefore executed as part of `gofusa check` (and
-  `report`/`fix`/`qualify`, which also drive `engine.Default`), reading
-  `fmea.json`/`.fusa-hara.json`/`tara.json`/`safety-case.json`/`sas.json`
-  off disk and surfacing findings inside `check`'s own finding list —
-  exactly what §1.6.1 says must not happen. Detection now runs only inside
-  each artifact-producing command's own `gateContentQuality` gate
-  (`gofusa hara`/`fmea`/`tara`/`safety-case`/`sas`), over the content that
-  command itself just built or loaded. `stubcheck`'s engine-rule glue
-  (`rulePlaceholder`/`ruleBlanketFallback`/`loadArtifacts`) is removed; the
-  per-artifact field extractors (`HaraFields`, `FmeaFields`, …) are
-  unchanged.
-- **FUSA-STUB001 is now disposition-suppressible**, as the rule's own doc
-  comments and the x-FuSa spec §1.6.1 rule A already claimed ("never via
-  attestation" implies a disposition path exists) but no code actually
-  checked: `gateContentQuality` now loads `.fusa-dispositions.json` and
-  skips escalating a FUSA-STUB001 match to a gate failure when the project
-  has a disposition entry for ruleID `FUSA-STUB001` (`gofusa disposition
-  add --rule FUSA-STUB001 ...`) — the same mechanism `check`'s own
-  ERROR-finding review workflow uses. FUSA-STUB002 is unaffected: it
-  continues to be suppressed only by a valid §1.6.2 attestation, never by
-  disposition.
-
-## v0.40.0 — 2026-07-28 (fmea/tara: project-relative paths, coveragePct clamp, wider FMEA templates)
+## v0.43.0 — 2026-07-28 (fmea/tara: project-relative paths, coveragePct clamp, wider FMEA templates)
 
 ### Fixed
 - **fmea.json/tara.json no longer emit absolute file paths** under the
@@ -75,6 +48,79 @@ Dates reference the merged commit timestamp.
   the vendor/testdata/dot-directory check `trace.ScanTags`/
   `ScanFuncCoverage`/`ScanFuncTagCoverage`, `fmea.CountProjectFunctions`,
   and `tara.CountProjectFiles` all previously re-implemented independently.
+
+## v0.42.0 — 2026-07-28 (hara: risk.asil cross-validation + canonical standard id)
+
+### Fixed
+- **HARA008: `risk.asil` is now cross-validated against `DetermineASIL(S,E,C)`**
+  (x-FuSa spec §1.2.5 MUST — ASIL determination). Previously a hazard's
+  stored `risk.asil` was accepted verbatim: `DetermineASIL` was only ever
+  used as a *fallback* for an empty value, so a hand-edited or
+  copy-pasted hazard could claim any ASIL regardless of its own S/E/C
+  inputs, with zero findings/gaps from either `gofusa hara show` or
+  `check`. The new `hara.ValidateASIL` (wrapped by the new engine rule
+  `HARA008`, and folded into `hara.Validate`'s own gap list so `hara show`
+  surfaces it directly) flags a hazard whose declared `risk.asil` disagrees
+  with the ISO 26262-3:2018 Table 4 value for its own severity/exposure/
+  controllability — skipping hazards with an incomplete S/E/C rating
+  (HARA002's job) or no `risk.asil` set yet.
+- **`standard` now uses the x-FuSa spec §2.4.1 canonical lowercase id**
+  (`iso26262`, not `"ISO 26262"`) in `.fusa-hara.json`: `hara init`'s
+  default `--standard` flag value changed from `"ISO 26262"` to
+  `"iso26262"`, the repo's own checked-in `.fusa-hara.json` was
+  normalised, and `hara.Load` now transparently normalises a legacy
+  display-string value (`"ISO 26262"`, `"IEC 61508"`, …) onto its
+  canonical id for backward compatibility with hand-authored files
+  predating this convention — an unrecognised id is still passed through
+  verbatim, never rejected.
+
+## v0.41.0 — 2026-07-28 (tara: closed impact/risk enums per x-FuSa spec v1.14.1)
+
+### Fixed
+- **`tara.json`'s `impact`/`risk` fields now use the x-FuSa spec §9.2 closed
+  enums** instead of the non-conformant `high|medium|low` vocabulary
+  (spec v1.14.1, "Closed enums (MUST — clarifies a gap found during
+  rollout)"). `impact.{safety,financial,operational,privacy}` never used
+  anything but `high`/`medium`/`low` — never `critical`/`negligible` —
+  despite the spec explicitly prohibiting that vocabulary for these four
+  fields; `risk` never used anything but `high`/`medium`, never
+  `critical`/`low` (go-FuSa#58). `deriveSFOP` now maps onto
+  `critical`/`major`/`moderate`/`negligible` via the new
+  `legacyImpactToSFOP` (a `high` rating escalates to `critical` for the
+  most severe IEC 62443 security-level-3 rules, `major` otherwise); `risk`
+  is now looked up from the x-FuSa spec's own published risk combination
+  table (highest SFOP impact axis × `attackFeasibility`) via the new
+  `riskTable`, replacing the prior "worse of the two inputs" heuristic that
+  couldn't produce `critical`/`negligible` by construction. Regenerated
+  `tara.json`: `risk` now includes `critical` (2 threats) alongside
+  `medium`/`low`; `impact.safety` includes `critical` alongside `moderate`.
+
+## v0.37.0 — 2026-07-28 (x-FuSa spec §1.6.1 conformance fixes: content-quality scope + FUSA-STUB001 disposition)
+
+### Fixed
+- **FUSA-STUB001/002 no longer run inside `check`** (x-FuSa spec §1.6.1
+  "Who runs this (MUST)"): the two content-quality rules were registered on
+  `engine.Default` and therefore executed as part of `gofusa check` (and
+  `report`/`fix`/`qualify`, which also drive `engine.Default`), reading
+  `fmea.json`/`.fusa-hara.json`/`tara.json`/`safety-case.json`/`sas.json`
+  off disk and surfacing findings inside `check`'s own finding list —
+  exactly what §1.6.1 says must not happen. Detection now runs only inside
+  each artifact-producing command's own `gateContentQuality` gate
+  (`gofusa hara`/`fmea`/`tara`/`safety-case`/`sas`), over the content that
+  command itself just built or loaded. `stubcheck`'s engine-rule glue
+  (`rulePlaceholder`/`ruleBlanketFallback`/`loadArtifacts`) is removed; the
+  per-artifact field extractors (`HaraFields`, `FmeaFields`, …) are
+  unchanged.
+- **FUSA-STUB001 is now disposition-suppressible**, as the rule's own doc
+  comments and the x-FuSa spec §1.6.1 rule A already claimed ("never via
+  attestation" implies a disposition path exists) but no code actually
+  checked: `gateContentQuality` now loads `.fusa-dispositions.json` and
+  skips escalating a FUSA-STUB001 match to a gate failure when the project
+  has a disposition entry for ruleID `FUSA-STUB001` (`gofusa disposition
+  add --rule FUSA-STUB001 ...`) — the same mechanism `check`'s own
+  ERROR-finding review workflow uses. FUSA-STUB002 is unaffected: it
+  continues to be suppressed only by a valid §1.6.2 attestation, never by
+  disposition.
 
 ## v0.36.0 — 2026-07-28 (x-FuSa spec v1.13.0/v1.14.0 — evidence-artifact schema conformance + content-quality baseline)
 

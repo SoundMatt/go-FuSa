@@ -318,3 +318,88 @@ func TestScan_CoveragePct_NeverExceeds100_WithNonTrivialTestTree(t *testing.T) {
 		t.Errorf("AssetsInProject = %d, want >= AssetsAnalyzed = %d", r.Summary.AssetsInProject, r.Summary.AssetsAnalyzed)
 	}
 }
+
+// ─── x-FuSa spec §9.2 closed impact/risk enums ─────────────────────────────────
+
+var closedImpactValues = map[string]bool{"critical": true, "major": true, "moderate": true, "negligible": true}
+var closedRiskValues = map[string]bool{"critical": true, "high": true, "medium": true, "low": true}
+var legacyVocabValues = map[string]bool{"high": true, "medium": true, "low": true}
+
+//fusa:test REQ-TARA006
+//fusa:test REQ-TARA012
+func TestScan_AllRules_UseClosedImpactAndRiskEnums(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod": "module example.com/test\ngo 1.22\n",
+	})
+	var sawSafetyValues = map[string]bool{}
+	for i := 1; i <= 20; i++ {
+		ruleID := strings.Replace("CYBER000", "000", padded(i), 1)
+		findings := []fusa.Finding{makeFinding(ruleID, fusa.SeverityError, "f.go", 1)}
+		report, err := tara.Scan(dir, findings)
+		if err != nil || len(report.Entries) != 1 {
+			t.Fatalf("%s: Scan: err=%v entries=%d", ruleID, err, len(report.Entries))
+		}
+		e := report.Entries[0]
+
+		for axis, v := range map[string]string{
+			"safety": e.Impact.Safety, "financial": e.Impact.Financial,
+			"operational": e.Impact.Operational, "privacy": e.Impact.Privacy,
+		} {
+			if !closedImpactValues[v] {
+				t.Errorf("%s: impact.%s = %q, not one of the closed critical|major|moderate|negligible enum", ruleID, axis, v)
+			}
+			if legacyVocabValues[v] {
+				t.Errorf("%s: impact.%s = %q — the non-conformant high|medium|low vocabulary must never be used for impact axes", ruleID, axis, v)
+			}
+		}
+		if !closedRiskValues[e.Risk] {
+			t.Errorf("%s: risk = %q, not one of the closed critical|high|medium|low enum", ruleID, e.Risk)
+		}
+		sawSafetyValues[e.Impact.Safety] = true
+	}
+	// Every tier should genuinely appear across the 20 rules — proof the
+	// vocabulary isn't just swapped in name only while collapsing back onto
+	// a single value in practice.
+	for _, tier := range []string{"critical", "major", "moderate"} {
+		if !sawSafetyValues[tier] {
+			t.Errorf("expected at least one rule to produce impact.safety=%q across all 20 CYBER rules, saw %v", tier, sawSafetyValues)
+		}
+	}
+}
+
+//fusa:test REQ-TARA012
+func TestScan_RiskCombinationTable(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod": "module example.com/test\ngo 1.22\n",
+	})
+	cases := []struct {
+		ruleID   string // sl>=3, impact High → safety=critical; sl<3 → major
+		sev      fusa.Severity
+		wantRisk string
+	}{
+		// CYBER004 (impact High, sl 3) → safety=critical; ERROR → feasibility=high.
+		// riskTable[critical][high] = critical.
+		{"CYBER004", fusa.SeverityError, "critical"},
+		// CYBER001 (impact High, sl 2, stride includes I) → highest axis = major
+		// (I elevates privacy to moderate, which ranks below major); ERROR → high.
+		// riskTable[major][high] = high.
+		{"CYBER001", fusa.SeverityError, "high"},
+		// CYBER008 (impact Medium, sl 2, stride D) → highest axis = moderate;
+		// ERROR → high. riskTable[moderate][high] = medium.
+		{"CYBER008", fusa.SeverityError, "medium"},
+		// CYBER008 with INFO severity → feasibility=low. riskTable[moderate][low] = low.
+		{"CYBER008", fusa.SeverityInfo, "low"},
+	}
+	for _, c := range cases {
+		findings := []fusa.Finding{makeFinding(c.ruleID, c.sev, "f.go", 1)}
+		report, err := tara.Scan(dir, findings)
+		if err != nil || len(report.Entries) != 1 {
+			t.Fatalf("%s: Scan: err=%v entries=%d", c.ruleID, err, len(report.Entries))
+		}
+		e := report.Entries[0]
+		if e.Risk != c.wantRisk {
+			t.Errorf("%s (sev=%s): risk = %q, want %q (impact=%+v, feasibility=%s)",
+				c.ruleID, c.sev, e.Risk, c.wantRisk, e.Impact, e.AttackFeasibility)
+		}
+	}
+}

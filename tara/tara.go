@@ -44,7 +44,10 @@ const TARAMarkdownFile = "tara.md"
 // SFOPImpact is ISO 21434's own Safety/Financial/Operational/Privacy impact
 // framework (Clause 15.7) — a threat against an asset can rate differently
 // on each axis, so a single generic severity is not sufficient (x-FuSa spec
-// §9.2). Each field is "high" | "medium" | "low".
+// §9.2). Each field is "critical" | "major" | "moderate" | "negligible" —
+// the x-FuSa family's own closed enum (§9.2 MUST), deliberately distinct
+// from attackFeasibility's high/medium/low/very-low vocabulary even though
+// both are nominally "how bad/how likely" scales.
 //
 //fusa:req REQ-TARA006
 type SFOPImpact struct {
@@ -73,8 +76,8 @@ type ThreatEntry struct {
 
 	AttackVector      string     `json:"attackVector"`      // Network/Adjacent/Local/Physical
 	AttackFeasibility string     `json:"attackFeasibility"` // high|medium|low|very-low (ISO 21434 attack-potential rating)
-	Impact            SFOPImpact `json:"impact"`            // SFOP categories (ISO 21434 Clause 15.7)
-	Risk              string     `json:"risk"`              // derived from attackFeasibility × the highest SFOP impact
+	Impact            SFOPImpact `json:"impact"`            // SFOP categories (ISO 21434 Clause 15.7); each axis critical|major|moderate|negligible (§9.2 closed enum)
+	Risk              string     `json:"risk"`              // critical|high|medium|low (§9.2 closed enum) — derived from attackFeasibility × the highest SFOP impact via riskTable
 	Treatment         string     `json:"treatment"`         // mitigate|accept|transfer|avoid
 
 	SecurityLevel  int      `json:"securityLevel"` // IEC 62443 SL (1–4) — supplementary, not part of the §9.2 schema
@@ -188,76 +191,140 @@ func Scan(projectRoot string, cyberFindings []fusa.Finding) (*Report, error) {
 	return report, nil
 }
 
-// riskRank orders the shared low/medium/high/very-low vocabulary used by
-// both AttackFeasibility and SFOPImpact fields, for deriveRisk's coarse
-// "risk = the worse of feasibility vs. the highest SFOP impact" heuristic.
-func riskRank(s string) int {
+// sfopRank orders the x-FuSa spec §9.2 closed SFOP impact vocabulary
+// (critical > major > moderate > negligible) — deliberately distinct from
+// attackFeasibility's own high/medium/low/very-low vocabulary (§9.2 MUST:
+// the two are separate scales for separate questions, likelihood vs.
+// damage, and MUST NOT be conflated). An unrecognised value ranks as the
+// lowest tier rather than silently escalating.
+func sfopRank(s string) int {
 	switch strings.ToLower(s) {
-	case "very-low":
-		return 0
-	case "low":
-		return 1
-	case "medium":
-		return 2
-	case "high":
+	case "critical":
 		return 3
+	case "major":
+		return 2
+	case "moderate":
+		return 1
 	}
-	return 1 // unknown values default to "low" rather than silently escalating
+	return 0 // "negligible", or any unrecognised value
 }
 
-func rankToRisk(r int) string {
-	switch {
-	case r >= 3:
-		return "high"
-	case r == 2:
-		return "medium"
+func sfopFromRank(r int) string {
+	switch r {
+	case 3:
+		return "critical"
+	case 2:
+		return "major"
+	case 1:
+		return "moderate"
 	default:
-		return "low"
+		return "negligible"
 	}
 }
 
-// deriveRisk computes the §9.2 `risk` field: attackFeasibility × the highest
-// SFOP impact axis. This is a deliberately coarse heuristic (documented,
-// not a full ISO 21434 Annex F risk-value lookup) — it never overstates risk
-// below either input and never invents precision the two inputs don't have.
+// riskTable implements the x-FuSa spec §9.2 SHOULD risk combination table:
+// the highest-ranked of the four SFOP impact axes × attackFeasibility →
+// risk. ISO/SAE 21434 Clause 15.3 deliberately leaves risk determination to
+// each organisation, so this is the x-FuSa family's own canonical
+// convention (documented in the spec) rather than a normative external
+// table — every value is taken verbatim from the spec's published table so
+// cross-tool risk values stay comparable.
+var riskTable = map[[2]string]string{
+	{"critical", "high"}:       "critical",
+	{"critical", "medium"}:     "critical",
+	{"critical", "low"}:        "high",
+	{"critical", "very-low"}:   "medium",
+	{"major", "high"}:          "high",
+	{"major", "medium"}:        "high",
+	{"major", "low"}:           "medium",
+	{"major", "very-low"}:      "medium",
+	{"moderate", "high"}:       "medium",
+	{"moderate", "medium"}:     "medium",
+	{"moderate", "low"}:        "low",
+	{"moderate", "very-low"}:   "low",
+	{"negligible", "high"}:     "low",
+	{"negligible", "medium"}:   "low",
+	{"negligible", "low"}:      "low",
+	{"negligible", "very-low"}: "low",
+}
+
+// deriveRisk computes the §9.2 `risk` field via riskTable: the highest of
+// the four SFOP impact axes × attackFeasibility. feasibility is matched
+// case-insensitively against high/medium/low/very-low; an unrecognised
+// value is treated as "low" (fail-safe — never silently escalating risk
+// for a feasibility value the tool doesn't understand).
+//
+//fusa:req REQ-TARA012
 func deriveRisk(feasibility string, impact SFOPImpact) string {
-	maxImpact := riskRank(impact.Safety)
+	maxRank := sfopRank(impact.Safety)
 	for _, v := range []string{impact.Financial, impact.Operational, impact.Privacy} {
-		if r := riskRank(v); r > maxImpact {
-			maxImpact = r
+		if r := sfopRank(v); r > maxRank {
+			maxRank = r
 		}
 	}
-	f := riskRank(feasibility)
-	if f > maxImpact {
-		return rankToRisk(f)
+	highest := sfopFromRank(maxRank)
+
+	feas := strings.ToLower(feasibility)
+	switch feas {
+	case "high", "medium", "low", "very-low":
+	default:
+		feas = "low"
 	}
-	return rankToRisk(maxImpact)
+	if risk, ok := riskTable[[2]string{highest, feas}]; ok {
+		return risk
+	}
+	return "low"
+}
+
+// legacyImpactToSFOP maps threatMeta's pre-existing high/medium/low impact
+// rating (and IEC 62443 security level, as a proxy for how severe a "high"
+// really is) onto the x-FuSa spec §9.2 closed SFOP vocabulary
+// (critical/major/moderate/negligible) — a "high" rating on an SL3 rule
+// (the most severe class in ruleMeta) escalates to "critical"; every other
+// "high" is "major", preserving four genuinely distinct tiers rather than
+// collapsing "high" onto a single value regardless of severity.
+func legacyImpactToSFOP(level string, sl int) string {
+	switch strings.ToLower(level) {
+	case "high":
+		if sl >= 3 {
+			return "critical"
+		}
+		return "major"
+	case "medium":
+		return "moderate"
+	default:
+		return "negligible"
+	}
 }
 
 // deriveSFOP maps a threatMeta's STRIDE categories and generic impact rating
-// onto the four ISO 21434 Clause 15.7 SFOP axes. This is a coarse, honestly
+// onto the four ISO 21434 Clause 15.7 SFOP axes, using the §9.2 closed
+// critical/major/moderate/negligible vocabulary. This is a coarse, honestly
 // heuristic mapping (not a per-asset SFOP analysis) — Safety inherits the
-// rule's own tuned impact rating; Operational/Privacy are elevated when the
-// STRIDE categories most associated with them (Denial of Service / Info
-// Disclosure) are present; Financial is elevated for higher IEC 62443
-// security levels, as a proxy for remediation/incident cost.
+// rule's own tuned impact rating (escalated via legacyImpactToSFOP);
+// Operational/Privacy are elevated when the STRIDE categories most
+// associated with them (Denial of Service / Info Disclosure) are present;
+// Financial is elevated for higher IEC 62443 security levels, as a proxy
+// for remediation/incident cost.
+//
+//fusa:req REQ-TARA006
 func deriveSFOP(m threatMeta) SFOPImpact {
 	impact := SFOPImpact{
-		Safety:      strings.ToLower(m.impact),
-		Financial:   "low",
-		Operational: "low",
-		Privacy:     "low",
+		Safety:      legacyImpactToSFOP(m.impact, m.sl),
+		Financial:   "negligible",
+		Operational: "negligible",
+		Privacy:     "negligible",
 	}
 	for _, s := range m.stride {
 		switch s {
 		case "D":
-			impact.Operational = "medium"
+			impact.Operational = "moderate"
 		case "I":
-			impact.Privacy = "medium"
+			impact.Privacy = "moderate"
 		}
 	}
 	if m.sl >= 3 {
-		impact.Financial = "medium"
+		impact.Financial = "moderate"
 	}
 	return impact
 }

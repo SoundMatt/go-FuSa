@@ -2,9 +2,9 @@
   "schemaVersion": "1.14",
   "kind": "tara-report",
   "tool": "go-FuSa",
-  "toolVersion": "0.40.0",
+  "toolVersion": "0.43.0",
   "language": "go",
-  "generatedAt": "2026-07-28T22:02:44.835077Z",
+  "generatedAt": "2026-07-28T22:40:07.013585Z",
   "format": "go-FuSa TARA v1",
   "module": "github.com/SoundMatt/go-FuSa",
   "threats": [
@@ -20,12 +20,12 @@
       "attackVector": "Network",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "high",
-        "financial": "medium",
-        "operational": "low",
-        "privacy": "low"
+        "safety": "critical",
+        "financial": "moderate",
+        "operational": "negligible",
+        "privacy": "negligible"
       },
-      "risk": "high",
+      "risk": "critical",
       "treatment": "mitigate",
       "securityLevel": 3,
       "mitigations": [
@@ -53,12 +53,12 @@
       "attackVector": "Network",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "high",
-        "financial": "medium",
-        "operational": "low",
-        "privacy": "low"
+        "safety": "critical",
+        "financial": "moderate",
+        "operational": "negligible",
+        "privacy": "negligible"
       },
-      "risk": "high",
+      "risk": "critical",
       "treatment": "mitigate",
       "securityLevel": 3,
       "mitigations": [
@@ -87,12 +87,12 @@
       "attackVector": "Local",
       "attackFeasibility": "low",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "medium",
-        "privacy": "low"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "moderate",
+        "privacy": "negligible"
       },
-      "risk": "medium",
+      "risk": "low",
       "treatment": "mitigate",
       "securityLevel": 1,
       "mitigations": [
@@ -121,12 +121,12 @@
       "attackVector": "Local",
       "attackFeasibility": "low",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "medium",
-        "privacy": "low"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "moderate",
+        "privacy": "negligible"
       },
-      "risk": "medium",
+      "risk": "low",
       "treatment": "mitigate",
       "securityLevel": 1,
       "mitigations": [
@@ -155,12 +155,12 @@
       "attackVector": "Local",
       "attackFeasibility": "low",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "medium",
-        "privacy": "low"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "moderate",
+        "privacy": "negligible"
       },
-      "risk": "medium",
+      "risk": "low",
       "treatment": "mitigate",
       "securityLevel": 1,
       "mitigations": [
@@ -188,10 +188,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -221,10 +221,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -254,10 +254,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -287,10 +287,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -320,10 +320,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -353,10 +353,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -386,10 +386,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -419,10 +419,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -452,10 +452,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -485,10 +485,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -518,10 +518,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -551,10 +551,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -584,10 +584,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -617,10 +617,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -650,10 +650,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -683,10 +683,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -716,10 +716,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -749,10 +749,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -782,10 +782,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -815,10 +815,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -848,10 +848,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -881,10 +881,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -914,10 +914,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -947,10 +947,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -980,10 +980,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1013,10 +1013,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1046,10 +1046,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1079,10 +1079,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1112,10 +1112,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1145,10 +1145,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1178,10 +1178,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1211,10 +1211,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1244,10 +1244,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1277,10 +1277,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1310,10 +1310,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1343,10 +1343,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1376,10 +1376,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1409,10 +1409,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1442,10 +1442,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1475,10 +1475,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1508,10 +1508,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1541,10 +1541,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1574,10 +1574,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1607,10 +1607,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1640,10 +1640,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1673,10 +1673,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1706,10 +1706,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1739,10 +1739,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1772,10 +1772,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1805,10 +1805,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1838,10 +1838,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1871,10 +1871,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1904,10 +1904,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1937,10 +1937,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -1970,10 +1970,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2003,10 +2003,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2036,10 +2036,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2069,10 +2069,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2102,10 +2102,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2135,10 +2135,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2168,10 +2168,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2201,10 +2201,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2234,10 +2234,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2267,10 +2267,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2300,10 +2300,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2333,10 +2333,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2366,10 +2366,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2399,10 +2399,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2432,10 +2432,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2465,10 +2465,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2498,10 +2498,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2531,10 +2531,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2564,10 +2564,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2597,10 +2597,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2630,10 +2630,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2663,10 +2663,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2696,10 +2696,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2729,10 +2729,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2762,10 +2762,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2795,10 +2795,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2828,10 +2828,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2861,10 +2861,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2894,10 +2894,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2927,10 +2927,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2960,10 +2960,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -2993,10 +2993,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3026,10 +3026,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3059,10 +3059,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3092,10 +3092,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3125,10 +3125,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3158,10 +3158,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3191,10 +3191,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3224,10 +3224,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3257,10 +3257,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3290,10 +3290,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3323,10 +3323,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3356,10 +3356,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3389,10 +3389,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3422,10 +3422,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3455,10 +3455,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3488,10 +3488,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3521,10 +3521,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3554,10 +3554,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3587,10 +3587,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3620,10 +3620,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3653,10 +3653,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3686,10 +3686,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3719,10 +3719,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3752,10 +3752,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3785,10 +3785,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3818,10 +3818,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3851,10 +3851,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3884,10 +3884,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3917,10 +3917,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3950,10 +3950,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -3983,10 +3983,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4016,10 +4016,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4049,10 +4049,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4082,10 +4082,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4115,10 +4115,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4148,10 +4148,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4181,10 +4181,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4214,10 +4214,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4247,10 +4247,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4280,10 +4280,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4313,10 +4313,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4346,10 +4346,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4379,10 +4379,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4412,10 +4412,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4445,10 +4445,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4478,10 +4478,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4511,10 +4511,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4544,10 +4544,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4577,10 +4577,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4610,10 +4610,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4643,10 +4643,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4676,10 +4676,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4709,10 +4709,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4742,10 +4742,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4775,10 +4775,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4808,10 +4808,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4841,10 +4841,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4874,10 +4874,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4907,10 +4907,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4940,10 +4940,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -4973,10 +4973,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5006,10 +5006,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5039,10 +5039,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5072,10 +5072,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5105,10 +5105,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5138,10 +5138,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5171,10 +5171,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5204,10 +5204,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5237,10 +5237,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5270,10 +5270,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5303,10 +5303,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5336,10 +5336,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5369,10 +5369,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5402,10 +5402,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5435,10 +5435,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5468,10 +5468,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5501,10 +5501,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5534,10 +5534,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5567,10 +5567,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5600,10 +5600,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5633,10 +5633,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5666,10 +5666,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5699,10 +5699,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5732,10 +5732,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5765,10 +5765,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5798,10 +5798,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5831,10 +5831,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5864,10 +5864,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5897,10 +5897,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5930,10 +5930,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5963,10 +5963,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -5996,10 +5996,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6029,10 +6029,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6062,10 +6062,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6095,10 +6095,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6128,10 +6128,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6161,10 +6161,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6194,10 +6194,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6227,10 +6227,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6260,10 +6260,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6293,10 +6293,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6326,10 +6326,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6359,10 +6359,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6392,10 +6392,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6425,10 +6425,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6458,10 +6458,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6491,10 +6491,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6524,10 +6524,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6557,10 +6557,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6590,10 +6590,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6623,10 +6623,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6656,10 +6656,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6689,10 +6689,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6722,10 +6722,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6755,10 +6755,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6788,10 +6788,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6821,10 +6821,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6854,10 +6854,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6887,10 +6887,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6920,10 +6920,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6953,10 +6953,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -6986,10 +6986,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7019,10 +7019,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7052,10 +7052,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7085,10 +7085,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7118,10 +7118,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7151,10 +7151,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7184,10 +7184,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7217,10 +7217,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7250,10 +7250,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7283,10 +7283,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7316,10 +7316,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7349,10 +7349,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7382,10 +7382,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7415,10 +7415,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7448,10 +7448,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7481,10 +7481,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7514,10 +7514,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7547,10 +7547,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7580,10 +7580,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7613,10 +7613,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7646,10 +7646,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7679,10 +7679,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7712,10 +7712,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7745,10 +7745,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7778,10 +7778,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7811,10 +7811,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7844,10 +7844,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7877,10 +7877,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7910,10 +7910,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7943,10 +7943,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -7976,10 +7976,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8009,10 +8009,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8042,10 +8042,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8075,10 +8075,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8108,10 +8108,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8141,10 +8141,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8174,10 +8174,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8207,10 +8207,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8240,10 +8240,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8273,10 +8273,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8306,10 +8306,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8339,10 +8339,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8372,10 +8372,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8405,10 +8405,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8438,10 +8438,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8471,10 +8471,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8504,10 +8504,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8537,10 +8537,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8570,10 +8570,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8603,10 +8603,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8636,10 +8636,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8669,10 +8669,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8702,10 +8702,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8735,10 +8735,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8768,10 +8768,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8801,10 +8801,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8834,10 +8834,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8867,10 +8867,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8900,10 +8900,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8933,10 +8933,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8966,10 +8966,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -8999,10 +8999,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9032,10 +9032,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9065,10 +9065,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9098,10 +9098,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9131,10 +9131,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9164,10 +9164,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9197,10 +9197,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9230,10 +9230,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9263,10 +9263,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9296,10 +9296,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9329,10 +9329,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9362,10 +9362,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9395,10 +9395,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9428,10 +9428,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9461,10 +9461,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9494,10 +9494,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9527,10 +9527,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9560,10 +9560,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9593,10 +9593,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9626,10 +9626,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9659,10 +9659,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9692,10 +9692,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9725,10 +9725,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9758,10 +9758,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9791,10 +9791,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9824,10 +9824,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9857,10 +9857,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9890,10 +9890,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9923,10 +9923,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9956,10 +9956,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -9989,10 +9989,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10022,10 +10022,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10055,10 +10055,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10088,10 +10088,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10121,10 +10121,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10154,10 +10154,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10187,10 +10187,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10220,10 +10220,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10253,10 +10253,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10286,10 +10286,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10319,10 +10319,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10352,10 +10352,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10385,10 +10385,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10418,10 +10418,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10451,10 +10451,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10484,10 +10484,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "medium"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "moderate"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10517,10 +10517,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "low"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "negligible"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10550,10 +10550,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "low"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "negligible"
       },
       "risk": "medium",
       "treatment": "mitigate",
@@ -10583,10 +10583,10 @@
       "attackVector": "Local",
       "attackFeasibility": "medium",
       "impact": {
-        "safety": "medium",
-        "financial": "low",
-        "operational": "low",
-        "privacy": "low"
+        "safety": "moderate",
+        "financial": "negligible",
+        "operational": "negligible",
+        "privacy": "negligible"
       },
       "risk": "medium",
       "treatment": "mitigate",
