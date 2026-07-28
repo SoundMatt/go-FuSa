@@ -1281,3 +1281,26 @@ func TestTRACE009_NoReqsFile(t *testing.T) {
 		t.Error("TRACE009: unexpected finding when .fusa-reqs.json is absent")
 	}
 }
+
+// ─── IsExcludedDir ──────────────────────────────────────────────────────────
+
+//fusa:test REQ-TRACE012
+func TestIsExcludedDir(t *testing.T) {
+	// "." also reports true — deliberately: IsExcludedDir is a pure leaf
+	// predicate over a directory's own basename, not root-aware. Every
+	// caller already guards the walk root separately (a `path == root`
+	// check before ever consulting IsExcludedDir), so a project root whose
+	// own basename happens to start with "." is never itself skipped.
+	excluded := []string{"vendor", "testdata", ".git", ".hidden", "."}
+	for _, name := range excluded {
+		if !trace.IsExcludedDir(name) {
+			t.Errorf("IsExcludedDir(%q) = false, want true", name)
+		}
+	}
+	included := []string{"pkg", "cmd", "internal"}
+	for _, name := range included {
+		if trace.IsExcludedDir(name) {
+			t.Errorf("IsExcludedDir(%q) = true, want false", name)
+		}
+	}
+}

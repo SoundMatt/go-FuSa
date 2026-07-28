@@ -32,6 +32,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/trace"
 )
 
 // FMEAFile and FMEACSVFile are the default output filenames.
@@ -170,6 +171,14 @@ func Scan(projectRoot string) (*Report, error) {
 	})
 	for i := range report.Entries {
 		report.Entries[i].ID = fmt.Sprintf("FMEA-%03d", i+1)
+		// §4 MUST: entries[].file is project-relative, forward-slash — the
+		// same rule lint/analyze/cyber already apply to their own findings.
+		// scanFile assigns the raw (often absolute, under the default
+		// --dir-omitted invocation) walked path; relativize it here rather
+		// than threading projectRoot through scanDir/scanFile.
+		//
+		//fusa:req REQ-LOC-REL003
+		report.Entries[i].File = relFile(projectRoot, report.Entries[i].File)
 	}
 
 	report.Summary = buildSummary(report, projectRoot)
@@ -200,6 +209,16 @@ func buildSummary(report *Report, projectRoot string) Summary {
 	if total > 0 {
 		s.CoveragePct = float64(s.ComponentsAnalyzed) * 100 / float64(total)
 	} else {
+		s.CoveragePct = 100
+	}
+	// x-FuSa spec §9.2 MUST: coveragePct must never exceed 100. The fallback
+	// above already guarantees total >= ComponentsAnalyzed (so this can't
+	// currently trigger), but a defensive clamp is cheap insurance against a
+	// future change to the fallback logic silently reintroducing the
+	// overflow the spec calls out.
+	//
+	//fusa:req REQ-FMEA012
+	if s.CoveragePct > 100 {
 		s.CoveragePct = 100
 	}
 	s.ComponentsInProjectMethod = "raw regex scan for top-level exported func declarations in non-test .go files " +
@@ -268,8 +287,13 @@ func scanFile(path string, hasTests bool) ([]Entry, error) {
 		reqIDs := extractReqIDs(funcDecl.Doc)
 		returnsErr := funcReturnsError(funcDecl)
 		hasGo := funcHasGoroutine(funcDecl.Body)
+		hasReceiver := funcDecl.Recv != nil && len(funcDecl.Recv.List) > 0
+		paramCount := 0
+		if funcDecl.Type.Params != nil {
+			paramCount = funcDecl.Type.Params.NumFields()
+		}
 
-		modes, effects, causes, mitigations, sev := deriveAnalysis(funcDecl.Name.Name, returnsErr, hasGo, len(reqIDs) > 0)
+		modes, effects, causes, mitigations, sev := deriveAnalysis(funcDecl.Name.Name, component, returnsErr, hasGo, len(reqIDs) > 0, hasReceiver, paramCount)
 		detection := detectionControl(hasTests, len(reqIDs) > 0)
 
 		entries = append(entries, Entry{
@@ -364,6 +388,9 @@ var exportedFuncRE = regexp.MustCompile(`^func\s+(\([^)]*\)\s+)?[A-Z]\w*\s*\(`)
 // opening paren is not matched (rare in gofmt'd code), and it makes no
 // attempt to exclude trivial accessors/interface shims the way
 // trace.ScanFuncTagCoverage does — see Summary.ComponentsInProjectMethod.
+// The test-tree/dot-directory exclusion itself reuses trace.IsExcludedDir
+// (x-FuSa spec §1.6 rule 4 SHOULD) rather than an independently-drifting
+// copy of the same three-way vendor/testdata/dot-dir check.
 //
 //fusa:req REQ-FMEA009
 func CountProjectFunctions(root string) (int, error) {
@@ -373,8 +400,7 @@ func CountProjectFunctions(root string) (int, error) {
 			return walkErr
 		}
 		if d.IsDir() {
-			base := d.Name()
-			if path != root && (base == "vendor" || base == "testdata" || strings.HasPrefix(base, ".")) {
+			if path != root && trace.IsExcludedDir(d.Name()) {
 				return filepath.SkipDir
 			}
 			return nil
@@ -465,8 +491,18 @@ func funcHasGoroutine(body *ast.BlockStmt) bool {
 	return found
 }
 
+// deriveAnalysis buckets a scanned function into a failureMode/effect/cause/
+// mitigations template. x-FuSa spec §1.6 rule 3 allows heuristic templates
+// "as long as the output measurably differs across distinct input shapes" —
+// every branch below weaves in component (the function's own package/
+// directory, a genuine per-function signal, not a fabricated one) plus,
+// where relevant, whether the function has a receiver and how many
+// parameters it takes, so the generated text actually varies with the
+// underlying function's shape rather than collapsing onto a handful of
+// fixed strings regardless of which function produced them (go-FuSa#60).
+//
 //fusa:req REQ-FMEA002
-func deriveAnalysis(name string, returnsErr, hasGoroutine, hasSafetyReq bool) (modes, effects, causes, mitigations []string, sev Severity) {
+func deriveAnalysis(name, component string, returnsErr, hasGoroutine, hasSafetyReq, hasReceiver bool, paramCount int) (modes, effects, causes, mitigations []string, sev Severity) {
 	switch {
 	case hasSafetyReq:
 		sev = SeverityHigh
@@ -477,36 +513,59 @@ func deriveAnalysis(name string, returnsErr, hasGoroutine, hasSafetyReq bool) (m
 	}
 
 	if returnsErr {
-		modes = append(modes, "Returns unexpected error")
-		effects = append(effects, "Silent failure propagated to caller")
-		causes = append(causes, "an unhandled error path in the function body or a callee")
+		modes = append(modes, fmt.Sprintf("%s returns an unexpected error", component))
+		effects = append(effects, fmt.Sprintf("silent failure propagated to %s's caller", component))
+		causes = append(causes, fmt.Sprintf("an unhandled error path in %s's function body or a callee", component))
 		mitigations = append(mitigations, "add unit test coverage for every returned error path")
 	}
 	if hasGoroutine {
-		modes = append(modes, "Goroutine not terminated")
-		effects = append(effects, "Memory leak or deadlock")
-		causes = append(causes, "a spawned goroutine with no cancellation, timeout, or WaitGroup join")
+		modes = append(modes, fmt.Sprintf("goroutine spawned in %s not terminated", component))
+		effects = append(effects, fmt.Sprintf("memory leak or deadlock in %s", component))
+		causes = append(causes, fmt.Sprintf("a spawned goroutine in %s with no cancellation, timeout, or WaitGroup join", component))
 		mitigations = append(mitigations, "join or cancel the goroutine before the function returns")
 	}
 
 	lower := strings.ToLower(name)
-	if strings.Contains(lower, "write") || strings.Contains(lower, "save") || strings.Contains(lower, "store") {
-		modes = append(modes, "Partial write / data corruption")
-		effects = append(effects, "Incorrect system state")
-		causes = append(causes, "an interrupted write (crash, disk full, concurrent access) leaving a partial artifact")
+	switch {
+	case strings.Contains(lower, "write") || strings.Contains(lower, "save") || strings.Contains(lower, "store"):
+		modes = append(modes, fmt.Sprintf("partial write / data corruption in %s", component))
+		effects = append(effects, fmt.Sprintf("incorrect persisted state for %s", component))
+		causes = append(causes, fmt.Sprintf("an interrupted write in %s (crash, disk full, concurrent access) leaving a partial artifact", component))
 		mitigations = append(mitigations, "write via a temp file and atomic rename, or validate the write's result")
-	} else if !hasGoroutine && (strings.Contains(lower, "run") || strings.Contains(lower, "execute") || strings.Contains(lower, "start")) {
-		modes = append(modes, "Uncontrolled execution")
-		effects = append(effects, "Resource exhaustion")
-		causes = append(causes, "no bound on iteration count, input size, or execution time")
+	case !hasGoroutine && (strings.Contains(lower, "run") || strings.Contains(lower, "execute") || strings.Contains(lower, "start")):
+		modes = append(modes, fmt.Sprintf("uncontrolled execution in %s", component))
+		effects = append(effects, fmt.Sprintf("resource exhaustion triggered from %s", component))
+		causes = append(causes, fmt.Sprintf("no bound on iteration count, input size, or execution time in %s", component))
 		mitigations = append(mitigations, "add a context deadline or explicit resource bound")
 	}
 
+	// No signal above matched — the largest bucket in most codebases. Split
+	// it by receiver/parameter shape (both genuine per-function signals, per
+	// §1.6 rule 3) rather than collapsing every such function onto one
+	// fixed "Incorrect output" string regardless of its actual shape.
 	if len(modes) == 0 {
-		modes = []string{"Incorrect output"}
-		effects = []string{"Incorrect system behavior"}
-		causes = []string{"a logic error not surfaced as an error return or panic"}
-		mitigations = []string{"add requirement-traced unit tests covering this function's documented behaviour"}
+		switch {
+		case hasReceiver && paramCount == 0:
+			modes = []string{fmt.Sprintf("%s returns stale or inconsistent receiver state", component)}
+			effects = []string{fmt.Sprintf("caller of %s observes state that no longer reflects a concurrent mutation", component)}
+			causes = []string{fmt.Sprintf("%s reads receiver fields with no synchronisation against concurrent mutation", component)}
+			mitigations = []string{"add a mutex, or otherwise make the receiver's field access goroutine-safe"}
+		case hasReceiver:
+			modes = []string{fmt.Sprintf("%s derives incorrect output from receiver and argument state", component)}
+			effects = []string{fmt.Sprintf("incorrect system behavior from %s", component)}
+			causes = []string{fmt.Sprintf("a logic error in %s combining receiver state with its arguments, not surfaced as an error return or panic", component)}
+			mitigations = []string{"add requirement-traced unit tests covering this method's documented behaviour"}
+		case paramCount == 0:
+			modes = []string{fmt.Sprintf("%s produces incorrect output with no input to validate against", component)}
+			effects = []string{fmt.Sprintf("incorrect system behavior from %s", component)}
+			causes = []string{fmt.Sprintf("a logic error in %s not surfaced as an error return or panic", component)}
+			mitigations = []string{"add requirement-traced unit tests covering this function's documented behaviour"}
+		default:
+			modes = []string{fmt.Sprintf("%s produces incorrect output for a given input combination", component)}
+			effects = []string{fmt.Sprintf("incorrect system behavior from %s", component)}
+			causes = []string{fmt.Sprintf("a logic error in %s not surfaced as an error return or panic", component)}
+			mitigations = []string{"add requirement-traced unit tests covering this function's documented behaviour"}
+		}
 	}
 	return
 }
@@ -547,6 +606,18 @@ func readModule(root string) string {
 		}
 	}
 	return ""
+}
+
+// relFile relativizes path against root and normalises it to forward
+// slashes (§4 MUST). An unrelativisable path (rare — e.g. a different
+// volume on Windows) is returned unchanged rather than erroring, matching
+// lint.locationEnd/cyber.location's identical fallback.
+func relFile(root, path string) string {
+	rel, err := filepath.Rel(root, path)
+	if err != nil {
+		return path
+	}
+	return filepath.ToSlash(rel)
 }
 
 // ─── engine rule ─────────────────────────────────────────────────────────────

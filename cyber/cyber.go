@@ -115,9 +115,21 @@ func isNolinted(pf parsedFile, pos token.Pos, ruleID string) bool {
 	return false
 }
 
-func location(fset *token.FileSet, pos token.Pos) fusa.Location {
+// location builds a fusa.Location with a projectRoot-relative, forward-slash
+// File path (§4 MUST), mirroring lint.locationEnd/analyze's equivalent
+// helper, so CYBER findings' fingerprints (§4.2) are portable across
+// environments and downstream consumers (e.g. tara.Scan, which sources
+// ThreatEntry.Location/SourceFile straight from a CYBER finding) don't
+// inherit an absolute path.
+//
+//fusa:req REQ-LOC-REL002
+func location(fset *token.FileSet, pos token.Pos, projectRoot string) fusa.Location {
 	p := fset.Position(pos)
-	return fusa.Location{File: p.Filename, Line: p.Line, Column: p.Column}
+	rel, err := filepath.Rel(projectRoot, p.Filename)
+	if err != nil {
+		rel = p.Filename
+	}
+	return fusa.Location{File: filepath.ToSlash(rel), Line: p.Line, Column: p.Column}
 }
 
 // hasImport reports whether the file imports the given path.
@@ -206,7 +218,7 @@ func (r *ruleWeakHash) Run(_ context.Context, projectRoot string, _ *config.Conf
 					Severity: fusa.SeverityWarning,
 					Message: "import of " + path + " — MD5 and SHA-1 are cryptographically broken" +
 						" and must not be used for security-sensitive hashing",
-					Location:    location(pf.fset, pos),
+					Location:    location(pf.fset, pos, projectRoot),
 					Remediation: "replace with crypto/sha256, crypto/sha512, or golang.org/x/crypto/blake2b",
 				})
 			}
@@ -238,7 +250,7 @@ func (r *ruleWeakCipher) Run(_ context.Context, projectRoot string, _ *config.Co
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     "import of " + path + " — DES, 3DES, and RC4 are broken symmetric ciphers",
-					Location:    location(pf.fset, pos),
+					Location:    location(pf.fset, pos, projectRoot),
 					Remediation: "use crypto/aes with GCM or ChaCha20-Poly1305 (golang.org/x/crypto/chacha20poly1305)",
 				})
 			}
@@ -270,7 +282,7 @@ func (r *ruleInsecureRandom) Run(_ context.Context, projectRoot string, _ *confi
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityInfo,
 					Message:     "import of " + path + " — use crypto/rand for security-sensitive random values",
-					Location:    location(pf.fset, pos),
+					Location:    location(pf.fset, pos, projectRoot),
 					Remediation: "use crypto/rand.Read or crypto/rand.Int for tokens, nonces, and keys",
 				})
 			}
@@ -301,7 +313,7 @@ func (r *ruleUnsafePointer) Run(_ context.Context, projectRoot string, _ *config
 				RuleID:      r.ID(),
 				Severity:    fusa.SeverityWarning,
 				Message:     "import of \"unsafe\" bypasses Go type safety and memory safety guarantees",
-				Location:    location(pf.fset, pos),
+				Location:    location(pf.fset, pos, projectRoot),
 				Remediation: "remove unsafe usage; if required for syscall interop, document the invariant with a //nolint:CYBER004 comment",
 			})
 		}
@@ -338,7 +350,7 @@ func (r *ruleCmdInjection) Run(_ context.Context, projectRoot string, _ *config.
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "exec.Command called with a non-literal command name — verify the value cannot be influenced by untrusted input",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    location(pf.fset, call.Pos(), projectRoot),
 						Remediation: "use a fixed command name string literal; pass variable data only as arguments, never as the command name",
 					})
 				}
@@ -350,7 +362,7 @@ func (r *ruleCmdInjection) Run(_ context.Context, projectRoot string, _ *config.
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "exec.CommandContext called with a non-literal command name — verify the value cannot be influenced by untrusted input",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    location(pf.fset, call.Pos(), projectRoot),
 						Remediation: "use a fixed command name string literal; pass variable data only as arguments, never as the command name",
 					})
 				}
@@ -397,7 +409,7 @@ func (r *ruleHardcodedCredential) Run(_ context.Context, projectRoot string, _ *
 									RuleID:      r.ID(),
 									Severity:    fusa.SeverityError,
 									Message:     "hardcoded credential: " + name.Name + " is assigned a string literal — secrets must not be embedded in source code",
-									Location:    location(pf.fset, name.Pos()),
+									Location:    location(pf.fset, name.Pos(), projectRoot),
 									Remediation: "load credentials from environment variables, a secrets manager, or a configuration file excluded from version control",
 								})
 							}
@@ -420,7 +432,7 @@ func (r *ruleHardcodedCredential) Run(_ context.Context, projectRoot string, _ *
 								RuleID:      r.ID(),
 								Severity:    fusa.SeverityError,
 								Message:     "hardcoded credential: " + ident.Name + " is assigned a string literal — secrets must not be embedded in source code",
-								Location:    location(pf.fset, ident.Pos()),
+								Location:    location(pf.fset, ident.Pos(), projectRoot),
 								Remediation: "load credentials from environment variables, a secrets manager, or a configuration file excluded from version control",
 							})
 						}
@@ -470,7 +482,7 @@ func (r *ruleTLSInsecureSkipVerify) Run(_ context.Context, projectRoot string, _
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityError,
 						Message:     "InsecureSkipVerify: true disables TLS certificate verification — enables man-in-the-middle attacks",
-						Location:    location(pf.fset, key.Pos()),
+						Location:    location(pf.fset, key.Pos(), projectRoot),
 						Remediation: "remove InsecureSkipVerify or set it to false; use a proper CA bundle for self-signed certificates",
 					})
 				}
@@ -515,7 +527,7 @@ func (r *ruleHTTPServerNoTimeout) Run(_ context.Context, projectRoot string, _ *
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     "http." + fnName + " uses the default http.Server which has no read/write timeouts",
-					Location:    location(pf.fset, call.Pos()),
+					Location:    location(pf.fset, call.Pos(), projectRoot),
 					Remediation: "use &http.Server{ReadTimeout: ..., WriteTimeout: ..., IdleTimeout: ...}.ListenAndServe(addr)",
 				})
 			}
@@ -575,7 +587,7 @@ func (r *ruleIntegerNarrowing) Run(_ context.Context, projectRoot string, _ *con
 				Severity: fusa.SeverityInfo,
 				Message: ident.Name + "(x) — explicit narrowing conversion may silently truncate" +
 					" bits if x exceeds the target type's range",
-				Location:    location(pf.fset, call.Pos()),
+				Location:    location(pf.fset, call.Pos(), projectRoot),
 				Remediation: "add an explicit range check before the conversion, or use math/bits or saturating arithmetic",
 			})
 			return true
@@ -642,7 +654,7 @@ func (r *ruleStringConcatInAPI) Run(_ context.Context, projectRoot string, _ *co
 							RuleID:      r.ID(),
 							Severity:    fusa.SeverityWarning,
 							Message:     pair[0] + "." + pair[1] + " called with string-concatenated path — potential path traversal",
-							Location:    location(pf.fset, call.Pos()),
+							Location:    location(pf.fset, call.Pos(), projectRoot),
 							Remediation: "use filepath.Join and validate the result with filepath.Clean; reject paths containing \"..\"",
 						})
 					}
@@ -657,7 +669,7 @@ func (r *ruleStringConcatInAPI) Run(_ context.Context, projectRoot string, _ *co
 							RuleID:      r.ID(),
 							Severity:    fusa.SeverityWarning,
 							Message:     "." + pair[1] + "() called with string-concatenated query — potential SQL injection",
-							Location:    location(pf.fset, call.Pos()),
+							Location:    location(pf.fset, call.Pos(), projectRoot),
 							Remediation: "use parameterised queries: db.Query(\"SELECT ... WHERE id = $1\", id)",
 						})
 					}

@@ -70,7 +70,7 @@ func (r *ruleSSRF) Run(_ context.Context, projectRoot string, _ *config.Config) 
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "http." + pair[1] + " called with non-literal URL — potential SSRF",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    location(pf.fset, call.Pos(), projectRoot),
 						Remediation: "validate the URL against an allowlist or use a fixed URL",
 					})
 					return true
@@ -82,7 +82,7 @@ func (r *ruleSSRF) Run(_ context.Context, projectRoot string, _ *config.Config) 
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     "http.NewRequest called with non-literal URL — potential SSRF",
-					Location:    location(pf.fset, call.Pos()),
+					Location:    location(pf.fset, call.Pos(), projectRoot),
 					Remediation: "validate the URL against an allowlist or use a fixed URL",
 				})
 			}
@@ -114,7 +114,7 @@ func (r *rulePprofExposed) Run(_ context.Context, projectRoot string, _ *config.
 				RuleID:      r.ID(),
 				Severity:    fusa.SeverityWarning,
 				Message:     `import "net/http/pprof" registers profiling HTTP endpoints — must not be present in production builds`,
-				Location:    location(pf.fset, pos),
+				Location:    location(pf.fset, pos, projectRoot),
 				Remediation: "remove the pprof import; enable profiling only in debug builds via a build tag",
 			})
 		}
@@ -161,7 +161,7 @@ func (r *ruleZipSlip) Run(_ context.Context, projectRoot string, _ *config.Confi
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "zip archive entry Name used in file path operation without sanitisation — potential path traversal",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    location(pf.fset, call.Pos(), projectRoot),
 						Remediation: `sanitise entry names: reject paths containing ".." and ensure result stays within the target directory`,
 					})
 					return true
@@ -217,7 +217,7 @@ func (r *ruleTLSMinVersion) Run(_ context.Context, projectRoot string, _ *config
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     "tls.Config MinVersion set to TLS 1.0 or 1.1 — minimum recommended version is TLS 1.2",
-					Location:    location(pf.fset, kv.Pos()),
+					Location:    location(pf.fset, kv.Pos(), projectRoot),
 					Remediation: "set MinVersion: tls.VersionTLS12 or higher",
 				})
 			}
@@ -277,7 +277,7 @@ func (r *ruleSQLSprintf) Run(_ context.Context, projectRoot string, _ *config.Co
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     "." + sel.Sel.Name + "() called with fmt.Sprintf query — potential SQL injection",
-					Location:    location(pf.fset, call.Pos()),
+					Location:    location(pf.fset, call.Pos(), projectRoot),
 					Remediation: "use parameterised queries: db.Query(\"SELECT ... WHERE id = $1\", id)",
 				})
 			}
@@ -324,7 +324,7 @@ func (r *rulePermissiveDir) Run(_ context.Context, projectRoot string, _ *config
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "directory created with mode more permissive than 0750",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    location(pf.fset, call.Pos(), projectRoot),
 						Remediation: "use mode 0750 (owner+group rwx) or stricter",
 					})
 				}
@@ -364,7 +364,7 @@ func (r *rulePermissiveFile) Run(_ context.Context, projectRoot string, _ *confi
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "os.OpenFile called with mode more permissive than 0640",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    location(pf.fset, call.Pos(), projectRoot),
 						Remediation: "use mode 0640 (owner rw, group r) or stricter",
 					})
 				}
@@ -376,7 +376,7 @@ func (r *rulePermissiveFile) Run(_ context.Context, projectRoot string, _ *confi
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "os.WriteFile called with mode more permissive than 0640",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    location(pf.fset, call.Pos(), projectRoot),
 						Remediation: "use mode 0640 (owner rw, group r) or stricter",
 					})
 				}
@@ -426,7 +426,7 @@ func (r *rulePathFromRequest) Run(_ context.Context, projectRoot string, _ *conf
 						RuleID:      r.ID(),
 						Severity:    fusa.SeverityWarning,
 						Message:     "http.ServeFile path derived from HTTP request — potential path traversal",
-						Location:    location(pf.fset, call.Pos()),
+						Location:    location(pf.fset, call.Pos(), projectRoot),
 						Remediation: "sanitise path with filepath.Clean; ensure it remains within the allowed root",
 					})
 				}
@@ -439,7 +439,7 @@ func (r *rulePathFromRequest) Run(_ context.Context, projectRoot string, _ *conf
 							RuleID:      r.ID(),
 							Severity:    fusa.SeverityWarning,
 							Message:     fn[0] + "." + fn[1] + " path derived from HTTP request — potential path traversal",
-							Location:    location(pf.fset, call.Pos()),
+							Location:    location(pf.fset, call.Pos(), projectRoot),
 							Remediation: "sanitise path with filepath.Clean; ensure it remains within the allowed root",
 						})
 					}
@@ -522,7 +522,7 @@ func (r *ruleTOCTOU) Run(_ context.Context, projectRoot string, _ *config.Config
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     fn.Name.Name + ": os.Stat followed by file operation — TOCTOU race; another process may modify the file between check and use",
-					Location:    location(pf.fset, statPos),
+					Location:    location(pf.fset, statPos, projectRoot),
 					Remediation: "open the file directly and handle ENOENT/EEXIST; avoid stat-then-open patterns",
 				})
 			}
@@ -565,7 +565,7 @@ func (r *ruleInsecureTempFile) Run(_ context.Context, projectRoot string, _ *con
 					RuleID:      r.ID(),
 					Severity:    fusa.SeverityWarning,
 					Message:     "file created in temp directory with predictable name — use os.CreateTemp for secure temp files",
-					Location:    location(pf.fset, call.Pos()),
+					Location:    location(pf.fset, call.Pos(), projectRoot),
 					Remediation: "replace with os.CreateTemp(\"\", \"prefix-*\") which creates a uniquely-named temp file",
 				})
 			}
