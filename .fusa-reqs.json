@@ -2473,6 +2473,12 @@
       "standard": "x-FuSa spec section 1.6.1"
     },
     {
+      "id": "REQ-CLI-HELPERS005",
+      "title": "carryForwardAttestation loads a prior output file's attestation",
+      "text": "carryForwardAttestation shall read the attestation field from the prior saved copy of an artifact-producing command's output file and return it, or nil if the file is absent, unreadable, malformed, or carries no attestation, so each fmea/tara/safety-case/sas command can carry a reviewed attestation forward onto its freshly-rebuilt output per x-FuSa spec section 1.6.2.",
+      "standard": "x-FuSa spec section 1.6.2"
+    },
+    {
       "id": "REQ-FMEA007",
       "title": "FMEA summary block with coverage metrics",
       "text": "fmea.Report.Summary shall report total, highPriority, componentsAnalyzed, componentsInProject, coveragePct, and componentsInProjectMethod per x-FuSa spec section 9.2.",

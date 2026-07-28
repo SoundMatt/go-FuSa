@@ -80,8 +80,14 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 		return fusa.ExitRuntime
 	}
 
-	// Write tara.json
+	// x-FuSa spec §1.6.2 MUST: carry forward any existing attestation from
+	// the prior saved tara.json before overwriting it — a fresh tara.Scan
+	// never has one of its own. Staleness (a content change since the
+	// review) falls out of gateContentQuality's own hash check below.
 	jsonPath := filepath.Join(outDir, tara.TARAFile)
+	report.Attestation = carryForwardAttestation(jsonPath)
+
+	// Write tara.json
 	if err := writeFile(jsonPath, func(f io.Writer) error {
 		return tara.Render(f, report, "json")
 	}); err != nil {

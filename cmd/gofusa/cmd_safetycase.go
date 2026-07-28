@@ -66,8 +66,15 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 		return fusa.ExitRuntime
 	}
 
-	// Write safety-case.json
+	// x-FuSa spec §1.6.2 MUST: carry forward any existing attestation from
+	// the prior saved safety-case.json before overwriting it — a fresh
+	// safetycase.Build never has one of its own. Staleness (a content change
+	// since the review) falls out of gateContentQuality's own hash check
+	// below.
 	jsonPath := filepath.Join(outDir, "safety-case.json")
+	sc.Attestation = carryForwardAttestation(jsonPath)
+
+	// Write safety-case.json
 	if err := writeFormatted(jsonPath, sc, "json"); err != nil {
 		fmt.Fprintf(stderr, "gofusa safety-case: %v\n", err)
 		return fusa.ExitRuntime

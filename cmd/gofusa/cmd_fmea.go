@@ -88,8 +88,14 @@ func runFmea(args []string, stdout, stderr io.Writer) int {
 		return fusa.ExitRuntime
 	}
 
-	// Write fmea.json
+	// x-FuSa spec §1.6.2 MUST: carry forward any existing attestation from
+	// the prior saved fmea.json before overwriting it — a fresh fmea.Scan
+	// never has one of its own. Staleness (a content change since the
+	// review) falls out of gateContentQuality's own hash check below.
 	jsonPath := filepath.Join(outDir, fmea.FMEAFile)
+	report.Attestation = carryForwardAttestation(jsonPath)
+
+	// Write fmea.json
 	if err := writeFmea(jsonPath, report, "json"); err != nil {
 		fmt.Fprintf(stderr, "gofusa fmea: %v\n", err)
 		return fusa.ExitRuntime
