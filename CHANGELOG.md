@@ -7,6 +7,27 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.41.0 — 2026-07-28 (tara: closed impact/risk enums per x-FuSa spec v1.14.1)
+
+### Fixed
+- **`tara.json`'s `impact`/`risk` fields now use the x-FuSa spec §9.2 closed
+  enums** instead of the non-conformant `high|medium|low` vocabulary
+  (spec v1.14.1, "Closed enums (MUST — clarifies a gap found during
+  rollout)"). `impact.{safety,financial,operational,privacy}` never used
+  anything but `high`/`medium`/`low` — never `critical`/`negligible` —
+  despite the spec explicitly prohibiting that vocabulary for these four
+  fields; `risk` never used anything but `high`/`medium`, never
+  `critical`/`low` (go-FuSa#58). `deriveSFOP` now maps onto
+  `critical`/`major`/`moderate`/`negligible` via the new
+  `legacyImpactToSFOP` (a `high` rating escalates to `critical` for the
+  most severe IEC 62443 security-level-3 rules, `major` otherwise); `risk`
+  is now looked up from the x-FuSa spec's own published risk combination
+  table (highest SFOP impact axis × `attackFeasibility`) via the new
+  `riskTable`, replacing the prior "worse of the two inputs" heuristic that
+  couldn't produce `critical`/`negligible` by construction. Regenerated
+  `tara.json`: `risk` now includes `critical` (2 threats) alongside
+  `medium`/`low`; `impact.safety` includes `critical` alongside `moderate`.
+
 ## v0.37.0 — 2026-07-28 (x-FuSa spec §1.6.1 conformance fixes: content-quality scope + FUSA-STUB001 disposition)
 
 ### Fixed
