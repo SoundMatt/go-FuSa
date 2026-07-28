@@ -12,6 +12,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/cyber"
+	"github.com/SoundMatt/go-FuSa/stubcheck"
 	"github.com/SoundMatt/go-FuSa/tara"
 )
 
@@ -32,6 +33,10 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 	var (
 		dir       = fs.String("dir", "", "project root directory (default: current directory)")
 		outputDir = fs.String("output-dir", "", "output directory for tara.json and tara.md (default: project root)")
+		//fusa:req REQ-TARA010
+		minCoverage        = fs.Int("min-coverage", 0, "exit 1 if summary.coveragePct is below N (0 = disabled)")
+		strict             = fs.Bool("strict", false, "escalate an unsuppressed FUSA-STUB002 finding to exit 1 (implies --require-attestation)")
+		requireAttestation = fs.Bool("require-attestation", false, "escalate an unsuppressed FUSA-STUB002 finding to exit 1")
 	)
 	if code := parseFlags(fs, args); code != 0 {
 		return code
@@ -95,7 +100,19 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 	}
 	fmt.Fprintf(stdout, "TARA markdown written to %s\n", mdPath)
 	fmt.Fprintf(stdout, "Threats identified: %d\n", len(report.Entries))
-	return fusa.ExitOK
+	fmt.Fprintf(stdout, "Coverage: %.1f%% (%d/%d assets, see summary.assetInventoryMethod in tara.json)\n",
+		report.Summary.CoveragePct, report.Summary.AssetsAnalyzed, report.Summary.AssetsInProject)
+
+	code := fusa.ExitOK
+	//fusa:req REQ-TARA010
+	if *minCoverage > 0 && report.Summary.CoveragePct < float64(*minCoverage) {
+		fmt.Fprintf(stderr, "gofusa tara: coverage gate failed: %.1f%% < required %d%%\n", report.Summary.CoveragePct, *minCoverage)
+		code = fusa.ExitGateFail
+	}
+	if sc := gateContentQuality(stderr, "tara", tara.TARAFile, stubcheck.TaraFields(report), report.Attestation, report.Entries, *strict || *requireAttestation); sc != fusa.ExitOK {
+		code = sc
+	}
+	return code
 }
 
 func writeFile(path string, fn func(io.Writer) error) error {

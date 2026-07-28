@@ -12,6 +12,8 @@
 //   - HARA003: hazard with no linked safety goal
 //   - HARA004: safety goal with ASIL not determined
 //   - HARA005: max hazard ASIL exceeds project ASIL from .fusa.json
+//   - HARA006: safety goal with no fssrRefs (x-FuSa spec §1.2.5 MUST)
+//   - HARA007: fssrRefs entry dangling (no matching id in .fusa-reqs.json)
 //
 // Usage:
 //
@@ -27,11 +29,13 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/engine"
+	"github.com/SoundMatt/go-FuSa/trace"
 )
 
 // HARAFile is the default filename for the HARA data store.
@@ -119,7 +123,13 @@ type SafetyGoal struct {
 	HazardIDs   []string `json:"hazards"`
 	ASIL        ASIL     `json:"asil"`
 	SafeState   string   `json:"safeState,omitempty"`
-	FSSRRef     string   `json:"fssrRef,omitempty"` // Functional Safety Software Requirement ref
+	// FSSRRefs links the Functional Safety Software Requirement(s) into
+	// .fusa-reqs.json that decompose this goal. x-FuSa spec §1.2.5: MUST,
+	// ≥1 entry — a safety goal with no decomposing requirement is exactly
+	// the traceability gap ISO 26262-8 Clause 6 exists to prevent.
+	//
+	//fusa:req REQ-HARA016
+	FSSRRefs []string `json:"fssrRefs"`
 }
 
 // HARA is the full hazard analysis and risk assessment for a project.
@@ -132,6 +142,23 @@ type HARA struct {
 	Situations  []OperationalSituation `json:"operationalSituations"`
 	Hazards     []Hazard               `json:"hazards"`
 	SafetyGoals []SafetyGoal           `json:"safetyGoals"`
+	// Attestation is the optional §1.6.2 independent-review assertion that
+	// can suppress a FUSA-STUB002 (blanket-fallback) finding on this file.
+	Attestation *fusa.Attestation `json:"attestation,omitempty"`
+}
+
+// Completeness summarises §1.2.5/§9.2 gap metrics for a hara --format json
+// report — it is not itself part of .fusa-hara.json, it is computed by
+// BuildCompleteness at render time.
+//
+//fusa:req REQ-HARA017
+type Completeness struct {
+	TotalHazards            int `json:"totalHazards"`
+	HazardsWithASIL         int `json:"hazardsWithAsil"`
+	HazardsWithSafetyGoal   int `json:"hazardsWithSafetyGoal"`
+	TotalSafetyGoals        int `json:"totalSafetyGoals"`
+	SafetyGoalsWithFssrRefs int `json:"safetyGoalsWithFssrRefs"`
+	DanglingReferences      int `json:"danglingReferences"`
 }
 
 // ValidationFinding is a gap identified by Validate.
@@ -139,6 +166,66 @@ type ValidationFinding struct {
 	HazardID     string
 	SafetyGoalID string
 	Message      string
+}
+
+// BuildCompleteness computes the §9.2 `hara --format json` completeness
+// block. reqIDs is the set of requirement ids known to the project's
+// .fusa-reqs.json (pass nil/empty to skip fssrRefs dangling-reference
+// checking against it — every fssrRef then counts as dangling, fail-safe).
+//
+//fusa:req REQ-HARA017
+func BuildCompleteness(h *HARA, reqIDs map[string]bool) Completeness {
+	goalIDs := make(map[string]bool, len(h.SafetyGoals))
+	for _, g := range h.SafetyGoals {
+		goalIDs[g.ID] = true
+	}
+	situationIDs := make(map[string]bool, len(h.Situations))
+	for _, s := range h.Situations {
+		situationIDs[s.ID] = true
+	}
+	hazardIDs := make(map[string]bool, len(h.Hazards))
+	for _, hz := range h.Hazards {
+		hazardIDs[hz.ID] = true
+	}
+
+	c := Completeness{
+		TotalHazards:     len(h.Hazards),
+		TotalSafetyGoals: len(h.SafetyGoals),
+	}
+	for _, hz := range h.Hazards {
+		if hz.Risk.ASIL != "" {
+			c.HazardsWithASIL++
+		}
+		if len(hz.SafetyGoals) > 0 {
+			c.HazardsWithSafetyGoal++
+		}
+		for _, s := range hz.Situations {
+			if !situationIDs[s] {
+				c.DanglingReferences++
+			}
+		}
+		for _, g := range hz.SafetyGoals {
+			if !goalIDs[g] {
+				c.DanglingReferences++
+			}
+		}
+	}
+	for _, g := range h.SafetyGoals {
+		if len(g.FSSRRefs) > 0 {
+			c.SafetyGoalsWithFssrRefs++
+		}
+		for _, id := range g.FSSRRefs {
+			if !reqIDs[id] {
+				c.DanglingReferences++
+			}
+		}
+		for _, hzID := range g.HazardIDs {
+			if !hazardIDs[hzID] {
+				c.DanglingReferences++
+			}
+		}
+	}
+	return c
 }
 
 // ─── ASIL determination ───────────────────────────────────────────────────────
@@ -303,9 +390,92 @@ func Validate(h *HARA) []ValidationFinding {
 				Message:      fmt.Sprintf("safety goal %s has no ASIL assigned", g.ID),
 			})
 		}
+		// HARA006: fssrRefs is MUST, >=1 entry (x-FuSa spec §1.2.5).
+		if len(g.FSSRRefs) == 0 {
+			out = append(out, ValidationFinding{
+				SafetyGoalID: g.ID,
+				Message:      fmt.Sprintf("safety goal %s has no fssrRefs — every safety goal MUST decompose into at least one functional safety requirement", g.ID),
+			})
+		}
 	}
 
 	return out
+}
+
+// ValidateReqRefs checks h's safetyGoals[].fssrRefs for dangling references
+// into the project's requirement registry (x-FuSa spec §1.2.5 referential
+// integrity rule). reqIDs is the set of requirement ids known to
+// .fusa-reqs.json; pass nil to skip this check.
+//
+//fusa:req REQ-HARA018
+func ValidateReqRefs(h *HARA, reqIDs map[string]bool) []ValidationFinding {
+	if reqIDs == nil {
+		return nil
+	}
+	var out []ValidationFinding
+	for _, g := range h.SafetyGoals {
+		for _, id := range g.FSSRRefs {
+			if !reqIDs[id] {
+				out = append(out, ValidationFinding{
+					SafetyGoalID: g.ID,
+					Message:      fmt.Sprintf("safety goal %s references unknown requirement %s in fssrRefs — add it to .fusa-reqs.json", g.ID, id),
+				})
+			}
+		}
+	}
+	return out
+}
+
+// Report is the x-FuSa spec §9.2 `hara --format json` document: the §3.1
+// common header plus .fusa-hara.json's content verbatim plus a completeness
+// block. It is distinct from HARA itself — HARA is the input file
+// (.fusa-hara.json); Report is what the `hara` command emits when asked for
+// JSON, so a future consumer can route on schemaVersion/kind without
+// depending on whether the on-disk input file happens to carry the same
+// envelope (it doesn't — that file is authored by the project, not go-FuSa).
+//
+//fusa:req REQ-HARA021
+type Report struct {
+	SchemaVersion string    `json:"schemaVersion"`
+	Kind          string    `json:"kind"`
+	Tool          string    `json:"tool"`
+	ToolVersion   string    `json:"toolVersion"`
+	Language      string    `json:"language"`
+	GeneratedAt   time.Time `json:"generatedAt"`
+
+	// Project/Standard are informational passthrough from HARA, not part of
+	// the minimal §9.2 example shape but useful to a human/tool reading the
+	// report in isolation.
+	Project  string `json:"project,omitempty"`
+	Standard string `json:"standard,omitempty"`
+
+	OperationalSituations []OperationalSituation `json:"operationalSituations"`
+	Hazards               []Hazard               `json:"hazards"`
+	SafetyGoals           []SafetyGoal           `json:"safetyGoals"`
+	Completeness          Completeness           `json:"completeness"`
+	Attestation           *fusa.Attestation      `json:"attestation,omitempty"`
+}
+
+// BuildReport assembles the §9.2 hara --format json document from h.
+// reqIDs is passed through to BuildCompleteness (see its doc).
+//
+//fusa:req REQ-HARA021
+func BuildReport(h *HARA, reqIDs map[string]bool) *Report {
+	return &Report{
+		SchemaVersion:         fusa.SchemaVersion(),
+		Kind:                  "hara-report",
+		Tool:                  "go-FuSa",
+		ToolVersion:           fusa.Version,
+		Language:              "go",
+		GeneratedAt:           time.Now().UTC(),
+		Project:               h.Project,
+		Standard:              h.Standard,
+		OperationalSituations: h.Situations,
+		Hazards:               h.Hazards,
+		SafetyGoals:           h.SafetyGoals,
+		Completeness:          BuildCompleteness(h, reqIDs),
+		Attestation:           h.Attestation,
+	}
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
@@ -359,9 +529,9 @@ func renderText(w io.Writer, h *HARA) error {
 	fmt.Fprintln(w)
 
 	fmt.Fprintf(w, "## Safety Goals (%d)\n\n", len(h.SafetyGoals))
-	fmt.Fprintf(w, "| ID | Description | ASIL | Safe State |\n|---|---|---|---|\n")
+	fmt.Fprintf(w, "| ID | Description | ASIL | Safe State | FSSR Refs |\n|---|---|---|---|---|\n")
 	for _, g := range h.SafetyGoals {
-		fmt.Fprintf(w, "| %s | %s | **%s** | %s |\n", g.ID, g.Description, g.ASIL, g.SafeState)
+		fmt.Fprintf(w, "| %s | %s | **%s** | %s | %s |\n", g.ID, g.Description, g.ASIL, g.SafeState, strings.Join(g.FSSRRefs, ", "))
 	}
 	fmt.Fprintln(w)
 
@@ -385,6 +555,8 @@ func init() {
 	engine.Default.MustRegister(&ruleHARA003{})
 	engine.Default.MustRegister(&ruleHARA004{})
 	engine.Default.MustRegister(&ruleHARA005{})
+	engine.Default.MustRegister(&ruleHARA006{})
+	engine.Default.MustRegister(&ruleHARA007{})
 }
 
 // HARA001 — no HARA file present.
@@ -563,4 +735,71 @@ func asilRank(a ASIL) int {
 		return 4
 	}
 	return -1
+}
+
+// HARA006 — safety goal with no fssrRefs (x-FuSa spec §1.2.5 MUST, ≥1 entry).
+type ruleHARA006 struct{}
+
+func (r *ruleHARA006) ID() string { return "HARA006" }
+func (r *ruleHARA006) Description() string {
+	return "Safety goal has no fssrRefs — every safety goal MUST decompose into at least one functional safety requirement (x-FuSa spec §1.2.5)."
+}
+
+//fusa:req REQ-HARA019
+func (r *ruleHARA006) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	h, err := Load(projectRoot)
+	if err != nil || len(h.SafetyGoals) == 0 {
+		return nil, nil
+	}
+	var out []fusa.Finding
+	for _, g := range h.SafetyGoals {
+		if len(g.FSSRRefs) == 0 {
+			out = append(out, fusa.Finding{
+				RuleID:      r.ID(),
+				Severity:    fusa.SeverityWarning,
+				Message:     fmt.Sprintf("safety goal %s has no fssrRefs", g.ID),
+				Location:    fusa.Location{File: HARAFile},
+				Category:    fusa.CategoryRequirement,
+				Remediation: fmt.Sprintf("add at least one requirement id to safety goal %s's fssrRefs in %s and register it in %s", g.ID, HARAFile, trace.ReqsFile),
+			})
+		}
+	}
+	return out, nil
+}
+
+// HARA007 — fssrRefs entry with no matching requirement in .fusa-reqs.json.
+type ruleHARA007 struct{}
+
+func (r *ruleHARA007) ID() string { return "HARA007" }
+func (r *ruleHARA007) Description() string {
+	return "A safety goal's fssrRefs entry does not resolve to any requirement in .fusa-reqs.json (dangling reference)."
+}
+
+//fusa:req REQ-HARA020
+func (r *ruleHARA007) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	h, err := Load(projectRoot)
+	if err != nil || len(h.SafetyGoals) == 0 {
+		return nil, nil
+	}
+	reqs, reqErr := trace.LoadRequirements(projectRoot)
+	if reqErr != nil {
+		// No .fusa-reqs.json (or unreadable) — nothing to cross-check against.
+		return nil, nil
+	}
+	reqIDs := make(map[string]bool, len(reqs))
+	for _, req := range reqs {
+		reqIDs[req.ID] = true
+	}
+	var out []fusa.Finding
+	for _, f := range ValidateReqRefs(h, reqIDs) {
+		out = append(out, fusa.Finding{
+			RuleID:      r.ID(),
+			Severity:    fusa.SeverityWarning,
+			Message:     f.Message,
+			Location:    fusa.Location{File: HARAFile},
+			Category:    fusa.CategoryRequirement,
+			Remediation: fmt.Sprintf("add the missing requirement to %s or correct the fssrRefs entry in %s", trace.ReqsFile, HARAFile),
+		})
+	}
+	return out, nil
 }

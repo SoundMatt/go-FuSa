@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -10,6 +11,8 @@ import (
 
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/hara"
+	"github.com/SoundMatt/go-FuSa/stubcheck"
+	"github.com/SoundMatt/go-FuSa/trace"
 )
 
 //fusa:req REQ-CLI-HARA001
@@ -66,6 +69,9 @@ func runHaraShow(args []string, projectRoot string, stdout, stderr io.Writer) in
 	fs.SetOutput(stderr)
 	format := fs.String("format", "text", "output format: text, json, markdown")
 	output := fs.String("output", "", "write output to file (default: stdout)")
+	//fusa:req REQ-HARA022
+	strict := fs.Bool("strict", false, "escalate an unsuppressed FUSA-STUB002 finding to exit 1 (implies --require-attestation)")
+	requireAttestation := fs.Bool("require-attestation", false, "escalate an unsuppressed FUSA-STUB002 finding to exit 1")
 	if code := parseFlags(fs, args); code != 0 {
 		return code
 	}
@@ -77,26 +83,64 @@ func runHaraShow(args []string, projectRoot string, stdout, stderr io.Writer) in
 	}
 
 	w := stdout
-	if *output != "" {
-		f, ferr := os.Create(*output)
-		if ferr != nil {
-			fmt.Fprintf(stderr, "gofusa hara show: create %s: %v\n", *output, ferr)
+	if *format == "json" {
+		reqIDs := loadReqIDs(projectRoot)
+		report := hara.BuildReport(h, reqIDs)
+		if *output != "" {
+			f, ferr := os.Create(*output)
+			if ferr != nil {
+				fmt.Fprintf(stderr, "gofusa hara show: create %s: %v\n", *output, ferr)
+				return fusa.ExitRuntime
+			}
+			defer func() { _ = f.Close() }()
+			w = f
+		}
+		enc := json.NewEncoder(w)
+		enc.SetIndent("", "  ")
+		if err := enc.Encode(report); err != nil {
+			fmt.Fprintf(stderr, "gofusa hara show: render: %v\n", err)
 			return fusa.ExitRuntime
 		}
-		defer func() { _ = f.Close() }()
-		w = f
-	}
-
-	if err := hara.Render(w, h, *format); err != nil {
-		fmt.Fprintf(stderr, "gofusa hara show: render: %v\n", err)
-		return fusa.ExitRuntime
+	} else {
+		if *output != "" {
+			f, ferr := os.Create(*output)
+			if ferr != nil {
+				fmt.Fprintf(stderr, "gofusa hara show: create %s: %v\n", *output, ferr)
+				return fusa.ExitRuntime
+			}
+			defer func() { _ = f.Close() }()
+			w = f
+		}
+		if err := hara.Render(w, h, *format); err != nil {
+			fmt.Fprintf(stderr, "gofusa hara show: render: %v\n", err)
+			return fusa.ExitRuntime
+		}
 	}
 
 	findings := hara.Validate(h)
 	if len(findings) > 0 && *output != "" {
 		fmt.Fprintf(stderr, "gofusa hara: %d gap(s) found — run 'gofusa hara show' for details\n", len(findings))
 	}
-	return fusa.ExitOK
+
+	return gateContentQuality(stderr, "hara", hara.HARAFile, stubcheck.HaraFields(h), h.Attestation, struct {
+		Situations  interface{} `json:"operationalSituations"`
+		Hazards     interface{} `json:"hazards"`
+		SafetyGoals interface{} `json:"safetyGoals"`
+	}{h.Situations, h.Hazards, h.SafetyGoals}, *strict || *requireAttestation)
+}
+
+// loadReqIDs returns the set of requirement ids in projectRoot's
+// .fusa-reqs.json, or nil if it is absent/unreadable.
+func loadReqIDs(projectRoot string) map[string]bool {
+	reqs, err := trace.LoadRequirements(projectRoot)
+	if err != nil {
+		return nil
+	}
+	out := make(map[string]bool, len(reqs))
+	for _, r := range reqs {
+		out[r.ID] = true
+	}
+	return out
 }
 
 func runHaraInit(args []string, projectRoot string, stdout, stderr io.Writer) int {
@@ -119,36 +163,16 @@ func runHaraInit(args []string, projectRoot string, stdout, stderr io.Writer) in
 		name = filepath.Base(projectRoot)
 	}
 
+	// x-FuSa spec §1.2.5/§1.6 rule 1: --init scaffolds EMPTY collections,
+	// never dummy/placeholder rows — a fabricated example hazard asserts a
+	// false completeness that an honestly-empty array does not.
 	h := &hara.HARA{
-		Project:   name,
-		Standard:  *standard,
-		CreatedAt: time.Now().UTC(),
-		Situations: []hara.OperationalSituation{
-			{ID: "OS-001", Description: "Normal operation"},
-		},
-		Hazards: []hara.Hazard{
-			{
-				ID:          "H-001",
-				Description: "Example hazard — replace with project-specific hazard",
-				Situations:  []string{"OS-001"},
-				Risk: hara.RiskRating{
-					Severity:        hara.SeverityS2,
-					Exposure:        hara.ExposureE3,
-					Controllability: hara.ControllabilityC2,
-					ASIL:            hara.DetermineASIL(hara.SeverityS2, hara.ExposureE3, hara.ControllabilityC2),
-				},
-				SafetyGoals: []string{"SG-001"},
-			},
-		},
-		SafetyGoals: []hara.SafetyGoal{
-			{
-				ID:          "SG-001",
-				Description: "Example safety goal — replace with project-specific goal",
-				HazardIDs:   []string{"H-001"},
-				ASIL:        hara.DetermineASIL(hara.SeverityS2, hara.ExposureE3, hara.ControllabilityC2),
-				SafeState:   "safe state description",
-			},
-		},
+		Project:     name,
+		Standard:    *standard,
+		CreatedAt:   time.Now().UTC(),
+		Situations:  []hara.OperationalSituation{},
+		Hazards:     []hara.Hazard{},
+		SafetyGoals: []hara.SafetyGoal{},
 	}
 
 	if err := hara.Save(path, h); err != nil {
@@ -157,7 +181,7 @@ func runHaraInit(args []string, projectRoot string, stdout, stderr io.Writer) in
 	}
 
 	fmt.Fprintf(stdout, "Created %s (project=%s standard=%q)\n", path, name, *standard)
-	fmt.Fprintf(stdout, "Edit %s to document project hazards and safety goals.\n", hara.HARAFile)
+	fmt.Fprintf(stdout, "Edit %s to document project-specific operational situations, hazards, and safety goals.\n", hara.HARAFile)
 	return fusa.ExitOK
 }
 

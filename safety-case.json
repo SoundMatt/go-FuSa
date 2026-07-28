@@ -1,6 +1,11 @@
 {
+  "schemaVersion": "1.14",
+  "kind": "safety-case",
+  "tool": "go-FuSa",
+  "toolVersion": "0.36.0",
+  "language": "go",
   "format": "go-FuSa Safety Case v1",
-  "generatedAt": "2026-06-08T18:02:55.111304Z",
+  "generatedAt": "2026-07-28T19:39:11.259328Z",
   "module": "github.com/SoundMatt/go-FuSa",
   "standard": "generic",
   "evidence": [
@@ -15,7 +20,7 @@
       "description": "Requirements traceability matrix",
       "file": ".fusa-reqs.json",
       "status": "present",
-      "detail": "96 requirements"
+      "detail": "410 requirements"
     },
     {
       "id": "verify",
@@ -87,5 +92,175 @@
       ]
     }
   ],
-  "gaps": null
+  "gaps": null,
+  "nodes": [
+    {
+      "id": "G1",
+      "type": "goal",
+      "text": "github.com/SoundMatt/go-FuSa is acceptably safe for use in a generic context, argued by demonstrating compliance with the go-FuSa safety development lifecycle."
+    },
+    {
+      "id": "St1",
+      "type": "strategy",
+      "text": "Argue over the 6 lifecycle evidence artifacts go-FuSa collects for github.com/SoundMatt/go-FuSa (static checks, requirement traceability, test evidence, tool qualification, and supply-chain provenance)."
+    },
+    {
+      "id": "C1",
+      "type": "context",
+      "text": "Standard: generic. Language: go. Evidence collected for module \"github.com/SoundMatt/go-FuSa\"."
+    },
+    {
+      "id": "A1",
+      "type": "assumption",
+      "text": "Each referenced evidence file reflects the repository's current state — a stale artifact (§1.6 freshness) would invalidate the argument even though the file is present."
+    },
+    {
+      "id": "G2",
+      "type": "goal",
+      "text": "Coding standard and static analysis checks is present and satisfactory for github.com/SoundMatt/go-FuSa."
+    },
+    {
+      "id": "Sn1",
+      "type": "solution",
+      "text": "check-report.json",
+      "evidence": "check-report.json"
+    },
+    {
+      "id": "G3",
+      "type": "goal",
+      "text": "Requirements traceability matrix is present and satisfactory for github.com/SoundMatt/go-FuSa."
+    },
+    {
+      "id": "Sn2",
+      "type": "solution",
+      "text": "410 requirements",
+      "evidence": ".fusa-reqs.json"
+    },
+    {
+      "id": "G4",
+      "type": "goal",
+      "text": "Test evidence bundle is present and satisfactory for github.com/SoundMatt/go-FuSa."
+    },
+    {
+      "id": "Sn3",
+      "type": "solution",
+      "text": "170/170 tests passed",
+      "evidence": ".fusa-evidence.json"
+    },
+    {
+      "id": "G5",
+      "type": "goal",
+      "text": "Tool qualification report is present and satisfactory for github.com/SoundMatt/go-FuSa."
+    },
+    {
+      "id": "Sn4",
+      "type": "solution",
+      "text": "44/44 cases passed",
+      "evidence": "qualify-report.json"
+    },
+    {
+      "id": "G6",
+      "type": "goal",
+      "text": "SBOM (SPDX 3.0.1) is present and satisfactory for github.com/SoundMatt/go-FuSa."
+    },
+    {
+      "id": "Sn5",
+      "type": "solution",
+      "text": "sbom.json",
+      "evidence": "sbom.json"
+    },
+    {
+      "id": "G7",
+      "type": "goal",
+      "text": "Build provenance is present and satisfactory for github.com/SoundMatt/go-FuSa."
+    },
+    {
+      "id": "Sn6",
+      "type": "solution",
+      "text": "provenance.json",
+      "evidence": "provenance.json"
+    }
+  ],
+  "edges": [
+    {
+      "from": "G1",
+      "to": "St1",
+      "type": "supportedBy"
+    },
+    {
+      "from": "G1",
+      "to": "C1",
+      "type": "inContextOf"
+    },
+    {
+      "from": "St1",
+      "to": "A1",
+      "type": "inContextOf"
+    },
+    {
+      "from": "St1",
+      "to": "G2",
+      "type": "supportedBy"
+    },
+    {
+      "from": "G2",
+      "to": "Sn1",
+      "type": "supportedBy"
+    },
+    {
+      "from": "St1",
+      "to": "G3",
+      "type": "supportedBy"
+    },
+    {
+      "from": "G3",
+      "to": "Sn2",
+      "type": "supportedBy"
+    },
+    {
+      "from": "St1",
+      "to": "G4",
+      "type": "supportedBy"
+    },
+    {
+      "from": "G4",
+      "to": "Sn3",
+      "type": "supportedBy"
+    },
+    {
+      "from": "St1",
+      "to": "G5",
+      "type": "supportedBy"
+    },
+    {
+      "from": "G5",
+      "to": "Sn4",
+      "type": "supportedBy"
+    },
+    {
+      "from": "St1",
+      "to": "G6",
+      "type": "supportedBy"
+    },
+    {
+      "from": "G6",
+      "to": "Sn5",
+      "type": "supportedBy"
+    },
+    {
+      "from": "St1",
+      "to": "G7",
+      "type": "supportedBy"
+    },
+    {
+      "from": "G7",
+      "to": "Sn6",
+      "type": "supportedBy"
+    }
+  ],
+  "completeness": {
+    "totalGoals": 7,
+    "goalsWithEvidence": 6,
+    "undeveloped": 0
+  }
 }

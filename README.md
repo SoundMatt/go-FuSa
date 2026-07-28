@@ -85,9 +85,12 @@ gofusa cyber --strict  # exit 1 on any finding
 
 # Generate a Threat Analysis and Risk Assessment (TARA) per ISO 21434 Ch. 9
 gofusa tara  # writes tara.json + tara.md
+gofusa tara --min-coverage 50   # exit 1 if summary.coveragePct < 50
+gofusa tara --strict            # exit 1 on an unsuppressed FUSA-STUB002 finding (§1.6.1/§1.6.2)
 
 # Enrich dFMEA with cyber risk context
 gofusa fmea --cyber  # cross-references CYBER findings into FMEA entries by file
+gofusa fmea --min-coverage 80 --require-attestation
 
 # Generate safety document templates (SAFETY_PLAN.md, TEST_EVIDENCE.md, HARA.md)
 gofusa template --type all
@@ -208,8 +211,9 @@ gofusa comp --dal DAL-A --format json         # threshold 4, JSON output
 gofusa comp --threshold 8                     # explicit threshold override
 
 # Hazard Analysis and Risk Assessment (HARA)
-gofusa hara init                              # create .fusa-hara.json
+gofusa hara init                              # create .fusa-hara.json (empty collections, never dummy rows)
 gofusa hara show                              # display as Markdown table
+gofusa hara show --format json                # §9.2 hara-report: header + verbatim content + completeness
 gofusa hara asil -s S2 -e E4 -c C2           # derive ASIL from S/E/C → ASIL-C
 
 # Finding disposition log (accept or schedule-fix for ERROR findings)
@@ -281,7 +285,7 @@ docker build -t go-fusa .
 docker run --rm -v "$(pwd)":/project go-fusa check
 ```
 
-Published tags: `latest`, `0.35`, `0.35.0` (and matching semver for every release).
+Published tags: `latest`, `0.36`, `0.36.0` (and matching semver for every release).
 
 ## Standards coverage
 

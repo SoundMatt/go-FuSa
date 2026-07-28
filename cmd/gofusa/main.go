@@ -78,6 +78,7 @@ import (
 	_ "github.com/SoundMatt/go-FuSa/qualify"     // v0.9 tool qualification rules
 	_ "github.com/SoundMatt/go-FuSa/release"     // v0.6 release-evidence rules
 	_ "github.com/SoundMatt/go-FuSa/slsa"        // v0.15 SLSA supply-chain rules
+	_ "github.com/SoundMatt/go-FuSa/stubcheck"   // v0.36 FUSA-STUB001/002 content-quality rules
 	_ "github.com/SoundMatt/go-FuSa/tara"        // v0.15 TARA engine rule
 	_ "github.com/SoundMatt/go-FuSa/trace"       // v0.4 traceability rules
 	_ "github.com/SoundMatt/go-FuSa/unece"       // v0.23 UN R.155 gap report rules

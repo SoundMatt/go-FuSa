@@ -10,6 +10,7 @@ import (
 
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/safetycase"
+	"github.com/SoundMatt/go-FuSa/stubcheck"
 )
 
 // runSafetyCase assembles and writes the project safety case.
@@ -31,6 +32,9 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 		dir       = fs.String("dir", "", "project root directory (default: current directory)")
 		outputDir = fs.String("output-dir", "", "output directory (default: project root)")
 		standard  = fs.String("standard", "", "safety standard: iso26262, iec61508, iso21434, generic (default: from config or generic)")
+		//fusa:req REQ-SC010
+		strict             = fs.Bool("strict", false, "escalate an unsuppressed FUSA-STUB002 finding to exit 1 (implies --require-attestation)")
+		requireAttestation = fs.Bool("require-attestation", false, "escalate an unsuppressed FUSA-STUB002 finding to exit 1")
 	)
 	if code := parseFlags(fs, args); code != 0 {
 		return code
@@ -116,7 +120,10 @@ func runSafetyCase(args []string, stdout, stderr io.Writer) int {
 		}
 	}
 
-	return fusa.ExitOK
+	return gateContentQuality(stderr, "safety-case", "safety-case.json", stubcheck.SafetyCaseFields(sc), sc.Attestation, struct {
+		Nodes interface{} `json:"nodes"`
+		Edges interface{} `json:"edges"`
+	}{sc.Nodes, sc.Edges}, *strict || *requireAttestation)
 }
 
 func writeFormatted(path string, sc *safetycase.SafetyCase, format string) error {

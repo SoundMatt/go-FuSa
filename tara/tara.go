@@ -22,6 +22,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -39,35 +40,85 @@ const TARAFile = "tara.json"
 // TARAMarkdownFile is the default Markdown output filename.
 const TARAMarkdownFile = "tara.md"
 
+// SFOPImpact is ISO 21434's own Safety/Financial/Operational/Privacy impact
+// framework (Clause 15.7) — a threat against an asset can rate differently
+// on each axis, so a single generic severity is not sufficient (x-FuSa spec
+// §9.2). Each field is "high" | "medium" | "low".
+//
+//fusa:req REQ-TARA006
+type SFOPImpact struct {
+	Safety      string `json:"safety"`
+	Financial   string `json:"financial"`
+	Operational string `json:"operational"`
+	Privacy     string `json:"privacy"`
+}
+
+// Location identifies the source of a code-derived threat (§9.2 SHOULD).
+type Location struct {
+	File string `json:"file,omitempty"`
+	Line int    `json:"line,omitempty"`
+}
+
 // ThreatEntry is one row in the TARA table.
 //
 //fusa:req REQ-TARA001
 type ThreatEntry struct {
-	ID             string   `json:"id"`
-	Asset          string   `json:"asset"`
-	Threat         string   `json:"threat"`
-	STRIDE         []string `json:"stride"` // S/T/R/I/D/E categories
-	CWE            string   `json:"cwe"`
-	Standard       string   `json:"standard,omitempty"`
-	AttackVector   string   `json:"attack_vector"`  // Network/Adjacent/Local/Physical
-	Likelihood     string   `json:"likelihood"`     // High/Medium/Low
-	Impact         string   `json:"impact"`         // High/Medium/Low
-	SecurityLevel  int      `json:"security_level"` // IEC 62443 SL (1–4)
-	CurrentControl string   `json:"current_control"`
-	ResidualRisk   string   `json:"residual_risk"`
-	CyberRuleID    string   `json:"cyber_rule_id"`
-	SourceFile     string   `json:"source_file,omitempty"`
-	SourceLine     int      `json:"source_line,omitempty"`
+	ID       string   `json:"id"`
+	Asset    string   `json:"asset"`
+	Threat   string   `json:"threat"`
+	STRIDE   []string `json:"stride"` // S/T/R/I/D/E categories
+	CWE      string   `json:"cwe,omitempty"`
+	Standard string   `json:"standard,omitempty"`
+
+	AttackVector      string     `json:"attackVector"`      // Network/Adjacent/Local/Physical
+	AttackFeasibility string     `json:"attackFeasibility"` // high|medium|low|very-low (ISO 21434 attack-potential rating)
+	Impact            SFOPImpact `json:"impact"`            // SFOP categories (ISO 21434 Clause 15.7)
+	Risk              string     `json:"risk"`              // derived from attackFeasibility × the highest SFOP impact
+	Treatment         string     `json:"treatment"`         // mitigate|accept|transfer|avoid
+
+	SecurityLevel  int      `json:"securityLevel"` // IEC 62443 SL (1–4) — supplementary, not part of the §9.2 schema
+	Mitigations    []string `json:"mitigations,omitempty"`
+	CurrentControl string   `json:"currentControl,omitempty"` // supplementary, superseded by Mitigations
+	ResidualRisk   string   `json:"residualRisk,omitempty"`   // supplementary, not part of the §9.2 schema
+
+	Location    Location `json:"location,omitempty"`
+	CyberRuleID string   `json:"cyberRuleId,omitempty"`
+
+	SourceFile string `json:"sourceFile,omitempty"` // supplementary duplicate of Location.File, kept for back-compat
+	SourceLine int    `json:"sourceLine,omitempty"` // supplementary duplicate of Location.Line, kept for back-compat
+}
+
+// Summary is the x-FuSa spec §9.2 `tara.json` summary block.
+//
+//fusa:req REQ-TARA007
+type Summary struct {
+	AssetsAnalyzed       int     `json:"assetsAnalyzed"`
+	AssetsInProject      int     `json:"assetsInProject"`
+	CoveragePct          float64 `json:"coveragePct"`
+	AssetInventoryMethod string  `json:"assetInventoryMethod,omitempty"`
 }
 
 // Report is the full TARA output.
 //
 //fusa:req REQ-TARA002
 type Report struct {
-	Format      string        `json:"format"`
-	GeneratedAt time.Time     `json:"generated_at"`
-	Module      string        `json:"module"`
-	Entries     []ThreatEntry `json:"entries"`
+	// §3.1 common header.
+	SchemaVersion string    `json:"schemaVersion"`
+	Kind          string    `json:"kind"`
+	Tool          string    `json:"tool"`
+	ToolVersion   string    `json:"toolVersion"`
+	Language      string    `json:"language"`
+	GeneratedAt   time.Time `json:"generatedAt"`
+
+	Format string `json:"format,omitempty"` // supplementary/legacy, not part of the §3.1 header
+	Module string `json:"module,omitempty"`
+
+	Entries []ThreatEntry `json:"threats"` // canonical key is "threats", NOT "entries"/"scenarios" (§9.2)
+	Summary Summary       `json:"summary"`
+
+	// Attestation is the optional §1.6.2 independent-review assertion that
+	// can suppress a FUSA-STUB002 (blanket-fallback) finding on this file.
+	Attestation *fusa.Attestation `json:"attestation,omitempty"`
 }
 
 // Scan builds a TARA from CYBER findings produced by cyber.Scan.
@@ -75,9 +126,14 @@ type Report struct {
 //fusa:req REQ-TARA003
 func Scan(projectRoot string, cyberFindings []fusa.Finding) (*Report, error) {
 	report := &Report{
-		Format:      "go-FuSa TARA v1",
-		GeneratedAt: time.Now().UTC(),
-		Module:      readModule(projectRoot),
+		SchemaVersion: fusa.SchemaVersion(),
+		Kind:          "tara-report",
+		Tool:          "go-FuSa",
+		ToolVersion:   fusa.Version,
+		Language:      "go",
+		GeneratedAt:   time.Now().UTC(),
+		Format:        "go-FuSa TARA v1",
+		Module:        readModule(projectRoot),
 	}
 
 	for i, f := range cyberFindings {
@@ -96,22 +152,29 @@ func Scan(projectRoot string, cyberFindings []fusa.Finding) (*Report, error) {
 			}
 		}
 
+		feasibility := severityToLikelihood(f.Severity, meta.likelihood)
+		impact := deriveSFOP(meta)
+
 		entry := ThreatEntry{
-			ID:             fmt.Sprintf("TARA-%03d", i+1),
-			Asset:          assetFromFinding(f),
-			Threat:         meta.threat,
-			STRIDE:         meta.stride,
-			CWE:            meta.cwe,
-			Standard:       meta.standard,
-			AttackVector:   meta.vector,
-			Likelihood:     severityToLikelihood(f.Severity, meta.likelihood),
-			Impact:         meta.impact,
-			SecurityLevel:  meta.sl,
-			CurrentControl: meta.control,
-			ResidualRisk:   meta.residual,
-			CyberRuleID:    f.RuleID,
-			SourceFile:     f.Location.File,
-			SourceLine:     f.Location.Line,
+			ID:                fmt.Sprintf("TARA-%03d", i+1),
+			Asset:             assetFromFinding(f),
+			Threat:            meta.threat,
+			STRIDE:            meta.stride,
+			CWE:               meta.cwe,
+			Standard:          meta.standard,
+			AttackVector:      meta.vector,
+			AttackFeasibility: strings.ToLower(feasibility),
+			Impact:            impact,
+			Risk:              deriveRisk(feasibility, impact),
+			Treatment:         "mitigate", // every rule in ruleMeta supplies a concrete corrective control
+			SecurityLevel:     meta.sl,
+			Mitigations:       []string{meta.control},
+			CurrentControl:    meta.control,
+			ResidualRisk:      meta.residual,
+			Location:          Location{File: f.Location.File, Line: f.Location.Line},
+			CyberRuleID:       f.RuleID,
+			SourceFile:        f.Location.File,
+			SourceLine:        f.Location.Line,
 		}
 		report.Entries = append(report.Entries, entry)
 	}
@@ -119,7 +182,160 @@ func Scan(projectRoot string, cyberFindings []fusa.Finding) (*Report, error) {
 	sort.Slice(report.Entries, func(i, j int) bool {
 		return report.Entries[i].ID < report.Entries[j].ID
 	})
+
+	report.Summary = buildSummary(report, projectRoot)
 	return report, nil
+}
+
+// riskRank orders the shared low/medium/high/very-low vocabulary used by
+// both AttackFeasibility and SFOPImpact fields, for deriveRisk's coarse
+// "risk = the worse of feasibility vs. the highest SFOP impact" heuristic.
+func riskRank(s string) int {
+	switch strings.ToLower(s) {
+	case "very-low":
+		return 0
+	case "low":
+		return 1
+	case "medium":
+		return 2
+	case "high":
+		return 3
+	}
+	return 1 // unknown values default to "low" rather than silently escalating
+}
+
+func rankToRisk(r int) string {
+	switch {
+	case r >= 3:
+		return "high"
+	case r == 2:
+		return "medium"
+	default:
+		return "low"
+	}
+}
+
+// deriveRisk computes the §9.2 `risk` field: attackFeasibility × the highest
+// SFOP impact axis. This is a deliberately coarse heuristic (documented,
+// not a full ISO 21434 Annex F risk-value lookup) — it never overstates risk
+// below either input and never invents precision the two inputs don't have.
+func deriveRisk(feasibility string, impact SFOPImpact) string {
+	maxImpact := riskRank(impact.Safety)
+	for _, v := range []string{impact.Financial, impact.Operational, impact.Privacy} {
+		if r := riskRank(v); r > maxImpact {
+			maxImpact = r
+		}
+	}
+	f := riskRank(feasibility)
+	if f > maxImpact {
+		return rankToRisk(f)
+	}
+	return rankToRisk(maxImpact)
+}
+
+// deriveSFOP maps a threatMeta's STRIDE categories and generic impact rating
+// onto the four ISO 21434 Clause 15.7 SFOP axes. This is a coarse, honestly
+// heuristic mapping (not a per-asset SFOP analysis) — Safety inherits the
+// rule's own tuned impact rating; Operational/Privacy are elevated when the
+// STRIDE categories most associated with them (Denial of Service / Info
+// Disclosure) are present; Financial is elevated for higher IEC 62443
+// security levels, as a proxy for remediation/incident cost.
+func deriveSFOP(m threatMeta) SFOPImpact {
+	impact := SFOPImpact{
+		Safety:      strings.ToLower(m.impact),
+		Financial:   "low",
+		Operational: "low",
+		Privacy:     "low",
+	}
+	for _, s := range m.stride {
+		switch s {
+		case "D":
+			impact.Operational = "medium"
+		case "I":
+			impact.Privacy = "medium"
+		}
+	}
+	if m.sl >= 3 {
+		impact.Financial = "medium"
+	}
+	return impact
+}
+
+// buildSummary computes the §9.2 coverage metrics. AssetsAnalyzed is the
+// number of distinct source files carrying at least one identified threat;
+// AssetsInProject is CountProjectFiles's independent count of every
+// candidate source file in the project. See Summary.AssetInventoryMethod
+// for the documented methodology.
+func buildSummary(report *Report, projectRoot string) Summary {
+	distinct := make(map[string]struct{}, len(report.Entries))
+	for _, e := range report.Entries {
+		if e.SourceFile != "" {
+			distinct[e.SourceFile] = struct{}{}
+		}
+	}
+	s := Summary{AssetsAnalyzed: len(distinct)}
+
+	total, err := CountProjectFiles(projectRoot)
+	if err != nil || total < s.AssetsAnalyzed {
+		total = s.AssetsAnalyzed
+	}
+	s.AssetsInProject = total
+	if total > 0 {
+		s.CoveragePct = float64(s.AssetsAnalyzed) * 100 / float64(total)
+	} else {
+		s.CoveragePct = 100
+	}
+	s.AssetInventoryMethod = "every non-test .go source file in the project (excluding vendor/testdata/dot-directories) " +
+		"is treated as one candidate asset (CountProjectFiles); assetsAnalyzed counts the distinct files that ended up " +
+		"with at least one CYBER-derived threat entry — this is file-level granularity, not a deeper per-symbol or " +
+		"per-data-flow asset model"
+	return s
+}
+
+// CountProjectFiles returns the total count of non-test .go source files
+// under root (excluding vendor/, testdata/, and dot-directories) — the §9.2
+// tara `coveragePct` denominator (assetsInProject). See buildSummary and
+// Summary.AssetInventoryMethod for the file-level-granularity caveat.
+//
+//fusa:req REQ-TARA008
+func CountProjectFiles(root string) (int, error) {
+	total := 0
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if d.IsDir() {
+			base := d.Name()
+			if path != root && (base == "vendor" || base == "testdata" || strings.HasPrefix(base, ".")) {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		name := d.Name()
+		if strings.HasSuffix(name, ".go") && !strings.HasSuffix(name, "_test.go") {
+			total++
+		}
+		return nil
+	})
+	if err != nil {
+		return 0, fmt.Errorf("tara: count project files: %w", err)
+	}
+	return total, nil
+}
+
+// LoadReport reads a persisted TARA report from path (typically tara.json).
+//
+//fusa:req REQ-TARA009
+func LoadReport(path string) (*Report, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var r Report
+	if err := json.Unmarshal(data, &r); err != nil {
+		return nil, fmt.Errorf("%w: %s: %s", fusa.ErrInvalidConfig, path, err)
+	}
+	return &r, nil
 }
 
 // Render writes the TARA report to w in the given format: "json" or "markdown".
@@ -142,22 +358,24 @@ func renderMarkdown(w io.Writer, r *Report) error {
 	fmt.Fprintf(w, "# Threat Analysis and Risk Assessment (TARA)\n\n")
 	fmt.Fprintf(w, "**Module:** %s  \n", r.Module)
 	fmt.Fprintf(w, "**Generated:** %s  \n", r.GeneratedAt.Format(time.RFC3339))
-	fmt.Fprintf(w, "**Standard:** ISO 21434 Chapter 9  \n\n")
-	fmt.Fprintf(w, "| ID | Asset | Threat | STRIDE | CWE | Vector | Likelihood | Impact | SL | Control | Residual Risk |\n")
-	fmt.Fprintf(w, "|---|---|---|---|---|---|---|---|---|---|---|\n")
+	fmt.Fprintf(w, "**Standard:** ISO/SAE 21434:2021 Clause 15  \n")
+	fmt.Fprintf(w, "**Coverage:** %d / %d assets (%.1f%%)\n\n", r.Summary.AssetsAnalyzed, r.Summary.AssetsInProject, r.Summary.CoveragePct)
+	fmt.Fprintf(w, "| ID | Asset | Threat | STRIDE | CWE | Vector | Feasibility | Impact (S/F/O/P) | Risk | Treatment | SL | Mitigation |\n")
+	fmt.Fprintf(w, "|---|---|---|---|---|---|---|---|---|---|---|---|\n")
 	for _, e := range r.Entries {
-		fmt.Fprintf(w, "| %s | %s | %s | %s | %s | %s | %s | %s | %d | %s | %s |\n",
+		fmt.Fprintf(w, "| %s | %s | %s | %s | %s | %s | %s | %s/%s/%s/%s | %s | %s | %d | %s |\n",
 			e.ID,
 			e.Asset,
 			e.Threat,
 			strings.Join(e.STRIDE, "/"),
 			e.CWE,
 			e.AttackVector,
-			e.Likelihood,
-			e.Impact,
+			e.AttackFeasibility,
+			e.Impact.Safety, e.Impact.Financial, e.Impact.Operational, e.Impact.Privacy,
+			e.Risk,
+			e.Treatment,
 			e.SecurityLevel,
-			e.CurrentControl,
-			e.ResidualRisk,
+			strings.Join(e.Mitigations, "; "),
 		)
 	}
 	return nil

@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 
 	fusa "github.com/SoundMatt/go-FuSa"
 )
@@ -305,5 +306,144 @@ func TestResolveDoc_NotFound(t *testing.T) {
 	dir := t.TempDir()
 	if got := fusa.ResolveDoc(dir, "SAFETY_PLAN.md"); got != "" {
 		t.Errorf("ResolveDoc = %q, want \"\"", got)
+	}
+}
+
+// ─── §1.6/§1.6.1/§1.6.2 content-quality baseline ──────────────────────────────
+
+//fusa:test REQ-ATT004
+func TestCanonicalizeJSON_SortsKeysAndCollapsesWhitespace(t *testing.T) {
+	in := []byte(`{"b": 2, "a": 1, "nested": {"z": true, "y": [3, 2, 1]}}`)
+	out, err := fusa.CanonicalizeJSON(in)
+	if err != nil {
+		t.Fatalf("CanonicalizeJSON: %v", err)
+	}
+	want := `{"a":1,"b":2,"nested":{"y":[3,2,1],"z":true}}`
+	if string(out) != want {
+		t.Errorf("CanonicalizeJSON = %s, want %s", out, want)
+	}
+}
+
+//fusa:test REQ-ATT004
+func TestCanonicalizeJSON_Deterministic(t *testing.T) {
+	a := []byte(`{"x":1,"y":2}`)
+	b := []byte(`{"y":2,"x":1}`)
+	outA, err := fusa.CanonicalizeJSON(a)
+	if err != nil {
+		t.Fatalf("CanonicalizeJSON(a): %v", err)
+	}
+	outB, err := fusa.CanonicalizeJSON(b)
+	if err != nil {
+		t.Fatalf("CanonicalizeJSON(b): %v", err)
+	}
+	if string(outA) != string(outB) {
+		t.Errorf("differently-key-ordered input must canonicalize identically: %s vs %s", outA, outB)
+	}
+}
+
+//fusa:test REQ-ATT004
+func TestCanonicalizeJSON_InvalidInput(t *testing.T) {
+	if _, err := fusa.CanonicalizeJSON([]byte(`{not json`)); err == nil {
+		t.Error("expected an error for invalid JSON input")
+	}
+}
+
+//fusa:test REQ-ATT003
+func TestAttestationContentHash_StablePrefixAndDeterministic(t *testing.T) {
+	content := map[string]any{"a": 1, "b": []string{"x", "y"}}
+	h1, err := fusa.AttestationContentHash(content)
+	if err != nil {
+		t.Fatalf("AttestationContentHash: %v", err)
+	}
+	if !strings.HasPrefix(h1, "sha256:") {
+		t.Errorf("hash %q must be sha256:-prefixed", h1)
+	}
+	h2, err := fusa.AttestationContentHash(content)
+	if err != nil {
+		t.Fatalf("AttestationContentHash (2nd call): %v", err)
+	}
+	if h1 != h2 {
+		t.Errorf("hash must be deterministic for identical content: %q vs %q", h1, h2)
+	}
+
+	different, err := fusa.AttestationContentHash(map[string]any{"a": 2})
+	if err != nil {
+		t.Fatalf("AttestationContentHash (different): %v", err)
+	}
+	if different == h1 {
+		t.Error("different content must not hash the same")
+	}
+}
+
+//fusa:test REQ-ATT002
+func TestAttestationValid(t *testing.T) {
+	hash, err := fusa.AttestationContentHash("some content")
+	if err != nil {
+		t.Fatalf("AttestationContentHash: %v", err)
+	}
+
+	cases := []struct {
+		name string
+		att  *fusa.Attestation
+		hash string
+		want bool
+	}{
+		{"nil attestation", nil, hash, false},
+		{"heuristic status", &fusa.Attestation{Status: fusa.StatusHeuristic}, hash, false},
+		{
+			"valid reviewed",
+			&fusa.Attestation{Status: fusa.StatusReviewed, ImplementationAuthor: "auto", IndependentReviewer: "Jane Doe", ContentHash: hash},
+			hash, true,
+		},
+		{
+			"self-attested (same identity)",
+			&fusa.Attestation{Status: fusa.StatusReviewed, ImplementationAuthor: "Jane Doe", IndependentReviewer: "Jane Doe", ContentHash: hash},
+			hash, false,
+		},
+		{
+			"missing reviewer",
+			&fusa.Attestation{Status: fusa.StatusReviewed, ContentHash: hash},
+			hash, false,
+		},
+		{
+			"stale hash",
+			&fusa.Attestation{Status: fusa.StatusReviewed, ImplementationAuthor: "auto", IndependentReviewer: "Jane Doe", ContentHash: "sha256:stale"},
+			hash, false,
+		},
+		{
+			"missing content hash",
+			&fusa.Attestation{Status: fusa.StatusReviewed, ImplementationAuthor: "auto", IndependentReviewer: "Jane Doe"},
+			hash, false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := fusa.AttestationValid(c.att, c.hash); got != c.want {
+				t.Errorf("AttestationValid(%+v) = %v, want %v", c.att, got, c.want)
+			}
+		})
+	}
+}
+
+//fusa:test REQ-ATT001
+func TestSchemaVersion_IsMajorMinor(t *testing.T) {
+	got := fusa.SchemaVersion()
+	parts := strings.Split(got, ".")
+	if len(parts) != 2 {
+		t.Errorf("SchemaVersion() = %q, want MAJOR.MINOR (2 dot-separated parts)", got)
+	}
+	if strings.Count(fusa.SpecVersion, ".") < 2 {
+		t.Fatalf("SpecVersion %q is expected to be MAJOR.MINOR.PATCH for this test to be meaningful", fusa.SpecVersion)
+	}
+	if !strings.HasPrefix(fusa.SpecVersion, got+".") {
+		t.Errorf("SchemaVersion() = %q is not a prefix of SpecVersion %q", got, fusa.SpecVersion)
+	}
+}
+
+//fusa:test REQ-ATT001
+func TestNowRFC3339_Parses(t *testing.T) {
+	ts := fusa.NowRFC3339()
+	if _, err := time.Parse(time.RFC3339, ts); err != nil {
+		t.Errorf("NowRFC3339() = %q did not parse as RFC 3339: %v", ts, err)
 	}
 }
