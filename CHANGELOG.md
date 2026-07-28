@@ -7,6 +7,13 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+### Added
+- `docker-publish.yml` now notifies `SoundMatt/FuSaOps` via `repository_dispatch`
+  (`xfusa-released`) after a successful image push, so FuSaOps rebuilds its
+  bundled image promptly instead of waiting for its weekly cron. Requires a
+  `FUSAOPS_DISPATCH_TOKEN` secret in this repo; falls back silently
+  (`continue-on-error`) to the weekly rebuild if it's not set.
+
 ## v0.34.0 — 2026-07-27
 
 ### Fixed (issue #45)
