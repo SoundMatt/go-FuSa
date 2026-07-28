@@ -7,6 +7,20 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.45.0 — 2026-07-28 (declare x-FuSa spec v1.15.0 conformance)
+
+### Changed
+- **`SpecVersion` bumped from `1.14.0` to `1.15.0`.** The collective work
+  across v0.41.0–v0.44.0 already implements every v1.15.0 requirement:
+  §1.6.2 attestation carry-forward (MUST, v0.44.0), `coveragePct <= 100`
+  defensive clamps in `fmea`/`tara` (MUST, v0.43.0), the §1.6 rule 4
+  coverage-denominator exclusion-reuse guidance (SHOULD, v0.43.0),
+  `risk.asil` cross-validation against `DetermineASIL` (§1.2.5 MUST,
+  v0.42.0), the canonical lowercase `standard` id (§2.4.1, v0.42.0), and
+  `tara`'s closed `impact`/`risk` enums (§9.2 MUST, v0.41.0). This release
+  only updates the declared version constant to match; no behavioural
+  change.
+
 ## v0.44.0 — 2026-07-28 (x-FuSa spec §1.6.2 attestation carry-forward MUST)
 
 ### Fixed
