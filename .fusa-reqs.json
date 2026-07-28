@@ -1285,6 +1285,18 @@
       "standard": "x-FuSa"
     },
     {
+      "id": "REQ-LOC-REL002",
+      "title": "cyber.location.file is project-relative",
+      "text": "All Finding.Location.File values produced by CYBER rules shall be paths relative to projectRoot using forward-slash separators, matching lint/analyze's existing REQ-LOC-REL001 behaviour; this also fixes tara.Scan's ThreatEntry.Location/SourceFile, which is sourced directly from a CYBER finding.",
+      "standard": "x-FuSa spec section 4"
+    },
+    {
+      "id": "REQ-LOC-REL003",
+      "title": "fmea entries[].file is project-relative",
+      "text": "fmea.Scan shall relativize each Entry.File against projectRoot with forward-slash separators before returning the report, per x-FuSa spec section 4's project-relative MUST.",
+      "standard": "x-FuSa spec section 4"
+    },
+    {
       "id": "REQ-CAP-STD001",
       "title": "capabilities Standards array uses canonical IDs",
       "text": "The capabilities.Standards array shall contain only canonical §2.4.1 lower-case IDs (e.g. \"slsa\", not \"slsa-v1.0\"). Version suffixes are not part of the canonical enum.",
@@ -1596,6 +1608,12 @@
       "text": "trace.ScanTags shall walk all .go files under root (skipping vendor, testdata, and dot-prefixed directories), returning every //fusa:req, //fusa:test, and //fusa:sec-test annotation found as a Tag with its file, line, kind, and requirement ID.",
       "standard": "x-FuSa",
       "level": "1.4.1"
+    },
+    {
+      "id": "REQ-TRACE012",
+      "title": "IsExcludedDir is the shared test-tree exclusion predicate",
+      "text": "trace.IsExcludedDir shall report whether a directory is vendor/, testdata/, or a dot-directory, and shall be the single implementation ScanTags/ScanFuncCoverage/ScanFuncTagCoverage and every coverage-denominator scanner (fmea.CountProjectFunctions, tara.CountProjectFiles) apply, per x-FuSa spec section 1.6 rule 4 (SHOULD).",
+      "standard": "x-FuSa spec section 1.6"
     },
     {
       "id": "REQ-DOC001",
@@ -2485,6 +2503,12 @@
       "standard": "x-FuSa spec section 1.6.2 / section 9.2"
     },
     {
+      "id": "REQ-FMEA012",
+      "title": "fmea summary.coveragePct never exceeds 100",
+      "text": "fmea.buildSummary shall clamp summary.coveragePct to a maximum of 100, defensively, in addition to the componentsInProject >= componentsAnalyzed fallback that already guarantees this, per x-FuSa spec section 9.2 MUST.",
+      "standard": "x-FuSa spec section 9.2"
+    },
+    {
       "id": "REQ-HARA016",
       "title": "SafetyGoal.FSSRRefs replaces the singular FSSRRef field",
       "text": "hara.SafetyGoal shall carry fssrRefs as a string array (MUST, >=1 entry) per x-FuSa spec section 1.2.5, replacing the prior singular fssrRef field.",
@@ -2699,6 +2723,12 @@
       "title": "tara --min-coverage / --strict / --require-attestation flags",
       "text": "gofusa tara shall support --min-coverage N (exit 1 if summary.coveragePct < N), and --strict/--require-attestation (exit 1 on an unsuppressed FUSA-STUB002 finding).",
       "standard": "x-FuSa spec section 1.6.2 / section 9.2"
+    },
+    {
+      "id": "REQ-TARA011",
+      "title": "tara summary.coveragePct never exceeds 100",
+      "text": "tara.buildSummary shall clamp summary.coveragePct to a maximum of 100, defensively, in addition to the assetsInProject >= assetsAnalyzed fallback that already guarantees this, per x-FuSa spec section 9.2 MUST.",
+      "standard": "x-FuSa spec section 9.2"
     },
     {
       "id": "REQ-TARA012",

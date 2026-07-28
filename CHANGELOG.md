@@ -7,6 +7,73 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.43.0 — 2026-07-28 (fmea/tara: project-relative paths, coveragePct clamp, wider FMEA templates)
+
+### Fixed
+- **fmea.json/tara.json no longer emit absolute file paths** under the
+  common `--dir`-omitted invocation (x-FuSa spec §4 MUST — project-relative,
+  forward-slash paths). `fmea.Scan`'s `entries[].file` and CYBER's own
+  `Finding.Location.File` (which `tara.Scan` sources `threats[].location`/
+  `sourceFile` directly from) both carried the raw, often-absolute walked
+  path. `fmea.Scan` now relativizes every entry's `File` against
+  `projectRoot` before returning; `cyber.location` now does the same thing
+  lint/analyze already did (§REQ-LOC-REL001), which transitively fixes
+  `tara.json` too since it never had its own bug — it just inherited an
+  absolute path from the CYBER finding it was built from (go-FuSa#59).
+- **`coveragePct` now has a defensive `<= 100` clamp** in both
+  `fmea.buildSummary` and `tara.buildSummary` (x-FuSa spec §9.2 MUST, spec
+  v1.15.0). The existing `componentsInProject`/`assetsInProject` fallback
+  already made this mathematically unreachable today, but the clamp is
+  cheap insurance against a future change to that fallback silently
+  reintroducing the overflow the spec calls out. New regression tests use a
+  fixture with a non-trivial test-source tree (many `_test.go` files) to
+  actually exercise the exclusion logic the bug depends on.
+- **fmea's own committed `fmea.json` no longer fails its own
+  `FUSA-STUB002` content-quality gate.** `deriveAnalysis` bucketed every
+  scanned function into one of only 6 fixed template strings, so a
+  461-function codebase like go-FuSa's own reduced to a ~0.013 distinct-
+  value ratio — reproducing exactly the "hundreds of FMEA rows sharing
+  identical boilerplate text" pattern §1.6.1 rule B exists to catch
+  (go-FuSa#60). Every template now weaves in the function's own component
+  (package/directory — a genuine per-function signal) plus, for the
+  dominant no-other-signal-matched bucket, whether the function has a
+  receiver and how many parameters it takes. Regenerated `fmea.json`/
+  `fmea.csv`: failureMode/effect/cause distinct-value ratios are now
+  ~0.29/0.28/0.29 (up from ~0.013), comfortably clear of the 0.1 threshold.
+
+### Changed
+- **Coverage-denominator scanners reuse a shared test-tree exclusion
+  predicate** (x-FuSa spec §1.6 rule 4 SHOULD, non-binding implementer
+  guidance): new `trace.IsExcludedDir` is now the single implementation of
+  the vendor/testdata/dot-directory check `trace.ScanTags`/
+  `ScanFuncCoverage`/`ScanFuncTagCoverage`, `fmea.CountProjectFunctions`,
+  and `tara.CountProjectFiles` all previously re-implemented independently.
+
+## v0.42.0 — 2026-07-28 (hara: risk.asil cross-validation + canonical standard id)
+
+### Fixed
+- **HARA008: `risk.asil` is now cross-validated against `DetermineASIL(S,E,C)`**
+  (x-FuSa spec §1.2.5 MUST — ASIL determination). Previously a hazard's
+  stored `risk.asil` was accepted verbatim: `DetermineASIL` was only ever
+  used as a *fallback* for an empty value, so a hand-edited or
+  copy-pasted hazard could claim any ASIL regardless of its own S/E/C
+  inputs, with zero findings/gaps from either `gofusa hara show` or
+  `check`. The new `hara.ValidateASIL` (wrapped by the new engine rule
+  `HARA008`, and folded into `hara.Validate`'s own gap list so `hara show`
+  surfaces it directly) flags a hazard whose declared `risk.asil` disagrees
+  with the ISO 26262-3:2018 Table 4 value for its own severity/exposure/
+  controllability — skipping hazards with an incomplete S/E/C rating
+  (HARA002's job) or no `risk.asil` set yet.
+- **`standard` now uses the x-FuSa spec §2.4.1 canonical lowercase id**
+  (`iso26262`, not `"ISO 26262"`) in `.fusa-hara.json`: `hara init`'s
+  default `--standard` flag value changed from `"ISO 26262"` to
+  `"iso26262"`, the repo's own checked-in `.fusa-hara.json` was
+  normalised, and `hara.Load` now transparently normalises a legacy
+  display-string value (`"ISO 26262"`, `"IEC 61508"`, …) onto its
+  canonical id for backward compatibility with hand-authored files
+  predating this convention — an unrecognised id is still passed through
+  verbatim, never rejected.
+
 ## v0.41.0 — 2026-07-28 (tara: closed impact/risk enums per x-FuSa spec v1.14.1)
 
 ### Fixed
@@ -54,31 +121,6 @@ Dates reference the merged commit timestamp.
   ERROR-finding review workflow uses. FUSA-STUB002 is unaffected: it
   continues to be suppressed only by a valid §1.6.2 attestation, never by
   disposition.
-
-## v0.42.0 — 2026-07-28 (hara: risk.asil cross-validation + canonical standard id)
-
-### Fixed
-- **HARA008: `risk.asil` is now cross-validated against `DetermineASIL(S,E,C)`**
-  (x-FuSa spec §1.2.5 MUST — ASIL determination). Previously a hazard's
-  stored `risk.asil` was accepted verbatim: `DetermineASIL` was only ever
-  used as a *fallback* for an empty value, so a hand-edited or
-  copy-pasted hazard could claim any ASIL regardless of its own S/E/C
-  inputs, with zero findings/gaps from either `gofusa hara show` or
-  `check`. The new `hara.ValidateASIL` (wrapped by the new engine rule
-  `HARA008`, and folded into `hara.Validate`'s own gap list so `hara show`
-  surfaces it directly) flags a hazard whose declared `risk.asil` disagrees
-  with the ISO 26262-3:2018 Table 4 value for its own severity/exposure/
-  controllability — skipping hazards with an incomplete S/E/C rating
-  (HARA002's job) or no `risk.asil` set yet.
-- **`standard` now uses the x-FuSa spec §2.4.1 canonical lowercase id**
-  (`iso26262`, not `"ISO 26262"`) in `.fusa-hara.json`: `hara init`'s
-  default `--standard` flag value changed from `"ISO 26262"` to
-  `"iso26262"`, the repo's own checked-in `.fusa-hara.json` was
-  normalised, and `hara.Load` now transparently normalises a legacy
-  display-string value (`"ISO 26262"`, `"IEC 61508"`, …) onto its
-  canonical id for backward compatibility with hand-authored files
-  predating this convention — an unrecognised id is still passed through
-  verbatim, never rejected.
 
 ## v0.36.0 — 2026-07-28 (x-FuSa spec v1.13.0/v1.14.0 — evidence-artifact schema conformance + content-quality baseline)
 

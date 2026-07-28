@@ -285,7 +285,7 @@ docker build -t go-fusa .
 docker run --rm -v "$(pwd)":/project go-fusa check
 ```
 
-Published tags: `latest`, `0.42`, `0.42.0` (and matching semver for every release).
+Published tags: `latest`, `0.43`, `0.43.0` (and matching semver for every release).
 
 ## Standards coverage
 

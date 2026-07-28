@@ -150,6 +150,19 @@ func SaveRequirements(dir string, reqs []Requirement) error {
 	return nil
 }
 
+// IsExcludedDir reports whether a directory named name should be skipped
+// when walking a project tree for Go source files: vendor/, testdata/, or
+// a dot-directory. This is the canonical test-tree exclusion x-FuSa spec
+// §1.6 rule 4 (SHOULD) recommends every coverage-denominator scanner in a
+// tool reuse, rather than each maintaining its own independently-drifting
+// copy — fmea.CountProjectFunctions and tara.CountProjectFiles both build
+// on this instead of re-inlining the same three-way check.
+//
+//fusa:req REQ-TRACE012
+func IsExcludedDir(name string) bool {
+	return name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".")
+}
+
 // ScanTags walks Go source files under root and returns all //fusa:req and
 // //fusa:test annotation tags found in comments.
 //
@@ -164,9 +177,8 @@ func ScanTags(root string) ([]Tag, error) {
 			if path == root {
 				return nil // never skip the root itself
 			}
-			name := d.Name()
 			//fusa:req REQ-TRACE005
-			if name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".") {
+			if IsExcludedDir(d.Name()) {
 				return filepath.SkipDir
 			}
 			return nil
@@ -374,8 +386,7 @@ func ScanFuncCoverage(root string, tags []Tag) (*FuncCoverage, error) {
 			if path == root {
 				return nil
 			}
-			name := d.Name()
-			if name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".") {
+			if IsExcludedDir(d.Name()) {
 				return filepath.SkipDir
 			}
 			return nil
@@ -441,8 +452,7 @@ func ScanFuncTagCoverage(root string) (*FuncCoverage, error) {
 			if path == root {
 				return nil
 			}
-			name := d.Name()
-			if name == "vendor" || name == "testdata" || strings.HasPrefix(name, ".") {
+			if IsExcludedDir(d.Name()) {
 				return filepath.SkipDir
 			}
 			return nil

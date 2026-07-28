@@ -3,6 +3,7 @@ package tara_test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -278,6 +279,44 @@ func containsSTRIDE(stride []string, cat string) bool {
 		}
 	}
 	return false
+}
+
+// ─── §9.2 coveragePct MUST NOT exceed 100 ──────────────────────────────────────
+
+//fusa:test REQ-TARA011
+func TestScan_CoveragePct_NeverExceeds100_WithNonTrivialTestTree(t *testing.T) {
+	// A fixture with a substantial test-source tree (many _test.go files)
+	// alongside a small number of real source files — a fixture with no
+	// such test-tree cannot exercise the coveragePct-overflow bug the
+	// x-FuSa spec §9.2 MUST clamp guards against.
+	files := map[string]string{
+		"go.mod":       "module example.com/fixture\n\ngo 1.22\n",
+		"pkg/real.go":  "package pkg\n\nfunc A() {}\n",
+		"pkg/real2.go": "package pkg\n\nfunc B() {}\n",
+	}
+	for i := 0; i < 10; i++ {
+		files[fmt.Sprintf("pkg/thing%d_test.go", i)] = fmt.Sprintf(
+			"package pkg\n\nimport \"testing\"\n\nfunc TestThing%d(t *testing.T) {}\n", i)
+	}
+	dir := testutil.ProjectDir(t, files)
+
+	findings := []fusa.Finding{
+		makeFinding("CYBER001", fusa.SeverityWarning, "pkg/real.go", 1),
+		makeFinding("CYBER002", fusa.SeverityWarning, "pkg/real2.go", 1),
+	}
+	r, err := tara.Scan(dir, findings)
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+	if r.Summary.CoveragePct > 100 {
+		t.Errorf("CoveragePct = %.2f, want <= 100 (x-FuSa spec §9.2 MUST)", r.Summary.CoveragePct)
+	}
+	if r.Summary.AssetsAnalyzed != 2 {
+		t.Errorf("AssetsAnalyzed = %d, want 2 (test-file assets must not be counted)", r.Summary.AssetsAnalyzed)
+	}
+	if r.Summary.AssetsInProject < r.Summary.AssetsAnalyzed {
+		t.Errorf("AssetsInProject = %d, want >= AssetsAnalyzed = %d", r.Summary.AssetsInProject, r.Summary.AssetsAnalyzed)
+	}
 }
 
 // ─── x-FuSa spec §9.2 closed impact/risk enums ─────────────────────────────────

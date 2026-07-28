@@ -66,6 +66,31 @@ func findingsForRule(findings []fusa.Finding, ruleID string) []fusa.Finding {
 	return out
 }
 
+// ─── §4 project-relative file paths ────────────────────────────────────────────
+
+//fusa:test REQ-LOC-REL002
+func TestCyberFindings_LocationFileIsProjectRelative(t *testing.T) {
+	findings := runCyber(t, `package pkg
+import "crypto/md5"
+func HashIt(data []byte) []byte { return md5.New().Sum(data) }
+`)
+	matches := findingsForRule(findings, "CYBER001")
+	if len(matches) == 0 {
+		t.Fatal("expected at least one CYBER001 finding")
+	}
+	for _, f := range matches {
+		if filepath.IsAbs(f.Location.File) {
+			t.Errorf("Location.File = %q, want a project-relative path (§4 MUST)", f.Location.File)
+		}
+		if strings.Contains(f.Location.File, "\\") {
+			t.Errorf("Location.File = %q, want forward-slash separators", f.Location.File)
+		}
+	}
+	if matches[0].Location.File != "pkg/code.go" {
+		t.Errorf("Location.File = %q, want %q", matches[0].Location.File, "pkg/code.go")
+	}
+}
+
 // ─── CYBER001: weak hash ──────────────────────────────────────────────────────
 
 //fusa:test REQ-CYBER001
