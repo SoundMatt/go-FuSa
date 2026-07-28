@@ -147,7 +147,9 @@ func runHaraInit(args []string, projectRoot string, stdout, stderr io.Writer) in
 	fs := flag.NewFlagSet("gofusa hara init", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	project := fs.String("project", "", "project name (default: directory name)")
-	standard := fs.String("standard", "ISO 26262", "safety standard (e.g. 'ISO 26262', 'IEC 61508')")
+	// x-FuSa spec §2.4.1: standard is a canonical lowercase id, never a
+	// display string ("iso26262", not "ISO 26262").
+	standard := fs.String("standard", "iso26262", "safety standard canonical id (e.g. 'iso26262', 'iec61508')")
 	if code := parseFlags(fs, args); code != 0 {
 		return code
 	}

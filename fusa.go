@@ -23,7 +23,7 @@ import (
 )
 
 // Version is the current release of go-FuSa.
-const Version = "0.37.0"
+const Version = "0.38.0"
 
 // SpecVersion is the x-FuSa spec version this release implements.
 const SpecVersion = "1.14.0"

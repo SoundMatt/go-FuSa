@@ -14,6 +14,7 @@
 //   - HARA005: max hazard ASIL exceeds project ASIL from .fusa.json
 //   - HARA006: safety goal with no fssrRefs (x-FuSa spec §1.2.5 MUST)
 //   - HARA007: fssrRefs entry dangling (no matching id in .fusa-reqs.json)
+//   - HARA008: hazard's stored risk.asil disagrees with DetermineASIL(S,E,C)
 //
 // Usage:
 //
@@ -136,8 +137,13 @@ type SafetyGoal struct {
 //
 //fusa:req REQ-HARA005
 type HARA struct {
-	Project     string                 `json:"project"`
-	Standard    string                 `json:"standard"` // "ISO 26262" or "IEC 61508"
+	Project string `json:"project"`
+	// Standard is the x-FuSa spec §2.4.1 canonical lowercase standard id
+	// ("iso26262", "iec61508", …) — never a display string. Load normalises
+	// a legacy display-string value (e.g. "ISO 26262") onto its canonical
+	// id for backward compatibility with hand-authored files predating this
+	// convention; see normalizeStandard.
+	Standard    string                 `json:"standard"`
 	CreatedAt   time.Time              `json:"createdAt"`
 	Situations  []OperationalSituation `json:"operationalSituations"`
 	Hazards     []Hazard               `json:"hazards"`
@@ -326,7 +332,32 @@ func Load(projectRoot string) (*HARA, error) {
 	if err := json.Unmarshal(data, &h); err != nil {
 		return nil, fmt.Errorf("%w: %s: %s", fusa.ErrInvalidConfig, HARAFile, err)
 	}
+	h.Standard = normalizeStandard(h.Standard)
 	return &h, nil
+}
+
+// normalizeStandard maps a legacy display-string standard value (e.g.
+// "ISO 26262", as written by hara init before this normalisation existed)
+// onto the x-FuSa spec §2.4.1 canonical lowercase id (e.g. "iso26262"), for
+// backward compatibility with hand-authored/older .fusa-hara.json files. An
+// empty value, an id that already looks canonical, or one go-FuSa does not
+// recognise is returned unchanged — §2.4.1: an unrecognised id MUST be
+// treated verbatim, never rejected.
+//
+//fusa:req REQ-HARA025
+func normalizeStandard(s string) string {
+	switch strings.ToLower(strings.Join(strings.Fields(s), " ")) {
+	case "iso 26262", "iso26262":
+		return "iso26262"
+	case "iec 61508", "iec61508":
+		return "iec61508"
+	case "iso 21434", "iso21434":
+		return "iso21434"
+	case "do-178c", "do 178c", "do178c":
+		return "do178c"
+	default:
+		return s
+	}
 }
 
 // Save writes the HARA to path.
@@ -398,6 +429,10 @@ func Validate(h *HARA) []ValidationFinding {
 			})
 		}
 	}
+
+	// HARA008: a hazard's declared risk.asil must match its own S/E/C rating
+	// (x-FuSa spec §1.2.5 MUST — see ValidateASIL doc).
+	out = append(out, ValidateASIL(h)...)
 
 	return out
 }
@@ -557,6 +592,7 @@ func init() {
 	engine.Default.MustRegister(&ruleHARA005{})
 	engine.Default.MustRegister(&ruleHARA006{})
 	engine.Default.MustRegister(&ruleHARA007{})
+	engine.Default.MustRegister(&ruleHARA008{})
 }
 
 // HARA001 — no HARA file present.
@@ -799,6 +835,64 @@ func (r *ruleHARA007) Run(_ context.Context, projectRoot string, _ *config.Confi
 			Location:    fusa.Location{File: HARAFile},
 			Category:    fusa.CategoryRequirement,
 			Remediation: fmt.Sprintf("add the missing requirement to %s or correct the fssrRefs entry in %s", trace.ReqsFile, HARAFile),
+		})
+	}
+	return out, nil
+}
+
+// HARA008 — a hazard's stored risk.asil disagrees with the S/E/C-derived ASIL.
+type ruleHARA008 struct{}
+
+func (r *ruleHARA008) ID() string { return "HARA008" }
+func (r *ruleHARA008) Description() string {
+	return "Hazard's declared risk.asil does not match DetermineASIL(severity, exposure, controllability) per ISO 26262-3:2018 Table 4 (x-FuSa spec §1.2.5 MUST)."
+}
+
+// ValidateASIL cross-checks every hazard in h with a complete S/E/C rating
+// against DetermineASIL, flagging a hazard whose stored risk.asil disagrees
+// with what the table derives. A hazard with an incomplete S/E/C rating is
+// skipped here — that gap is HARA002's responsibility, and DetermineASIL
+// would otherwise report a misleading "should be QM" for missing inputs
+// rather than a genuine table mismatch.
+//
+//fusa:req REQ-HARA024
+func ValidateASIL(h *HARA) []ValidationFinding {
+	var out []ValidationFinding
+	for _, hz := range h.Hazards {
+		if hz.Risk.ASIL == "" {
+			continue
+		}
+		if hz.Risk.Severity == "" || hz.Risk.Exposure == "" || hz.Risk.Controllability == "" {
+			continue
+		}
+		derived := DetermineASIL(hz.Risk.Severity, hz.Risk.Exposure, hz.Risk.Controllability)
+		if hz.Risk.ASIL != derived {
+			out = append(out, ValidationFinding{
+				HazardID: hz.ID,
+				Message: fmt.Sprintf(
+					"hazard %s declares risk.asil=%s but S=%s E=%s C=%s derives %s per ISO 26262-3 Table 4 (DetermineASIL)",
+					hz.ID, hz.Risk.ASIL, hz.Risk.Severity, hz.Risk.Exposure, hz.Risk.Controllability, derived,
+				),
+			})
+		}
+	}
+	return out
+}
+
+//fusa:req REQ-HARA024
+func (r *ruleHARA008) Run(_ context.Context, projectRoot string, _ *config.Config) ([]fusa.Finding, error) {
+	h, err := Load(projectRoot)
+	if err != nil || len(h.Hazards) == 0 {
+		return nil, nil
+	}
+	var out []fusa.Finding
+	for _, f := range ValidateASIL(h) {
+		out = append(out, fusa.Finding{
+			RuleID:      r.ID(),
+			Severity:    fusa.SeverityWarning,
+			Message:     f.Message,
+			Location:    fusa.Location{File: HARAFile},
+			Remediation: fmt.Sprintf("update risk.asil for hazard %s in %s to match its S/E/C rating, or correct the S/E/C rating if the ASIL is right and the inputs are wrong", f.HazardID, HARAFile),
 		})
 	}
 	return out, nil
