@@ -115,7 +115,7 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "gofusa tara: coverage gate failed: %.1f%% < required %d%%\n", report.Summary.CoveragePct, *minCoverage)
 		code = fusa.ExitGateFail
 	}
-	if sc := gateContentQuality(stderr, "tara", tara.TARAFile, stubcheck.TaraFields(report), report.Attestation, report.Entries, *strict || *requireAttestation); sc != fusa.ExitOK {
+	if sc := gateContentQuality(stderr, "tara", projectRoot, tara.TARAFile, stubcheck.TaraFields(report), report.Attestation, report.Entries, *strict || *requireAttestation); sc != fusa.ExitOK {
 		code = sc
 	}
 	return code

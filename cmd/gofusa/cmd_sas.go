@@ -126,7 +126,7 @@ func runSas(args []string, stdout, stderr io.Writer) int {
 	if len(doc.Gaps) > 0 {
 		code = fusa.ExitGateFail
 	}
-	if sc := gateContentQuality(stderr, "sas", sas.SASJSONFile, stubcheck.SasFields(doc), doc.Attestation, doc.Deviations, *strict || *requireAttestation); sc != fusa.ExitOK {
+	if sc := gateContentQuality(stderr, "sas", projectRoot, sas.SASJSONFile, stubcheck.SasFields(doc), doc.Attestation, doc.Deviations, *strict || *requireAttestation); sc != fusa.ExitOK {
 		code = sc
 	}
 	return code

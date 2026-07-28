@@ -27,6 +27,33 @@ Dates reference the merged commit timestamp.
   as not currently suppressing (via `fusa.AttestationValid`), never that
   it vanished outright.
 
+## v0.37.0 — 2026-07-28 (x-FuSa spec §1.6.1 conformance fixes: content-quality scope + FUSA-STUB001 disposition)
+
+### Fixed
+- **FUSA-STUB001/002 no longer run inside `check`** (x-FuSa spec §1.6.1
+  "Who runs this (MUST)"): the two content-quality rules were registered on
+  `engine.Default` and therefore executed as part of `gofusa check` (and
+  `report`/`fix`/`qualify`, which also drive `engine.Default`), reading
+  `fmea.json`/`.fusa-hara.json`/`tara.json`/`safety-case.json`/`sas.json`
+  off disk and surfacing findings inside `check`'s own finding list —
+  exactly what §1.6.1 says must not happen. Detection now runs only inside
+  each artifact-producing command's own `gateContentQuality` gate
+  (`gofusa hara`/`fmea`/`tara`/`safety-case`/`sas`), over the content that
+  command itself just built or loaded. `stubcheck`'s engine-rule glue
+  (`rulePlaceholder`/`ruleBlanketFallback`/`loadArtifacts`) is removed; the
+  per-artifact field extractors (`HaraFields`, `FmeaFields`, …) are
+  unchanged.
+- **FUSA-STUB001 is now disposition-suppressible**, as the rule's own doc
+  comments and the x-FuSa spec §1.6.1 rule A already claimed ("never via
+  attestation" implies a disposition path exists) but no code actually
+  checked: `gateContentQuality` now loads `.fusa-dispositions.json` and
+  skips escalating a FUSA-STUB001 match to a gate failure when the project
+  has a disposition entry for ruleID `FUSA-STUB001` (`gofusa disposition
+  add --rule FUSA-STUB001 ...`) — the same mechanism `check`'s own
+  ERROR-finding review workflow uses. FUSA-STUB002 is unaffected: it
+  continues to be suppressed only by a valid §1.6.2 attestation, never by
+  disposition.
+
 ## v0.36.0 — 2026-07-28 (x-FuSa spec v1.13.0/v1.14.0 — evidence-artifact schema conformance + content-quality baseline)
 
 ### Added
