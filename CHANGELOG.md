@@ -7,12 +7,54 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.35.0 — 2026-07-27
+
 ### Added
 - `docker-publish.yml` now notifies `SoundMatt/FuSaOps` via `repository_dispatch`
   (`xfusa-released`) after a successful image push, so FuSaOps rebuilds its
   bundled image promptly instead of waiting for its weekly cron. Requires a
   `FUSAOPS_DISPATCH_TOKEN` secret in this repo; falls back silently
   (`continue-on-error`) to the weekly rebuild if it's not set.
+
+### Fixed (issue #49)
+- **`.fusa.json` didn't accept x-FuSa spec §1.2.1's documented shape.**
+  `config.Config` only read/wrote go-FuSa's own proprietary shape
+  (top-level `"version"`, `"standard"`/`"asil"`/`"sil"` nested under
+  `"project"`) and `Validate` hard-rejected any config missing the
+  non-spec `"version"` field — so a fully spec-compliant `.fusa.json`
+  written by another x-FuSa tool (`configVersion`, top-level `"standard"`/
+  `"asil"`) made `check`/`report`/etc. fail outright instead of reading the
+  shared config. `Config` now also carries the spec's top-level
+  `configVersion`/`standard`/`asil`/`sil`/`dal` fields and accepts the
+  spec's legacy flat `"project": "name"` string; `Load`/`Save` normalise
+  between the two shapes (case-insensitively canonicalising the standard
+  id), and `Validate` no longer requires go-FuSa's own `"version"` field
+  when `configVersion` is present. `init`'s output now satisfies both
+  shapes at once.
+
+### Fixed (issue #50)
+- **`init` never created `.fusa-reqs.json`.** Every other x-FuSa tool
+  creates both `.fusa.json` and `.fusa-reqs.json` (with
+  `{"requirements": []}`) on `init`, per spec §9.1. `init` now creates
+  whichever of the two targets is missing and leaves an existing one
+  untouched (rather than failing outright the moment `.fusa.json` alone
+  already exists), only reporting an error when both already exist.
+
+### Fixed (issue #51)
+- **`qualify`'s JSON output had no spec-required `results[].result` enum.**
+  Each case in `qualify --output`'s report carried only
+  `results[].passed:bool`; x-FuSa spec §6 requires a
+  `results[].result: "PASS"|"FAIL"|"SKIP"|"ERROR"` string. `qualify.Result`
+  now carries both — `Result` is the new spec field (`ERROR` for
+  infrastructure failures, `FAIL` for an expectation mismatch, `PASS`
+  otherwise); `Passed` is kept for existing callers and CLI output.
+
+### Fixed (issue #52)
+- **`audit-pack` wrote `AUDIT-MANIFEST.json` instead of the spec-required
+  lowercase `manifest.json`.** ZIP entry names are case-sensitive, so
+  consumers looking for the spec's documented `manifest.json` (§8 MUST)
+  never found it. Renamed the manifest entry `auditpack.Pack` writes to
+  `manifest.json` (exported as `auditpack.ManifestFile`).
 
 ## v0.34.0 — 2026-07-27
 

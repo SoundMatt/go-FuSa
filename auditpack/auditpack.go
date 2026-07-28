@@ -3,7 +3,7 @@
 //
 // Pack collects the standard evidence files present in a project root,
 // computes SHA-256 digests, writes them into audit-pack.zip, and includes
-// an AUDIT-MANIFEST.json inside the archive.
+// a lowercase manifest.json (§8 MUST) inside the archive.
 //
 // Activate the engine rule by importing this package for its side effects:
 //
@@ -38,6 +38,11 @@ type AuditManifestEntry struct {
 	SHA256 string `json:"sha256"`
 	Size   int64  `json:"size"`
 }
+
+// ManifestFile is the spec-mandated (§8 MUST) lowercase manifest filename at
+// the ZIP root. ZIP entry names are case-sensitive, so this exact casing
+// matters for cross-tool consumers verifying the pack's contents.
+const ManifestFile = "manifest.json"
 
 // AuditManifest is the index of all files in the audit pack (§8).
 // It carries the §3.1 common header (kind: "audit-manifest").
@@ -129,13 +134,13 @@ func Pack(projectRoot, outputPath string) (*AuditManifest, error) {
 		}
 	}
 
-	// Write AUDIT-MANIFEST.json last
+	// Write manifest.json last (§8 MUST: lowercase, case-sensitive ZIP entry name)
 	manifestJSON, err := json.MarshalIndent(manifest, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("auditpack: marshal manifest: %w", err)
 	}
 	manifestJSON = append(manifestJSON, '\n')
-	mw, err := zw.Create("AUDIT-MANIFEST.json")
+	mw, err := zw.Create(ManifestFile)
 	if err != nil {
 		return nil, fmt.Errorf("auditpack: create manifest entry: %w", err)
 	}

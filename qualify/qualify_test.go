@@ -89,6 +89,49 @@ func TestRun_HashIsSet(t *testing.T) {
 	}
 }
 
+// x-FuSa spec §6 MUST: results[].result is a PASS/FAIL/SKIP/ERROR enum
+// string, not just a results[].passed bool. Regression test for #51.
+//
+//fusa:test REQ-QUALIFY010
+func TestRun_ResultsCarrySpecEnumString(t *testing.T) {
+	cases := qualify.BuiltinCases()
+	report, err := qualify.Run(context.Background(), engine.Default, cases)
+	if err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if len(report.Results) == 0 {
+		t.Fatal("Run: no results")
+	}
+	for _, r := range report.Results {
+		switch r.Result {
+		case qualify.ResultPass, qualify.ResultFail, qualify.ResultSkip, qualify.ResultError:
+			// valid
+		default:
+			t.Errorf("case %s: Result = %q, want one of PASS/FAIL/SKIP/ERROR", r.Case.Name, r.Result)
+		}
+		if (r.Result == qualify.ResultPass) != r.Passed {
+			t.Errorf("case %s: Result = %q inconsistent with Passed = %v", r.Case.Name, r.Result, r.Passed)
+		}
+	}
+
+	// The field must also round-trip through the JSON the CLI writes.
+	data, err := json.Marshal(report)
+	if err != nil {
+		t.Fatalf("Marshal: %v", err)
+	}
+	var payload struct {
+		Results []struct {
+			Result string `json:"result"`
+		} `json:"results"`
+	}
+	if err := json.Unmarshal(data, &payload); err != nil {
+		t.Fatalf("Unmarshal: %v", err)
+	}
+	if len(payload.Results) == 0 || payload.Results[0].Result == "" {
+		t.Error("marshaled JSON results[0].result is empty")
+	}
+}
+
 func TestRun_EmptyCases(t *testing.T) {
 	report, err := qualify.Run(context.Background(), engine.Default, nil)
 	if err != nil {

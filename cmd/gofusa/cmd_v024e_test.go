@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -389,6 +390,54 @@ func TestRunInit_EmptyDir(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, ".fusa.json")); err != nil {
 		t.Error(".fusa.json not created")
+	}
+}
+
+// x-FuSa spec §9.1 MUST: init creates .fusa.json AND .fusa-reqs.json (with
+// {"requirements": []}). Regression test for #50.
+//
+//fusa:test REQ-CLI-INIT001
+func TestRunInit_CreatesReqsFile(t *testing.T) {
+	dir := t.TempDir()
+	var out, errBuf bytes.Buffer
+	code := runInit([]string{"--dir", dir}, &out, &errBuf)
+	if code != 0 {
+		t.Fatalf("runInit exit %d: %s", code, errBuf.String())
+	}
+	data, err := os.ReadFile(filepath.Join(dir, ".fusa-reqs.json"))
+	if err != nil {
+		t.Fatalf(".fusa-reqs.json not created: %v", err)
+	}
+	var payload struct {
+		Requirements []any `json:"requirements"`
+	}
+	if err := json.Unmarshal(data, &payload); err != nil {
+		t.Fatalf(".fusa-reqs.json is not valid JSON: %v", err)
+	}
+	if payload.Requirements == nil {
+		t.Error(`.fusa-reqs.json "requirements" must be [], not null`)
+	}
+	if len(payload.Requirements) != 0 {
+		t.Errorf(`.fusa-reqs.json "requirements" = %v, want []`, payload.Requirements)
+	}
+}
+
+// Per §9.1's per-file semantics, init creates the missing .fusa-reqs.json
+// even when .fusa.json already exists, rather than failing outright.
+//
+//fusa:test REQ-CLI-INIT001
+func TestRunInit_CreatesReqsFileWhenConfigAlreadyExists(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, ".fusa.json"), []byte(`{"version":"1","project":{"name":"x","standard":"generic"},"rules":{},"report":{"format":"text"}}`), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	var out, errBuf bytes.Buffer
+	code := runInit([]string{"--dir", dir}, &out, &errBuf)
+	if code != 0 {
+		t.Fatalf("runInit exit %d: %s", code, errBuf.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, ".fusa-reqs.json")); err != nil {
+		t.Error(".fusa-reqs.json not created when .fusa.json already existed")
 	}
 }
 
