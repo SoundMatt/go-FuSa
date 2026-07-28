@@ -48,9 +48,22 @@ type Case struct {
 	ExpectFinding bool `json:"expectFinding"`
 }
 
+// Result status enum values (§6 MUST): every Result.Result is one of these.
+const (
+	ResultPass  = "PASS"
+	ResultFail  = "FAIL"
+	ResultSkip  = "SKIP"
+	ResultError = "ERROR"
+)
+
 // Result is the outcome of a single qualification test case.
+//
+// Result is the spec-mandated PASS/FAIL/SKIP/ERROR status string (§6 MUST).
+// Passed is kept for back-compat with existing callers/CLI output and is
+// always exactly (Result == ResultPass).
 type Result struct {
 	Case   Case   `json:"case"`
+	Result string `json:"result"`
 	Passed bool   `json:"passed"`
 	Error  string `json:"error,omitempty"`
 }
@@ -198,40 +211,45 @@ func Load(path string) (*Report, error) {
 //fusa:req REQ-QUALIFY006
 func BuiltinCases() []Case { return builtinCases }
 
-// runCase executes a single qualification test case.
+// runCase executes a single qualification test case. Infrastructure failures
+// (unable to set up or run the synthetic case) report ResultError; a case
+// that runs to completion but doesn't match its expectation reports
+// ResultFail; a matching case reports ResultPass (§6).
+//
+//fusa:req REQ-QUALIFY010
 func runCase(ctx context.Context, reg *engine.Registry, c Case) Result {
 	//fusa:req REQ-QUALIFY003
 	dir, err := os.MkdirTemp("", "fusa-qualify-*")
 	if err != nil {
-		return Result{Case: c, Error: fmt.Sprintf("mktemp: %v", err)}
+		return Result{Case: c, Result: ResultError, Error: fmt.Sprintf("mktemp: %v", err)}
 	}
 	defer func() { _ = os.RemoveAll(dir) }()
 
 	for rel, content := range c.Files {
 		path := filepath.Join(dir, rel)
 		if mkErr := os.MkdirAll(filepath.Dir(path), 0o750); mkErr != nil {
-			return Result{Case: c, Error: fmt.Sprintf("mkdir %s: %v", rel, mkErr)}
+			return Result{Case: c, Result: ResultError, Error: fmt.Sprintf("mkdir %s: %v", rel, mkErr)}
 		}
 		if wErr := os.WriteFile(path, []byte(content), 0o640); wErr != nil {
-			return Result{Case: c, Error: fmt.Sprintf("write %s: %v", rel, wErr)}
+			return Result{Case: c, Result: ResultError, Error: fmt.Sprintf("write %s: %v", rel, wErr)}
 		}
 	}
 
 	cfg := config.Default("github.com/fusa-qualify/test", "qualify")
 	result, err := reg.Run(ctx, dir, cfg)
 	if err != nil {
-		return Result{Case: c, Error: fmt.Sprintf("engine.Run: %v", err)}
+		return Result{Case: c, Result: ResultError, Error: fmt.Sprintf("engine.Run: %v", err)}
 	}
 
 	found := hasFinding(result.Findings, c.RuleID)
 	if found == c.ExpectFinding {
-		return Result{Case: c, Passed: true}
+		return Result{Case: c, Result: ResultPass, Passed: true}
 	}
 	if c.ExpectFinding {
-		return Result{Case: c, Passed: false,
+		return Result{Case: c, Result: ResultFail, Passed: false,
 			Error: fmt.Sprintf("expected finding %s but none was produced", c.RuleID)}
 	}
-	return Result{Case: c, Passed: false,
+	return Result{Case: c, Result: ResultFail, Passed: false,
 		Error: fmt.Sprintf("unexpected finding %s was produced", c.RuleID)}
 }
 

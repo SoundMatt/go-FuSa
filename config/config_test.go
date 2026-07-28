@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -198,6 +199,109 @@ func TestValidate_InvalidSeverityOverride(t *testing.T) {
 	cfg.Rules.Severity = map[string]string{"LINT001": "CRITICAL"}
 	if err := config.Validate(cfg); err == nil {
 		t.Error("Validate: expected error for invalid severity override")
+	}
+}
+
+// x-FuSa spec §1.2.1: a fully spec-compliant .fusa.json (configVersion,
+// top-level standard/asil, no go-FuSa-legacy "version" field) must load
+// without error, must not be rejected by Validate for lacking go-FuSa's own
+// "version" field, and must populate the legacy accessors other packages
+// read (cfg.Project.Standard, cfg.Project.ASIL). Regression test for #49.
+//
+//fusa:test REQ-CFG009
+func TestLoad_SpecCompliantShape(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, config.ConfigFile)
+	specJSON := `{
+  "configVersion": "1.0",
+  "project": { "name": "conform-test", "version": "0.1.0" },
+  "standard": "iso26262",
+  "asil": "ASIL-C"
+}`
+	if err := os.WriteFile(path, []byte(specJSON), 0o640); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg, err := config.Load(path)
+	if err != nil {
+		t.Fatalf("Load spec-compliant config: %v", err)
+	}
+	if cfg.Project.Name != "conform-test" {
+		t.Errorf("Project.Name = %q, want %q", cfg.Project.Name, "conform-test")
+	}
+	// The lowercase spec id must be readable by legacy uppercase-comparing
+	// consumers (hara/, coupling/, iso26262/, …) via cfg.Project.Standard.
+	if cfg.Project.Standard != config.StandardISO26262 {
+		t.Errorf("Project.Standard = %q, want %q", cfg.Project.Standard, config.StandardISO26262)
+	}
+	if cfg.Standard != config.StandardISO26262 {
+		t.Errorf("Standard = %q, want %q", cfg.Standard, config.StandardISO26262)
+	}
+	if cfg.Project.ASIL != "ASIL-C" {
+		t.Errorf("Project.ASIL = %q, want %q", cfg.Project.ASIL, "ASIL-C")
+	}
+	if cfg.ASIL != "ASIL-C" {
+		t.Errorf("ASIL = %q, want %q", cfg.ASIL, "ASIL-C")
+	}
+}
+
+// A config with only the spec's configVersion (no go-FuSa legacy "version")
+// must pass Validate, not be hard-rejected for a missing "version" field.
+//
+//fusa:test REQ-CFG009
+func TestValidate_AcceptsConfigVersionOnly(t *testing.T) {
+	cfg := &config.Config{ConfigVersion: "1.0", Project: config.ProjectConfig{Name: "x"}}
+	if err := config.Validate(cfg); err != nil {
+		t.Errorf("Validate: unexpected error for configVersion-only config: %v", err)
+	}
+}
+
+// The spec's legacy flat "project": "name" string form must be accepted and
+// normalised to {"name": "..."}.
+//
+//fusa:test REQ-CFG009
+func TestLoad_FlatProjectString(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, config.ConfigFile)
+	if err := os.WriteFile(path, []byte(`{"configVersion":"1.0","project":"flatname","standard":"generic"}`), 0o640); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err := config.Load(path)
+	if err != nil {
+		t.Fatalf("Load flat project string: %v", err)
+	}
+	if cfg.Project.Name != "flatname" {
+		t.Errorf("Project.Name = %q, want %q", cfg.Project.Name, "flatname")
+	}
+}
+
+// init's Default+Save output must itself satisfy both shapes: go-FuSa's own
+// legacy accessors and the spec's top-level fields.
+//
+//fusa:test REQ-CFG009
+func TestSave_WritesBothShapes(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, config.ConfigFile)
+	cfg := config.Default("github.com/x/y", "y")
+	cfg.Project.Standard = config.StandardISO26262
+	cfg.Standard = config.StandardISO26262
+
+	if err := config.Save(path, cfg); err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var raw map[string]any
+	if err := json.Unmarshal(data, &raw); err != nil {
+		t.Fatal(err)
+	}
+	if raw["configVersion"] == nil || raw["configVersion"] == "" {
+		t.Error("saved config missing top-level configVersion")
+	}
+	if raw["standard"] != string(config.StandardISO26262) {
+		t.Errorf("saved config top-level standard = %v, want %q", raw["standard"], config.StandardISO26262)
 	}
 }
 

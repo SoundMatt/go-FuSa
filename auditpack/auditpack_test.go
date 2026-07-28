@@ -64,12 +64,17 @@ func TestPack_CollectsEvidenceFiles(t *testing.T) {
 	names := zipFileNames(t, outPath)
 	hasManifest := false
 	for _, n := range names {
-		if n == "AUDIT-MANIFEST.json" {
+		if n == auditpack.ManifestFile {
 			hasManifest = true
+		}
+		// §8 MUST: the manifest entry name is lowercase "manifest.json",
+		// not the legacy "AUDIT-MANIFEST.json" — regression test for #52.
+		if n == "AUDIT-MANIFEST.json" {
+			t.Error("audit pack must not contain legacy AUDIT-MANIFEST.json name")
 		}
 	}
 	if !hasManifest {
-		t.Error("audit pack must contain AUDIT-MANIFEST.json")
+		t.Errorf("audit pack must contain %s", auditpack.ManifestFile)
 	}
 }
 

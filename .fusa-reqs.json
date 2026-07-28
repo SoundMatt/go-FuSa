@@ -2411,6 +2411,18 @@
       "title": "GoSource returns a map with a single Go source file at the given path",
       "text": "GoSource returns a map with a single Go source file at the given path.",
       "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-CFG009",
+      "title": "Accept and write both x-FuSa spec and legacy .fusa.json shapes",
+      "text": "Config accepts both go-FuSa's legacy .fusa.json shape (top-level \"version\", \"standard\"/\"asil\"/\"sil\" nested under \"project\") and the x-FuSa spec \u00a71.2.1 shape (top-level \"configVersion\", top-level \"standard\"/\"asil\"/\"sil\"/\"dal\", and the spec's legacy flat \"project\": \"name\" string). Load and Save normalise whichever fields are present into both locations, canonicalising the standard id case-insensitively onto go-FuSa's internal enum, so a spec-compliant .fusa.json written by another x-FuSa tool loads without error and go-FuSa's own init output satisfies both shapes at once.",
+      "standard": "x-FuSa"
+    },
+    {
+      "id": "REQ-QUALIFY010",
+      "title": "Per-case qualification result status enum (PASS/FAIL/SKIP/ERROR)",
+      "text": "Each qualification case result carries a results[].result status string that is one of PASS, FAIL, SKIP, or ERROR, per x-FuSa spec \u00a76. Infrastructure failures (unable to set up or run the synthetic case) report ERROR; a case that runs to completion but doesn't match its expectation reports FAIL; a matching case reports PASS.",
+      "standard": "x-FuSa"
     }
   ]
 }

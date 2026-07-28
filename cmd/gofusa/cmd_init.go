@@ -11,6 +11,7 @@ import (
 	fusa "github.com/SoundMatt/go-FuSa"
 	"github.com/SoundMatt/go-FuSa/config"
 	"github.com/SoundMatt/go-FuSa/template"
+	"github.com/SoundMatt/go-FuSa/trace"
 )
 
 //fusa:req REQ-CLI-INIT001
@@ -46,10 +47,7 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 	}
 
 	cfgPath := filepath.Join(projectRoot, config.ConfigFile)
-	if _, err := os.Stat(cfgPath); err == nil {
-		fmt.Fprintf(stderr, "gofusa init: %s already exists; delete it to reinitialise\n", cfgPath)
-		return fusa.ExitUsage
-	}
+	reqsPath := filepath.Join(projectRoot, trace.ReqsFile)
 
 	modPath := *module
 	if modPath == "" {
@@ -66,14 +64,39 @@ func runInit(args []string, stdout, stderr io.Writer) int {
 		projectName = filepath.Base(projectRoot)
 	}
 
-	cfg := config.Default(modPath, projectName)
-	cfg.Project.Standard = config.Standard(*standard)
-
-	if err := config.Save(cfgPath, cfg); err != nil {
-		fmt.Fprintf(stderr, "gofusa init: %v\n", err)
-		return fusa.ExitRuntime
+	// x-FuSa spec §9.1: init operates per file — it creates each target that
+	// is missing and leaves an existing one untouched, rather than failing
+	// outright whenever any one of them is already present.
+	wroteConfig := false
+	if _, err := os.Stat(cfgPath); err == nil {
+		fmt.Fprintf(stderr, "gofusa init: %s already exists; skipping\n", cfgPath)
+	} else {
+		cfg := config.Default(modPath, projectName)
+		cfg.Project.Standard = config.Standard(*standard)
+		cfg.Standard = config.Standard(*standard)
+		if err := config.Save(cfgPath, cfg); err != nil {
+			fmt.Fprintf(stderr, "gofusa init: %v\n", err)
+			return fusa.ExitRuntime
+		}
+		fmt.Fprintf(stdout, "Created %s\n", cfgPath)
+		wroteConfig = true
 	}
-	fmt.Fprintf(stdout, "Created %s\n", cfgPath)
+
+	wroteReqs := false
+	if _, err := os.Stat(reqsPath); err == nil {
+		fmt.Fprintf(stderr, "gofusa init: %s already exists; skipping\n", reqsPath)
+	} else {
+		if err := trace.SaveRequirements(projectRoot, []trace.Requirement{}); err != nil {
+			fmt.Fprintf(stderr, "gofusa init: %v\n", err)
+			return fusa.ExitRuntime
+		}
+		fmt.Fprintf(stdout, "Created %s\n", reqsPath)
+		wroteReqs = true
+	}
+
+	if !wroteConfig && !wroteReqs {
+		return fusa.ExitUsage
+	}
 
 	if *docs {
 		docsDir := filepath.Join(projectRoot, "docs", "safety")

@@ -128,12 +128,26 @@ func TestRun_Init(t *testing.T) {
 	}
 }
 
+// x-FuSa spec §9.1: init operates per file — a project with .fusa.json but
+// no .fusa-reqs.json still gets the missing .fusa-reqs.json created, and
+// exits 0. Only a second run, once both targets already exist, is a no-op
+// that exits non-zero.
 func TestRun_Init_AlreadyExists(t *testing.T) {
 	dir := testutil.ProjectDir(t, testutil.MinimalProject())
 	var out, errOut bytes.Buffer
 	code := run([]string{"init", "--dir", dir}, &out, &errOut)
+	if code != 0 {
+		t.Errorf("init with only .fusa.json present: exit code = %d\n%s", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), ".fusa-reqs.json") {
+		t.Error("init output missing .fusa-reqs.json")
+	}
+
+	out.Reset()
+	errOut.Reset()
+	code = run([]string{"init", "--dir", dir}, &out, &errOut)
 	if code == 0 {
-		t.Error("init existing: expected non-zero exit code")
+		t.Error("init with both targets present: expected non-zero exit code")
 	}
 }
 
