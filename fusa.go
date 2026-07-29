@@ -23,21 +23,20 @@ import (
 )
 
 // Version is the current release of go-FuSa.
-const Version = "0.46.0"
+const Version = "0.47.0"
 
 // SpecVersion is the x-FuSa spec version this release implements.
-const SpecVersion = "1.15.0"
+const SpecVersion = "1.15.2"
 
-// SchemaVersion returns the MAJOR.MINOR prefix of SpecVersion, the value
-// every report document's "schemaVersion" header field (§2.8/§3.1) MUST
-// carry — the spec version a document *conforms to*, one level less precise
-// than the tool's own SpecVersion (§9.1 `version --format json`).
+// SchemaVersion returns the value every document's "schemaVersion" header
+// field (§3.1/§3.2) MUST carry — the spec version a document *conforms to*,
+// emitted as the tool's full MAJOR.MINOR.PATCH SpecVersion verbatim (§3.2
+// "schemaVersion semantics", clarified in spec v1.15.1: a PATCH component is
+// never itself a compatibility signal, so a consumer MUST compare only the
+// MAJOR.MINOR prefix, but the emitted value carries all three components
+// unmodified — no truncation).
 func SchemaVersion() string {
-	parts := strings.SplitN(SpecVersion, ".", 3)
-	if len(parts) < 2 {
-		return SpecVersion
-	}
-	return parts[0] + "." + parts[1]
+	return SpecVersion
 }
 
 // Exit codes (§2.3).
