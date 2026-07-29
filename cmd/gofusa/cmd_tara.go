@@ -80,6 +80,13 @@ func runTara(args []string, stdout, stderr io.Writer) int {
 		return fusa.ExitRuntime
 	}
 
+	// Auto-create --output-dir if it doesn't exist yet, matching the
+	// fmea/safety-case sibling commands' §9.2 --output-dir handling.
+	if err := os.MkdirAll(outDir, 0o750); err != nil {
+		fmt.Fprintf(stderr, "gofusa tara: mkdir: %v\n", err)
+		return fusa.ExitRuntime
+	}
+
 	// x-FuSa spec §1.6.2 MUST: carry forward any existing attestation from
 	// the prior saved tara.json before overwriting it — a fresh tara.Scan
 	// never has one of its own. Staleness (a content change since the
