@@ -411,19 +411,23 @@ func dalApplies(dal DAL, dals []DAL) bool {
 	return false
 }
 
-// checkSourceCode adds dynamic assessments based on what go-FuSa can inspect.
+// checkSourceCode refines the Evidence/Gap text for objectives that go-FuSa
+// can inspect more precisely than their default assessment. A-2.4 and A-3.1
+// both have an empty evidence file in allObjectives, so Assess already
+// assessed them as StatusManual and counted them in rep.Manual — this
+// function only ever narrates *why* they're Manual in more detail, it never
+// changes their status. It must not touch rep.Gap/rep.Manual: they were
+// StatusManual (not StatusGap) coming in, so any adjustment here would
+// double-count them (and, for A-2.4, wrongly decrement rep.Gap below zero —
+// see #86).
 func checkSourceCode(projectRoot string, rep *Report) {
 	// Check if .fusa.json config exists (indicates project is configured)
 	configPath := filepath.Join(projectRoot, ".fusa.json")
 	for i, obj := range rep.Objectives {
 		if obj.ID == "A-2.4" {
 			if _, err := os.Stat(configPath); err == nil {
-				rep.Objectives[i].Status = StatusManual
 				rep.Objectives[i].Evidence = ".fusa.json found — run 'gofusa check' to assess coding standards conformance"
 				rep.Objectives[i].Gap = "review 'gofusa check' output for zero ERROR findings"
-				// Fix the counter
-				rep.Gap--
-				rep.Manual++
 			}
 			break
 		}
@@ -439,12 +443,7 @@ func checkSourceCode(projectRoot string, rep *Report) {
 				}
 			}
 			if present == 4 {
-				rep.Objectives[i].Status = StatusManual
 				rep.Objectives[i].Evidence = "all 4 plan documents present — manual review required"
-				if obj.Status == StatusGap {
-					rep.Gap--
-				}
-				rep.Manual++
 			}
 			break
 		}
