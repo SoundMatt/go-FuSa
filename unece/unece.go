@@ -157,7 +157,10 @@ func Render(w io.Writer, rep *Report, format string) error {
 }
 
 func toGapReport(rep *Report) *gapreport.Report {
-	gr := gapreport.New(rep.Project, "UN R.155")
+	// §2.4.1: standard is a canonical lowercase id, never a display string —
+	// this package assesses UN R.155 only (unece → "unece-r155" and/or
+	// "unece-r156"; go-FuSa currently implements the R.155 part).
+	gr := gapreport.New(rep.Project, "unece-r155")
 	for _, cat := range rep.Categories {
 		gobj := gapreport.Objective{
 			ID:     cat.ID,

@@ -328,7 +328,10 @@ func Render(w io.Writer, rep *Report, format string) error {
 
 // toGapReport converts the internal Report to the canonical §9.3 gap-report shape.
 func toGapReport(rep *Report) *gapreport.Report {
-	gr := gapreport.New(rep.Project, "ISO 26262 "+string(rep.ASIL))
+	// §2.4.1: standard is a canonical lowercase id, never a display string —
+	// the ASIL rating has no home in the canonical enum and is dropped here
+	// (it remains available on the internal Report via rep.ASIL).
+	gr := gapreport.New(rep.Project, "iso26262")
 	for _, obj := range rep.Objectives {
 		if obj.Status == StatusNA {
 			continue

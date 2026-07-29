@@ -217,7 +217,10 @@ func Render(w io.Writer, rep *Report, format string) error {
 }
 
 func toGapReport(rep *Report) *gapreport.Report {
-	gr := gapreport.New(rep.Project, "ISO 21434 "+string(rep.CAL))
+	// §2.4.1: standard is a canonical lowercase id, never a display string —
+	// the CAL rating has no home in the canonical enum and is dropped here
+	// (it remains available on the internal Report via rep.CAL).
+	gr := gapreport.New(rep.Project, "iso21434")
 	for _, obj := range rep.Objectives {
 		if obj.Status == StatusNA {
 			continue

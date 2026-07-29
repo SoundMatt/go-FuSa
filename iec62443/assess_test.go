@@ -220,8 +220,10 @@ func TestRender_JSON(t *testing.T) {
 	if err := json.Unmarshal(buf.Bytes(), &doc); err != nil {
 		t.Fatalf("JSON parse: %v", err)
 	}
-	if doc["standard"] != "iec62443" {
-		t.Errorf("standard = %v, want iec62443", doc["standard"])
+	// §2.4.1: standard is the canonical lowercase id with the required part
+	// suffix, never a display string or a bare "iec62443".
+	if doc["standard"] != "iec62443-4-2" {
+		t.Errorf("standard = %v, want iec62443-4-2", doc["standard"])
 	}
 	if doc["kind"] != "gap-report" {
 		t.Errorf("kind = %v, want gap-report", doc["kind"])

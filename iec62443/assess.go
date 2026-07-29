@@ -274,7 +274,9 @@ func Render(w io.Writer, rep *Report, format string) error {
 }
 
 func toGapReport(rep *Report) *gapreport.Report {
-	gr := gapreport.New(rep.Project, "iec62443")
+	// §2.4.1: standard is a canonical lowercase id with the required part
+	// suffix — this package assesses IEC 62443-4-2 (see package doc).
+	gr := gapreport.New(rep.Project, "iec62443-4-2")
 	for _, obj := range rep.Objectives {
 		gobj := gapreport.Objective{
 			ID:     obj.ID,
