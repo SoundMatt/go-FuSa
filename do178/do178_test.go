@@ -5,11 +5,16 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/SoundMatt/go-FuSa/do178"
 )
+
+// negativeCount matches a negative integer preceded by a space, e.g. " -1",
+// as would appear in a malformed "Summary: ... -1 GAP ..." line.
+var negativeCount = regexp.MustCompile(` -\d`)
 
 //fusa:test REQ-DO178-001
 func TestAssess_EmptyDir(t *testing.T) {
@@ -339,6 +344,164 @@ func TestA62_GAP_WhenNoCheckReport(t *testing.T) {
 	}
 }
 
+// Regression for #86: gofusa do178's text-mode summary line printed a
+// nonsensical negative GAP count on projects where both the A-2.4
+// (.fusa.json present) and A-3.1 (all 4 plan docs present) refinements in
+// checkSourceCode fired. Those objectives are already assessed as
+// StatusManual — and counted in rep.Manual — by Assess itself (their
+// allObjectives entry has an empty evidence file); checkSourceCode used to
+// also bump rep.Manual and (for A-2.4) unconditionally decrement rep.Gap,
+// double-counting Manual and driving Gap negative. The counters must match
+// what's actually enumerated in rep.Objectives, and Gap must never go
+// negative.
+//
+//fusa:test REQ-DO178-001
+//fusa:test REQ-DO178-003
+func TestSummaryCounters_MatchObjectives_Issue86(t *testing.T) {
+	dir := t.TempDir()
+	// Trigger the A-2.4 refinement: .fusa.json present.
+	if err := os.WriteFile(filepath.Join(dir, ".fusa.json"), []byte("{}"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	// Trigger the A-3.1 refinement: all 4 plan docs present.
+	for _, f := range []string{"SAFETY_PLAN.md", "SVP.md", "SCMP.md", "SQAP.md"} {
+		if err := os.WriteFile(filepath.Join(dir, f), []byte("x"), 0o644); err != nil {
+			t.Fatalf("write %s: %v", f, err)
+		}
+	}
+
+	rep, err := do178.Assess(dir, "proj", do178.DALB)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+
+	var wantPass, wantFail, wantGap, wantManual, wantNA int
+	for _, obj := range rep.Objectives {
+		switch obj.Status {
+		case do178.StatusPass:
+			wantPass++
+		case do178.StatusFail:
+			wantFail++
+		case do178.StatusGap:
+			wantGap++
+		case do178.StatusManual:
+			wantManual++
+		case do178.StatusNA:
+			wantNA++
+		}
+	}
+
+	if rep.Gap < 0 {
+		t.Errorf("rep.Gap = %d, must never be negative", rep.Gap)
+	}
+	if rep.Pass != wantPass || rep.Fail != wantFail || rep.Gap != wantGap ||
+		rep.Manual != wantManual || rep.NA != wantNA {
+		t.Errorf("summary counters (pass=%d fail=%d gap=%d manual=%d na=%d) "+
+			"don't match enumerated objectives (pass=%d fail=%d gap=%d manual=%d na=%d)",
+			rep.Pass, rep.Fail, rep.Gap, rep.Manual, rep.NA,
+			wantPass, wantFail, wantGap, wantManual, wantNA)
+	}
+
+	// The text renderer's header line must agree with these same counters
+	// (and, transitively, with what it enumerates below the header).
+	var buf bytes.Buffer
+	if err := do178.Render(&buf, rep, "text"); err != nil {
+		t.Fatalf("Render text: %v", err)
+	}
+	out := buf.String()
+	var summaryLine string
+	for _, line := range strings.Split(out, "\n") {
+		if strings.HasPrefix(line, "Summary:") {
+			summaryLine = line
+			break
+		}
+	}
+	if summaryLine == "" {
+		t.Fatal("no Summary: line found in text output")
+	}
+	if negativeCount.MatchString(summaryLine) {
+		t.Errorf("text summary line contains a negative count: %q", summaryLine)
+	}
+	gotGap := strings.Count(out, "] GAP ")
+	if gotGap != rep.Gap {
+		t.Errorf("text output enumerates %d GAP lines but summary says rep.Gap=%d", gotGap, rep.Gap)
+	}
+	gotManual := strings.Count(out, "] MANUAL ")
+	if gotManual != rep.Manual {
+		t.Errorf("text output enumerates %d MANUAL lines but summary says rep.Manual=%d", gotManual, rep.Manual)
+	}
+}
+
+// Regression for #86, exact repro: with every applicable file-based
+// objective satisfied at DAL-D (so the true GAP count is 0), the buggy
+// checkSourceCode fixup for A-2.4 alone drove rep.Gap to -1, matching the
+// "-1 GAP" reported against go-LIN. Fixed code must report exactly 0 GAP.
+//
+//fusa:test REQ-DO178-001
+//fusa:test REQ-DO178-003
+func TestSummary_NoNegativeGap_AllEvidencePresent_Issue86(t *testing.T) {
+	dir := t.TempDir()
+	// .fusa.json triggers the A-2.4 refinement.
+	if err := os.WriteFile(filepath.Join(dir, ".fusa.json"), []byte("{}"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	// Every file-based-evidence objective applicable at DAL-D, satisfied —
+	// so the real GAP count is zero.
+	wfDir := filepath.Join(dir, ".github", "workflows")
+	if err := os.MkdirAll(wfDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	files := map[string]string{
+		"SAFETY_PLAN.md":      "x",
+		"SVP.md":              "x",
+		"SCMP.md":             "x",
+		"SQAP.md":             "x",
+		".fusa-reqs.json":     `{"requirements":[]}`,
+		"boundary.mermaid":    "graph TD",
+		"provenance.json":     "{}",
+		".fusa-evidence.json": "{}",
+		"sbom.json":           "{}",
+		"sci.json":            "{}",
+		".fusa-problems.json": "{}",
+		"sas.md":              "x",
+	}
+	for f, content := range files {
+		if err := os.WriteFile(filepath.Join(dir, f), []byte(content), 0o644); err != nil {
+			t.Fatalf("write %s: %v", f, err)
+		}
+	}
+	if err := os.WriteFile(filepath.Join(wfDir, "ci.yml"), []byte("ci"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	rep, err := do178.Assess(dir, "proj", do178.DALD)
+	if err != nil {
+		t.Fatalf("Assess: %v", err)
+	}
+
+	var actualGaps []string
+	for _, obj := range rep.Objectives {
+		if obj.Status == do178.StatusGap {
+			actualGaps = append(actualGaps, obj.ID)
+		}
+	}
+	if len(actualGaps) != 0 {
+		t.Fatalf("expected zero real GAP objectives with all evidence present, got %v", actualGaps)
+	}
+	if rep.Gap != 0 {
+		t.Errorf("rep.Gap = %d, want 0 (must never be negative, and must match the zero GAP objectives enumerated)", rep.Gap)
+	}
+
+	var buf bytes.Buffer
+	if err := do178.Render(&buf, rep, "text"); err != nil {
+		t.Fatalf("Render text: %v", err)
+	}
+	if !strings.Contains(buf.String(), "0 GAP") {
+		t.Errorf("expected summary line to report 0 GAP, got:\n%s", strings.SplitN(buf.String(), "\n\n", 2)[0])
+	}
+}
+
+//fusa:test REQ-DO178-001
 func TestA62_PASS_WhenCheckReportPresent(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "check-report.json"), []byte(`{}`), 0o644); err != nil {
