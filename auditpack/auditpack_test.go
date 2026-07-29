@@ -193,6 +193,73 @@ func TestPack_IncludesFusaConfig(t *testing.T) {
 	}
 }
 
+// TestPack_IncludesNewerEvidenceTypes is a regression test for the audit-pack
+// silently dropping tara.json/tara.md/cyber-report.json and other evidence
+// types added after EvidenceFiles was last updated (x-FuSa spec §8 MUST:
+// "every §1.2 input file and every §1.3 generated file that exists at the
+// project root").
+//
+//fusa:test REQ-AUDIT001
+func TestPack_IncludesNewerEvidenceTypes(t *testing.T) {
+	files := testutil.MinimalProject()
+	for _, name := range []string{
+		// §1.2 input files not previously collected.
+		".fusa-hara.json",
+		".fusa-dispositions.json",
+		".fusa-problems.json",
+		".fusa-model-trace.json",
+		// §1.3 generated evidence not previously collected.
+		"tara.json",
+		"tara.md",
+		"cyber-report.json",
+		"coupling-report.json",
+		"comp-report.json",
+		// §1.3 open-ended <standard>-gap-report.json family.
+		"iso26262-gap-report.json",
+		"slsa-gap-report.json",
+	} {
+		files[name] = `{"kind":"test"}`
+	}
+	dir := testutil.ProjectDir(t, files)
+	outPath := filepath.Join(t.TempDir(), auditpack.AuditPackFile)
+
+	manifest, err := auditpack.Pack(dir, outPath)
+	if err != nil {
+		t.Fatalf("Pack: %v", err)
+	}
+
+	packed := make(map[string]bool, len(manifest.Files))
+	for _, entry := range manifest.Files {
+		packed[entry.Path] = true
+	}
+	names := zipFileNames(t, outPath)
+	inZip := make(map[string]bool, len(names))
+	for _, n := range names {
+		inZip[n] = true
+	}
+
+	for _, want := range []string{
+		".fusa-hara.json",
+		".fusa-dispositions.json",
+		".fusa-problems.json",
+		".fusa-model-trace.json",
+		"tara.json",
+		"tara.md",
+		"cyber-report.json",
+		"coupling-report.json",
+		"comp-report.json",
+		"iso26262-gap-report.json",
+		"slsa-gap-report.json",
+	} {
+		if !packed[want] {
+			t.Errorf("manifest missing %q", want)
+		}
+		if !inZip[want] {
+			t.Errorf("ZIP missing %q", want)
+		}
+	}
+}
+
 // ─── engine rule ─────────────────────────────────────────────────────────────
 
 func runEngine(t *testing.T, files map[string]string) []fusa.Finding {
