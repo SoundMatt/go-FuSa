@@ -2437,6 +2437,12 @@
       "standard": "x-FuSa"
     },
     {
+      "id": "REQ-CFG010",
+      "title": "Standard.CanonicalID maps the internal enum back to the x-FuSa spec §2.4.1 canonical lowercase id",
+      "text": "Standard.CanonicalID() is the inverse of the internal canonicalStandard mapping: it returns the x-FuSa spec §2.4.1 canonical lowercase standard id (e.g. \"iso26262\") for go-FuSa's internal enum value (e.g. StandardISO26262), so JSON envelope fields (check/report's top-level \"standard\", §3.2) never leak the internal uppercase, no-space enum spelling. StandardGeneric and an empty Standard both map to the empty string so callers omit the field rather than emit a non-canonical value.",
+      "standard": "x-FuSa spec section 2.4.1"
+    },
+    {
       "id": "REQ-QUALIFY010",
       "title": "Per-case qualification result status enum (PASS/FAIL/SKIP/ERROR)",
       "text": "Each qualification case result carries a results[].result status string that is one of PASS, FAIL, SKIP, or ERROR, per x-FuSa spec §6. Infrastructure failures (unable to set up or run the synthetic case) report ERROR; a case that runs to completion but doesn't match its expectation reports FAIL; a matching case reports PASS.",

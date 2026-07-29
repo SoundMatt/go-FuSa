@@ -73,7 +73,9 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 
 	rep := report.New(projectRoot, result.Findings)
 	rep.NoSummary = *noSummary
-	rep.Standard = string(cfg.Project.Standard)
+	// §2.4.1: the envelope's "standard" is a canonical lowercase id, never
+	// go-FuSa's internal uppercase/no-space enum spelling.
+	rep.Standard = cfg.Project.Standard.CanonicalID()
 	switch cfg.Project.Standard {
 	case "IEC61508":
 		rep.SIL = cfg.Project.ASIL
