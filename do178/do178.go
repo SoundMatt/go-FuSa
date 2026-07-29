@@ -513,7 +513,10 @@ func Render(w io.Writer, rep *Report, format string) error {
 }
 
 func toGapReport(rep *Report) *gapreport.Report {
-	gr := gapreport.New(rep.Project, "DO-178C "+string(rep.DAL))
+	// §2.4.1: standard is a canonical lowercase id, never a display string —
+	// the DAL rating has no home in the canonical enum and is dropped here
+	// (it remains available on the internal Report via rep.DAL).
+	gr := gapreport.New(rep.Project, "do178c")
 	for _, obj := range rep.Objectives {
 		if obj.Status == StatusNA {
 			continue

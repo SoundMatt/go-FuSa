@@ -3,6 +3,7 @@ package iec61508_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -164,6 +165,15 @@ func TestRender_JSON(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), `"standard"`) {
 		t.Error("missing standard field in JSON")
+	}
+	// §2.4.1: standard MUST be the canonical lowercase id, never a display
+	// string like "IEC 61508 SIL-2".
+	var doc map[string]interface{}
+	if err := json.Unmarshal(buf.Bytes(), &doc); err != nil {
+		t.Fatalf("JSON parse: %v", err)
+	}
+	if doc["standard"] != "iec61508" {
+		t.Errorf("standard = %v, want canonical id \"iec61508\"", doc["standard"])
 	}
 }
 

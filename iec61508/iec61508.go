@@ -356,7 +356,10 @@ func Render(w io.Writer, rep *Report, format string) error {
 }
 
 func toGapReport(rep *Report) *gapreport.Report {
-	gr := gapreport.New(rep.Project, "IEC 61508 "+string(rep.SIL))
+	// §2.4.1: standard is a canonical lowercase id, never a display string —
+	// the SIL rating has no home in the canonical enum and is dropped here
+	// (it remains available on the internal Report via rep.SIL).
+	gr := gapreport.New(rep.Project, "iec61508")
 	for _, obj := range rep.Objectives {
 		if obj.Status == StatusNA {
 			continue

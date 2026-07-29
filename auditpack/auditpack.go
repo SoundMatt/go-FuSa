@@ -20,6 +20,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"time"
 
 	fusa "github.com/SoundMatt/go-FuSa"
@@ -57,16 +58,31 @@ type AuditManifest struct {
 	Files         []AuditManifestEntry `json:"files"`
 }
 
-// EvidenceFiles is the ordered list of evidence file names that Pack collects.
+// EvidenceFiles is the ordered list of evidence file names that Pack collects
+// — every x-FuSa spec §1.2 input file and §1.3 generated-evidence file that
+// has a fixed name (everything except the `<standard>-gap-report.json`
+// family, which Pack discovers separately via a glob since the set of
+// standards is open-ended — see gapReportGlob).
 //
 //fusa:req REQ-AUDIT001
 var EvidenceFiles = []string{
+	// §1.2 input/config files.
 	".fusa.json",
 	".fusa-reqs.json",
+	".fusa-hara.json",
 	".fusa-evidence.json",
+	".fusa-dispositions.json",
+	".fusa-problems.json",
+	".fusa-model-trace.json",
+	// §1.3 generated evidence.
 	"check-report.json",
 	"fmea.json",
 	"fmea.csv",
+	"tara.json",
+	"tara.md",
+	"cyber-report.json",
+	"coupling-report.json",
+	"comp-report.json",
 	"boundary.mermaid",
 	"boundary.dot",
 	"safety-case.json",
@@ -78,6 +94,13 @@ var EvidenceFiles = []string{
 	"qualify-report.json",
 	"vuln.json",
 }
+
+// gapReportGlob matches the open-ended §1.3 `<standard>-gap-report.json`
+// family (e.g. iso26262-gap-report.json, slsa-gap-report.json,
+// iec62443-4-2-gap-report.json, misra-c-gap-report.json) — a fixed name list
+// can't enumerate every standard id a future tool version might add, so Pack
+// discovers these by pattern instead.
+const gapReportGlob = "*-gap-report.json"
 
 // Pack bundles all present evidence files from projectRoot into a ZIP archive
 // at outputPath. It returns the AuditManifest describing what was packed.
@@ -104,6 +127,7 @@ func Pack(projectRoot, outputPath string) (*AuditManifest, error) {
 		path string
 	}
 	var present []fileEntry
+	seen := make(map[string]bool, len(EvidenceFiles))
 	for _, name := range EvidenceFiles {
 		path := filepath.Join(projectRoot, name)
 		entry, err := hashFile(path, name)
@@ -115,6 +139,31 @@ func Pack(projectRoot, outputPath string) (*AuditManifest, error) {
 		}
 		manifest.Files = append(manifest.Files, entry)
 		present = append(present, fileEntry{name: name, path: path})
+		seen[name] = true
+	}
+
+	// §1.3 `<standard>-gap-report.json` files (open-ended set of standards —
+	// see gapReportGlob doc comment). Sorted for deterministic manifest
+	// ordering across filesystems/platforms.
+	gapReportNames, globErr := discoverGapReports(projectRoot)
+	if globErr != nil {
+		return nil, fmt.Errorf("auditpack: glob gap reports: %w", globErr)
+	}
+	for _, name := range gapReportNames {
+		if seen[name] {
+			continue
+		}
+		path := filepath.Join(projectRoot, name)
+		entry, hashErr := hashFile(path, name)
+		if hashErr != nil {
+			if os.IsNotExist(hashErr) {
+				continue
+			}
+			return nil, fmt.Errorf("auditpack: hash %s: %w", name, hashErr)
+		}
+		manifest.Files = append(manifest.Files, entry)
+		present = append(present, fileEntry{name: name, path: path})
+		seen[name] = true
 	}
 
 	// Create ZIP
@@ -155,6 +204,24 @@ func Pack(projectRoot, outputPath string) (*AuditManifest, error) {
 }
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
+
+// discoverGapReports returns the base names (not full paths) of every
+// `<standard>-gap-report.json` file present directly under projectRoot,
+// sorted lexicographically for deterministic manifest/ZIP ordering.
+//
+//fusa:req REQ-AUDIT001
+func discoverGapReports(projectRoot string) ([]string, error) {
+	matches, err := filepath.Glob(filepath.Join(projectRoot, gapReportGlob))
+	if err != nil {
+		return nil, err
+	}
+	names := make([]string, 0, len(matches))
+	for _, m := range matches {
+		names = append(names, filepath.Base(m))
+	}
+	sort.Strings(names)
+	return names, nil
+}
 
 func hashFile(path, name string) (AuditManifestEntry, error) {
 	f, err := os.Open(path)

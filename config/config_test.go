@@ -159,6 +159,33 @@ func TestStandard_Identifiers(t *testing.T) {
 	}
 }
 
+// TestStandard_CanonicalID verifies Standard.CanonicalID() is the inverse of
+// the internal canonicalStandard mapping, producing the x-FuSa spec §2.4.1
+// canonical lowercase id — never go-FuSa's internal uppercase/no-space
+// enum spelling (e.g. "ISO26262"), and never the empty/"generic" value as
+// anything but "".
+//
+//fusa:test REQ-CFG010
+func TestStandard_CanonicalID(t *testing.T) {
+	cases := []struct {
+		std  config.Standard
+		want string
+	}{
+		{config.StandardISO26262, "iso26262"},
+		{config.StandardIEC61508, "iec61508"},
+		{config.StandardISO21434, "iso21434"},
+		{config.StandardDO178C, "do178c"},
+		{config.StandardGeneric, ""},
+		{config.Standard(""), ""},
+		{config.Standard("unrecognised-id"), "unrecognised-id"},
+	}
+	for _, c := range cases {
+		if got := c.std.CanonicalID(); got != c.want {
+			t.Errorf("Standard(%q).CanonicalID() = %q, want %q", c.std, got, c.want)
+		}
+	}
+}
+
 func TestSave_FileCreated(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, config.ConfigFile)

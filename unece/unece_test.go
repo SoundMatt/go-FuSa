@@ -187,8 +187,10 @@ func TestRender_JSON(t *testing.T) {
 	if err := json.Unmarshal(buf.Bytes(), &parsed); err != nil {
 		t.Fatalf("Render json: invalid JSON: %v", err)
 	}
-	if parsed.Standard == "" {
-		t.Error("missing standard field in JSON")
+	// §2.4.1: standard MUST be the canonical lowercase id, never a display
+	// string like "UN R.155".
+	if parsed.Standard != "unece-r155" {
+		t.Errorf("standard = %q, want canonical id \"unece-r155\"", parsed.Standard)
 	}
 	if len(parsed.Objectives) == 0 {
 		t.Error("expected objectives in JSON output")

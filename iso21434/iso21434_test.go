@@ -230,6 +230,15 @@ func TestRender_JSON(t *testing.T) {
 	if len(parsed.Objectives) == 0 {
 		t.Error("expected objectives in JSON output")
 	}
+	// §2.4.1: standard MUST be the canonical lowercase id, never a display
+	// string like "ISO 21434 CAL-2".
+	var doc map[string]interface{}
+	if err := json.Unmarshal(buf.Bytes(), &doc); err != nil {
+		t.Fatalf("JSON parse: %v", err)
+	}
+	if doc["standard"] != "iso21434" {
+		t.Errorf("standard = %v, want canonical id \"iso21434\"", doc["standard"])
+	}
 }
 
 // TestRender_UnknownFormat verifies error on unknown format.

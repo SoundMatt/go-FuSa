@@ -256,6 +256,33 @@ func canonicalStandard(s Standard) Standard {
 	}
 }
 
+// CanonicalID returns the x-FuSa spec §2.4.1 canonical lowercase standard id
+// for s (e.g. StandardISO26262 -> "iso26262"), the inverse of
+// canonicalStandard. StandardGeneric and an empty Standard both map to ""
+// — §2.4.1 defines no id for "generic", so callers writing a JSON envelope's
+// `standard` field (§3.2) MUST omit the field rather than emit a
+// non-canonical value. A value that isn't one of go-FuSa's internal
+// constants is lowercased and returned verbatim (§2.4.1: an unrecognised id
+// MUST be treated verbatim, never rejected).
+//
+//fusa:req REQ-CFG010
+func (s Standard) CanonicalID() string {
+	switch s {
+	case StandardISO26262:
+		return "iso26262"
+	case StandardIEC61508:
+		return "iec61508"
+	case StandardISO21434:
+		return "iso21434"
+	case StandardDO178C:
+		return "do178c"
+	case StandardGeneric, "":
+		return ""
+	default:
+		return strings.ToLower(string(s))
+	}
+}
+
 // Validate returns an error if cfg contains inconsistencies.
 //
 //fusa:req REQ-CFG003

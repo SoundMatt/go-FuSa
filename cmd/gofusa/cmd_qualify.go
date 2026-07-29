@@ -25,6 +25,14 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 	}
 
 	var (
+		// §6: qualify accepts --dir/--format for CLI-surface parity with the
+		// other §9.1 MUST commands, even though the qualification suite
+		// itself always runs the same built-in synthetic cases regardless of
+		// project content — --dir only affects the default --output
+		// location (mirroring how other commands resolve projectRoot).
+		//fusa:req REQ-QUALIFY011
+		dir        = fs.String("dir", "", "project root directory (default: current directory); only affects the default --output location")
+		format     = fs.String("format", "text", "output format: text, json (both write the same qualification report; controls stdout presentation)")
 		outputFile = fs.String("output", "", "path for the JSON qualification report (default: ./qualify-report.json)")
 		// Feature 2 — tool qualification display
 		//fusa:req REQ-QUALIFY007
@@ -42,14 +50,27 @@ func runQualify(args []string, stdout, stderr io.Writer) int {
 		return code
 	}
 
-	outPath := *outputFile
-	if outPath == "" {
-		wd, err := os.Getwd()
+	switch *format {
+	case "text", "json", "":
+		// ok
+	default:
+		fmt.Fprintf(stderr, "gofusa qualify: unknown format %q (must be text or json)\n", *format)
+		return fusa.ExitUsage
+	}
+
+	projectRoot := *dir
+	if projectRoot == "" {
+		var err error
+		projectRoot, err = os.Getwd()
 		if err != nil {
 			fmt.Fprintf(stderr, "gofusa qualify: get working directory: %v\n", err)
 			return fusa.ExitRuntime
 		}
-		outPath = filepath.Join(wd, qualify.ReportFile)
+	}
+
+	outPath := *outputFile
+	if outPath == "" {
+		outPath = filepath.Join(projectRoot, qualify.ReportFile)
 	}
 
 	fmt.Fprintf(stdout, "Running %d qualification case(s)...\n", len(qualify.BuiltinCases()))

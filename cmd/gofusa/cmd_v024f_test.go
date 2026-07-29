@@ -601,10 +601,10 @@ func TestRunDo178_InvalidDALv2(t *testing.T) {
 //fusa:test REQ-CLI019
 func TestRunTara_WithOutputDir(t *testing.T) {
 	dir := t.TempDir()
+	// outDir is deliberately NOT pre-created — tara --output-dir MUST
+	// auto-create it, matching fmea/safety-case's identical --output-dir
+	// handling (they don't require the caller to mkdir first either).
 	outDir := filepath.Join(dir, "tara-out")
-	if err := os.MkdirAll(outDir, 0o750); err != nil {
-		t.Fatal(err)
-	}
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module example.com/test\n\ngo 1.22\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -612,6 +612,12 @@ func TestRunTara_WithOutputDir(t *testing.T) {
 	code := runTara([]string{"--dir", dir, "--output-dir", outDir}, &out, &errBuf)
 	if code != 0 {
 		t.Errorf("unexpected exit %d: %s", code, errBuf.String())
+	}
+	if _, err := os.Stat(filepath.Join(outDir, "tara.json")); err != nil {
+		t.Errorf("tara.json not created in auto-created output dir: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(outDir, "tara.md")); err != nil {
+		t.Errorf("tara.md not created in auto-created output dir: %v", err)
 	}
 }
 

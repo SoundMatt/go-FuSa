@@ -2,6 +2,7 @@ package do178_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -159,6 +160,15 @@ func TestRender_JSON(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), `"standard"`) {
 		t.Error("missing standard field in JSON")
+	}
+	// §2.4.1: standard MUST be the canonical lowercase id, never a display
+	// string like "DO-178C DAL-B".
+	var doc map[string]interface{}
+	if err := json.Unmarshal(buf.Bytes(), &doc); err != nil {
+		t.Fatalf("JSON parse: %v", err)
+	}
+	if doc["standard"] != "do178c" {
+		t.Errorf("standard = %v, want canonical id \"do178c\"", doc["standard"])
 	}
 }
 
