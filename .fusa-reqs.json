@@ -2449,6 +2449,12 @@
       "standard": "x-FuSa"
     },
     {
+      "id": "REQ-QUALIFY011",
+      "title": "gofusa qualify accepts --dir and --format flags per x-FuSa spec §6",
+      "text": "gofusa qualify defines --dir <path> (project root directory; affects the default --output location, mirroring how other commands resolve projectRoot) and --format text|json (both write the same qualification report; the flag is accepted without error) per the CLI surface documented in x-FuSa spec §6, instead of erroring with \"flag provided but not defined\" when either is passed.",
+      "standard": "x-FuSa spec section 6"
+    },
+    {
       "id": "REQ-ATT001",
       "title": "Attestation struct for x-FuSa spec section 1.6.2",
       "text": "The tool shall support a document-level attestation object (status, implementationAuthor, independentReviewer, reviewedAt, contentHash) on evidence artifacts carrying qualitative content.",
