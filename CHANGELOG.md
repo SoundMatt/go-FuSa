@@ -7,6 +7,28 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.47.0 — 2026-07-28 (declare x-FuSa spec v1.15.2 conformance)
+
+### Changed
+- **`SpecVersion` bumped from `1.15.0` to `1.15.2`.** Both intervening spec
+  releases are pure documentation clarifications with no wire-format or
+  required-behavior change (§14 Changelog): v1.15.1 blessed the
+  already-in-use `MAJOR.MINOR.PATCH` form as the correct `schemaVersion`/
+  `specVersion` value (a tool emits its `SpecVersion` constant verbatim;
+  compatibility is still judged on the `MAJOR.MINOR` prefix only), and
+  v1.15.2 added an explicit worked-example to §1.6.1 Rule A with no rule
+  change.
+
+### Fixed
+- **`SchemaVersion()` now emits the full `MAJOR.MINOR.PATCH` `SpecVersion`
+  verbatim instead of a truncated `MAJOR.MINOR` prefix** (x-FuSa spec §3.2
+  "schemaVersion semantics", MUST, clarified in v1.15.1). `fmea.json`,
+  `tara.json`, `.fusa-hara.json`, `safety-case.json`, `sas.json`, and
+  `sci.json` were emitting `"schemaVersion": "1.15"` while every other document
+  (`check`/`trace`/`qualify`/`report`/gap-reports/`sbom`/`provenance`/
+  audit-pack/`capabilities`) already emitted the full patch version — this
+  aligns all document kinds on the one correct, spec-blessed form.
+
 ## v0.46.0 — 2026-07-28 (deep-audit round 2: standard ids, SARIF, tara/qualify/audit-pack)
 
 ### Fixed

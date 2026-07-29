@@ -426,17 +426,13 @@ func TestAttestationValid(t *testing.T) {
 }
 
 //fusa:test REQ-ATT001
-func TestSchemaVersion_IsMajorMinor(t *testing.T) {
+func TestSchemaVersion_IsFullSpecVersionVerbatim(t *testing.T) {
 	got := fusa.SchemaVersion()
-	parts := strings.Split(got, ".")
-	if len(parts) != 2 {
-		t.Errorf("SchemaVersion() = %q, want MAJOR.MINOR (2 dot-separated parts)", got)
-	}
 	if strings.Count(fusa.SpecVersion, ".") < 2 {
 		t.Fatalf("SpecVersion %q is expected to be MAJOR.MINOR.PATCH for this test to be meaningful", fusa.SpecVersion)
 	}
-	if !strings.HasPrefix(fusa.SpecVersion, got+".") {
-		t.Errorf("SchemaVersion() = %q is not a prefix of SpecVersion %q", got, fusa.SpecVersion)
+	if got != fusa.SpecVersion {
+		t.Errorf("SchemaVersion() = %q, want SpecVersion %q emitted verbatim (§3.2 schemaVersion semantics, spec v1.15.1+)", got, fusa.SpecVersion)
 	}
 }
 
