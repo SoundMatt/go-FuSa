@@ -7,6 +7,40 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.46.0 — 2026-07-28 (deep-audit round 2: standard ids, SARIF, tara/qualify/audit-pack)
+
+### Fixed
+- **SARIF `tool.driver.name` is now the canonical `"go-FuSa"`** (x-FuSa spec
+  §2.9 MUST), not the `"gofusa"` binary name — the one output format whose
+  tool identity had diverged from every other JSON document (go-FuSa#81).
+- **Standards gap-report `standard` field is now the §2.4.1 canonical
+  lowercase id** in all six commands (go-FuSa#77). `iso26262`/`do178`/
+  `iec61508`/`iso21434`/`unece` no longer bake the ASIL/SIL/DAL/CAL rating
+  into the id (`"ISO 26262 ASIL-B"` → `"iso26262"`, etc.), and `iec62443`
+  now carries the required part suffix (`"iec62443"` → `"iec62443-4-2"`).
+- **`check`/`report`'s JSON envelope `standard` field is now the canonical
+  lowercase id** instead of go-FuSa's internal uppercase/no-space enum
+  spelling (e.g. `"ISO26262"`) — new `config.Standard.CanonicalID()`
+  (go-FuSa#78).
+- **`tara --output-dir` now auto-creates the target directory**, matching
+  the identical `--output-dir` handling `fmea`/`safety-case` already had
+  (go-FuSa#83).
+- **`qualify` now accepts the documented `--dir`/`--format` flags** (x-FuSa
+  spec §6) instead of erroring with "flag provided but not defined"
+  (go-FuSa#82).
+- **`audit-pack` no longer silently drops `tara.json`/`tara.md`/
+  `cyber-report.json` and other evidence types** added after its
+  `EvidenceFiles` list was last updated — extended with the missing §1.2/
+  §1.3 filenames plus a glob for the open-ended
+  `<standard>-gap-report.json` family (go-FuSa#79).
+- **`tara`'s `threats[]` no longer includes `_test.go` fixtures** as "asset
+  under threat" entries (x-FuSa spec §1.6 rule 4 MUST) — `tara.Scan` now
+  excludes test-fixture-sourced CYBER findings the same way
+  `CountProjectFiles` already excludes them from the `assetsInProject`
+  denominator, so `summary.assetsAnalyzed`/`coveragePct` are now
+  internally consistent with the report's own `assetInventoryMethod` text
+  (go-FuSa#80).
+
 ## v0.45.0 — 2026-07-28 (declare x-FuSa spec v1.15.0 conformance)
 
 ### Changed
