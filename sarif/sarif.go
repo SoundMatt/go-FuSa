@@ -103,7 +103,9 @@ func Render(w io.Writer, findings []fusa.Finding, toolVersion string) error {
 		Runs: []sarifRun{{
 			Tool: sarifTool{
 				Driver: sarifDriver{
-					Name:           "gofusa",
+					// §2.9 MUST: tool.driver.name is the canonical `tool`
+					// name (§1.1, "go-FuSa"), not the "gofusa" binary name.
+					Name:           "go-FuSa",
 					Version:        toolVersion,
 					InformationURI: "https://github.com/SoundMatt/go-FuSa",
 					Rules:          rules,

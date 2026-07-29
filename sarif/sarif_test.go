@@ -42,6 +42,35 @@ func TestRender_SARIFVersion(t *testing.T) {
 	}
 }
 
+// TestRender_DriverName verifies tool.driver.name is the canonical §1.1
+// tool name "go-FuSa" — never the "gofusa" binary name — per §2.9's MUST.
+//
+//fusa:test REQ-SARIF002
+func TestRender_DriverName(t *testing.T) {
+	var buf bytes.Buffer
+	if err := sarif.Render(&buf, nil, "0.17.0"); err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	var out struct {
+		Runs []struct {
+			Tool struct {
+				Driver struct {
+					Name string `json:"name"`
+				} `json:"driver"`
+			} `json:"tool"`
+		} `json:"runs"`
+	}
+	if err := json.Unmarshal(buf.Bytes(), &out); err != nil {
+		t.Fatalf("invalid JSON: %v\n%s", err, buf.String())
+	}
+	if len(out.Runs) != 1 {
+		t.Fatalf("expected 1 run, got %d", len(out.Runs))
+	}
+	if out.Runs[0].Tool.Driver.Name != "go-FuSa" {
+		t.Errorf("tool.driver.name = %q, want canonical tool name \"go-FuSa\"", out.Runs[0].Tool.Driver.Name)
+	}
+}
+
 func TestRender_FindingLevel(t *testing.T) {
 	cases := []struct {
 		sev   fusa.Severity
