@@ -140,7 +140,18 @@ func Scan(projectRoot string, cyberFindings []fusa.Finding) (*Report, error) {
 		Module:        readModule(projectRoot),
 	}
 
-	for i, f := range cyberFindings {
+	// §1.6 rule 4 (Real referents only, MUST): threats[] entries must name a
+	// real project asset, never a test fixture mistaken for one. cyber.Scan
+	// legitimately includes findings in _test.go files (security issues in
+	// test code are still worth flagging there), but those findings aren't
+	// real deployed assets, so they're excluded here before becoming TARA
+	// "asset under threat" entries — the same _test.go exclusion
+	// CountProjectFiles already applies to the assetsInProject denominator.
+	i := 0
+	for _, f := range cyberFindings {
+		if strings.HasSuffix(f.Location.File, "_test.go") {
+			continue
+		}
 		meta, ok := ruleMeta[f.RuleID]
 		if !ok {
 			meta = threatMeta{
@@ -181,6 +192,7 @@ func Scan(projectRoot string, cyberFindings []fusa.Finding) (*Report, error) {
 			SourceLine:        f.Location.Line,
 		}
 		report.Entries = append(report.Entries, entry)
+		i++
 	}
 
 	sort.Slice(report.Entries, func(i, j int) bool {

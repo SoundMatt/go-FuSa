@@ -109,6 +109,49 @@ func TestScan_IDSequential(t *testing.T) {
 	}
 }
 
+// TestScan_ExcludesTestFixtureFindings is a regression test for threats[]
+// being sourced from _test.go fixtures instead of real project assets
+// (x-FuSa spec §1.6 rule 4 MUST: "Real referents only" — a `file` entry MUST
+// refer to an actual file in the analyzed project, not a test fixture
+// mistaken for one). cyber.Scan findings in _test.go files are legitimate
+// for check's own CYBER category, but MUST NOT become TARA "asset under
+// threat" entries.
+//
+//fusa:test REQ-TARA003
+func TestScan_ExcludesTestFixtureFindings(t *testing.T) {
+	dir := testutil.ProjectDir(t, map[string]string{
+		"go.mod": "module example.com/test\ngo 1.22\n",
+	})
+	findings := []fusa.Finding{
+		makeFinding("CYBER001", fusa.SeverityWarning, "impact/impact_test.go", 23),
+		makeFinding("CYBER002", fusa.SeverityWarning, "real/asset.go", 10),
+		makeFinding("CYBER003", fusa.SeverityInfo, "another_test.go", 5),
+	}
+	report, err := tara.Scan(dir, findings)
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+	if len(report.Entries) != 1 {
+		t.Fatalf("expected 1 non-test entry, got %d: %+v", len(report.Entries), report.Entries)
+	}
+	for _, e := range report.Entries {
+		if strings.HasSuffix(e.SourceFile, "_test.go") {
+			t.Errorf("entry %q sourced from test fixture %q, want real project file only", e.ID, e.SourceFile)
+		}
+	}
+	if report.Entries[0].SourceFile != "real/asset.go" {
+		t.Errorf("SourceFile = %q, want %q", report.Entries[0].SourceFile, "real/asset.go")
+	}
+	// The surviving entry's ID should still be sequential from TARA-001, not
+	// carry a gap from the filtered-out test-fixture entries.
+	if report.Entries[0].ID != "TARA-001" {
+		t.Errorf("ID = %q, want \"TARA-001\" (no gap from filtered entries)", report.Entries[0].ID)
+	}
+	if report.Summary.AssetsAnalyzed != 1 {
+		t.Errorf("summary.assetsAnalyzed = %d, want 1 (test fixtures excluded)", report.Summary.AssetsAnalyzed)
+	}
+}
+
 func padded(n int) string {
 	if n < 10 {
 		return "00" + string(rune('0'+n))
