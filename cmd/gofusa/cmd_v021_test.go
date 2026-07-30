@@ -133,8 +133,8 @@ func TestRunHara_ASIL(t *testing.T) {
 		t.Fatalf("hara asil: exit %d, stderr: %s", code, stderr.String())
 	}
 	out := stdout.String()
-	if !strings.Contains(out, "ASIL-C") {
-		t.Errorf("expected ASIL-C for S2/E4/C2, got: %s", out)
+	if !strings.Contains(out, "ASIL-B") {
+		t.Errorf("expected ASIL-B for S2/E4/C2 (2+4+2=8), got: %s", out)
 	}
 }
 

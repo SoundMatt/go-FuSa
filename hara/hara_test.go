@@ -29,24 +29,23 @@ func TestDetermineASIL_Table4(t *testing.T) {
 		{hara.SeverityS0, hara.ExposureE4, hara.ControllabilityC3, hara.ASILQM},
 		// E0 always QM
 		{hara.SeverityS3, hara.ExposureE0, hara.ControllabilityC3, hara.ASILQM},
-		// S1 spot checks
-		{hara.SeverityS1, hara.ExposureE4, hara.ControllabilityC3, hara.ASILB},
-		{hara.SeverityS1, hara.ExposureE4, hara.ControllabilityC2, hara.ASILA},
-		{hara.SeverityS1, hara.ExposureE4, hara.ControllabilityC1, hara.ASILQM},
-		// S2 spot checks
-		{hara.SeverityS2, hara.ExposureE4, hara.ControllabilityC3, hara.ASILD},
-		{hara.SeverityS2, hara.ExposureE4, hara.ControllabilityC2, hara.ASILC},
-		{hara.SeverityS2, hara.ExposureE4, hara.ControllabilityC1, hara.ASILB},
-		{hara.SeverityS2, hara.ExposureE4, hara.ControllabilityC0, hara.ASILA},
-		{hara.SeverityS2, hara.ExposureE3, hara.ControllabilityC2, hara.ASILB},
-		// S3 spot checks
-		{hara.SeverityS3, hara.ExposureE4, hara.ControllabilityC0, hara.ASILC},
-		{hara.SeverityS3, hara.ExposureE4, hara.ControllabilityC1, hara.ASILD},
-		{hara.SeverityS3, hara.ExposureE4, hara.ControllabilityC2, hara.ASILD},
-		{hara.SeverityS3, hara.ExposureE4, hara.ControllabilityC3, hara.ASILD},
-		{hara.SeverityS3, hara.ExposureE1, hara.ControllabilityC0, hara.ASILQM},
-		{hara.SeverityS3, hara.ExposureE1, hara.ControllabilityC1, hara.ASILA},
-		{hara.SeverityS3, hara.ExposureE1, hara.ControllabilityC3, hara.ASILC},
+		// C0 always QM
+		{hara.SeverityS3, hara.ExposureE4, hara.ControllabilityC0, hara.ASILQM},
+		// S1 spot checks (1 + E + C)
+		{hara.SeverityS1, hara.ExposureE4, hara.ControllabilityC3, hara.ASILB},  // 8
+		{hara.SeverityS1, hara.ExposureE4, hara.ControllabilityC2, hara.ASILA},  // 7
+		{hara.SeverityS1, hara.ExposureE4, hara.ControllabilityC1, hara.ASILQM}, // 6
+		// S2 spot checks (2 + E + C)
+		{hara.SeverityS2, hara.ExposureE4, hara.ControllabilityC3, hara.ASILC}, // 9
+		{hara.SeverityS2, hara.ExposureE4, hara.ControllabilityC2, hara.ASILB}, // 8
+		{hara.SeverityS2, hara.ExposureE4, hara.ControllabilityC1, hara.ASILA}, // 7
+		{hara.SeverityS2, hara.ExposureE3, hara.ControllabilityC2, hara.ASILA}, // 7
+		// S3 spot checks (3 + E + C)
+		{hara.SeverityS3, hara.ExposureE4, hara.ControllabilityC1, hara.ASILB},  // 8
+		{hara.SeverityS3, hara.ExposureE4, hara.ControllabilityC2, hara.ASILC},  // 9
+		{hara.SeverityS3, hara.ExposureE4, hara.ControllabilityC3, hara.ASILD},  // 10 (only ASIL-D cell)
+		{hara.SeverityS3, hara.ExposureE1, hara.ControllabilityC1, hara.ASILQM}, // 5
+		{hara.SeverityS3, hara.ExposureE1, hara.ControllabilityC3, hara.ASILA},  // 7
 		// Unknown combo falls back to QM
 		{hara.Severity("SX"), hara.ExposureE4, hara.ControllabilityC3, hara.ASILQM},
 	}
@@ -56,6 +55,54 @@ func TestDetermineASIL_Table4(t *testing.T) {
 		if got != tt.want {
 			t.Errorf("DetermineASIL(%s,%s,%s) = %s, want %s", tt.s, tt.e, tt.c, got, tt.want)
 		}
+	}
+}
+
+// TestDetermineASIL_Exhaustive verifies every rated S×E×C cell against the
+// additive ISO 26262-3:2018 Table 4 model, and that every C0 cell is QM.
+//
+//fusa:test REQ-HARA006
+func TestDetermineASIL_Exhaustive(t *testing.T) {
+	sVal := map[hara.Severity]int{hara.SeverityS1: 1, hara.SeverityS2: 2, hara.SeverityS3: 3}
+	eVal := map[hara.Exposure]int{hara.ExposureE1: 1, hara.ExposureE2: 2, hara.ExposureE3: 3, hara.ExposureE4: 4}
+	cVal := map[hara.Controllability]int{hara.ControllabilityC1: 1, hara.ControllabilityC2: 2, hara.ControllabilityC3: 3}
+
+	fromSum := func(n int) hara.ASIL {
+		switch n {
+		case 7:
+			return hara.ASILA
+		case 8:
+			return hara.ASILB
+		case 9:
+			return hara.ASILC
+		case 10:
+			return hara.ASILD
+		default:
+			return hara.ASILQM
+		}
+	}
+
+	dCells := 0
+	for s, sv := range sVal {
+		for e, ev := range eVal {
+			// Rated controllability C1..C3.
+			for c, cv := range cVal {
+				want := fromSum(sv + ev + cv)
+				if want == hara.ASILD {
+					dCells++
+				}
+				if got := hara.DetermineASIL(s, e, c); got != want {
+					t.Errorf("DetermineASIL(%s,%s,%s) = %s, want %s", s, e, c, got, want)
+				}
+			}
+			// C0 (unrated controllability) is always QM.
+			if got := hara.DetermineASIL(s, e, hara.ControllabilityC0); got != hara.ASILQM {
+				t.Errorf("DetermineASIL(%s,%s,C0) = %s, want QM", s, e, got)
+			}
+		}
+	}
+	if dCells != 1 {
+		t.Errorf("expected exactly one ASIL-D cell (S3+E4+C3), found %d", dCells)
 	}
 }
 
@@ -170,13 +217,13 @@ func TestValidate_Complete(t *testing.T) {
 					Severity:        hara.SeverityS2,
 					Exposure:        hara.ExposureE3,
 					Controllability: hara.ControllabilityC2,
-					ASIL:            hara.ASILB,
+					ASIL:            hara.ASILA, // S2+E3+C2 = 7 → ASIL-A
 				},
 				SafetyGoals: []string{"SG-001"},
 			},
 		},
 		SafetyGoals: []hara.SafetyGoal{
-			{ID: "SG-001", Description: "goal", ASIL: hara.ASILB, FSSRRefs: []string{"REQ-TEST001"}},
+			{ID: "SG-001", Description: "goal", ASIL: hara.ASILA, FSSRRefs: []string{"REQ-TEST001"}},
 		},
 	}
 	findings := hara.Validate(h)
@@ -628,7 +675,7 @@ func TestValidateASIL_MatchingASILNotFlagged(t *testing.T) {
 		ID: "H-001",
 		Risk: hara.RiskRating{
 			Severity: hara.SeverityS2, Exposure: hara.ExposureE4, Controllability: hara.ControllabilityC2,
-			ASIL: hara.ASILC, // S2×E4×C2 derives ASIL-C — matches
+			ASIL: hara.ASILB, // S2+E4+C2 = 8 → ASIL-B — matches
 		},
 	}}}
 	if findings := hara.ValidateASIL(h); len(findings) != 0 {
@@ -697,7 +744,7 @@ func TestHARA008_FiresOnMismatchedASIL(t *testing.T) {
 //fusa:test REQ-HARA024
 func TestHARA008_SilentWhenASILMatches(t *testing.T) {
 	dir := t.TempDir()
-	writeHARAWithASIL(t, dir, hara.ASILC) // S2×E4×C2 genuinely derives ASIL-C
+	writeHARAWithASIL(t, dir, hara.ASILB) // S2+E4+C2 = 8 genuinely derives ASIL-B
 	if findingsForRule(t, dir, "HARA008") {
 		t.Error("HARA008 should not fire when risk.asil matches DetermineASIL(S,E,C)")
 	}

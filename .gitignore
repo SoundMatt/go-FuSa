@@ -4,3 +4,5 @@ CLAUDE.md
 /.fusa-cache/
 /.claude/
 /cmd/gofusa/safety-case.json
+/check-report.json
+/results.sarif
