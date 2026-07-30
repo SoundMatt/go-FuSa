@@ -7,6 +7,62 @@ Dates reference the merged commit timestamp.
 
 ## [Unreleased]
 
+## v0.48.0 — 2026-07-30 (fix ISO 26262-3 Table 4 ASIL determination + audit remediation)
+
+### Fixed
+- **`hara.DetermineASIL` mis-implemented ISO 26262-3:2018 Table 4** (Critical):
+  the hand-written S×E×C lookup table was wrong in 8 of 12 S2 cells and 11 of
+  12 S3 cells, always *inflating* the rating relative to the standard's
+  additive rule. Replaced with the reproducible additive model the standard
+  actually specifies: points = S(1–3) + E(1–4) + C(1–3), with ≤6 → QM, 7 → A,
+  8 → B, 9 → C, 10 → D (ASIL D reachable only at the single S3+E4+C3 cell).
+  `hara/hara_test.go`'s golden values, which had locked in the inflated
+  results, are corrected to match. As a direct consequence, this repo's own
+  dogfooded `.fusa-hara.json` re-derives all five hazards (H-001..H-005)
+  under the corrected rule — the highest ASIL among them drops from the
+  previously-claimed ASIL-C to **ASIL-B** (e.g. H-001's S2/E4/C2 rating,
+  previously miscomputed as ASIL-C, is ASIL-B under the correct additive
+  sum of 8).
+- **`qualify.computeHash` was not reproducible**: it hashed the live
+  `generatedAt` timestamp (so the "integrity" hash changed on every run of
+  identical results) and did not sort `Results` before hashing (so
+  re-ordered-but-identical results produced a different digest). The hash
+  now excludes `generatedAt` entirely, canonicalizes via
+  `fusa.CanonicalizeJSON`, and sorts `results[]` by case name first, so the
+  digest is stable for a given qualification outcome.
+- **Legacy `.fusa.json` shape**: the repo's own config had drifted to the
+  pre-`configVersion` shape (bare `"version": "1"`, standard nested only
+  under `project.standard`, uppercase `"ISO26262"` id). Normalized to the
+  current canonical shape — `configVersion` plus top-level `standard`/`asil`
+  fields alongside the legacy nested ones, for both current and older
+  config-loader code paths.
+- **Stale committed `check-report.json`**: removed a stale, plain-text
+  `check-report.json` (baked in with an absolute local filesystem path) that
+  had been committed to the repo by mistake. Added `/check-report.json` and
+  `/results.sarif` to `.gitignore` so generated reports can't be
+  re-committed by accident.
+- **CI SARIF self-scan was masked by `|| true`**: `gofusa check --format
+  sarif` failures (including genuine crashes/usage errors, not just a
+  nonzero "findings present" gate exit) were unconditionally swallowed
+  before the SARIF upload step, so a broken self-scan could never fail CI.
+  Now only exit codes 0 (clean) and 1 (findings present) are treated as
+  producing a valid SARIF to upload; anything higher fails the job.
+
+### Security
+- **`impact.changedFiles` git argument injection**: `git diff` was invoked
+  with `--from`/`--to` refs interpolated directly into the argument list
+  with no `--` pathspec separator, so a ref value beginning with `-` could
+  be interpreted by git as an option rather than a revision. Refs starting
+  with `-` are now rejected outright, and a `--` separator is always placed
+  before the revision range.
+
+### Not fixed (by design)
+- **`normalizeMessage` still omits Unicode NFC normalization** — the
+  audit's low-severity finding here is deliberately left unpatched: a
+  correct fix needs `golang.org/x/text`, and this repo's std-lib-only
+  convention (go.mod has zero dependencies) takes priority over closing this
+  one low-severity gap.
+
 ## v0.47.0 — 2026-07-28 (declare x-FuSa spec v1.15.2 conformance)
 
 ### Changed

@@ -201,7 +201,19 @@ jobs:
         run: go build -o gofusa ./cmd/gofusa
 
       - name: Run gofusa check --format sarif
-        run: ./gofusa check --format sarif --output results.sarif || true
+        run: |
+          set +e
+          ./gofusa check --format sarif --output results.sarif
+          code=$?
+          set -e
+          # Exit 0 (clean) and 1 (findings present, gate fail) are both
+          # expected and still produce a valid SARIF to upload. Any higher
+          # exit code is a crash/usage error and must fail the job so a
+          # stale or empty results.sarif is not silently uploaded.
+          if [ "$code" -gt 1 ]; then
+            echo "gofusa check failed with exit $code" >&2
+            exit "$code"
+          fi
 
       - name: Upload SARIF to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3

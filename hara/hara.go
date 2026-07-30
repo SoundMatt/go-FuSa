@@ -240,77 +240,31 @@ func BuildCompleteness(h *HARA, reqIDs map[string]bool) Completeness {
 //
 //fusa:req REQ-HARA006
 func DetermineASIL(s Severity, e Exposure, c Controllability) ASIL {
-	// S0 always QM
-	if s == SeverityS0 || s == "" {
-		return ASILQM
-	}
-	// E0 always QM
-	if e == ExposureE0 || e == "" {
+	// ISO 26262-3:2018 Table 4 is reproducible additively: assign each
+	// rated class a weight (S1=1,S2=2,S3=3; E1..E4=1..4; C1..C3=1..3), sum
+	// them, and map the total (≤6→QM, 7→A, 8→B, 9→C, 10→D). ASIL D is
+	// therefore reached only at the single cell S3+E4+C3 (3+4+3=10).
+	sv := map[Severity]int{SeverityS1: 1, SeverityS2: 2, SeverityS3: 3}[s]
+	ev := map[Exposure]int{ExposureE1: 1, ExposureE2: 2, ExposureE3: 3, ExposureE4: 4}[e]
+	cv := map[Controllability]int{ControllabilityC1: 1, ControllabilityC2: 2, ControllabilityC3: 3}[c]
+
+	// S0/E0/C0 (and any unrated/unknown class) always yield QM.
+	if sv == 0 || ev == 0 || cv == 0 {
 		return ASILQM
 	}
 
-	type key struct {
-		s Severity
-		e Exposure
-		c Controllability
+	switch sv + ev + cv {
+	case 7:
+		return ASILA
+	case 8:
+		return ASILB
+	case 9:
+		return ASILC
+	case 10:
+		return ASILD
+	default: // sum ≤ 6
+		return ASILQM
 	}
-	table := map[key]ASIL{
-		// S1
-		{SeverityS1, ExposureE1, ControllabilityC0}: ASILQM,
-		{SeverityS1, ExposureE1, ControllabilityC1}: ASILQM,
-		{SeverityS1, ExposureE1, ControllabilityC2}: ASILQM,
-		{SeverityS1, ExposureE1, ControllabilityC3}: ASILQM,
-		{SeverityS1, ExposureE2, ControllabilityC0}: ASILQM,
-		{SeverityS1, ExposureE2, ControllabilityC1}: ASILQM,
-		{SeverityS1, ExposureE2, ControllabilityC2}: ASILQM,
-		{SeverityS1, ExposureE2, ControllabilityC3}: ASILQM,
-		{SeverityS1, ExposureE3, ControllabilityC0}: ASILQM,
-		{SeverityS1, ExposureE3, ControllabilityC1}: ASILQM,
-		{SeverityS1, ExposureE3, ControllabilityC2}: ASILQM,
-		{SeverityS1, ExposureE3, ControllabilityC3}: ASILA,
-		{SeverityS1, ExposureE4, ControllabilityC0}: ASILQM,
-		{SeverityS1, ExposureE4, ControllabilityC1}: ASILQM,
-		{SeverityS1, ExposureE4, ControllabilityC2}: ASILA,
-		{SeverityS1, ExposureE4, ControllabilityC3}: ASILB,
-		// S2
-		{SeverityS2, ExposureE1, ControllabilityC0}: ASILQM,
-		{SeverityS2, ExposureE1, ControllabilityC1}: ASILQM,
-		{SeverityS2, ExposureE1, ControllabilityC2}: ASILQM,
-		{SeverityS2, ExposureE1, ControllabilityC3}: ASILQM,
-		{SeverityS2, ExposureE2, ControllabilityC0}: ASILQM,
-		{SeverityS2, ExposureE2, ControllabilityC1}: ASILQM,
-		{SeverityS2, ExposureE2, ControllabilityC2}: ASILA,
-		{SeverityS2, ExposureE2, ControllabilityC3}: ASILB,
-		{SeverityS2, ExposureE3, ControllabilityC0}: ASILQM,
-		{SeverityS2, ExposureE3, ControllabilityC1}: ASILA,
-		{SeverityS2, ExposureE3, ControllabilityC2}: ASILB,
-		{SeverityS2, ExposureE3, ControllabilityC3}: ASILC,
-		{SeverityS2, ExposureE4, ControllabilityC0}: ASILA,
-		{SeverityS2, ExposureE4, ControllabilityC1}: ASILB,
-		{SeverityS2, ExposureE4, ControllabilityC2}: ASILC,
-		{SeverityS2, ExposureE4, ControllabilityC3}: ASILD,
-		// S3
-		{SeverityS3, ExposureE1, ControllabilityC0}: ASILQM,
-		{SeverityS3, ExposureE1, ControllabilityC1}: ASILA,
-		{SeverityS3, ExposureE1, ControllabilityC2}: ASILB,
-		{SeverityS3, ExposureE1, ControllabilityC3}: ASILC,
-		{SeverityS3, ExposureE2, ControllabilityC0}: ASILA,
-		{SeverityS3, ExposureE2, ControllabilityC1}: ASILB,
-		{SeverityS3, ExposureE2, ControllabilityC2}: ASILC,
-		{SeverityS3, ExposureE2, ControllabilityC3}: ASILD,
-		{SeverityS3, ExposureE3, ControllabilityC0}: ASILB,
-		{SeverityS3, ExposureE3, ControllabilityC1}: ASILC,
-		{SeverityS3, ExposureE3, ControllabilityC2}: ASILD,
-		{SeverityS3, ExposureE3, ControllabilityC3}: ASILD,
-		{SeverityS3, ExposureE4, ControllabilityC0}: ASILC,
-		{SeverityS3, ExposureE4, ControllabilityC1}: ASILD,
-		{SeverityS3, ExposureE4, ControllabilityC2}: ASILD,
-		{SeverityS3, ExposureE4, ControllabilityC3}: ASILD,
-	}
-	if a, ok := table[key{s, e, c}]; ok {
-		return a
-	}
-	return ASILQM
 }
 
 // ─── Load / Save ──────────────────────────────────────────────────────────────

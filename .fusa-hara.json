@@ -29,7 +29,7 @@
         "severity": "S2",
         "exposure": "E4",
         "controllability": "C2",
-        "asil": "ASIL-C"
+        "asil": "ASIL-B"
       },
       "safetyGoals": [
         "SG-001"
@@ -47,7 +47,7 @@
         "severity": "S2",
         "exposure": "E3",
         "controllability": "C2",
-        "asil": "ASIL-B"
+        "asil": "ASIL-A"
       },
       "safetyGoals": [
         "SG-002"
@@ -64,7 +64,7 @@
         "severity": "S2",
         "exposure": "E3",
         "controllability": "C1",
-        "asil": "ASIL-A"
+        "asil": "QM"
       },
       "safetyGoals": [
         "SG-003"
@@ -99,7 +99,7 @@
         "severity": "S2",
         "exposure": "E3",
         "controllability": "C2",
-        "asil": "ASIL-B"
+        "asil": "ASIL-A"
       },
       "safetyGoals": [
         "SG-005"
@@ -113,7 +113,7 @@
       "hazards": [
         "H-001"
       ],
-      "asil": "ASIL-C",
+      "asil": "ASIL-B",
       "safeState": "Halt analysis and exit non-zero if rule engine cannot complete",
       "fssrRefs": [
         "REQ-LINT001",
@@ -128,7 +128,7 @@
       "hazards": [
         "H-002"
       ],
-      "asil": "ASIL-B",
+      "asil": "ASIL-A",
       "safeState": "Report configuration mismatch as ERROR finding",
       "fssrRefs": [
         "REQ-HARA006"
@@ -140,7 +140,7 @@
       "hazards": [
         "H-003"
       ],
-      "asil": "ASIL-A",
+      "asil": "QM",
       "safeState": "Exit code 1",
       "fssrRefs": [
         "REQ-CLI001",
@@ -166,7 +166,7 @@
       "hazards": [
         "H-005"
       ],
-      "asil": "ASIL-B",
+      "asil": "ASIL-A",
       "safeState": "Emit WARNING and continue",
       "fssrRefs": [
         "REQ-CONFIG001"

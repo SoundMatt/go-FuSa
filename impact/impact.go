@@ -200,13 +200,20 @@ func Analyse(projectRoot, fromRef, toRef string) (*Report, error) {
 
 // changedFiles runs git diff and returns the changed file list.
 func changedFiles(projectRoot, fromRef, toRef string) ([]FileChange, error) {
+	// Reject refs beginning with "-" so a crafted value cannot be
+	// interpreted by git as an option rather than a revision.
+	for _, ref := range []string{fromRef, toRef} {
+		if strings.HasPrefix(ref, "-") {
+			return nil, fmt.Errorf("impact: invalid ref %q: must not begin with '-'", ref)
+		}
+	}
 	var args []string
 	if fromRef == "" && toRef == "" {
-		args = []string{"diff", "--name-status", "HEAD"}
+		args = []string{"diff", "--name-status", "HEAD", "--"}
 	} else if toRef == "" {
-		args = []string{"diff", "--name-status", fromRef + "..HEAD"}
+		args = []string{"diff", "--name-status", fromRef + "..HEAD", "--"}
 	} else {
-		args = []string{"diff", "--name-status", fromRef + ".." + toRef}
+		args = []string{"diff", "--name-status", fromRef + ".." + toRef, "--"}
 	}
 
 	cmd := exec.CommandContext(context.Background(), "git", args...)

@@ -1,11 +1,14 @@
 {
   "version": "1",
+  "configVersion": "1",
   "project": {
     "name": "go-FuSa",
     "module": "github.com/SoundMatt/go-FuSa",
     "standard": "ISO26262",
     "asil": "ASIL-B"
   },
+  "standard": "ISO26262",
+  "asil": "ASIL-B",
   "rules": {},
   "report": {
     "format": "text"

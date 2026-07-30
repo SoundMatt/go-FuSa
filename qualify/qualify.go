@@ -24,6 +24,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sort"
 	"time"
 
 	fusa "github.com/SoundMatt/go-FuSa"
@@ -263,33 +264,44 @@ func hasFinding(findings []fusa.Finding, ruleID string) bool {
 }
 
 // computeHash returns a "sha256:<hex>" integrity hash of the report content
-// (excluding the Hash field and common-header metadata) per §6.
+// (excluding the Hash field and §3.1 common-header metadata such as
+// generatedAt) per §6. The content is canonicalized with
+// [fusa.CanonicalizeJSON] — not Go struct field order — so the hash is
+// reproducible across x-FuSa tools (MUST-145/146), and results[] is sorted by
+// case name before hashing so ordering never perturbs the digest (MUST-148).
 //
 //fusa:req REQ-QUALIFY004
 func computeHash(r *Report) (string, error) {
 	type hashable struct {
-		GeneratedAt time.Time `json:"generatedAt"`
-		GoVersion   string    `json:"goVersion"`
-		Module      string    `json:"module"`
-		Total       int       `json:"total"`
-		Passed      int       `json:"passed"`
-		Failed      int       `json:"failed"`
-		Results     []Result  `json:"results"`
+		GoVersion string   `json:"goVersion"`
+		Module    string   `json:"module"`
+		Total     int      `json:"total"`
+		Passed    int      `json:"passed"`
+		Failed    int      `json:"failed"`
+		Results   []Result `json:"results"`
 	}
+	results := make([]Result, len(r.Results))
+	copy(results, r.Results)
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].Case.Name < results[j].Case.Name
+	})
 	h := hashable{
-		GeneratedAt: r.GeneratedAt,
-		GoVersion:   r.GoVersion,
-		Module:      r.Module,
-		Total:       r.Total,
-		Passed:      r.Passed,
-		Failed:      r.Failed,
-		Results:     r.Results,
+		GoVersion: r.GoVersion,
+		Module:    r.Module,
+		Total:     r.Total,
+		Passed:    r.Passed,
+		Failed:    r.Failed,
+		Results:   results,
 	}
 	data, err := json.Marshal(h)
 	if err != nil {
 		return "", err
 	}
-	sum := sha256.Sum256(data)
+	canon, err := fusa.CanonicalizeJSON(data)
+	if err != nil {
+		return "", err
+	}
+	sum := sha256.Sum256(canon)
 	return fmt.Sprintf("sha256:%x", sum), nil
 }
 
